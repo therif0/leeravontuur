@@ -109,6 +109,7 @@ class TestSchermen(Basis):
 
     def test_mijn_avatar(self):
         scherm, _ = self.speel([OK, OK, hm("Mijn avatar"), curses_rechts(), ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "[W] naar de winkel"))
         self.assertTrue(self.ergens(scherm, "punten"))
         self.assertTrue(self.ergens(scherm, "Gezichtje: blij"))
         self.assertTrue(self.ergens(scherm, "Gezichtje: trots"))

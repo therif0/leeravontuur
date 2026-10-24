@@ -117,14 +117,14 @@ class TestKinderenBeheren(OuderBasis):
 
     def test_wissen_vraagt_de_naam(self):
         o = self.met_wachtwoord(("Test", "5"), ("Ander", "4"))
-        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*5 = 14
-        self.speel([OK, "4", *WW, OK, "2", "1", ("klik", 14, 10), *"Fout", OK, OK, ("klik", 14, 10),
+        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*6 = 16
+        self.speel([OK, "4", *WW, OK, "2", "1", ("klik", 16, 10), *"Fout", OK, OK, ("klik", 16, 10),
                     *"Ander", OK, OK, ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual([k.naam for k in o.kinderen()], ["Test"])
 
     def test_export_alles(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 12, 10), OK)
+        self.beheer(o, ("klik", 14, 10), OK)
         self.assertEqual(sorted(p.suffix for p in Path(self.docs.name).iterdir()), [".csv", ".json", ".txt"])
 
 

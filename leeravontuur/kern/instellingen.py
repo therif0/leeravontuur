@@ -15,6 +15,14 @@ THEMAS = {
 }
 
 
+STRAFFEN = {
+    "pakje": "pakje komt na 10 juiste antwoorden",
+    "tijd": "pakje komt na 15 minuten oefenen",
+    "kosten": "5 punten verzendkosten",
+    "geen": "geen straf",
+}
+
+
 @dataclass
 class Instellingen:
     naam: str = ""
@@ -26,6 +34,7 @@ class Instellingen:
     timer_zichtbaar: bool = True  # de ouder kiest of het kind zijn tijd ziet (bewaard wordt ze altijd)
     avatar: bool = True
     animaties: bool = True
+    winkel_straf: str = "pakje"  # bij 2x een foute som in de winkel: pakje / tijd / kosten / geen
 
     def gecontroleerd(self):
         """Zet ongeldige waarden terug op de standaard."""
@@ -43,6 +52,8 @@ class Instellingen:
             self.muis = std.muis
         if self.typrichting not in (1, -1):
             self.typrichting = std.typrichting
+        if self.winkel_straf not in STRAFFEN:
+            self.winkel_straf = std.winkel_straf
         for veld in ("timer_zichtbaar", "avatar", "animaties"):
             if not isinstance(getattr(self, veld), bool):
                 setattr(self, veld, getattr(std, veld))

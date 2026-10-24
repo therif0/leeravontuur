@@ -158,6 +158,9 @@ class App:
                 naam = self.inst.naam
                 n, j = self.vandaag()
                 info = []
+                from ..kern import winkel as W
+                for item in W.lever_pakjes(self.opslag, self.kind.id):
+                    info.append(f"Je pakje is aangekomen: {item.naam}! Kijk in je kast.")
                 if n:
                     lof = " Goed bezig!" if j >= 0.6 * n else ""
                     info.append(f"Vandaag al {n} {'vraag' if n == 1 else 'vragen'} geoefend, {j} juist.{lof}")
@@ -168,7 +171,7 @@ class App:
                     ("▶ Verder", self.voorstel()[0][:32]),
                     ("Leren & oefenen", "wiskunde (taal, Frans volgen)"),
                     (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets"),
-                    ("Mijn avatar", "je blokje en je punten"),
+                    ("Mijn avatar", "winkel, kast en punten"),
                     ("Spiekbrieven", "uitleg om terug te kijken"),
                     ("Opties", "kleuren, muis, avatar …"),
                     ("Wissel van kind", "iemand anders wil oefenen"),
@@ -204,40 +207,8 @@ class App:
         self.s.put(4 + AV.HOOGTE + 1, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "accent")
 
     def mijn_avatar(self):
-        from ..kern import avatar as A
-        from . import avatar as AV
-        s = self.s
-        kr = [HOOFD, "Mijn avatar"]
-        gezichten = list(A.onderdelen()["uitdrukkingen"])
-        i = gezichten.index("blij")
-        knoppen = [("←→", "ander gezichtje", None), ("Esc", "terug", ESC)]
-        while True:
-            if s.te_klein():
-                continue
-            s.cursor(False)
-            s.nieuw(kr, knoppen)
-            h, w = s.maat()
-            AV.teken_groot(s, 3, 4, self.avatar_config(), gezichten[i])
-            s.zones.voeg(3, 4, 16, 32, curses.KEY_RIGHT)
-            x = 40
-            s.put(3, x, self.kind.naam, "accent")
-            s.put(5, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "bold")
-            s.put(7, x, f"Gezichtje: {gezichten[i]}", "")
-            s.put(8, x, "(klik op je avatar of gebruik ← →)", "dim")
-            s.put(10, x, "Punten verdien je met oefenen:", "")
-            for j, regel in enumerate(["juist antwoord: 10 (Makkelijk 5,", "  Moeilijk 15, Heel moeilijk 20)",
-                                       "5 juist op rij: +10", "reeks zonder fout: +20",
-                                       "beheerst bij herhalen: +15"]):
-                s.put(11 + j, x + 2, regel, "dim")
-            s.put(17, x, "In de winkel kun je je blokje", "info")
-            s.put(18, x, "aankleden (komt in de volgende versie).", "info")
-            k = s.toets()
-            if k in (ESC, ord("q"), *ENTER):
-                return
-            if k == curses.KEY_RIGHT:
-                i = (i + 1) % len(gezichten)
-            elif k == curses.KEY_LEFT:
-                i = (i - 1) % len(gezichten)
+        from .schermen.winkel import AvatarSchermen
+        AvatarSchermen(self).hub()
 
     def voorstel(self):
         """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders leren."""

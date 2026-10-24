@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.6):**
+**Wat er nu in zit (versie 0.7):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -32,6 +32,13 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     blij, trots, denken, oeps … met een kort tekstje ("Psst… Tel de kolommen!")
   - zonder kleuren of in ASCII-modus wordt het een tekstgezichtje zoals `[^_^]`
   - ouders zien het puntenlogboek en kunnen bonuspunten geven
+- **De winkel** (Mijn avatar → Winkel): een 30-tal items (vormen, kleuren, ogen, oren, haar, hoeden, accessoires)
+  - eerst passen ("zo zie je eruit"), dan kopen met punten
+  - bij elke aankoop een **rekenvraag**: *"Je hebt 200 punten, dit kost 70. Hoeveel heb je over?"*,
+    vanaf het 5de leerjaar soms met korting (procenten); te weinig punten → *"hoeveel moet je nog sparen?"*
+  - fout → *"Ben je zeker?"* en nog één kans; nog eens fout → een mini-lesje en een ludieke straf die de ouder kiest
+    (standaard: *"de koerier is verdwaald, je pakje komt na 10 juiste antwoorden"*)
+  - een **kast** om te wisselen wat je draagt, en combinaties om te bewaren
 - **Een account per kind:** bij de start kies je wie er oefent ("Wie ben jij?"). Elk kind heeft eigen
   instellingen, en elk antwoord wordt bewaard (ook "vandaag al … vragen geoefend" blijft na een herstart).
 - **Ouderdeel** (achter een wachtwoord; via "Wie ben jij?" → Ouders, of `--ouder`):

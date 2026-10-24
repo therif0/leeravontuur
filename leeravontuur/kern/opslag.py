@@ -112,6 +112,27 @@ MIGRATIES = [
         gewijzigd TEXT NOT NULL
     );
     """,
+    # versie 5: de winkel (wat het kind bezit, en pakjes die nog onderweg zijn) en opgeslagen combinaties
+    """
+    CREATE TABLE bezit (
+        kind_id         TEXT NOT NULL REFERENCES kinderen(id) ON DELETE CASCADE,
+        laag            TEXT NOT NULL,
+        sleutel         TEXT NOT NULL,
+        gekocht         TEXT NOT NULL,
+        prijs           INTEGER NOT NULL,
+        geleverd        INTEGER NOT NULL,
+        levering        TEXT,
+        challenge_juist INTEGER,
+        PRIMARY KEY (kind_id, laag, sleutel)
+    );
+    CREATE TABLE outfits (
+        id         TEXT PRIMARY KEY,
+        kind_id    TEXT NOT NULL REFERENCES kinderen(id) ON DELETE CASCADE,
+        naam       TEXT NOT NULL,
+        config     TEXT NOT NULL,
+        aangemaakt TEXT NOT NULL
+    );
+    """,
 ]
 
 # deze velden van Instellingen staan in de tabel kinderen, de rest in instellingen.data
@@ -354,6 +375,46 @@ class Opslag:
         self._schrijf("INSERT INTO avatar (kind_id, config, gewijzigd) VALUES (?, ?, ?) "
                       "ON CONFLICT(kind_id) DO UPDATE SET config = excluded.config, gewijzigd = excluded.gewijzigd",
                       (kind_id, json.dumps(config, ensure_ascii=False), klok.iso()))
+
+    # ---- winkel --------------------------------------------------------------------
+
+    def bezit(self, kind_id):
+        rijen = self.con.execute("SELECT * FROM bezit WHERE kind_id = ? ORDER BY gekocht", (kind_id,))
+        uit = []
+        for r in rijen:
+            d = dict(r)
+            d["levering"] = json.loads(d["levering"]) if d["levering"] else None
+            uit.append(d)
+        return uit
+
+    def zet_bezit(self, kind_id, laag, sleutel, prijs, geleverd, levering=None, challenge_juist=None):
+        self._schrijf("INSERT INTO bezit (kind_id, laag, sleutel, gekocht, prijs, geleverd, levering, challenge_juist) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(kind_id, laag, sleutel) DO UPDATE SET "
+                      "geleverd = excluded.geleverd",
+                      (kind_id, laag, sleutel, klok.iso(), int(prijs), int(bool(geleverd)),
+                       json.dumps(levering) if levering else None,
+                       None if challenge_juist is None else int(bool(challenge_juist))))
+
+    def lever(self, kind_id, laag, sleutel):
+        self._schrijf("UPDATE bezit SET geleverd = 1 WHERE kind_id = ? AND laag = ? AND sleutel = ?",
+                      (kind_id, laag, sleutel))
+
+    def sinds(self, kind_id, tijdstip):
+        """(juiste antwoorden, totale antwoordtijd in ms) sinds een tijdstip."""
+        r = self.con.execute("SELECT COALESCE(SUM(juist), 0), COALESCE(SUM(tijd_ms), 0) FROM antwoorden "
+                             "WHERE kind_id = ? AND tijdstip >= ?", (kind_id, tijdstip)).fetchone()
+        return r[0], r[1]
+
+    def outfits(self, kind_id):
+        rijen = self.con.execute("SELECT * FROM outfits WHERE kind_id = ? ORDER BY aangemaakt", (kind_id,))
+        return [dict(r, config=json.loads(r["config"])) for r in rijen]
+
+    def bewaar_outfit(self, kind_id, naam, config):
+        self._schrijf("INSERT INTO outfits (id, kind_id, naam, config, aangemaakt) VALUES (?, ?, ?, ?, ?)",
+                      (_nieuw_id(), kind_id, naam, json.dumps(config, ensure_ascii=False), klok.iso()))
+
+    def verwijder_outfit(self, outfit_id):
+        self._schrijf("DELETE FROM outfits WHERE id = ?", (outfit_id,))
 
     # ---- herhaalbak ----------------------------------------------------------------
 

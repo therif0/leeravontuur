@@ -4,6 +4,7 @@ import curses
 from datetime import date
 
 from ...kern import klok, leerjaren, rapporten, wachtwoord
+from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
 from ..scherm import ENTER, ESC, TerugNaar, Vergrendeld
 
@@ -306,6 +307,7 @@ class Ouderdeel:
                      ("Leerjaar", leerjaren.NAMEN[kind.leerjaar]),
                      ("Timer zichtbaar voor het kind", "ja" if inst.timer_zichtbaar else "nee (alleen in rapport)"),
                      ("Pincode bij het starten", "ja" if heeft_pin else "nee"),
+                     ("Winkel: 2x een foute som", STRAFFEN[inst.winkel_straf]),
                      ("Gegevens exporteren", "alle antwoorden (CSV + JSON)"),
                      ("Alles van dit kind wissen", "")]
             sel = self.lijst(kr + [kind.naam], f"Instellingen van {kind.naam}", items, sel, melding)
@@ -335,8 +337,13 @@ class Ouderdeel:
             elif sel == 3:
                 melding = self.pincode(kr + [kind.naam], kind, heeft_pin)
             elif sel == 4:
-                melding = self.exporteer_alles(kind)
+                straffen = list(STRAFFEN)
+                inst.winkel_straf = straffen[(straffen.index(inst.winkel_straf) + 1) % len(straffen)]
+                self.o.bewaar_instellingen(kind.id, inst)
+                melding = "Wat er gebeurt als je kind 2 keer een foute som maakt bij het kopen."
             elif sel == 5:
+                melding = self.exporteer_alles(kind)
+            elif sel == 6:
                 if self.wissen(kr + [kind.naam], kind):
                     return
             self.app.herlaad_kind()
