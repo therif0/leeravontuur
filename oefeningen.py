@@ -248,8 +248,9 @@ class App:
         for i, (fg, achter) in enumerate(paren, 1):
             curses.init_pair(i, fg, achter)
         p = curses.color_pair
-        self.c.update(titel=p(1) | b, goed=p(2) | b, fout=p(3) | b, geel=p(4) | b, blauw=p(5) | b,
-                      cursor=p(6) | b, goedvak=p(7) | b, foutvak=p(8) | b, voet=p(1))
+        # Geen vet bij zwarte tekst: vet zwart wordt in Konsole grijs en slecht leesbaar.
+        self.c.update(titel=p(1), goed=p(2) | b, fout=p(3) | b, geel=p(4) | b, blauw=p(5) | b,
+                      cursor=p(6), goedvak=p(7), foutvak=p(8) | b, voet=p(1))
 
     def cursor(self, aan):
         try:
@@ -535,7 +536,7 @@ class App:
             self.put(y + 1, cx, lab.center(CW), attr)
             self.put(y + 1, cx + CW, "│", dim)
         yy = y + 2
-        for r, (label, cellen, komma, oordeel, eigen) in enumerate(rijen):
+        for r, (label, cellen, komma, oordeel, eigen, komma_fout) in enumerate(rijen):
             self.put(yy, x, lijn("├", "┼", "┤"), dim)
             self.put(yy + 1, x - 7, label.rjust(5), self.c["bold"])
             self.put(yy + 1, x, "│", dim)
@@ -548,7 +549,9 @@ class App:
                 else:
                     attr = self.c["goed"] if r > 0 else 0
                 self.put(yy + 1, cx, cel_tekst(cellen[i], i in (komma, eigen)), attr)
-                if i in (komma, eigen) and attr in (0, self.c["goed"]):
+                if komma_fout and i == (komma if eigen is None else eigen):
+                    self.put(yy + 1, cx + 4, ",", self.c["foutvak"])
+                elif i in (komma, eigen) and attr in (0, self.c["goed"]):
                     self.put(yy + 1, cx + 4, ",", self.c["blauw"] if i == eigen else self.c["geel"])
                 self.put(yy + 1, cx + CW, "│", dim)
             yy += 2
@@ -577,16 +580,17 @@ class App:
                                ("  =  ?  ", self.c["bold"]), (v.naar, self.c["blauw"])):
                 self.put(4, x, stuk, attr)
                 x += len(stuk)
-            self.put(5, 4, f"Komma achter {v.van} · vul aan met nullen tot {v.naar} · "
-                           "druk , om de komma te zetten", self.c["dim"])
+            self.put(5, 4, f"Komma achter {v.van} · nullen aanvullen tot {v.naar} · "
+                           f"zet met , de komma achter {v.naar}", self.c["dim"])
             if goed is None:
                 pijl = "→ naar rechts" if self.richting == 1 else "← naar links"
                 self.put(6, 4, "Typrichting: ", self.c["dim"])
                 self.put(6, 17, pijl, self.c["geel"])
                 self.put(6, 32, "(r = omdraaien)", self.c["dim"])
-            rijen = [("Jij", cellen, komma_van, oordeel, eigen_komma)]
+            komma_ok = eigen_komma == komma_naar
+            rijen = [("Jij", cellen, komma_van, oordeel, eigen_komma, goed is not None and not komma_ok)]
             if goed is not None:
-                rijen.append(("Juist", juist_rij, komma_naar, None, None))
+                rijen.append(("Juist", juist_rij, komma_naar, None, None, False))
             ya = self.teken_tabel(7, 12, v, rijen, pos if goed is None and pos < n else None) + 1
             self.put(ya, 4, "Antwoord:", self.c["bold"])
             if goed is None:
@@ -614,22 +618,26 @@ class App:
                     self.scr.move(ya, 16 + len(antw))
             else:
                 self.cursor(False)
-                tabel_ok = all(o is not False for o in oordeel)
+                cijfers_ok = all(o is not False for o in oordeel)
+                tabel_ok = cijfers_ok and komma_ok
                 if goed:
                     self.put(ya + 2, 4, "✔ Je antwoord is juist!", self.c["goed"])
                 else:
                     self.put(ya + 2, 4, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.",
                              self.c["fout"])
+                yy = ya + 3
                 if tabel_ok:
-                    self.put(ya + 3, 4, "✔ Je tabel is ook juist ingevuld.", self.c["goed"])
-                else:
-                    self.put(ya + 3, 4, "✘ Kijk naar de rode vakjes: de rij 'Juist' toont hoe het moet.",
-                             self.c["fout"])
-                yy = ya + 4
-                if eigen_komma == komma_naar:
-                    self.put(yy, 4, f"✔ Je komma staat goed: achter {v.naar}.", self.c["goed"])
+                    self.put(yy, 4, "✔ Je tabel en je komma zijn juist.", self.c["goed"])
                     yy += 1
-                elif eigen_komma is not None:
+                if not cijfers_ok:
+                    self.put(yy, 4, "✘ Kijk naar de rode vakjes: de rij 'Juist' toont hoe het moet.",
+                             self.c["fout"])
+                    yy += 1
+                if eigen_komma is None:
+                    self.put(yy, 4, f"✘ Je hebt de komma niet verzet: die moet achter {v.naar}.",
+                             self.c["fout"])
+                    yy += 1
+                elif not komma_ok:
                     self.put(yy, 4, f"✘ Je komma stond achter {labels[eigen_komma]}, "
                                     f"maar moest achter {v.naar}.", self.c["fout"])
                     yy += 1
@@ -737,7 +745,7 @@ class App:
             v = r["v"]
             regels.append((f"Vraag {i + 1}:  {fmt(v.getal)} {v.van} = ? {v.naar}", self.c["bold"]))
             if r["goed"]:
-                regels.append(("   Je antwoord was juist, maar in de tabel stonden foutjes.", self.c["geel"]))
+                regels.append(("   Je antwoord was juist, maar in de tabel (cijfers of komma) stonden foutjes.", self.c["geel"]))
             else:
                 regels.append((f"   Jij schreef: {r['antw'].strip()}    Juist is: {fmt(v.antwoord)} {v.naar}",
                                self.c["fout"]))
