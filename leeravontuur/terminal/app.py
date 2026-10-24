@@ -72,6 +72,10 @@ class App:
         self.basis = te_bewaren
         self.kind = self.opslag.kind(self.kind.id) or self.kind
 
+    def avatar_config(self):
+        from ..kern import avatar as A
+        return A.geldig(self.opslag.avatar(self.kind.id) if self.kind else None)
+
     def onthoud_oefening(self, data):
         """Voor 'Verder waar je was'."""
         self.opslag.zet_algemeen(f"laatste_oefening:{self.kind.id}", json.dumps(data, ensure_ascii=False))
@@ -83,7 +87,8 @@ class App:
             return None
 
     def sessie(self, modus, vaardigheid, leerjaar):
-        return Sessie(self.opslag, self.kind.id, modus, vaardigheid, leerjaar, na_antwoord=self.ververs_status)
+        return Sessie(self.opslag, self.kind.id, modus, vaardigheid, leerjaar, na_antwoord=self.ververs_status,
+                      eigen_leerjaar=self.inst.leerjaar)
 
     # ---- schermen ------------------------------------------------------------
 
@@ -160,16 +165,16 @@ class App:
                     info.append(self.opslag.probleem)
                 te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?", [
-                    ("▶ Verder", self.voorstel()[0]),
-                    ("Leren & oefenen", "wiskunde (taal en Frans volgen)"),
-                    (f"Herhalen ({te_herhalen})", "vragen die je moeilijk vond, met nieuwe getallen"
-                     if te_herhalen else "vandaag niets te herhalen"),
+                    ("▶ Verder", self.voorstel()[0][:32]),
+                    ("Leren & oefenen", "wiskunde (taal, Frans volgen)"),
+                    (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets"),
+                    ("Mijn avatar", "je blokje en je punten"),
                     ("Spiekbrieven", "uitleg om terug te kijken"),
-                    ("Opties", "kleuren (ook kleurenblind), muis, avatar …"),
+                    ("Opties", "kleuren, muis, avatar …"),
                     ("Wissel van kind", "iemand anders wil oefenen"),
                     ("Stoppen", "")], info=info,
-                    onder=f"{MAKER} · gratis · {MOTTO.lower()}")
-                if k is None or k == 6:
+                    onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
+                if k is None or k == 7:
                     return
                 if k == 0:
                     self.voorstel()[1]()
@@ -178,13 +183,61 @@ class App:
                 elif k == 2:
                     self.herhalen()
                 elif k == 3:
-                    self.spiekbrieven()
+                    self.mijn_avatar()
                 elif k == 4:
-                    self.opties()
+                    self.spiekbrieven()
                 elif k == 5:
+                    self.opties()
+                elif k == 6:
                     self.wissel_van_kind()
             except TerugNaar:
                 continue
+
+    def teken_avatar_menu(self):
+        """Rechts in het hoofdmenu: de avatar en de punten."""
+        if not self.inst.avatar:
+            return
+        from . import avatar as AV
+        h, w = self.s.maat()
+        x = w - AV.BREEDTE - 2
+        AV.teken(self.s, 4, x, self.avatar_config(), "blij")
+        self.s.put(4 + AV.HOOGTE + 1, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "accent")
+
+    def mijn_avatar(self):
+        from ..kern import avatar as A
+        from . import avatar as AV
+        s = self.s
+        kr = [HOOFD, "Mijn avatar"]
+        gezichten = list(A.onderdelen()["uitdrukkingen"])
+        i = gezichten.index("blij")
+        knoppen = [("←→", "ander gezichtje", None), ("Esc", "terug", ESC)]
+        while True:
+            if s.te_klein():
+                continue
+            s.cursor(False)
+            s.nieuw(kr, knoppen)
+            h, w = s.maat()
+            AV.teken_groot(s, 3, 4, self.avatar_config(), gezichten[i])
+            s.zones.voeg(3, 4, 16, 32, curses.KEY_RIGHT)
+            x = 40
+            s.put(3, x, self.kind.naam, "accent")
+            s.put(5, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "bold")
+            s.put(7, x, f"Gezichtje: {gezichten[i]}", "")
+            s.put(8, x, "(klik op je avatar of gebruik ← →)", "dim")
+            s.put(10, x, "Punten verdien je met oefenen:", "")
+            for j, regel in enumerate(["juist antwoord: 10 (Makkelijk 5,", "  Moeilijk 15, Heel moeilijk 20)",
+                                       "5 juist op rij: +10", "reeks zonder fout: +20",
+                                       "beheerst bij herhalen: +15"]):
+                s.put(11 + j, x + 2, regel, "dim")
+            s.put(17, x, "In de winkel kun je je blokje", "info")
+            s.put(18, x, "aankleden (komt in de volgende versie).", "info")
+            k = s.toets()
+            if k in (ESC, ord("q"), *ENTER):
+                return
+            if k == curses.KEY_RIGHT:
+                i = (i + 1) % len(gezichten)
+            elif k == curses.KEY_LEFT:
+                i = (i - 1) % len(gezichten)
 
     def voorstel(self):
         """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders leren."""

@@ -4,7 +4,10 @@ import curses
 import random
 import textwrap
 
+from ...kern import avatar as A
 from ...kern import herhaling, leerjaren, selectie
+from ...kern import punten as P
+from .. import maatje
 from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
 from ..scherm import BACKSPACE, ENTER, ESC
@@ -21,6 +24,7 @@ class Eenheden:
         self.s = app.s
         self.kruimel = list(kruimel)  # tot en met "Eenheden"
         self.totaal = REEKS           # aantal vragen in de lopende reeks
+        self.verdiend = 0             # punten in de laatste reeks
 
     # ---- keuzes --------------------------------------------------------
 
@@ -131,7 +135,8 @@ class Eenheden:
         """Toont één vraag. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
         s = self.s
         buf, melding, goed, tip = "", "", None, False
-        tip_gebruikt, tijd = False, ""
+        tip_gebruikt, tijd, punten = False, "", ""
+        gezicht, ballon, spring = "normaal", "", False
         ses.vraag_getoond()
         lof = random.choice(LOF)
         while True:
@@ -159,6 +164,7 @@ class Eenheden:
             rol = "veld" if goed is None else ("goedvak" if goed else "foutvak")
             s.tekstvak(y, vx, buf, 14, rol)
             s.put(y, vx + 17, v.naar, "bold")
+            maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
                 s.put(y + 3, x, melding, "fout")
                 if tip:
@@ -169,7 +175,7 @@ class Eenheden:
             else:
                 s.cursor(False)
                 if goed:
-                    s.put(y + 3, x, "✔ " + lof + tijd, "goed")
+                    s.put(y + 3, x, "✔ " + lof + tijd + punten, "goed")
                     uitleg = E.regel_uitleg(v) + E.tabel_uitleg(v) if vrij else []
                 else:
                     s.put(y + 3, x, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{tijd}",
@@ -183,6 +189,10 @@ class Eenheden:
                     for stuk in textwrap.wrap(regel, 70):
                         s.put(yy, x, stuk, "accent")
                         yy += 1
+            if spring:
+                s.pauze(170)
+                spring = False
+                continue
             k = s.toets()
             if goed is not None:
                 if k in ENTER or k == ord(" "):
@@ -207,6 +217,9 @@ class Eenheden:
                 ses.antwoord(v.sleutel, v.tekst, buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
                              verwacht=f"{fmt(v.antwoord)} {v.naar}")
                 tijd = self.tijd_tekst(ses)
+                punten = f"  +{ses.laatste_punten} punten" if ses.laatste_punten else ""
+                gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
+                spring = goed and self.app.inst.animaties and self.app.inst.avatar
             else:
                 buf = s.bewerk(buf, k)
                 melding = ""
@@ -266,7 +279,8 @@ class Eenheden:
         ses.vraag_getoond()
         melding, oordeel, goed, eigen_komma = "", None, None, None
         net_getypt = None  # vakje van het laatst getypte cijfer: daar komt een , achter
-        tabel_ok, tijd = False, ""
+        tabel_ok, tijd, punten = False, "", ""
+        gezicht, ballon = "normaal", ""
         while True:
             if s.te_klein():
                 continue
@@ -297,6 +311,7 @@ class Eenheden:
                 rijen.append(("Juist", juist_rij, komma_naar, None, None, False))
             ya = self.teken_tabel(TABEL_Y, TABEL_X, v, rijen, pos if goed is None and pos < n else None,
                                   klikbaar=goed is None) + 1
+            maatje.teken(self.app, gezicht, ballon)
             s.put(ya, 4, "Antwoord:", "bold")
             if goed is None:
                 rol = "cursor" if pos == n else "veld"
@@ -325,7 +340,7 @@ class Eenheden:
                 cijfers_ok = all(o is not False for o in oordeel)
                 tabel_ok = cijfers_ok and komma_ok
                 if goed:
-                    s.put(ya + 2, 4, "✔ Je antwoord is juist!" + tijd, "goed")
+                    s.put(ya + 2, 4, "✔ Je antwoord is juist!" + tijd + punten, "goed")
                 else:
                     s.put(ya + 2, 4, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{tijd}",
                           "fout")
@@ -396,6 +411,8 @@ class Eenheden:
                     ses.antwoord(v.sleutel, v.tekst, antw.strip(), goed, d[0] if d else None, extra=extra,
                                  verwacht=f"{fmt(v.antwoord)} {v.naar}")
                     tijd = self.tijd_tekst(ses)
+                    punten = f"  +{ses.laatste_punten} punten" if ses.laatste_punten else ""
+                    gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
             elif k in (ord("r"), ord("R")) and pos < n:
                 inst.typrichting = -inst.typrichting
                 self.app.bewaar()
@@ -426,7 +443,8 @@ class Eenheden:
         o, kind = self.app.opslag, self.app.kind
         if item is not None:
             if goed:
-                herhaling.juist(o, item)
+                if herhaling.juist(o, item):
+                    o.punten_bij(kind.id, P.BONUS_BEHEERST, "onderwerp beheerst in de herhaalbak")
             else:
                 herhaling.fout(o, kind.id, item["vaardigheid"], item["onderwerp"], item["data"])
         elif not goed:
@@ -455,6 +473,9 @@ class Eenheden:
                 self.verwerk(v, uit[1], tabel, items[nr] if items else None)
                 if uit[-1]:
                     return resultaten, True
+            if modus in ("reeks", "tabel") and aantal == REEKS and all(r["goed"] for r in resultaten):
+                ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
+            self.verdiend = ses.punten
         return resultaten, False
 
     def nieuwe_vragen(self, gekozen, jaar, tabel):
@@ -517,6 +538,9 @@ class Eenheden:
         if self.app.inst.timer_zichtbaar and totaal:
             regels.insert(3, (f"Gemiddeld {round(sum(r['tijd'] for r in resultaten) / totaal / 1000)} seconden "
                               "per vraag.", "info"))
+        if self.verdiend:
+            regels.insert(3, (f"★ Je verdiende {self.verdiend} punten. Je hebt er nu "
+                              f"{self.app.opslag.punten_saldo(self.app.kind.id)}.", "accent"))
         regels += [(f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
         fouten = [(i, r) for i, r in enumerate(resultaten) if not r["goed"] or r["tabel"] is False]
         if not fouten:

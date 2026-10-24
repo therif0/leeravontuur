@@ -94,6 +94,24 @@ MIGRATIES = [
     );
     CREATE INDEX herhaalbak_kind_volgende ON herhaalbak(kind_id, volgende);
     """,
+    # versie 4: punten (logboek: elke wijziging met reden) en de avatar per kind
+    """
+    CREATE TABLE punten (
+        id       TEXT PRIMARY KEY,
+        kind_id  TEXT NOT NULL REFERENCES kinderen(id) ON DELETE CASCADE,
+        tijdstip TEXT NOT NULL,
+        dag      TEXT NOT NULL,
+        punten   INTEGER NOT NULL,
+        reden    TEXT NOT NULL,
+        sleutel  TEXT
+    );
+    CREATE INDEX punten_kind ON punten(kind_id, tijdstip);
+    CREATE TABLE avatar (
+        kind_id   TEXT PRIMARY KEY REFERENCES kinderen(id) ON DELETE CASCADE,
+        config    TEXT NOT NULL,
+        gewijzigd TEXT NOT NULL
+    );
+    """,
 ]
 
 # deze velden van Instellingen staan in de tabel kinderen, de rest in instellingen.data
@@ -302,6 +320,40 @@ class Opslag:
         rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
                                  "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, aantal))
         return [dict(r) for r in rijen]
+
+    def al_juist(self, kind_id, sleutel):
+        """Had dit kind deze exacte vraag ooit al juist? (dan levert ze geen punten meer op)"""
+        r = self.con.execute("SELECT 1 FROM antwoorden WHERE kind_id = ? AND sleutel = ? AND juist = 1 LIMIT 1",
+                             (kind_id, sleutel)).fetchone()
+        return r is not None
+
+    # ---- punten en avatar --------------------------------------------------------------
+
+    def punten_bij(self, kind_id, punten, reden, sleutel=None):
+        if not punten:
+            return
+        t = klok.nu()
+        self._schrijf("INSERT INTO punten (id, kind_id, tijdstip, dag, punten, reden, sleutel) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                      (_nieuw_id(), kind_id, klok.iso(t), klok.dag(t), int(punten), reden, sleutel))
+
+    def punten_saldo(self, kind_id):
+        return self.con.execute("SELECT COALESCE(SUM(punten), 0) FROM punten WHERE kind_id = ?",
+                                (kind_id,)).fetchone()[0]
+
+    def punten_log(self, kind_id, aantal=20):
+        rijen = self.con.execute("SELECT * FROM punten WHERE kind_id = ? ORDER BY tijdstip DESC, rowid DESC LIMIT ?",
+                                 (kind_id, aantal))
+        return [dict(r) for r in rijen]
+
+    def avatar(self, kind_id):
+        r = self.con.execute("SELECT config FROM avatar WHERE kind_id = ?", (kind_id,)).fetchone()
+        return json.loads(r[0]) if r else None
+
+    def bewaar_avatar(self, kind_id, config):
+        self._schrijf("INSERT INTO avatar (kind_id, config, gewijzigd) VALUES (?, ?, ?) "
+                      "ON CONFLICT(kind_id) DO UPDATE SET config = excluded.config, gewijzigd = excluded.gewijzigd",
+                      (kind_id, json.dumps(config, ensure_ascii=False), klok.iso()))
 
     # ---- herhaalbak ----------------------------------------------------------------
 

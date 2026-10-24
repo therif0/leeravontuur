@@ -222,7 +222,17 @@ class Scherm:
         self.toets()
         return True
 
-    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0):
+    def pauze(self, ms):
+        """Even wachten (voor een korte animatie). Doet niets in tests."""
+        if getattr(self.win, "nep", False):
+            return
+        self.win.refresh()
+        try:
+            curses.napms(ms)
+        except curses.error:
+            pass
+
+    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None):
         """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug."""
         sel = start
         breed = max(len(o[0]) for o in opties)
@@ -246,6 +256,8 @@ class Scherm:
                 self.put(6 + stap * len(opties) + j, 4, regel, "info")
             if onder:
                 self.put(h - 3, 4, onder, "dim")
+            if extra:
+                extra()
             k = self.toets()
             if isinstance(k, tuple):
                 if k[0] == "kies":

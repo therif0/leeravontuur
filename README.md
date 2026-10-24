@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.5):**
+**Wat er nu in zit (versie 0.6):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -25,6 +25,13 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     na 3 keer juist is het beheerst
   - vragen die het kind de laatste 30 dagen al kreeg, komen niet opnieuw; wat vaak fout gaat, komt vaker
   - **▶ Verder** in het hoofdmenu: eerst de herhaalvragen, anders verder met de vorige oefening
+- **Punten en een avatar:**
+  - punten voor elk juist antwoord (meer op een moeilijker niveau), bonussen voor 5 op rij, een reeks zonder fout
+    en een onderwerp dat beheerst is; een vraag die al eens juist was, levert niets meer op
+  - een **pixel-avatar** (een blokje à la Geometry Dash) staat in het hoofdmenu en naast de oefeningen, en reageert:
+    blij, trots, denken, oeps … met een kort tekstje ("Psst… Tel de kolommen!")
+  - zonder kleuren of in ASCII-modus wordt het een tekstgezichtje zoals `[^_^]`
+  - ouders zien het puntenlogboek en kunnen bonuspunten geven
 - **Een account per kind:** bij de start kies je wie er oefent ("Wie ben jij?"). Elk kind heeft eigen
   instellingen, en elk antwoord wordt bewaard (ook "vandaag al … vragen geoefend" blijft na een herstart).
 - **Ouderdeel** (achter een wachtwoord; via "Wie ben jij?" → Ouders, of `--ouder`):

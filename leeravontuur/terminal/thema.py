@@ -97,3 +97,63 @@ def maak(naam, kleuren=True):
         return attrs
     except curses.error:
         return mono
+
+
+# ---- pixels (avatar) ------------------------------------------------------------
+# Kleurparen voor pixels worden pas gemaakt als ze nodig zijn, vanaf paarnummer _EERSTE.
+
+_EERSTE = 32
+_paren = {}
+_ACHT_RGB = {"COLOR_BLACK": (0, 0, 0), "COLOR_RED": (205, 49, 49), "COLOR_GREEN": (13, 188, 121),
+             "COLOR_YELLOW": (229, 229, 16), "COLOR_BLUE": (36, 114, 200), "COLOR_MAGENTA": (188, 63, 188),
+             "COLOR_CYAN": (17, 168, 205), "COLOR_WHITE": (229, 229, 229)}
+
+
+def _rgb(hexkleur):
+    return tuple(int(hexkleur[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def _naar_256(hexkleur):
+    r, g, b = _rgb(hexkleur)
+    stap = lambda c: 0 if c < 48 else 1 if c < 115 else (c - 35) // 40
+    ri, gi, bi = stap(r), stap(g), stap(b)
+    kubus = 16 + 36 * ri + 6 * gi + bi
+    niveaus = [0, 95, 135, 175, 215, 255]
+    fout_kubus = sum((a - niveaus[i]) ** 2 for a, i in zip((r, g, b), (ri, gi, bi)))
+    grijs = round((r + g + b) / 3)
+    gi_ = max(0, min(23, round((grijs - 8) / 10)))
+    gv = 8 + 10 * gi_
+    fout_grijs = sum((a - gv) ** 2 for a in (r, g, b))
+    return 232 + gi_ if fout_grijs < fout_kubus else kubus
+
+
+def _naar_8(hexkleur):
+    r, g, b = _rgb(hexkleur)
+    beste = min(_ACHT_RGB, key=lambda n: sum((a - c) ** 2 for a, c in zip((r, g, b), _ACHT_RGB[n])))
+    return getattr(curses, beste)
+
+
+def pixels_mogelijk():
+    """Kunnen we gekleurde pixels tekenen? (anders gebruikt de avatar een tekstgezichtje)"""
+    try:
+        return curses.has_colors() and curses.COLOR_PAIRS > _EERSTE + 8
+    except curses.error:
+        return False
+
+
+def pixel(voor, achter=None):
+    """Curses-attribuut voor een halfblok met deze voorgrond- en achtergrondkleur ('#rrggbb' of None)."""
+    sleutel = (voor, achter)
+    if sleutel in _paren:
+        return _paren[sleutel]
+    try:
+        veel = curses.COLORS >= 256
+        omzet = _naar_256 if veel else _naar_8
+        nummer = _EERSTE + len(_paren)
+        if nummer >= curses.COLOR_PAIRS:
+            return 0
+        curses.init_pair(nummer, omzet(voor), omzet(achter) if achter else -1)
+        _paren[sleutel] = curses.color_pair(nummer)
+    except curses.error:
+        _paren[sleutel] = 0
+    return _paren[sleutel]

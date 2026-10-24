@@ -13,6 +13,20 @@ from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 ESC = "\x1b"
 OK = "\n"
 
+# keuzes in het hoofdmenu (als toets)
+HOOFDMENU = ["▶ Verder", "Leren & oefenen", "Herhalen", "Mijn avatar", "Spiekbrieven", "Opties",
+             "Wissel van kind", "Stoppen"]
+
+
+def hm(keuze):
+    """De toets voor een keuze in het hoofdmenu."""
+    return str(HOOFDMENU.index(keuze) + 1)
+
+
+def hm_rij(keuze):
+    """De schermrij van een keuze in het hoofdmenu (voor een muisklik)."""
+    return 5 + HOOFDMENU.index(keuze) * (2 if 5 + 2 * len(HOOFDMENU) < 20 else 1)
+
 
 class Basis(unittest.TestCase):
     def setUp(self):
@@ -78,7 +92,7 @@ class TestStart(Basis):
 
     def test_wissel_van_kind_met_eigen_instellingen(self):
         o = self.opslag(("Amira", "3", {"thema": "rood-groen"}), ("Imrane", "5"))
-        scherm, app = self.speel([OK, "1", "6", "2", ESC], opslag=o)  # Amira, dan wisselen naar Imrane
+        scherm, app = self.speel([OK, "1", hm("Wissel van kind"), "2", ESC], opslag=o)  # Amira, dan wisselen naar Imrane
         self.assertTrue(self.ergens(scherm, "Hallo Amira!"))
         self.assertEqual(app.kind.naam, "Imrane")
         self.assertEqual(app.inst.thema, "standaard")
@@ -92,7 +106,7 @@ class TestStart(Basis):
     def test_startargument_wordt_niet_bewaard(self):
         o = self.opslag(("Test", "5"))
         # gestart met --contrast; in Opties de muis uitzetten (rij 3 + 2*4 = 11)
-        scherm, app = self.speel([OK, OK, "5", ("klik", 11, 10), ESC, ESC], opslag=o,
+        scherm, app = self.speel([OK, OK, hm("Opties"), ("klik", 11, 10), ESC, ESC], opslag=o,
                                  voorrang={"thema": "contrast"})
         bewaard = o.instellingen_van(app.kind.id)
         self.assertEqual(bewaard.thema, "standaard")
@@ -141,16 +155,16 @@ class TestMuis(Basis):
         self.assertTrue(self.ergens(scherm, "Aflezen met de komma achter m: 4 m"))
 
     def test_menu_en_opties_klikken(self):
-        # hoofdmenu: Opties staat op rij 5 + 2*4 = 13; in Opties staat Kleuren op rij 3 + 2*2 = 7
+        # in Opties staat Kleuren op rij 3 + 2*2 = 7
         o = self.opslag(("Test", "5"))
-        toetsen = [OK, OK, ("klik", 13, 10), ("klik", 7, 10), ESC, ESC]
+        toetsen = [OK, OK, ("klik", hm_rij("Opties"), 10), ("klik", 7, 10), ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertEqual(app.inst.thema, "rood-groen")
         self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
 
     def test_avatar_en_animaties_uitzetten(self):
         o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([OK, OK, "5", ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
+        scherm, app = self.speel([OK, OK, hm("Opties"), ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
         inst = o.instellingen_van(app.kind.id)
         self.assertEqual((inst.avatar, inst.animaties), (False, False))
         self.assertTrue(self.ergens(scherm, "Animaties"))
@@ -167,7 +181,7 @@ class TestMuis(Basis):
         self.assertIn("Wat wil je doen?", scherm.beelden[-1])
 
     def test_scrollwiel_in_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, "4", "1", *[("wiel", 1)] * 8, ESC, ESC, ESC])
+        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "1", *[("wiel", 1)] * 8, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "VOORBEELD"))
 
 

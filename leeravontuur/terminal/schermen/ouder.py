@@ -141,16 +141,19 @@ class Ouderdeel:
             k = self.s.menu(KR, "Ouderdeel", [
                 ("Rapporten", "per dag, week, maand · kalender · export"),
                 ("Kinderen", "leerjaar, timer, pincode, naam, gegevens, wissen"),
+                ("Punten", "logboek bekijken, bonuspunten geven"),
                 ("Wachtwoord wijzigen", ""),
                 ("Sluiten", "")],
                 info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."])
-            if k is None or k == 3:
+            if k is None or k == 4:
                 return
             if k == 0:
                 self.rapporten()
             elif k == 1:
                 self.kinderen()
             elif k == 2:
+                self.punten()
+            elif k == 3:
                 self.wachtwoord_wijzigen()
 
     # ---- rapporten -----------------------------------------------------------------
@@ -249,6 +252,37 @@ class Ouderdeel:
                 jaar, maand = (jaar - 1, 12) if maand == 1 else (jaar, maand - 1)
             elif k == curses.KEY_RIGHT:
                 jaar, maand = (jaar + 1, 1) if maand == 12 else (jaar, maand + 1)
+
+    # ---- punten ----------------------------------------------------------------------
+
+    def punten(self):
+        kr = KR + ["Punten"]
+        while True:
+            kind = self.kies_kind(kr, "Van welk kind?")
+            if kind is None:
+                return
+            while True:
+                regels = [(f"{kind.naam} heeft {self.o.punten_saldo(kind.id)} punten.", "accent"), ("", ""),
+                          ("LAATSTE WIJZIGINGEN", "accent")]
+                for p in self.o.punten_log(kind.id, 30):
+                    t = p["tijdstip"]
+                    regels.append((f"  {t[8:10]}/{t[5:7]} {t[11:16]}  {p['punten']:+5d}  {p['reden']}",
+                                   "goed" if p["punten"] > 0 else "fout"))
+                if len(regels) == 3:
+                    regels.append(("  Nog geen punten.", "dim"))
+                keuze = self.s.lezer(kr + [kind.naam], regels,
+                                     [("B", "bonus geven", ("bonus",)), ("Esc", "terug", ("terug",))],
+                                     {ord("b"): "bonus", ord("B"): "bonus", ("bonus",): "bonus",
+                                      ESC: None, ("terug",): None})
+                if keuze is None:
+                    break
+                aantal = self.s.invoer(kr + [kind.naam], "Hoeveel bonuspunten?", max_lengte=4, cijfers=True)
+                if not aantal or not int(aantal):
+                    continue
+                reden = self.s.invoer(kr + [kind.naam], "Waarom? (bv. goed rapport)", max_lengte=40)
+                if reden is None:
+                    continue
+                self.o.punten_bij(kind.id, int(aantal), "bonus van de ouders" + (f": {reden}" if reden else ""))
 
     # ---- kinderen --------------------------------------------------------------------
 
