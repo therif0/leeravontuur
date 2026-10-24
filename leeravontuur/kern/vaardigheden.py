@@ -21,6 +21,7 @@ class Vaardigheid:
 
 
 REGISTER = {}
+DENKFOUTEN = {}  # diagnosecode -> korte omschrijving (voor rapporten)
 
 
 def registreer(v):

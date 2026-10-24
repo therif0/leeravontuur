@@ -73,6 +73,11 @@ MIGRATIES = [
         SELECT RAISE(ABORT, 'antwoorden worden alleen toegevoegd, niet aangepast');
     END;
     """,
+    # versie 2: optionele pincode per kind, het juiste antwoord bij elke vraag (voor rapporten)
+    """
+    ALTER TABLE kinderen ADD COLUMN pincode TEXT;
+    ALTER TABLE antwoorden ADD COLUMN verwacht TEXT;
+    """,
 ]
 
 # deze velden van Instellingen staan in de tabel kinderen, de rest in instellingen.data
@@ -170,8 +175,8 @@ class Opslag:
         return rij[0] if rij else standaard
 
     def zet_algemeen(self, sleutel, waarde):
-        self._schrijf("INSERT INTO algemeen VALUES (?, ?) ON CONFLICT(sleutel) DO UPDATE SET waarde = excluded.waarde",
-                      (sleutel, waarde))
+        self._schrijf("INSERT INTO algemeen (sleutel, waarde) VALUES (?, ?) "
+                      "ON CONFLICT(sleutel) DO UPDATE SET waarde = excluded.waarde", (sleutel, waarde))
 
     # ---- kinderen en instellingen ---------------------------------------------
 
@@ -187,8 +192,10 @@ class Opslag:
         inst = replace(inst or Instellingen(), naam=naam, leerjaar=leerjaar).gecontroleerd()
         kind = Kind(_nieuw_id(), inst.naam, inst.leerjaar)
         nu = klok.iso()
-        self._schrijf("INSERT INTO kinderen VALUES (?, ?, ?, ?, ?)", (kind.id, kind.naam, kind.leerjaar, nu, nu))
-        self._schrijf("INSERT INTO instellingen VALUES (?, ?, ?)", (kind.id, self._data(inst), nu))
+        self._schrijf("INSERT INTO kinderen (id, naam, leerjaar, aangemaakt, gewijzigd) VALUES (?, ?, ?, ?, ?)",
+                      (kind.id, kind.naam, kind.leerjaar, nu, nu))
+        self._schrijf("INSERT INTO instellingen (kind_id, data, gewijzigd) VALUES (?, ?, ?)",
+                      (kind.id, self._data(inst), nu))
         return kind
 
     @staticmethod
@@ -211,7 +218,7 @@ class Opslag:
         nu = klok.iso()
         self._schrijf("UPDATE kinderen SET naam = ?, leerjaar = ?, gewijzigd = ? WHERE id = ?",
                       (inst.naam, inst.leerjaar, nu, kind_id))
-        self._schrijf("INSERT INTO instellingen VALUES (?, ?, ?) "
+        self._schrijf("INSERT INTO instellingen (kind_id, data, gewijzigd) VALUES (?, ?, ?) "
                       "ON CONFLICT(kind_id) DO UPDATE SET data = excluded.data, gewijzigd = excluded.gewijzigd",
                       (kind_id, self._data(inst), nu))
 
@@ -241,13 +248,15 @@ class Opslag:
         self._schrijf("UPDATE sessies SET einde = ? WHERE id = ? AND einde IS NULL", (klok.iso(), sessie_id))
 
     def bewaar_antwoord(self, sessie_id, kind_id, vaardigheid, leerjaar, modus, sleutel, vraag, gegeven, juist,
-                        diagnose=None, tijd_ms=0, hulp=False, extra=None):
+                        diagnose=None, tijd_ms=0, hulp=False, extra=None, verwacht=None):
         t = klok.nu()
         return self._schrijf(
-            "INSERT INTO antwoorden VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO antwoorden (id, sessie_id, kind_id, tijdstip, dag, vaardigheid, leerjaar, modus, sleutel, "
+            "vraag, gegeven, juist, diagnose, tijd_ms, hulp, extra, verwacht) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (_nieuw_id(), sessie_id, kind_id, klok.iso(t), klok.dag(t), vaardigheid, leerjaar, modus, sleutel,
              vraag, gegeven, int(bool(juist)), diagnose, max(0, int(tijd_ms)), int(bool(hulp)),
-             json.dumps(extra, ensure_ascii=False) if extra is not None else None))
+             json.dumps(extra, ensure_ascii=False) if extra is not None else None, verwacht))
 
     def telling(self, kind_id, van, tot=None):
         """(aantal, juist) voor een kind tussen twee dagen (JJJJ-MM-DD of date, beide inbegrepen)."""
@@ -257,9 +266,39 @@ class Opslag:
                              "WHERE kind_id = ? AND dag BETWEEN ? AND ?", (kind_id, van, tot)).fetchone()
         return r[0], r[1]
 
-    def antwoorden(self, kind_id):
-        rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? ORDER BY tijdstip", (kind_id,))
+    def antwoorden(self, kind_id, van=None, tot=None):
+        """Alle antwoorden van een kind, eventueel tussen twee dagen (beide inbegrepen), oudste eerst."""
+        if van is None:
+            rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? ORDER BY tijdstip, rowid",
+                                     (kind_id,))
+        else:
+            rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND dag BETWEEN ? AND ? "
+                                     "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
         return [dict(r) for r in rijen]
+
+    # ---- ouder, pincodes, wissen ------------------------------------------------
+
+    def ouder_wachtwoord(self):
+        return self.algemeen("ouder_wachtwoord")
+
+    def zet_ouder_wachtwoord(self, opgeslagen):
+        if opgeslagen is None:
+            self._schrijf("DELETE FROM algemeen WHERE sleutel = 'ouder_wachtwoord'")
+        else:
+            self.zet_algemeen("ouder_wachtwoord", opgeslagen)
+
+    def pincode(self, kind_id):
+        r = self.con.execute("SELECT pincode FROM kinderen WHERE id = ?", (kind_id,)).fetchone()
+        return r[0] if r else None
+
+    def zet_pincode(self, kind_id, opgeslagen):
+        self._schrijf("UPDATE kinderen SET pincode = ?, gewijzigd = ? WHERE id = ?", (opgeslagen, klok.iso(), kind_id))
+
+    def verwijder_kind(self, kind_id):
+        """Wist een kind met al zijn gegevens (instellingen, sessies, antwoorden)."""
+        self._schrijf("DELETE FROM kinderen WHERE id = ?", (kind_id,))
+        if self.algemeen("laatste_kind") == kind_id:
+            self._schrijf("DELETE FROM algemeen WHERE sleutel = 'laatste_kind'")
 
     def sessies(self, kind_id):
         rijen = self.con.execute("SELECT * FROM sessies WHERE kind_id = ? ORDER BY start", (kind_id,))

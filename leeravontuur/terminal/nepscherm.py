@@ -1,7 +1,7 @@
 """Een nagemaakt curses-venster om schermen te testen zonder echte terminal (ook in CI op Windows/macOS).
 
 Toetsen geef je op als tekens ("a", "\\n"), curses-codes (curses.KEY_DOWN) of muisacties:
-("klik", y, x) en ("wiel", 1) of ("wiel", -1).
+("klik", y, x) en ("wiel", 1) of ("wiel", -1). ("wacht",) doet alsof er even niets getypt wordt.
 """
 
 import curses
@@ -28,6 +28,9 @@ class NepScherm:
     def keypad(self, aan):
         pass
 
+    def timeout(self, ms):
+        pass
+
     def erase(self):
         self.raster = [[" "] * self.w for _ in range(self.h)]
 
@@ -52,6 +55,8 @@ class NepScherm:
             raise ToetsenOp()
         k = self.toetsen.pop(0)
         if isinstance(k, tuple):
+            if k[0] == "wacht":
+                raise curses.error("geen toets")
             if k[0] == "klik":
                 self._muis = (0, k[2], k[1], 0, curses.BUTTON1_PRESSED)
             elif k[0] == "wiel":

@@ -3,6 +3,7 @@
 import curses
 import sys
 import textwrap
+import time
 
 from . import tekens, thema
 from .klikzones import Klikzones
@@ -26,6 +27,10 @@ class TerugNaar(Exception):
         self.niveau = niveau
 
 
+class Vergrendeld(Exception):
+    """Te lang niets gedaan in een beveiligd deel (bv. het ouderdeel)."""
+
+
 class Scherm:
     def __init__(self, win, inst, kleuren=True):
         self.win = win
@@ -34,6 +39,8 @@ class Scherm:
         self.zones = Klikzones()
         self.status = ""       # rechts in de titelbalk
         self.status_kort = ""  # als er weinig plaats is
+        self.slot = None       # seconden zonder toets waarna Vergrendeld volgt (None = nooit)
+        self._laatste_toets = time.monotonic()
         try:
             win.keypad(True)
         except (curses.error, AttributeError):
@@ -141,10 +148,17 @@ class Scherm:
         bv. ("kies", 2) of ("scroll", 1). Een klik op de broodkruimel geeft TerugNaar.
         """
         self.win.refresh()
+        self._laatste_toets = time.monotonic()
+        try:
+            self.win.timeout(1000 if self.slot else -1)
+        except (curses.error, AttributeError):
+            pass
         while True:
             try:
                 k = self.win.get_wch()
-            except curses.error:
+            except curses.error:  # geen toets binnen de tijd
+                if self.slot and time.monotonic() - self._laatste_toets >= self.slot:
+                    raise Vergrendeld()
                 continue
             if isinstance(k, str):
                 k = ord(k) if len(k) == 1 else NIETS
@@ -287,8 +301,11 @@ class Scherm:
             elif k == curses.KEY_END:
                 top = len(lijnen)
 
-    def invoer(self, kruimel, vraag, start="", max_lengte=20):
-        """Eén regel tekst laten typen (bv. een naam). Geeft de tekst of None bij Esc."""
+    def invoer(self, kruimel, vraag, start="", max_lengte=20, verborgen=False, uitleg=(), cijfers=False):
+        """Eén regel tekst laten typen (bv. een naam of wachtwoord). Geeft de tekst of None bij Esc.
+
+        verborgen = toon bolletjes in plaats van de tekens; cijfers = alleen cijfers (pincode).
+        """
         buf = start
         knoppen = [("Enter", "ok", 10), ("Esc", "terug", ESC)]
         while True:
@@ -296,7 +313,9 @@ class Scherm:
                 continue
             self.nieuw(kruimel, knoppen)
             self.put(4, 4, vraag, "bold")
-            self.tekstvak(6, 4, buf, max_lengte, "veld")
+            self.tekstvak(6, 4, "•" * len(buf) if verborgen else buf, max_lengte, "veld")
+            for i, regel in enumerate(uitleg):
+                self.put(8 + i, 4, regel, "dim")
             self.cursor(True, 6, 5 + len(buf))
             k = self.toets()
             if k == ESC:
@@ -308,5 +327,10 @@ class Scherm:
             if isinstance(k, int):
                 if k in BACKSPACE:
                     buf = buf[:-1]
+                elif cijfers:
+                    if chr(k).isdigit() and len(buf) < max_lengte:
+                        buf += chr(k)
+                elif verborgen and 32 <= k < 0x110000 and len(buf) < max_lengte:
+                    buf += chr(k)
                 elif 32 <= k < 0x110000 and len(buf) < max_lengte and (chr(k).isalnum() or chr(k) in " -'"):
                     buf += chr(k)

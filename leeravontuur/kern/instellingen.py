@@ -23,6 +23,9 @@ class Instellingen:
     ascii: bool | None = None  # None = automatisch kiezen
     muis: bool = True
     typrichting: int = 1  # in roosters: 1 = naar rechts, -1 = naar links
+    timer_zichtbaar: bool = True  # de ouder kiest of het kind zijn tijd ziet (bewaard wordt ze altijd)
+    avatar: bool = True
+    animaties: bool = True
 
     def gecontroleerd(self):
         """Zet ongeldige waarden terug op de standaard."""
@@ -40,6 +43,9 @@ class Instellingen:
             self.muis = std.muis
         if self.typrichting not in (1, -1):
             self.typrichting = std.typrichting
+        for veld in ("timer_zichtbaar", "avatar", "animaties"):
+            if not isinstance(getattr(self, veld), bool):
+                setattr(self, veld, getattr(std, veld))
         return self
 
 

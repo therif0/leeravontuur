@@ -16,16 +16,18 @@ class Sessie:
         self.juist = 0
         self.gesloten = False
         self._start = None
+        self.laatste_tijd_ms = 0
 
     def vraag_getoond(self):
         """Roep dit één keer op wanneer een nieuwe vraag verschijnt: daar start de tijdmeting."""
         self._start = time.monotonic()
 
-    def antwoord(self, sleutel, vraag, gegeven, juist, diagnose=None, hulp=False, extra=None):
+    def antwoord(self, sleutel, vraag, gegeven, juist, diagnose=None, hulp=False, extra=None, verwacht=None):
         tijd_ms = int((time.monotonic() - self._start) * 1000) if self._start is not None else 0
         self._start = None
         self.opslag.bewaar_antwoord(self.id, self.kind_id, self.vaardigheid, self.leerjaar, self.modus, sleutel,
-                                    vraag, gegeven, juist, diagnose, tijd_ms, hulp, extra)
+                                    vraag, gegeven, juist, diagnose, tijd_ms, hulp, extra, verwacht)
+        self.laatste_tijd_ms = tijd_ms
         self.aantal += 1
         self.juist += bool(juist)
         if self.na_antwoord:

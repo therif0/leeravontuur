@@ -99,6 +99,12 @@ class Eenheden:
 
     # ---- hulpjes -------------------------------------------------------
 
+    def tijd_tekst(self, ses):
+        """' (7 s)' na het antwoord, als de ouder de timer zichtbaar zette."""
+        if not self.app.inst.timer_zichtbaar:
+            return ""
+        return f"  ({round(ses.laatste_tijd_ms / 1000)} s)"
+
     def voortgang(self, y, nr, resultaten, soort):
         s = self.s
         s.put(y, 4, f"Vraag {nr + 1} van {REEKS}", "bold")
@@ -117,7 +123,7 @@ class Eenheden:
         """Toont één vraag. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
         s = self.s
         buf, melding, goed, tip = "", "", None, False
-        tip_gebruikt = False
+        tip_gebruikt, tijd = False, ""
         ses.vraag_getoond()
         lof = random.choice(LOF)
         while True:
@@ -155,10 +161,11 @@ class Eenheden:
             else:
                 s.cursor(False)
                 if goed:
-                    s.put(y + 3, x, "✔ " + lof, "goed")
+                    s.put(y + 3, x, "✔ " + lof + tijd, "goed")
                     uitleg = E.regel_uitleg(v) + E.tabel_uitleg(v) if vrij else []
                 else:
-                    s.put(y + 3, x, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.", "fout")
+                    s.put(y + 3, x, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{tijd}",
+                          "fout")
                     d = E.diagnose(v, lees_getal(buf))
                     uitleg = ([d[1]] if d else []) + E.regel_uitleg(v)[:1]
                     if vrij:
@@ -189,7 +196,9 @@ class Eenheden:
                     continue
                 goed = getal == v.antwoord
                 d = E.diagnose(v, getal)
-                ses.antwoord(v.sleutel, v.tekst, buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt)
+                ses.antwoord(v.sleutel, v.tekst, buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
+                             verwacht=f"{fmt(v.antwoord)} {v.naar}")
+                tijd = self.tijd_tekst(ses)
             else:
                 buf = s.bewerk(buf, k)
                 melding = ""
@@ -249,7 +258,7 @@ class Eenheden:
         ses.vraag_getoond()
         melding, oordeel, goed, eigen_komma = "", None, None, None
         net_getypt = None  # vakje van het laatst getypte cijfer: daar komt een , achter
-        tabel_ok = False
+        tabel_ok, tijd = False, ""
         while True:
             if s.te_klein():
                 continue
@@ -308,9 +317,10 @@ class Eenheden:
                 cijfers_ok = all(o is not False for o in oordeel)
                 tabel_ok = cijfers_ok and komma_ok
                 if goed:
-                    s.put(ya + 2, 4, "✔ Je antwoord is juist!", "goed")
+                    s.put(ya + 2, 4, "✔ Je antwoord is juist!" + tijd, "goed")
                 else:
-                    s.put(ya + 2, 4, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.", "fout")
+                    s.put(ya + 2, 4, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{tijd}",
+                          "fout")
                 yy = ya + 3
                 if tabel_ok:
                     s.put(yy, 4, "✔ Je tabel en je komma zijn juist.", "goed")
@@ -375,7 +385,9 @@ class Eenheden:
                     extra = {"cijfers_ok": all(o is not False for o in oordeel),
                              "komma_ok": eigen_komma == komma_naar,
                              "cellen": cellen, "komma": eigen_komma}
-                    ses.antwoord(v.sleutel, v.tekst, antw.strip(), goed, d[0] if d else None, extra=extra)
+                    ses.antwoord(v.sleutel, v.tekst, antw.strip(), goed, d[0] if d else None, extra=extra,
+                                 verwacht=f"{fmt(v.antwoord)} {v.naar}")
+                    tijd = self.tijd_tekst(ses)
             elif k in (ord("r"), ord("R")) and pos < n:
                 inst.typrichting = -inst.typrichting
                 self.app.bewaar()

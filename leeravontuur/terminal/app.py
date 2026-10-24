@@ -36,6 +36,17 @@ class App:
         self.opslag.zet_algemeen("laatste_kind", kind.id)
         self.ververs_status()
 
+    def herlaad_kind(self):
+        """Na wijzigingen in het ouderdeel: het actieve kind opnieuw laden (of loslaten als het gewist is)."""
+        if self.kind is None:
+            return
+        kind = self.opslag.kind(self.kind.id)
+        if kind is None:
+            self.kind = None
+            self.s.status = self.s.status_kort = ""
+        else:
+            self.activeer(kind)
+
     def vandaag(self):
         """(aantal, juist) van vandaag voor het actieve kind."""
         return self.opslag.telling(self.kind.id, klok.dag()) if self.kind else (0, 0)
@@ -64,8 +75,12 @@ class App:
 
     # ---- schermen ------------------------------------------------------------
 
-    def start(self):
+    def start(self, ouder=False):
         self.startscherm()
+        if ouder:
+            from .schermen.ouder import Ouderdeel
+            Ouderdeel(self).open()
+            return
         kind = kies_kind(self)
         if kind is None:
             return
@@ -117,6 +132,11 @@ class App:
 
     def hoofdmenu(self):
         while True:
+            if self.kind is None:  # bv. gewist in het ouderdeel
+                kind = kies_kind(self)
+                if kind is None:
+                    return
+                self.activeer(kind)
             try:
                 naam = self.inst.naam
                 n, j = self.vandaag()
@@ -185,12 +205,12 @@ class App:
         s, inst = self.s, self.inst
         kr = [HOOFD, "Opties"]
         themas = list(instellingen.THEMAS)
-        sel = 0
+        sel, melding = 0, ""
         knoppen = [("↑↓", "kiezen", None), ("Enter", "wijzigen", 10), ("Esc", "klaar", ESC)]
         while True:
             items = [
                 ("Naam", inst.naam or "(nog geen naam)"),
-                ("Leerjaar", leerjaren.NAMEN[inst.leerjaar]),
+                ("Leerjaar", leerjaren.NAMEN[inst.leerjaar] + "  (wijzigen: ouders)"),
                 ("Kleuren", instellingen.THEMAS[inst.thema]),
                 ("Eenvoudige tekens", {None: "automatisch", True: "aan (ASCII)", False: "uit"}[inst.ascii]),
                 ("Muis", "aan" if inst.muis else "uit"),
@@ -216,7 +236,9 @@ class App:
             s.put(y, 46, " actief ", "cursor")
             s.put(y + 2, 4, "Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,", "dim")
             s.put(y + 3, 4, "--ascii, --geen-muis   (zie python3 oefeningen.py --help)", "dim")
+            s.put(y + 5, 4, melding, "info")
             k = s.toets()
+            melding = ""
             if isinstance(k, tuple):
                 if k[0] == "kies":
                     sel = k[1]
@@ -239,8 +261,8 @@ class App:
                     if naam:
                         inst.naam = naam
                 elif sel == 1:
-                    inst.leerjaar = leerjaren.LEERJAREN[
-                        (leerjaren.LEERJAREN.index(inst.leerjaar) + 1) % len(leerjaren.LEERJAREN)]
+                    melding = "Het leerjaar kan een ouder wijzigen: Wissel van kind → Ouders → Kinderen."
+                    continue
                 elif sel == 2:
                     inst.thema = themas[(themas.index(inst.thema) + 1) % len(themas)]
                 elif sel == 3:

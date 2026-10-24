@@ -1,6 +1,6 @@
 """Schermen om een kind te kiezen of een nieuw kind aan te maken."""
 
-from ...kern import leerjaren
+from ...kern import leerjaren, wachtwoord
 
 KRUIMEL = ["Leeravontuur", "Wie ben jij?"]
 
@@ -16,15 +16,37 @@ def kies_kind(app):
         start = next((i for i, k in enumerate(kinderen) if k.id == laatste), 0)
         opties = [(k.naam, leerjaren.NAMEN[k.leerjaar]) for k in kinderen]
         opties.append(("+ Nieuw kind", "een eigen account maken"))
+        opties.append(("Ouders", "rapporten en instellingen (met wachtwoord)"))
         info = [opslag.probleem] if opslag.probleem else []
         k = s.menu(KRUIMEL, "Wie ben jij?", opties, start=start, info=info)
         if k is None:
             return None
         if k < len(kinderen):
-            return kinderen[k]
-        kind = nieuw_kind(app)
-        if kind:
-            return kind
+            if pincode_ok(app, kinderen[k]):
+                return kinderen[k]
+        elif k == len(kinderen):
+            kind = nieuw_kind(app)
+            if kind:
+                return kind
+        else:
+            from .ouder import Ouderdeel
+            Ouderdeel(app).open()
+            app.herlaad_kind()
+
+
+def pincode_ok(app, kind):
+    opgeslagen = app.opslag.pincode(kind.id)
+    if not opgeslagen:
+        return True
+    for poging in range(3):
+        vraag = f"Hallo {kind.naam}! Typ je pincode:" if poging == 0 else "Niet juist. Probeer nog eens:"
+        pin = app.s.invoer(KRUIMEL + [kind.naam], vraag, verborgen=True, max_lengte=4, cijfers=True,
+                           uitleg=["Pincode vergeten? Vraag het aan je ouders."])
+        if pin is None:
+            return False
+        if wachtwoord.controleer(pin, opgeslagen):
+            return True
+    return False
 
 
 def nieuw_kind(app):

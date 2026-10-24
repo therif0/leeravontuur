@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.2):**
+**Wat er nu in zit (versie 0.3):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -21,7 +21,14 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - Het leerjaar stel je in bij **Opties**. Volgend schooljaar schuift alles mee.
 - **Een account per kind:** bij de start kies je wie er oefent ("Wie ben jij?"). Elk kind heeft eigen
   instellingen, en elk antwoord wordt bewaard (ook "vandaag al … vragen geoefend" blijft na een herstart).
-- **Opties:** naam, leerjaar, kleuren (ook voor **kleurenblindheid**), hoog contrast, eenvoudige tekens, muis en typrichting.
+- **Ouderdeel** (achter een wachtwoord; via "Wie ben jij?" → Ouders, of `--ouder`):
+  - **rapporten** per dag, week, maand, schooljaar of zelf gekozen periode: score, tijd, per dag, per onderwerp,
+    meest gemaakte denkfouten en de laatste fouten met het juiste antwoord
+  - een **kalender** met de dagen waarop geoefend werd
+  - **export** naar CSV (Excel/LibreOffice) en TXT, in de map Documenten/Leeravontuur
+  - **kinderen beheren:** naam, leerjaar, timer zichtbaar of niet, pincode, alle gegevens exporteren, alles wissen
+  - het ouderdeel sluit vanzelf na 10 minuten zonder toets
+- **Opties (voor het kind):** naam, kleuren (ook voor **kleurenblindheid**), hoog contrast, eenvoudige tekens, muis en typrichting.
 
 ## Installeren en starten
 
@@ -69,11 +76,20 @@ git pull
 | `--contrast` | hoog contrast (zwart-wit) |
 | `--geen-kleur` | geen kleuren |
 | `--ascii` | alleen eenvoudige tekens (voor oude terminals) |
+| `--ouder` | meteen naar het ouderdeel |
 | `--geen-muis` | muis uit, zodat je tekst gewoon kunt selecteren (met de muis aan lukt dat meestal met Shift ingedrukt) |
 | `--versie` | versie tonen |
 | `--test` | de automatische tests uitvoeren |
 
 Alles kan ook in het menu **Opties**; dat wordt bewaard.
+
+## Ouderwachtwoord vergeten?
+```bash
+python3 oefeningen.py --wachtwoord-vergeten
+```
+Dat wist alleen het wachtwoord; de gegevens van de kinderen blijven bewaard. Het wachtwoord is een slot tegen
+nieuwsgierige kinderen, geen echte beveiliging: wie aan de computer kan, kan het omzeilen. Wil je het echt
+afschermen, geef je kind dan een eigen gebruikersaccount op de computer.
 
 ## Waar staan de gegevens?
 | Systeem | Map |

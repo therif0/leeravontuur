@@ -29,6 +29,9 @@ Nederlands (Vlaams), met komma als decimaalteken.
 - Instellingen staan per kind in de databank. Startargumenten (`--kleurenblind` …) gelden voor die sessie
   en worden niet bewaard (`App.voorrang`).
 - Tijd altijd via `kern/klok.py` (tests zetten de klok vast).
+- Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
+  Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in
+  `terminal/schermen/ouder.py` zet `Scherm.slot` (vergrendelen na inactiviteit).
 
 ## Platformen
 Windows, macOS en Linux. Alleen de standaardbibliotheek; op Windows `windows-curses` (requirements.txt).

@@ -21,7 +21,9 @@ def lees_argumenten(argv):
     p.add_argument("--geen-kleur", action="store_true", help="geen kleuren gebruiken")
     p.add_argument("--ascii", action="store_true", help="alleen eenvoudige tekens (voor oude terminals)")
     p.add_argument("--geen-muis", action="store_true", help="muis uitzetten (tekst selecteren werkt dan gewoon)")
-    p.add_argument("--ouder", action="store_true", help="ouderdeel (komt in een volgende versie)")
+    p.add_argument("--ouder", action="store_true", help="meteen naar het ouderdeel (rapporten, kinderen)")
+    p.add_argument("--wachtwoord-vergeten", action="store_true",
+                   help="het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard)")
     p.add_argument("--snelkoppeling", action="store_true", help="menu-snelkoppeling maken (Linux)")
     p.add_argument("--test", action="store_true", help="de automatische tests uitvoeren")
     p.add_argument("--versie", action="store_true", help="versie tonen")
@@ -54,6 +56,22 @@ def snelkoppeling():
     return 0
 
 
+def wachtwoord_vergeten():
+    from .kern.opslag import Opslag
+    opslag = Opslag.open()
+    if not opslag.ouder_wachtwoord():
+        print("Er is nog geen ouderwachtwoord ingesteld.")
+        return 0
+    antwoord = input("Typ JA om het ouderwachtwoord te wissen (de gegevens blijven bewaard): ")
+    if antwoord.strip().upper() != "JA":
+        print("Er is niets veranderd.")
+        return 1
+    opslag.zet_ouder_wachtwoord(None)
+    opslag.sluit()
+    print("Het ouderwachtwoord is gewist. Bij de volgende keer in het ouderdeel kies je een nieuw.")
+    return 0
+
+
 def draai_tests():
     import unittest
     map_ = Path(__file__).resolve().parent.parent / "tests"
@@ -74,9 +92,8 @@ def main(argv=None):
         return draai_tests()
     if args.snelkoppeling:
         return snelkoppeling()
-    if args.ouder:
-        print("Het ouderdeel komt in een volgende versie.")
-        return 0
+    if args.wachtwoord_vergeten:
+        return wachtwoord_vergeten()
 
     import curses
     import locale
@@ -103,7 +120,7 @@ def main(argv=None):
 
     def draai(win):
         houder["app"] = app = App(win, opslag, voorrang)
-        app.start()
+        app.start(ouder=args.ouder)
 
     try:
         curses.wrapper(draai)

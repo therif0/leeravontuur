@@ -10,7 +10,7 @@ from decimal import Decimal
 
 from .. import leerlijnen
 from ..getal import decimalen, fmt
-from ..vaardigheden import Vaardigheid, registreer
+from ..vaardigheden import DENKFOUTEN as _ALLE_DENKFOUTEN, Vaardigheid, registreer
 
 OMZETTEN = registreer(Vaardigheid(
     "wiskunde.eenheden.omzetten", "Eenheden omzetten",
@@ -133,6 +133,15 @@ def tabel_uitleg(v):
     delen = ", ".join(f"{verw[k]} bij {namen[k]}" for k in sorted(verw, reverse=True))
     return [f"In de tabel: komma achter {v.van}, dus {delen}.",
             f"Lees af met de komma achter {v.naar}: {fmt(v.antwoord)} {v.naar}."]
+
+
+# korte omschrijving per diagnosecode (voor rapporten)
+DENKFOUTEN = {
+    "niet_omgezet": "het getal overgeschreven zonder om te zetten",
+    "verkeerde_richting": "de komma de verkeerde kant op geschoven",
+    "factor_10": "een of meer kolommen te ver of te weinig geteld",
+}
+_ALLE_DENKFOUTEN.update(DENKFOUTEN)
 
 
 def diagnose(v, gegeven):
