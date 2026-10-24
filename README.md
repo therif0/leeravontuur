@@ -36,7 +36,7 @@ Daarna staat **Eenheden oefenen** in het startmenu (bij Onderwijs). Het opent in
 
 1. **Vrij oefenen**: zoveel vragen als je wil. Met `?` krijg je een tip, en na elk antwoord zie je de volledige uitleg.
 2. **Reeks van 10**: 10 vragen. Daarna krijg je je score en de uitleg bij elke fout.
-3. **Tabel-oefening**: de som staat bovenaan. Je vult de eenhedentabel in, één cijfer per vakje (met `Tab` ga je naar het volgende vakje), en daarna typ je je antwoord. Met `,` zet je in een vakje zelf de komma. Je ziet dan meteen wat je afleest, bijvoorbeeld 4000 kg → `4,000 t`. Bij het nakijken worden de vakjes groen of rood en zie je de juiste tabel eronder.
+3. **Tabel-oefening**: de som staat bovenaan. Je vult de eenhedentabel in, één cijfer per vakje (met `Tab` ga je naar het volgende vakje), en daarna typ je je antwoord. Met `,` zet je in een vakje zelf de komma. Je ziet dan meteen wat je afleest, bijvoorbeeld 4000 kg → `4,000 t`. Met `r` draai je de typrichting om (naar links of naar rechts), zodat je ook van achter naar voor kunt typen. Bij het nakijken worden de vakjes groen of rood en zie je de juiste tabel eronder.
 4. **Spiekbrief**: hoe de tabel werkt, met voorbeelden.
 
 Je kiest altijd eerst welke eenheden je oefent (massa, lengte, allebei of zelf aanduiden) en hoe moeilijk het mag zijn (makkelijk, normaal of moeilijk).

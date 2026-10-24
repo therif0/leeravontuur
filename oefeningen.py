@@ -222,6 +222,7 @@ class App:
     def __init__(self, scr):
         self.scr = scr
         self.c = {}
+        self.richting = 1  # typrichting in de tabel: 1 = naar rechts, -1 = naar links
         self.kleuren()
         self.cursor(False)
 
@@ -564,6 +565,7 @@ class App:
         juist_rij = [verw.get(k) for _, k, _ in cols]
         cellen, antw, pos, laatste_cel = [None] * n, "", 0, 0
         melding, oordeel, goed, eigen_komma = "", None, None, None
+        net_getypt = None  # vakje van het laatst getypte cijfer: daar komt een , achter
         voet = "Tab/→ verder · ← terug · , = komma · ↓ antwoord · Enter = nakijken · Esc stop"
         while True:
             if self.te_klein():
@@ -577,6 +579,11 @@ class App:
                 x += len(stuk)
             self.put(5, 4, f"Komma achter {v.van} · vul aan met nullen tot {v.naar} · "
                            "druk , om de komma te zetten", self.c["dim"])
+            if goed is None:
+                pijl = "→ naar rechts" if self.richting == 1 else "← naar links"
+                self.put(6, 4, "Typrichting: ", self.c["dim"])
+                self.put(6, 17, pijl, self.c["geel"])
+                self.put(6, 32, "(r = omdraaien)", self.c["dim"])
             rijen = [("Jij", cellen, komma_van, oordeel, eigen_komma)]
             if goed is not None:
                 rijen.append(("Juist", juist_rij, komma_naar, None, None))
@@ -641,6 +648,7 @@ class App:
                     return antw, goed, tabel_ok, True
                 continue
             melding = ""
+            vorig_getypt, net_getypt = net_getypt, None
             if k == ESC:
                 return None
             if k in (9, curses.KEY_RIGHT):
@@ -667,15 +675,20 @@ class App:
             elif pos < n:
                 if ord("0") <= k <= ord("9"):
                     cellen[pos] = k - ord("0")
-                    pos = min(pos + 1, n - 1)
+                    net_getypt = pos
+                    pos = max(0, min(pos + self.richting, n - 1))
                 elif k in BACKSPACE:
-                    if cellen[pos] is None and pos > 0:
-                        pos -= 1
+                    terug = pos - self.richting
+                    if cellen[pos] is None and 0 <= terug < n:
+                        pos = terug
                     cellen[pos] = None
+                elif k in (ord("r"), ord("R")):
+                    self.richting = -self.richting
                 elif k in (curses.KEY_DC, ord(" ")):
                     cellen[pos] = None
                 elif k in (ord(","), ord(".")):
-                    eigen_komma = None if eigen_komma == pos else pos
+                    plek = pos if vorig_getypt is None else vorig_getypt
+                    eigen_komma = None if eigen_komma == plek else plek
             else:
                 antw = self.bewerk(antw, k)
             if pos < n:
