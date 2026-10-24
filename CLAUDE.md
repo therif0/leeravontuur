@@ -33,6 +33,10 @@ Nederlands (Vlaams), met komma als decimaalteken.
   '#rrggbb'/None), getekend door `terminal/avatar.py` (▀-halfblokken; kleurparen via `thema.pixel`).
   Het oefenmaatje (`terminal/maatje.py`) gebruikt de pixel-avatar waar plaats is, anders een tekstgezichtje.
   Nieuwe onderdelen: test `test_avatar.py` controleert dat gezicht en ankers op het lijf staan.
+- **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
+  onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py`. Het scherm is dan
+  automatisch `terminal/oefenaar.py` (vrij, reeks, rapport, fouten opnieuw, herhaalbak, punten, maatje).
+  Eenheden heeft (nog) een eigen scherm vanwege de tabel.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in

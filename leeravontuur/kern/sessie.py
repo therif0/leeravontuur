@@ -28,16 +28,20 @@ class Sessie:
         """Roep dit één keer op wanneer een nieuwe vraag verschijnt: daar start de tijdmeting."""
         self._start = time.monotonic()
 
-    def antwoord(self, sleutel, vraag, gegeven, juist, diagnose=None, hulp=False, extra=None, verwacht=None):
+    def antwoord(self, sleutel, vraag, gegeven, juist, diagnose=None, hulp=False, extra=None, verwacht=None,
+                 vaardigheid=None, leerjaar=None):
+        """Bewaart een antwoord. vaardigheid/leerjaar: als ze per vraag verschillen (bv. snelrekenen gemengd)."""
+        vaardigheid = vaardigheid or self.vaardigheid
+        leerjaar = leerjaar or self.leerjaar
         tijd_ms = int((time.monotonic() - self._start) * 1000) if self._start is not None else 0
         self._start = None
         al_juist = self.opslag.al_juist(self.kind_id, sleutel)
-        self.opslag.bewaar_antwoord(self.id, self.kind_id, self.vaardigheid, self.leerjaar, self.modus, sleutel,
+        self.opslag.bewaar_antwoord(self.id, self.kind_id, vaardigheid, leerjaar, self.modus, sleutel,
                                     vraag, gegeven, juist, diagnose, tijd_ms, hulp, extra, verwacht)
         self.laatste_tijd_ms = tijd_ms
         self.aantal += 1
         self.juist += bool(juist)
-        p, reden = P.voor_antwoord(juist, self.eigen_leerjaar, self.leerjaar, self.modus, al_juist, extra)
+        p, reden = P.voor_antwoord(juist, self.eigen_leerjaar, leerjaar, self.modus, al_juist, extra)
         self.op_rij = self.op_rij + 1 if juist else 0
         if p:
             self.opslag.punten_bij(self.kind_id, p, reden, sleutel)

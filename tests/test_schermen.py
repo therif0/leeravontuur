@@ -14,7 +14,7 @@ ESC = "\x1b"
 OK = "\n"
 
 # keuzes in het hoofdmenu (als toets)
-HOOFDMENU = ["▶ Verder", "Leren & oefenen", "Herhalen", "Mijn avatar", "Spiekbrieven", "Opties",
+HOOFDMENU = ["▶ Verder", "Leren & oefenen", "Snelrekenen", "Herhalen", "Mijn avatar", "Spiekbrieven", "Opties",
              "Wissel van kind", "Stoppen"]
 
 

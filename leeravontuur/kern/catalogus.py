@@ -1,7 +1,8 @@
 """Laadt alle vaardigheden, zodat het register (kern/vaardigheden.py) volledig is."""
 
 from . import vaardigheden
-from .wiskunde import eenheden  # noqa: F401  (registreert zich bij het importeren)
+from .onderwerp import ONDERWERPEN  # noqa: F401
+from .wiskunde import eenheden, hoofdrekenen  # noqa: F401  (registreren zich bij het importeren)
 
 
 def naam(vaardigheid_id):

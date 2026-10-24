@@ -10,6 +10,8 @@ from ..kern import herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar
+from ..kern.wiskunde import hoofdrekenen as H
+from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
 
@@ -170,6 +172,7 @@ class App:
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?", [
                     ("▶ Verder", self.voorstel()[0][:32]),
                     ("Leren & oefenen", "wiskunde (taal, Frans volgen)"),
+                    ("Snelrekenen", "tegen de klok, met records"),
                     (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets"),
                     ("Mijn avatar", "winkel, kast en punten"),
                     ("Spiekbrieven", "uitleg om terug te kijken"),
@@ -177,22 +180,11 @@ class App:
                     ("Wissel van kind", "iemand anders wil oefenen"),
                     ("Stoppen", "")], info=info,
                     onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
-                if k is None or k == 7:
+                if k is None or k == 8:
                     return
-                if k == 0:
-                    self.voorstel()[1]()
-                elif k == 1:
-                    self.leren()
-                elif k == 2:
-                    self.herhalen()
-                elif k == 3:
-                    self.mijn_avatar()
-                elif k == 4:
-                    self.spiekbrieven()
-                elif k == 5:
-                    self.opties()
-                elif k == 6:
-                    self.wissel_van_kind()
+                actie = [lambda: self.voorstel()[1](), self.leren, self.snelrekenen, self.herhalen,
+                         self.mijn_avatar, self.spiekbrieven, self.opties, self.wissel_van_kind][k]
+                actie()
             except TerugNaar:
                 continue
 
@@ -206,6 +198,10 @@ class App:
         AV.teken(self.s, 4, x, self.avatar_config(), "blij")
         self.s.put(4 + AV.HOOGTE + 1, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "accent")
 
+    def snelrekenen(self):
+        from .schermen.snelrekenen import Snelrekenen
+        Snelrekenen(self).menu()
+
     def mijn_avatar(self):
         from .schermen.winkel import AvatarSchermen
         AvatarSchermen(self).hub()
@@ -216,6 +212,14 @@ class App:
         if n:
             return f"eerst je {n} herhaalvragen", self.herhalen
         vorige = self.laatste_oefening()
+        if vorige and vorige.get("onderwerp") == "oefenaar":
+            from ..kern import catalogus
+            o = catalogus.ONDERWERPEN.get(vorige["vaardigheid"])
+            if o:
+                vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10"}[vorige["vorm"]]
+                kr = [HOOFD, "Leren", "Wiskunde", vorige["domein"]]
+                return (f"{o.naam.lower()} · {vorm}",
+                        lambda: Oefenaar(self, kr, [o], vorige["domein"]).start(o, vorige["vorm"], vorige["niveau"]))
         if vorige and vorige.get("onderwerp") == "eenheden":
             vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
             kr = [HOOFD, "Leren", "Wiskunde", "Eenheden"]
@@ -231,7 +235,17 @@ class App:
                                ""), ("Na 3 keer juist zijn ze beheerst.", "dim")],
                          [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
             return
-        res, _ = Eenheden(self, kr).herhalen(kr, items)
+        from ..kern import catalogus
+        eenheden = [i for i in items if i["vaardigheid"] == "wiskunde.eenheden.omzetten"]
+        andere = [i for i in items if i["vaardigheid"] in catalogus.ONDERWERPEN]
+        res, gestopt = [], False
+        if eenheden:
+            r, gestopt = Eenheden(self, kr).herhalen(kr, eenheden)
+            res += r
+        if andere and not gestopt:
+            r, _ = Oefenaar(self, kr, [], "Herhalen").herhalen(kr, andere, catalogus.ONDERWERPEN)
+            res += r
+        items = eenheden + andere
         if not res:
             return
         na = {i["onderwerp"]: i for i in self.opslag.herhaalbak(self.kind.id)}
@@ -271,10 +285,14 @@ class App:
     def wiskunde(self, kr):
         while True:
             try:
-                k = self.s.menu(kr, "Welk onderwerp?", [("Eenheden", "lengte en massa omzetten")])
+                k = self.s.menu(kr, "Welk onderwerp?", [("Eenheden", "lengte en massa omzetten"),
+                                                       ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft")])
                 if k is None:
                     return
-                Eenheden(self, kr + ["Eenheden"]).menu()
+                if k == 0:
+                    Eenheden(self, kr + ["Eenheden"]).menu()
+                else:
+                    Oefenaar(self, kr + ["Hoofdrekenen"], H.ALLE, "Hoofdrekenen").menu()
             except TerugNaar as t:
                 if t.niveau < len(kr) - 1:
                     raise
@@ -283,10 +301,14 @@ class App:
         kr = [HOOFD, "Spiekbrieven"]
         while True:
             try:
-                k = self.s.menu(kr, "Welke spiekbrief?", [("Eenheden", "lengte en massa omzetten")])
+                k = self.s.menu(kr, "Welke spiekbrief?", [("Eenheden", "lengte en massa omzetten"),
+                                                         ("Hoofdrekenen", "slimme trucjes")])
                 if k is None:
                     return
-                Eenheden(self, kr).spiekbrief(kr + ["Eenheden"])
+                if k == 0:
+                    Eenheden(self, kr).spiekbrief(kr + ["Eenheden"])
+                else:
+                    Oefenaar(self, kr, H.ALLE, "Hoofdrekenen").spiekbrief(kr + ["Hoofdrekenen"], H.TAFELS)
             except TerugNaar as t:
                 if t.niveau < 1:
                     raise

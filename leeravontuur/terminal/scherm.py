@@ -101,6 +101,12 @@ class Scherm:
         h, w = self.win.getmaxyx()
         self.put(0, 0, " " * w, "titel")
         delen = [kruimel] if isinstance(kruimel, str) else list(kruimel)
+        # te lang? kort de middelste stukken in (het eerste en het laatste blijven volledig)
+        while sum(len(d) for d in delen) + 3 * (len(delen) - 1) + 2 > w and len(delen) > 2:
+            midden = max(range(1, len(delen) - 1), key=lambda i: len(delen[i]))
+            if len(delen[midden]) <= 4:
+                break
+            delen[midden] = delen[midden][:3] + "…"
         x = 1
         for i, deel in enumerate(delen):
             if i:
@@ -141,8 +147,8 @@ class Scherm:
 
     # ---- invoer ----------------------------------------------------------
 
-    def toets(self):
-        """Wacht op een toets of klik.
+    def toets(self, wacht_ms=None):
+        """Wacht op een toets of klik (met wacht_ms: hoogstens zo lang, en dan NIETS).
 
         Geeft een getal (toetscode; letters als ord(teken)) of een tuple-actie van een klikzone,
         bv. ("kies", 2) of ("scroll", 1). Een klik op de broodkruimel geeft TerugNaar.
@@ -150,7 +156,7 @@ class Scherm:
         self.win.refresh()
         self._laatste_toets = time.monotonic()
         try:
-            self.win.timeout(1000 if self.slot else -1)
+            self.win.timeout(wacht_ms if wacht_ms else 1000 if self.slot else -1)
         except (curses.error, AttributeError):
             pass
         wachtbeurten = 0
@@ -158,6 +164,8 @@ class Scherm:
             try:
                 k = self.win.get_wch()
             except curses.error:  # geen toets binnen de tijd (telkens 1 seconde)
+                if wacht_ms:
+                    return NIETS
                 wachtbeurten += 1
                 stil = max(time.monotonic() - self._laatste_toets, wachtbeurten * 1.0)
                 if self.slot and stil >= self.slot:
@@ -204,7 +212,7 @@ class Scherm:
             return buf[:-1]
         if 32 <= k < 0x110000 and len(buf) < max_lengte:
             ch = chr(k)
-            if ch.isalnum() or ch in ",. ":
+            if ch.isalnum() or ch in ",. -−/":
                 return buf + ch
         return buf
 

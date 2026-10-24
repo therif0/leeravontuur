@@ -9,8 +9,10 @@ def decimalen(d):
 
 
 def fmt(d):
-    """Decimal -> tekst met komma, zonder wetenschappelijke notatie."""
-    return format(d.normalize(), "f").replace(".", ",")
+    """Decimal -> tekst met komma, zonder wetenschappelijke notatie (negatief met het minteken −)."""
+    d = Decimal(d)
+    tekst = format(abs(d).normalize(), "f").replace(".", ",")
+    return ("−" + tekst) if d < 0 else tekst
 
 
 def lees_getal(tekst):
@@ -18,7 +20,10 @@ def lees_getal(tekst):
 
     Een eenheid achteraan ('0,25 g') mag. Geeft None als het geen getal is.
     """
-    t = re.sub(r"[a-z]+$", "", tekst.strip().lower()).replace(" ", "")
+    t = re.sub(r"[a-z]+$", "", tekst.strip().lower()).replace(" ", "").replace("−", "-")
+    negatief = t.startswith("-")
+    if negatief:
+        t = t[1:]
     if not t:
         return None
     if "," in t:
@@ -27,4 +32,4 @@ def lees_getal(tekst):
         t = t.replace(".", "")
     if not re.fullmatch(r"\d+(\.\d+)?|\.\d+", t):
         return None
-    return Decimal(t)
+    return -Decimal(t) if negatief else Decimal(t)

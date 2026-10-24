@@ -8,9 +8,9 @@ from leeravontuur.kern.opslag import Opslag
 from leeravontuur.kern.wiskunde import eenheden as E
 
 try:
-    from .test_schermen import ESC, OK, Basis
+    from .test_schermen import ESC, OK, Basis, hm
 except ImportError:
-    from test_schermen import ESC, OK, Basis
+    from test_schermen import ESC, OK, Basis, hm
 
 CET = timezone(timedelta(hours=1))
 DAG = datetime(2026, 10, 24, 15, 0, tzinfo=CET)
@@ -114,7 +114,7 @@ class TestSchermen(Basis):
         klok.zet(None)
         vast = E.Omzetting(E.LENGTE, "km", "m", Decimal(2))
         with mock.patch.object(E, "maak_herhaling", return_value=vast):
-            scherm, app = self.speel([OK, OK, "3", *"2000", OK, OK, OK, ESC], opslag=o)
+            scherm, app = self.speel([OK, OK, hm("Herhalen"), *"2000", OK, OK, OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Herhalen (1)"))
         self.assertTrue(self.ergens(scherm, "eerst je 1 herhaalvragen"))
         self.assertTrue(self.ergens(scherm, "Je herhaalde 1 vraag: 1 juist."))

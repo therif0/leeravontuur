@@ -331,6 +331,15 @@ class Opslag:
                                      "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
         return [dict(r) for r in rijen]
 
+    def sessie_overzicht(self, kind_id, modus, vaardigheid):
+        """Afgesloten sessies van één soort: [{start, aantal, juist, tijd_ms}], oudste eerst."""
+        rijen = self.con.execute(
+            "SELECT s.id, s.start, COUNT(a.id) AS aantal, COALESCE(SUM(a.juist), 0) AS juist, "
+            "COALESCE(SUM(a.tijd_ms), 0) AS tijd_ms FROM sessies s LEFT JOIN antwoorden a ON a.sessie_id = s.id "
+            "WHERE s.kind_id = ? AND s.modus = ? AND s.vaardigheid = ? AND s.einde IS NOT NULL "
+            "GROUP BY s.id ORDER BY s.start, s.rowid", (kind_id, modus, vaardigheid))
+        return [dict(r) for r in rijen]
+
     def gezien_sleutels(self, kind_id, vaardigheid, sinds):
         """Vraagsleutels die dit kind sinds die dag al kreeg (om herhaling te vermijden)."""
         rijen = self.con.execute("SELECT DISTINCT sleutel FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
