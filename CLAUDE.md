@@ -21,6 +21,14 @@ Nederlands (Vlaams), met komma als decimaalteken.
 - **Niveaus zijn relatief** tegenover het leerjaar van het kind: Makkelijk −1, Normaal 0, Moeilijk +1,
   Heel moeilijk +2 (`kern/leerjaren.py`). Een nieuw leerjaar = vooral leerlijn-data aanvullen.
 - Exact rekenen met `Decimal`/`Fraction`, nooit met float.
+- **Opslag:** alles wat bewaard wordt, gaat via `kern/opslag.py` (SQLite, bestand `leeravontuur.db` in de datamap).
+  Schemawijzigingen = een nieuw script achteraan in `MIGRATIES` (nooit een oud script aanpassen).
+  Antwoorden worden alleen toegevoegd, nooit aangepast (een trigger bewaakt dat). Elk record heeft een UUID.
+  Elke oefening loopt via een `kern/sessie.py`-`Sessie` (`vraag_getoond()` → `antwoord(...)`), zodat tijd,
+  vraagsleutel en diagnose altijd bewaard worden.
+- Instellingen staan per kind in de databank. Startargumenten (`--kleurenblind` …) gelden voor die sessie
+  en worden niet bewaard (`App.voorrang`).
+- Tijd altijd via `kern/klok.py` (tests zetten de klok vast).
 
 ## Platformen
 Windows, macOS en Linux. Alleen de standaardbibliotheek; op Windows `windows-curses` (requirements.txt).

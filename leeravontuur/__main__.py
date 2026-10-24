@@ -81,27 +81,28 @@ def main(argv=None):
     import curses
     import locale
 
-    from .kern import instellingen
+    from .kern.opslag import Opslag
     from .terminal.app import App
 
-    inst = instellingen.laad()
-    # argumenten gaan voor op de bewaarde instellingen
+    # argumenten gaan voor op de bewaarde instellingen (maar worden niet bewaard)
+    voorrang = {}
     if args.kleurenblind:
-        inst.thema = args.kleurenblind
+        voorrang["thema"] = args.kleurenblind
     if args.contrast:
-        inst.thema = "contrast"
+        voorrang["thema"] = "contrast"
     if args.geen_kleur:
-        inst.thema = "geen-kleur"
+        voorrang["thema"] = "geen-kleur"
     if args.ascii:
-        inst.ascii = True
+        voorrang["ascii"] = True
     if args.geen_muis:
-        inst.muis = False
+        voorrang["muis"] = False
 
+    opslag = Opslag.open()
     locale.setlocale(locale.LC_ALL, "")
     houder = {}
 
     def draai(win):
-        houder["app"] = app = App(win, inst)
+        houder["app"] = app = App(win, opslag, voorrang)
         app.start()
 
     try:
@@ -109,11 +110,16 @@ def main(argv=None):
     except (KeyboardInterrupt, SystemExit):
         pass
     app = houder.get("app")
-    naam = inst.naam
-    groet = f"Tot de volgende keer{', ' + naam if naam else ''}!"
-    if app and app.stat["vragen"]:
-        groet += f" Vandaag: {app.stat['goed']} van {app.stat['vragen']} juist."
+    groet = "Tot de volgende keer!"
+    if app and app.kind:
+        groet = f"Tot de volgende keer, {app.kind.naam}!"
+        n, j = app.vandaag()
+        if n:
+            groet += f" Vandaag: {j} van {n} juist."
+    opslag.sluit()
     print(groet)
+    if opslag.probleem:
+        print(opslag.probleem)
     print(f"{NAAM} · een gratis leerprogramma van {MAKER}")
     return 0
 

@@ -1,10 +1,7 @@
-"""Instellingen (naam, leerjaar, kleuren, muis …), bewaard als JSON in de datamap.
-
-In een volgende fase komen die per kind in de databank. Tot dan is er één instellingenbestand.
-"""
+"""Instellingen van een kind (naam, leerjaar, kleuren, muis …). Ze worden bewaard via kern/opslag.py."""
 
 import json
-from dataclasses import asdict, dataclass, fields
+from dataclasses import dataclass, fields
 
 from .leerjaren import LEERJAREN
 from .paden import data_map
@@ -47,23 +44,14 @@ class Instellingen:
 
 
 def pad():
+    """Het instellingenbestand van fase 1. Wordt bij de eerste start overgezet naar de databank."""
     return data_map() / "instellingen.json"
 
 
-def laad():
+def laad_json(bestand):
     try:
-        data = json.loads(pad().read_text(encoding="utf-8"))
+        data = json.loads(bestand.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return Instellingen()
     namen = {f.name for f in fields(Instellingen)}
     return Instellingen(**{k: v for k, v in data.items() if k in namen}).gecontroleerd()
-
-
-def bewaar(inst):
-    p = pad()
-    try:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(json.dumps(asdict(inst), indent=2, ensure_ascii=False), encoding="utf-8")
-        return True
-    except OSError:
-        return False

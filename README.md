@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.1):**
+**Wat er nu in zit (versie 0.2):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -19,6 +19,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
   - Het leerjaar stel je in bij **Opties**. Volgend schooljaar schuift alles mee.
+- **Een account per kind:** bij de start kies je wie er oefent ("Wie ben jij?"). Elk kind heeft eigen
+  instellingen, en elk antwoord wordt bewaard (ook "vandaag al … vragen geoefend" blijft na een herstart).
 - **Opties:** naam, leerjaar, kleuren (ook voor **kleurenblindheid**), hoog contrast, eenvoudige tekens, muis en typrichting.
 
 ## Installeren en starten
@@ -80,7 +82,8 @@ Alles kan ook in het menu **Opties**; dat wordt bewaard.
 | macOS | `~/Library/Application Support/Leeravontuur` |
 | Linux | `~/.local/share/leeravontuur` |
 
-Er worden geen gegevens verstuurd: alles blijft op de computer.
+Daar staat het bestand `leeravontuur.db` met de kinderen, hun instellingen en elk antwoord (met datum en
+antwoordtijd). Er worden geen gegevens verstuurd: alles blijft op de computer.
 
 ## Voor ontwikkelaars
 - Structuur en afspraken: [CLAUDE.md](CLAUDE.md). Het volledige plan: [docs/plan.md](docs/plan.md).

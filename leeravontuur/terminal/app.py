@@ -1,42 +1,81 @@
 """De terminal-app: startscherm, hoofdmenu, menu's per vak en domein, en opties."""
 
 import curses
+from dataclasses import replace
 
-from .. import LICENTIE, MAKER, MOTTO, NAAM, VERSIE
-from ..kern import instellingen, leerjaren
+from .. import LICENTIE, MAKER, MOTTO, VERSIE
+from ..kern import instellingen, klok, leerjaren
+from ..kern.instellingen import Instellingen
+from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar
 from .schermen.eenheden import Eenheden
+from .schermen.kinderen import kies_kind
 
 HOOFD = "Leeravontuur"
 
 
 class App:
-    def __init__(self, win, inst, kleuren=True):
-        self.inst = inst
-        self.s = Scherm(win, inst, kleuren)
-        self.stat = {"goed": 0, "vragen": 0}
+    def __init__(self, win, opslag, voorrang=None, kleuren=True):
+        """voorrang = instellingen uit de argumenten bij het starten (bv. {"thema": "contrast"})."""
+        self.opslag = opslag
+        self.voorrang = dict(voorrang or {})
+        self.kind = None
+        laatste = opslag.kind(opslag.algemeen("laatste_kind") or "")
+        self.basis = opslag.instellingen_van(laatste.id) if laatste else Instellingen()
+        self.inst = replace(self.basis, **self.voorrang)
+        self.s = Scherm(win, self.inst, kleuren)
 
-    # ---- gedeelde hulpjes --------------------------------------------------
+    # ---- het actieve kind ------------------------------------------------------
 
-    def tel(self, goed):
-        self.stat["vragen"] += 1
-        self.stat["goed"] += bool(goed)
-        self.s.status = f"Vandaag: {self.stat['goed']}/{self.stat['vragen']} juist"
-        self.s.status_kort = f"{self.stat['goed']}/{self.stat['vragen']} juist"
+    def activeer(self, kind):
+        self.kind = kind
+        self.basis = self.opslag.instellingen_van(kind.id)
+        self.inst = replace(self.basis, **self.voorrang)
+        self.s.inst = self.inst
+        self.s.pas_toe()
+        self.opslag.zet_algemeen("laatste_kind", kind.id)
+        self.ververs_status()
+
+    def vandaag(self):
+        """(aantal, juist) van vandaag voor het actieve kind."""
+        return self.opslag.telling(self.kind.id, klok.dag()) if self.kind else (0, 0)
+
+    def ververs_status(self):
+        n, j = self.vandaag()
+        self.s.status = f"Vandaag: {j}/{n} juist" if n else ""
+        self.s.status_kort = f"{j}/{n} juist" if n else ""
 
     def bewaar(self):
-        instellingen.bewaar(self.inst)
+        """Bewaart de instellingen van het kind. Wat enkel via een startargument geldt, wordt niet bewaard."""
+        if not self.kind:
+            return
+        te_bewaren = replace(self.inst)
+        for veld, waarde in list(self.voorrang.items()):
+            if getattr(self.inst, veld) == waarde:
+                setattr(te_bewaren, veld, getattr(self.basis, veld))
+            else:
+                del self.voorrang[veld]  # zelf aangepast in Opties: vanaf nu gewoon bewaren
+        self.opslag.bewaar_instellingen(self.kind.id, te_bewaren)
+        self.basis = te_bewaren
+        self.kind = self.opslag.kind(self.kind.id) or self.kind
+
+    def sessie(self, modus, vaardigheid, leerjaar):
+        return Sessie(self.opslag, self.kind.id, modus, vaardigheid, leerjaar, na_antwoord=self.ververs_status)
 
     # ---- schermen ------------------------------------------------------------
 
     def start(self):
         self.startscherm()
-        if not self.inst.naam:
-            naam = self.s.invoer([HOOFD], "Hallo! Hoe heet je?")
-            if naam:
-                self.inst.naam = naam
-                self.bewaar()
+        kind = kies_kind(self)
+        if kind is None:
+            return
+        self.activeer(kind)
         self.hoofdmenu()
+
+    def wissel_van_kind(self):
+        kind = kies_kind(self)
+        if kind is not None:
+            self.activeer(kind)
 
     def startscherm(self):
         s = self.s
@@ -80,13 +119,21 @@ class App:
         while True:
             try:
                 naam = self.inst.naam
+                n, j = self.vandaag()
+                info = []
+                if n:
+                    lof = " Goed bezig!" if j >= 0.6 * n else ""
+                    info.append(f"Vandaag al {n} {'vraag' if n == 1 else 'vragen'} geoefend, {j} juist.{lof}")
+                if self.opslag.probleem:
+                    info.append(self.opslag.probleem)
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?", [
                     ("Leren & oefenen", "wiskunde (taal en Frans volgen)"),
                     ("Spiekbrieven", "uitleg om terug te kijken"),
                     ("Opties", "leerjaar, kleuren (ook kleurenblind), muis …"),
-                    ("Stoppen", "")],
+                    ("Wissel van kind", "iemand anders wil oefenen"),
+                    ("Stoppen", "")], info=info,
                     onder=f"{MAKER} · gratis · {MOTTO.lower()}")
-                if k is None or k == 3:
+                if k is None or k == 4:
                     return
                 if k == 0:
                     self.leren()
@@ -94,6 +141,8 @@ class App:
                     self.spiekbrieven()
                 elif k == 2:
                     self.opties()
+                elif k == 3:
+                    self.wissel_van_kind()
             except TerugNaar:
                 continue
 
@@ -187,7 +236,7 @@ class App:
             elif k in ENTER or k in (curses.KEY_RIGHT, ord(" ")):
                 if sel == 0:
                     naam = s.invoer(kr + ["Naam"], "Hoe heet je?", inst.naam)
-                    if naam is not None:
+                    if naam:
                         inst.naam = naam
                 elif sel == 1:
                     inst.leerjaar = leerjaren.LEERJAREN[

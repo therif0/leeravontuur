@@ -113,10 +113,12 @@ class Eenheden:
 
     # ---- een gewone vraag ----------------------------------------------
 
-    def stel_vraag(self, kr, v, soort, nr=None, resultaten=None, vrij=False):
+    def stel_vraag(self, kr, v, soort, ses, nr=None, resultaten=None, vrij=False):
         """Toont één vraag. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
         s = self.s
         buf, melding, goed, tip = "", "", None, False
+        tip_gebruikt = False
+        ses.vraag_getoond()
         lof = random.choice(LOF)
         while True:
             if s.te_klein():
@@ -177,7 +179,7 @@ class Eenheden:
                 s.cursor(False)
                 return None
             if k == ord("?") and vrij:
-                tip = True
+                tip = tip_gebruikt = True
             elif k in ENTER:
                 getal = lees_getal(buf)
                 if getal is None:
@@ -186,7 +188,8 @@ class Eenheden:
                                else "Dat is geen getal. Gebruik een komma voor kommagetallen, bv. 0,25.")
                     continue
                 goed = getal == v.antwoord
-                self.app.tel(goed)
+                d = E.diagnose(v, getal)
+                ses.antwoord(v.sleutel, v.tekst, buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt)
             else:
                 buf = s.bewerk(buf, k)
                 melding = ""
@@ -232,7 +235,7 @@ class Eenheden:
         s.put(yy, x, lijn("└", "┴", "┘"), "dim")
         return yy + 1
 
-    def tabel_vraag(self, kr, v, soort, nr, resultaten):
+    def tabel_vraag(self, kr, v, soort, ses, nr, resultaten):
         """Eén tabel-oefening. Geeft (antwoord, goed?, tabel goed?, stoppen?) of None bij Esc."""
         s = self.s
         inst = self.app.inst
@@ -243,6 +246,7 @@ class Eenheden:
         verw = E.verwachte_cijfers(v)
         juist_rij = [verw.get(k) for _, k, _ in cols]
         cellen, antw, pos, laatste_cel = [None] * n, "", 0, 0
+        ses.vraag_getoond()
         melding, oordeel, goed, eigen_komma = "", None, None, None
         net_getypt = None  # vakje van het laatst getypte cijfer: daar komt een , achter
         tabel_ok = False
@@ -367,7 +371,11 @@ class Eenheden:
                 else:
                     goed = getal == v.antwoord
                     oordeel = E.controleer_tabel(v, cellen)
-                    self.app.tel(goed)
+                    d = E.diagnose(v, getal)
+                    extra = {"cijfers_ok": all(o is not False for o in oordeel),
+                             "komma_ok": eigen_komma == komma_naar,
+                             "cellen": cellen, "komma": eigen_komma}
+                    ses.antwoord(v.sleutel, v.tekst, antw.strip(), goed, d[0] if d else None, extra=extra)
             elif k in (ord("r"), ord("R")) and pos < n:
                 inst.typrichting = -inst.typrichting
                 self.app.bewaar()
@@ -397,18 +405,19 @@ class Eenheden:
         kr = self.kruimel + ["Tabel-oefening" if tabel else "Reeks van 10"]
         while True:
             resultaten, vorige = [], None
-            for nr in range(REEKS):
-                v = E.maak_vraag(gekozen, jaar, tabel, vorige)
-                vorige = v
-                if tabel:
-                    uit = self.tabel_vraag(kr, v, soort, nr, resultaten)
-                else:
-                    uit = self.stel_vraag(kr, v, soort, nr, resultaten)
-                if uit is None:
-                    return
-                resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None))
-                if uit[-1]:
-                    return
+            with self.app.sessie("tabel" if tabel else "reeks", E.OMZETTEN.id, jaar) as ses:
+                for nr in range(REEKS):
+                    v = E.maak_vraag(gekozen, jaar, tabel, vorige)
+                    vorige = v
+                    if tabel:
+                        uit = self.tabel_vraag(kr, v, soort, ses, nr, resultaten)
+                    else:
+                        uit = self.stel_vraag(kr, v, soort, ses, nr, resultaten)
+                    if uit is None:
+                        return
+                    resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None))
+                    if uit[-1]:
+                        return
             if not self.rapport(kr, soort, resultaten):
                 return
 
@@ -423,9 +432,9 @@ class Eenheden:
             bericht, rol = "Goed bezig! Lees de uitleg bij je fouten en probeer nog een reeks.", "accent"
         else:
             bericht, rol = "Blijf oefenen, je kan het! Lees de uitleg hieronder rustig na.", "fout"
-        st = self.app.stat
+        n, j = self.app.vandaag()
         regels = [(f"Je score: {goed} / {REEKS}", rol), (bericht, rol), (soort, "dim"), ("", ""),
-                  (f"Vandaag in totaal: {st['goed']} van {st['vragen']} juist.", "info"), ("", "")]
+                  (f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
         fouten = [(i, r) for i, r in enumerate(resultaten) if not r["goed"] or r["tabel"] is False]
         if not fouten:
             regels.append(("Geen enkele fout. Proficiat!", "goed"))
@@ -456,16 +465,17 @@ class Eenheden:
         kr = self.kruimel + ["Vrij oefenen"]
         self.vrij_goed = self.vrij_aantal = 0
         vorige = None
-        while True:
-            v = E.maak_vraag(gekozen, jaar, vorige=vorige)
-            vorige = v
-            uit = self.stel_vraag(kr, v, soort, vrij=True)
-            if uit is None:
-                return
-            self.vrij_aantal += 1
-            self.vrij_goed += uit[1]
-            if uit[2]:
-                return
+        with self.app.sessie("vrij", E.OMZETTEN.id, jaar) as ses:
+            while True:
+                v = E.maak_vraag(gekozen, jaar, vorige=vorige)
+                vorige = v
+                uit = self.stel_vraag(kr, v, soort, ses, vrij=True)
+                if uit is None:
+                    return
+                self.vrij_aantal += 1
+                self.vrij_goed += uit[1]
+                if uit[2]:
+                    return
 
     def spiekbrief(self, kr):
         toetsen = {k: None for k in (ESC, ord("q"), *ENTER)}
