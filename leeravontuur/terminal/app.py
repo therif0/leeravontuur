@@ -215,28 +215,30 @@ class App:
                 ("Eenvoudige tekens", {None: "automatisch", True: "aan (ASCII)", False: "uit"}[inst.ascii]),
                 ("Muis", "aan" if inst.muis else "uit"),
                 ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
+                ("Avatar", "aan" if inst.avatar else "uit"),
+                ("Animaties", "aan" if inst.animaties else "uit"),
             ]
             if s.te_klein():
                 continue
             s.cursor(False)
             s.nieuw(kr, knoppen)
             h, w = s.maat()
-            s.put(2, 4, "Kies een optie en druk Enter (of klik) om ze te wijzigen.", "bold")
+            s.put(1, 4, "Kies een optie en druk Enter (of klik) om ze te wijzigen.", "bold")
             for i, (label, waarde) in enumerate(items):
-                y = 4 + 2 * i
+                y = 3 + 2 * i
                 s.put(y, 6, f" {label:<24} ", "cursor" if i == sel else "")
                 s.put(y, 33, waarde, "accent")
                 s.zones.voeg(y, 4, 1, w - 6, ("kies", i))
-            y = 5 + 2 * len(items)
+            y = 3 + 2 * len(items)
             s.put(y, 4, "Voorbeeld:", "dim")
             s.put(y, 15, "✔ juist", "goed")
             s.put(y, 25, "✘ fout", "fout")
             s.put(y, 34, "  5  ", "goedvak")
             s.put(y, 40, "! 6  ", "foutvak")
             s.put(y, 46, " actief ", "cursor")
-            s.put(y + 2, 4, "Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,", "dim")
-            s.put(y + 3, 4, "--ascii, --geen-muis   (zie python3 oefeningen.py --help)", "dim")
-            s.put(y + 5, 4, melding, "info")
+            s.put(y + 1, 4, "Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,", "dim")
+            s.put(y + 2, 4, "--ascii, --geen-muis   (zie python3 oefeningen.py --help)", "dim")
+            s.put(y + 3, 4, melding, "info")
             k = s.toets()
             melding = ""
             if isinstance(k, tuple):
@@ -271,5 +273,9 @@ class App:
                     inst.muis = not inst.muis
                 elif sel == 5:
                     inst.typrichting = -inst.typrichting
+                elif sel == 6:
+                    inst.avatar = not inst.avatar
+                elif sel == 7:
+                    inst.animaties = not inst.animaties
                 s.pas_toe()
                 self.bewaar()

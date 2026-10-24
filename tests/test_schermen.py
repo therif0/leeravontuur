@@ -91,8 +91,8 @@ class TestStart(Basis):
 
     def test_startargument_wordt_niet_bewaard(self):
         o = self.opslag(("Test", "5"))
-        # gestart met --contrast; in Opties de muis uitzetten (rij 4 + 2*4 = 12)
-        scherm, app = self.speel([OK, OK, "3", ("klik", 12, 10), ESC, ESC], opslag=o,
+        # gestart met --contrast; in Opties de muis uitzetten (rij 3 + 2*4 = 11)
+        scherm, app = self.speel([OK, OK, "3", ("klik", 11, 10), ESC, ESC], opslag=o,
                                  voorrang={"thema": "contrast"})
         bewaard = o.instellingen_van(app.kind.id)
         self.assertEqual(bewaard.thema, "standaard")
@@ -141,12 +141,19 @@ class TestMuis(Basis):
         self.assertTrue(self.ergens(scherm, "Aflezen met de komma achter m: 4 m"))
 
     def test_menu_en_opties_klikken(self):
-        # hoofdmenu: Opties staat op rij 5 + 2*2 = 9; in Opties staat Kleuren op rij 4 + 2*2 = 8
+        # hoofdmenu: Opties staat op rij 5 + 2*2 = 9; in Opties staat Kleuren op rij 3 + 2*2 = 7
         o = self.opslag(("Test", "5"))
-        toetsen = [OK, OK, ("klik", 9, 10), ("klik", 8, 10), ESC, ESC]
+        toetsen = [OK, OK, ("klik", 9, 10), ("klik", 7, 10), ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertEqual(app.inst.thema, "rood-groen")
         self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
+
+    def test_avatar_en_animaties_uitzetten(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([OK, OK, "3", ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
+        inst = o.instellingen_van(app.kind.id)
+        self.assertEqual((inst.avatar, inst.animaties), (False, False))
+        self.assertTrue(self.ergens(scherm, "Animaties"))
 
     def test_knop_in_voetbalk(self):
         scherm, _ = self.speel([OK, OK, "1"])
