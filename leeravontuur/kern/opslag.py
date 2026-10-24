@@ -99,9 +99,13 @@ class Opslag:
         self.pad = str(pad)
         self.probleem = None  # tekst als er iets niet bewaard kon worden
         self.con = sqlite3.connect(self.pad)
-        self.con.row_factory = sqlite3.Row
-        self.con.execute("PRAGMA foreign_keys = ON")
-        self._migreer()
+        try:
+            self.con.row_factory = sqlite3.Row
+            self.con.execute("PRAGMA foreign_keys = ON")
+            self._migreer()
+        except Exception:
+            self.con.close()  # anders blijft het bestand vergrendeld (Windows)
+            raise
 
     @classmethod
     def open(cls, pad=None):
