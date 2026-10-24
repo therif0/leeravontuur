@@ -148,6 +148,19 @@ def tabel_uitleg(v):
             f"Lees af met de komma achter {v.naar}: {fmt(v.antwoord)} {v.naar}."]
 
 
+def aflezen(cellen, komma):
+    """Leest het getal in de tabel af met de komma achter vakje `komma`. None zonder cijfers."""
+    gevuld = [i for i, c in enumerate(cellen) if c is not None]
+    if not gevuld:
+        return None
+    eerste, laatste = min(gevuld[0], komma), max(gevuld[-1], komma)
+    cijfers = [str(cellen[i] or 0) for i in range(eerste, laatste + 1)]
+    deel = komma - eerste + 1
+    voor = "".join(cijfers[:deel]).lstrip("0") or "0"
+    na = "".join(cijfers[deel:])
+    return voor + ("," + na if na else "")
+
+
 def maak_vraag(eenheden, niveau, tabel=False, vorige=None):
     paren = [(a, b) for a in eenheden for b in eenheden
              if a != b and CATEGORIE[a] == CATEGORIE[b]]
@@ -521,7 +534,7 @@ class App:
             self.put(y + 1, cx, lab.center(CW), attr)
             self.put(y + 1, cx + CW, "│", dim)
         yy = y + 2
-        for r, (label, cellen, komma, oordeel) in enumerate(rijen):
+        for r, (label, cellen, komma, oordeel, eigen) in enumerate(rijen):
             self.put(yy, x, lijn("├", "┼", "┤"), dim)
             self.put(yy + 1, x - 7, label.rjust(5), self.c["bold"])
             self.put(yy + 1, x, "│", dim)
@@ -533,9 +546,9 @@ class App:
                     attr = self.c["goedvak"] if oordeel[i] else self.c["foutvak"]
                 else:
                     attr = self.c["goed"] if r > 0 else 0
-                self.put(yy + 1, cx, cel_tekst(cellen[i], i == komma), attr)
-                if i == komma and attr in (0, self.c["goed"]):
-                    self.put(yy + 1, cx + 4, ",", self.c["geel"])
+                self.put(yy + 1, cx, cel_tekst(cellen[i], i in (komma, eigen)), attr)
+                if i in (komma, eigen) and attr in (0, self.c["goed"]):
+                    self.put(yy + 1, cx + 4, ",", self.c["blauw"] if i == eigen else self.c["geel"])
                 self.put(yy + 1, cx + CW, "│", dim)
             yy += 2
         self.put(yy, x, lijn("└", "┴", "┘"), dim)
@@ -550,8 +563,8 @@ class App:
         verw = verwachte_cijfers(v)
         juist_rij = [verw.get(k) for _, k, _ in cols]
         cellen, antw, pos, laatste_cel = [None] * n, "", 0, 0
-        melding, oordeel, goed = "", None, None
-        voet = "Tab/→ verder · Shift-Tab/← terug · ↓ antwoord · Enter = nakijken · Esc = stop"
+        melding, oordeel, goed, eigen_komma = "", None, None, None
+        voet = "Tab/→ verder · ← terug · , = komma · ↓ antwoord · Enter = nakijken · Esc stop"
         while True:
             if self.te_klein():
                 continue
@@ -563,10 +576,10 @@ class App:
                 self.put(4, x, stuk, attr)
                 x += len(stuk)
             self.put(5, 4, f"Komma achter {v.van} · vul aan met nullen tot {v.naar} · "
-                           "één cijfer per vakje", self.c["dim"])
-            rijen = [("Jij", cellen, komma_van, oordeel)]
+                           "druk , om de komma te zetten", self.c["dim"])
+            rijen = [("Jij", cellen, komma_van, oordeel, eigen_komma)]
             if goed is not None:
-                rijen.append(("Juist", juist_rij, komma_naar, None))
+                rijen.append(("Juist", juist_rij, komma_naar, None, None))
             ya = self.teken_tabel(7, 12, v, rijen, pos if goed is None and pos < n else None) + 1
             self.put(ya, 4, "Antwoord:", self.c["bold"])
             if goed is None:
@@ -576,7 +589,17 @@ class App:
             self.tekstvak(ya, 15, antw, 14, veld_attr)
             self.put(ya, 33, v.naar, self.c["blauw"])
             if goed is None:
-                self.put(ya + 2, 4, melding, self.c["fout"])
+                if eigen_komma is not None:
+                    gelezen = aflezen(cellen, eigen_komma)
+                    plek = labels[eigen_komma]
+                    if gelezen is None:
+                        tekst = "Zet eerst cijfers in de tabel."
+                    elif cols[eigen_komma][2]:
+                        tekst = f"Aflezen met de komma achter {plek}: {gelezen} {plek}"
+                    else:
+                        tekst = f"Aflezen: {gelezen}, maar bij {plek} hoort geen eenheid."
+                    self.put(ya + 2, 4, tekst, self.c["blauw"])
+                self.put(ya + 3, 4, melding, self.c["fout"])
                 self.cursor(True)
                 if pos < n:
                     self.scr.move(10, 12 + 1 + pos * (CW + 1) + 2)
@@ -595,8 +618,16 @@ class App:
                 else:
                     self.put(ya + 3, 4, "✘ Kijk naar de rode vakjes: de rij 'Juist' toont hoe het moet.",
                              self.c["fout"])
-                self.put(ya + 4, 4, regel_uitleg(v)[0], self.c["geel"])
-                self.put(ya + 5, 4, f"De komma springt van {v.van} naar {v.naar}: "
+                yy = ya + 4
+                if eigen_komma == komma_naar:
+                    self.put(yy, 4, f"✔ Je komma staat goed: achter {v.naar}.", self.c["goed"])
+                    yy += 1
+                elif eigen_komma is not None:
+                    self.put(yy, 4, f"✘ Je komma stond achter {labels[eigen_komma]}, "
+                                    f"maar moest achter {v.naar}.", self.c["fout"])
+                    yy += 1
+                self.put(yy, 4, regel_uitleg(v)[0], self.c["geel"])
+                self.put(yy + 1, 4, f"De komma springt van {v.van} naar {v.naar}: "
                                     f"lees af → {fmt(v.antwoord)} {v.naar}.", self.c["geel"])
                 self.put(ya + 7, 4, "Enter = naar je resultaat" if nr == REEKS - 1
                          else "Enter = volgende oefening", self.c["dim"])
@@ -643,6 +674,8 @@ class App:
                     cellen[pos] = None
                 elif k in (curses.KEY_DC, ord(" ")):
                     cellen[pos] = None
+                elif k in (ord(","), ord(".")):
+                    eigen_komma = None if eigen_komma == pos else pos
             else:
                 antw = self.bewerk(antw, k)
             if pos < n:
@@ -831,6 +864,12 @@ def zelftest():
     assert all(o is not False for o in controleer_tabel(v, juist))
     assert controleer_tabel(v, [None, None, 0, 4, 2, 5, 0])[2] is True  # extra nul mag
     assert controleer_tabel(v, [None, None, None, 4, 2, 6, None])[5] is False
+
+    assert aflezen([4, 0, 0, 0, None, None, None, None, None, None], 0) == "4,000"   # 4000 kg -> t
+    assert aflezen([None, None, None, 4, 2, 5, None], 5) == "425"                  # 4,25 m -> cm
+    assert aflezen([None, None, None, None, None, None, 5], 3) == "0,005"          # 5 mm -> m
+    assert aflezen([None, None, None, 4, None, 5, None], 3) == "4,05"
+    assert aflezen([None] * 7, 3) is None
 
     alles = EENHEDEN[MASSA] + EENHEDEN[LENGTE]
     for nv in NIVEAUS:
