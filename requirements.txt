@@ -1,0 +1,2 @@
+# Op Linux en macOS is niets extra nodig. Op Windows zorgt dit pakket voor het scherm (curses).
+windows-curses>=2.4; sys_platform == "win32"

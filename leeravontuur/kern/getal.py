@@ -1,0 +1,30 @@
+"""Getallen lezen en tonen zoals in Vlaanderen: met een komma."""
+
+import re
+from decimal import Decimal
+
+
+def decimalen(d):
+    return max(0, -d.normalize().as_tuple().exponent)
+
+
+def fmt(d):
+    """Decimal -> tekst met komma, zonder wetenschappelijke notatie."""
+    return format(d.normalize(), "f").replace(".", ",")
+
+
+def lees_getal(tekst):
+    """Leest wat het kind typte. '3,5' en '0.25' zijn kommagetallen, '3.500' is 3500.
+
+    Een eenheid achteraan ('0,25 g') mag. Geeft None als het geen getal is.
+    """
+    t = re.sub(r"[a-z]+$", "", tekst.strip().lower()).replace(" ", "")
+    if not t:
+        return None
+    if "," in t:
+        t = t.replace(".", "").replace(",", ".")
+    elif re.fullmatch(r"[1-9]\d{0,2}(\.\d{3})+", t):
+        t = t.replace(".", "")
+    if not re.fullmatch(r"\d+(\.\d+)?|\.\d+", t):
+        return None
+    return Decimal(t)

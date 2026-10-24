@@ -1,0 +1,25 @@
+{
+  "vaardigheid": "wiskunde.eenheden.omzetten",
+  "omschrijving": "Lengte (km … mm) en massa (t … mg) herleiden met de eenhedentabel",
+  "doelen": [],
+  "parameters": {
+    "max_stap": "int",
+    "cijfers": "lijst",
+    "dec_getal": "int",
+    "dec_antw": "int",
+    "max_getal": "int",
+    "max_antw": "int"
+  },
+  "leerlijn": {
+    "3": {"max_stap": 1, "cijfers": [1, 1], "dec_getal": 0, "dec_antw": 0,
+          "max_getal": 1000, "max_antw": 10000},
+    "4": {"max_stap": 3, "cijfers": [1, 2], "dec_getal": 0, "dec_antw": 0,
+          "max_getal": 10000, "max_antw": 100000},
+    "5": {"max_stap": 9, "cijfers": [1, 3], "dec_getal": 1, "dec_antw": 2,
+          "max_getal": 100000, "max_antw": 1000000},
+    "6": {"max_stap": 9, "cijfers": [2, 4], "dec_getal": 3, "dec_antw": 3,
+          "max_getal": 1000000, "max_antw": 10000000},
+    "m1": {"max_stap": 9, "cijfers": [2, 5], "dec_getal": 3, "dec_antw": 3,
+           "max_getal": 10000000, "max_antw": 100000000}
+  }
+}

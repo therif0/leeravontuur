@@ -1,50 +1,91 @@
-# oefeningenImrane
+# Leeravontuur
 
-Een terminalprogramma om eenheden te leren omzetten:
+**Een gratis leerprogramma van Solve It Now. Iedereen moet kunnen leren.**
 
-- **Massa:** t, kg, hg, dag, g, dg, cg, mg
-- **Lengte:** km, hm, dam, m, dm, cm, mm
+Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. Het werkt op Windows, macOS en Linux,
+is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
+(zie [het plan](docs/plan.md)).
 
-Het is één bestand (`oefeningen.py`) en gebruikt alleen Python 3. Dat staat standaard op Fedora, dus je hoeft niets te installeren.
+**Wat er nu in zit (versie 0.1):**
+- **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
+  - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
+  - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
+    bv. *"je schoof de komma de verkeerde kant op"*.
+  - **Tabel-oefening:** je vult de eenhedentabel in, één cijfer per vakje.
+    - Met `Tab`, de pijltjes of een **muisklik** ga je naar een vakje.
+    - Met `,` (of een klik op de rand tussen twee vakjes) zet je zelf de komma, en je ziet meteen wat je afleest.
+    - Met `r` draai je de typrichting om.
+  - **Spiekbrief** met uitleg en voorbeelden.
+- **Niveaus volgens het leerjaar:**
+  - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
+  - Het leerjaar stel je in bij **Opties**. Volgend schooljaar schuift alles mee.
+- **Opties:** naam, leerjaar, kleuren (ook voor **kleurenblindheid**), hoog contrast, eenvoudige tekens, muis en typrichting.
 
-## Starten
+## Installeren en starten
 
+Je hebt **Python 3.10 of nieuwer** nodig.
+
+### Linux (bv. Fedora)
+Python staat er meestal al op.
+```bash
+git clone https://github.com/therif0/oefeningenImrane.git
+cd oefeningenImrane
+python3 oefeningen.py
+```
+Een snelkoppeling in het startmenu maken (eenmalig): `python3 oefeningen.py --snelkoppeling`
+
+### macOS
+Installeer Python via [python.org](https://www.python.org/downloads/) (of `brew install python`) en doe daarna in de Terminal:
 ```bash
 git clone https://github.com/therif0/oefeningenImrane.git
 cd oefeningenImrane
 python3 oefeningen.py
 ```
 
-Of maak het bestand uitvoerbaar en start het rechtstreeks:
+### Windows
+1. Installeer Python via [python.org](https://www.python.org/downloads/) of de Microsoft Store.
+2. Open **Windows Terminal** (aanbevolen; het gewone opdrachtvenster werkt ook) en doe:
+```bat
+git clone https://github.com/therif0/oefeningenImrane.git
+cd oefeningenImrane
+py -m pip install -r requirements.txt
+py oefeningen.py
+```
+`requirements.txt` installeert op Windows één klein pakket (`windows-curses`). Op Linux en macOS installeert het niets.
 
+Het venster moet minstens **80×24** tekens groot zijn.
+
+### Bijwerken
 ```bash
-chmod +x oefeningen.py
-./oefeningen.py
+git pull
 ```
 
-Het venster moet minstens 80×24 tekens groot zijn. Een gewoon Konsole-venster is groot genoeg.
+## Opties bij het starten
+| Argument | Wat het doet |
+|---|---|
+| `--kleurenblind` | kleuren voor rood-groen-kleurenblindheid (blauw = juist, oranje = fout); `--kleurenblind blauw-geel` voor blauw-geel |
+| `--contrast` | hoog contrast (zwart-wit) |
+| `--geen-kleur` | geen kleuren |
+| `--ascii` | alleen eenvoudige tekens (voor oude terminals) |
+| `--geen-muis` | muis uit, zodat je tekst gewoon kunt selecteren (met de muis aan lukt dat meestal met Shift ingedrukt) |
+| `--versie` | versie tonen |
+| `--test` | de automatische tests uitvoeren |
 
-### Snelkoppeling in het startmenu (optioneel)
+Alles kan ook in het menu **Opties**; dat wordt bewaard.
 
-```bash
-python3 oefeningen.py --snelkoppeling
-```
+## Waar staan de gegevens?
+| Systeem | Map |
+|---|---|
+| Windows | `%APPDATA%\Leeravontuur` |
+| macOS | `~/Library/Application Support/Leeravontuur` |
+| Linux | `~/.local/share/leeravontuur` |
 
-Daarna staat **Eenheden oefenen** in het startmenu (bij Onderwijs). Het opent in Konsole.
+Er worden geen gegevens verstuurd: alles blijft op de computer.
 
-## Wat zit erin?
+## Voor ontwikkelaars
+- Structuur en afspraken: [CLAUDE.md](CLAUDE.md). Het volledige plan: [docs/plan.md](docs/plan.md).
+- Tests: `python3 -m unittest discover -s tests`. Ze draaien ook automatisch op Windows, macOS en Linux (GitHub Actions).
 
-1. **Vrij oefenen**: zoveel vragen als je wil. Met `?` krijg je een tip, en na elk antwoord zie je de volledige uitleg.
-2. **Reeks van 10**: 10 vragen. Daarna krijg je je score en de uitleg bij elke fout.
-3. **Tabel-oefening**: de som staat bovenaan. Je vult de eenhedentabel in, één cijfer per vakje (met `Tab` ga je naar het volgende vakje), en daarna typ je je antwoord. Met `,` zet je in een vakje zelf de komma. Je ziet dan meteen wat je afleest, bijvoorbeeld 4000 kg → `4,000 t`. Met `r` draai je de typrichting om (naar links of naar rechts), zodat je ook van achter naar voor kunt typen. Bij het nakijken worden de vakjes groen of rood en zie je de juiste tabel eronder.
-4. **Spiekbrief**: hoe de tabel werkt, met voorbeelden.
-
-Je kiest altijd eerst welke eenheden je oefent (massa, lengte, allebei of zelf aanduiden) en hoe moeilijk het mag zijn (makkelijk, normaal of moeilijk).
-
-Kommagetallen typ je met een komma, bijvoorbeeld `0,25`.
-
-## Zelftest
-
-```bash
-python3 oefeningen.py --test
-```
+## Licentie
+[CC BY-NC-SA 4.0](LICENSE): gratis gebruiken, delen en aanpassen, met vermelding van Solve It Now,
+niet commercieel, en aanpassingen onder dezelfde licentie.
