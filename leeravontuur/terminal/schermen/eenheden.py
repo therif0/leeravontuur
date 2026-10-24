@@ -4,12 +4,13 @@ import curses
 import random
 import textwrap
 
-from ...kern import leerjaren
+from ...kern import herhaling, leerjaren, selectie
 from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
 from ..scherm import BACKSPACE, ENTER, ESC
 
 REEKS = 10
+VORMEN = {"Vrij oefenen": "vrij", "Reeks van 10": "reeks", "Tabel-oefening": "tabel"}
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
 TABEL_X, TABEL_Y = 12, 7
 
@@ -19,6 +20,7 @@ class Eenheden:
         self.app = app
         self.s = app.s
         self.kruimel = list(kruimel)  # tot en met "Eenheden"
+        self.totaal = REEKS           # aantal vragen in de lopende reeks
 
     # ---- keuzes --------------------------------------------------------
 
@@ -43,8 +45,13 @@ class Eenheden:
                 soort = ["Massa", "Lengte", "Massa + lengte"][k]
             niveau = self.kies_niveau(kr)
             if niveau is not None:
-                jaar = leerjaren.leerjaar_voor_niveau(self.app.inst.leerjaar, niveau)
-                return gekozen, jaar, f"{soort} · {leerjaren.NIVEAUS[niveau][0]} ({leerjaren.NAMEN[jaar]})"
+                self.app.onthoud_oefening({"onderwerp": "eenheden", "vorm": VORMEN[vorm], "eenheden": gekozen,
+                                           "niveau": niveau, "soort": soort})
+                return self.keuze(gekozen, niveau, soort)
+
+    def keuze(self, gekozen, niveau, soort):
+        jaar = leerjaren.leerjaar_voor_niveau(self.app.inst.leerjaar, niveau)
+        return gekozen, jaar, f"{soort} · {leerjaren.NIVEAUS[niveau][0]} ({leerjaren.NAMEN[jaar]})"
 
     def kies_niveau(self, kr):
         eigen = self.app.inst.leerjaar
@@ -107,8 +114,9 @@ class Eenheden:
 
     def voortgang(self, y, nr, resultaten, soort):
         s = self.s
-        s.put(y, 4, f"Vraag {nr + 1} van {REEKS}", "bold")
-        for i in range(REEKS):
+        totaal = self.totaal
+        s.put(y, 4, f"Vraag {nr + 1} van {totaal}", "bold")
+        for i in range(min(totaal, 10)):
             if i < len(resultaten):
                 ch, rol = "●", "goed" if resultaten[i]["goed"] else "fout"
             else:
@@ -134,7 +142,7 @@ class Eenheden:
                 if vrij:
                     knoppen.insert(1, ("?", "tip", ord("?")))
             else:
-                laatste = not vrij and nr == REEKS - 1
+                laatste = not vrij and nr == self.totaal - 1
                 knoppen = [("Enter", "naar je resultaat" if laatste else "volgende vraag", 10),
                            ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
@@ -266,7 +274,7 @@ class Eenheden:
                 knoppen = [("Tab", "verder", 9), ("←", "terug", curses.KEY_LEFT), (",", "komma", ord(",")),
                            ("↓", "antwoord", curses.KEY_DOWN), ("Enter", "nakijken", 10), ("Esc", "stop", ESC)]
             else:
-                knoppen = [("Enter", "naar je resultaat" if nr == REEKS - 1 else "volgende oefening", 10),
+                knoppen = [("Enter", "naar je resultaat" if nr == self.totaal - 1 else "volgende oefening", 10),
                            ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             self.voortgang(2, nr, resultaten, soort)
@@ -411,47 +419,112 @@ class Eenheden:
             if pos < n:
                 laatste_cel = pos
 
-    # ---- reeksen en rapport --------------------------------------------
+    # ---- reeksen, herhaling en rapport -----------------------------------
+
+    def verwerk(self, v, goed, tabel, item=None):
+        """Werkt de herhaalbak bij na een antwoord."""
+        o, kind = self.app.opslag, self.app.kind
+        if item is not None:
+            if goed:
+                herhaling.juist(o, item)
+            else:
+                herhaling.fout(o, kind.id, item["vaardigheid"], item["onderwerp"], item["data"])
+        elif not goed:
+            herhaling.fout(o, kind.id, E.OMZETTEN.id, E.onderwerp(v, tabel), E.herhaal_data(v, tabel))
+
+    def gewichten(self):
+        recent = self.app.opslag.recente_antwoorden(self.app.kind.id, E.OMZETTEN.id, 100)
+        paren = {f"{a}>{b}" for a in E.MACHT for b in E.MACHT if a != b and E.CATEGORIE[a] == E.CATEGORIE[b]}
+        return selectie.gewichten(recent, E.onderwerp_van_sleutel, paren)
+
+    def speel(self, kr, soort, modus, jaar, maker, aantal, tabel, items=None):
+        """Speelt `aantal` vragen (maker(nr) maakt vraag nr). Geeft (resultaten, gestopt?)."""
+        resultaten = []
+        self.totaal = aantal
+        with self.app.sessie(modus, E.OMZETTEN.id, jaar) as ses:
+            for nr in range(aantal):
+                v = maker(nr)
+                if tabel:
+                    uit = self.tabel_vraag(kr, v, soort, ses, nr, resultaten)
+                else:
+                    uit = self.stel_vraag(kr, v, soort, ses, nr, resultaten)
+                if uit is None:
+                    return resultaten, True
+                resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None,
+                                       tijd=ses.laatste_tijd_ms))
+                self.verwerk(v, uit[1], tabel, items[nr] if items else None)
+                if uit[-1]:
+                    return resultaten, True
+        return resultaten, False
+
+    def nieuwe_vragen(self, gekozen, jaar, tabel):
+        """Een maker voor een reeks: slim gekozen (moeilijke omzettingen vaker) en niet recent al gezien."""
+        vermijd = selectie.recent_gezien(self.app.opslag, self.app.kind.id, E.OMZETTEN.id)
+        gew = self.gewichten()
+        vorige = []
+
+        def maker(nr):
+            v = E.maak_vraag(gekozen, jaar, tabel, vorige[-1] if vorige else None, vermijd=vermijd, gewichten=gew)
+            vermijd.add(v.sleutel)
+            vorige.append(v)
+            return v
+        return maker
 
     def reeks(self, gekozen, jaar, soort, tabel):
-        kr = self.kruimel + ["Tabel-oefening" if tabel else "Reeks van 10"]
+        naam = "Tabel-oefening" if tabel else "Reeks van 10"
         while True:
-            resultaten, vorige = [], None
-            with self.app.sessie("tabel" if tabel else "reeks", E.OMZETTEN.id, jaar) as ses:
-                for nr in range(REEKS):
-                    v = E.maak_vraag(gekozen, jaar, tabel, vorige)
-                    vorige = v
-                    if tabel:
-                        uit = self.tabel_vraag(kr, v, soort, ses, nr, resultaten)
-                    else:
-                        uit = self.stel_vraag(kr, v, soort, ses, nr, resultaten)
-                    if uit is None:
-                        return
-                    resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None))
-                    if uit[-1]:
-                        return
-            if not self.rapport(kr, soort, resultaten):
+            res, gestopt = self.speel(self.kruimel + [naam], soort, "tabel" if tabel else "reeks", jaar,
+                                      self.nieuwe_vragen(gekozen, jaar, tabel), REEKS, tabel)
+            if gestopt:
+                return
+            if not self.na_reeks(naam, soort, jaar, tabel, res):
                 return
 
+    def na_reeks(self, naam, soort, jaar, tabel, res):
+        """Rapport tonen en eventueel fouten opnieuw of gelijkaardige vragen. True = nog een reeks."""
+        while True:
+            keuze = self.rapport(self.kruimel + [naam], soort, res)
+            fouten = [r for r in res if not r["goed"] or r["tabel"] is False]
+            if keuze == "fouten" and fouten:
+                vragen = [r["v"] for r in fouten]
+                res, gestopt = self.speel(self.kruimel + [naam, "Fouten opnieuw"], soort, "fouten_opnieuw", jaar,
+                                          lambda nr: vragen[nr], len(vragen), tabel)
+            elif keuze == "gelijkaardig" and fouten:
+                vermijd = {r["v"].sleutel for r in res}
+                vragen = [E.maak_herhaling(E.herhaal_data(r["v"], tabel), jaar, vermijd) for r in fouten]
+                res, gestopt = self.speel(self.kruimel + [naam, "Gelijkaardige vragen"], soort, "gelijkaardig",
+                                          jaar, lambda nr: vragen[nr], len(vragen), tabel)
+            else:
+                return keuze == "nieuw"
+            if gestopt:
+                return False
+
     def rapport(self, kr, soort, resultaten):
+        """Toont de score en de uitleg. Geeft "nieuw", "menu", "fouten" of "gelijkaardig"."""
         naam = self.app.inst.naam
+        totaal = len(resultaten)
         goed = sum(r["goed"] for r in resultaten)
-        if goed == REEKS:
+        if goed == totaal:
             bericht, rol = f"Perfect{', ' + naam if naam else ''}! Alles juist!", "goed"
-        elif goed >= 8:
+        elif goed >= 0.8 * totaal:
             bericht, rol = "Heel goed gedaan!", "goed"
-        elif goed >= 6:
-            bericht, rol = "Goed bezig! Lees de uitleg bij je fouten en probeer nog een reeks.", "accent"
+        elif goed >= 0.6 * totaal:
+            bericht, rol = "Goed bezig! Lees de uitleg bij je fouten en probeer ze opnieuw.", "accent"
         else:
             bericht, rol = "Blijf oefenen, je kan het! Lees de uitleg hieronder rustig na.", "fout"
         n, j = self.app.vandaag()
-        regels = [(f"Je score: {goed} / {REEKS}", rol), (bericht, rol), (soort, "dim"), ("", ""),
-                  (f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
+        regels = [(f"Je score: {goed} / {totaal}", rol), (bericht, rol), (soort, "dim"), ("", "")]
+        if self.app.inst.timer_zichtbaar and totaal:
+            regels.insert(3, (f"Gemiddeld {round(sum(r['tijd'] for r in resultaten) / totaal / 1000)} seconden "
+                              "per vraag.", "info"))
+        regels += [(f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
         fouten = [(i, r) for i, r in enumerate(resultaten) if not r["goed"] or r["tabel"] is False]
         if not fouten:
             regels.append(("Geen enkele fout. Proficiat!", "goed"))
         else:
-            regels += [("Wat ging er mis? Lees de uitleg goed:", "accent"), ("", "")]
+            regels += [("Wat ging er mis? Lees de uitleg goed:", "accent"),
+                       ("Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen met nieuwe getallen.",
+                        "dim"), ("", "")]
         for i, r in fouten:
             v = r["v"]
             regels.append((f"Vraag {i + 1}:  {fmt(v.getal)} {v.van} = ? {v.naar}", "bold"))
@@ -467,27 +540,72 @@ class Eenheden:
             regels += [("   " + l, "") for l in E.regel_uitleg(v)]
             regels += [("   " + l, "info") for l in E.tabel_uitleg(v)]
             regels.append(("", ""))
-        toetsen = {ord("n"): True, ord("N"): True, ESC: False, ord("m"): False, ord("M"): False,
-                   ("nieuw",): True, ("menu",): False}
-        toetsen.update({k: True for k in ENTER})
-        return self.s.lezer(kr + ["Resultaat"], regels,
-                            [("Enter", "nieuwe reeks", ("nieuw",)), ("Esc", "menu", ("menu",))], toetsen)
+        toetsen = {ord("n"): "nieuw", ord("N"): "nieuw", ESC: "menu", ord("m"): "menu", ord("M"): "menu",
+                   ("nieuw",): "nieuw", ("menu",): "menu"}
+        toetsen.update({k: "nieuw" for k in ENTER})
+        knoppen = [("Enter", "nieuw", ("nieuw",))]
+        if fouten:
+            toetsen.update({ord("f"): "fouten", ord("F"): "fouten", ("fouten",): "fouten",
+                            ord("g"): "gelijkaardig", ord("G"): "gelijkaardig", ("gelijk",): "gelijkaardig"})
+            knoppen = [("F", "fouten opnieuw", ("fouten",)), ("G", "gelijkaardig", ("gelijk",))] + knoppen
+        knoppen.append(("Esc", "menu", ("menu",)))
+        return self.s.lezer(kr + ["Resultaat"], regels, knoppen, toetsen, scroll_uitleg="")
 
     def vrij_oefenen(self, gekozen, jaar, soort):
         kr = self.kruimel + ["Vrij oefenen"]
         self.vrij_goed = self.vrij_aantal = 0
+        fouten = []
+        vermijd = selectie.recent_gezien(self.app.opslag, self.app.kind.id, E.OMZETTEN.id)
+        gew = self.gewichten()
         vorige = None
         with self.app.sessie("vrij", E.OMZETTEN.id, jaar) as ses:
             while True:
-                v = E.maak_vraag(gekozen, jaar, vorige=vorige)
+                v = E.maak_vraag(gekozen, jaar, vorige=vorige, vermijd=vermijd, gewichten=gew)
+                vermijd.add(v.sleutel)
                 vorige = v
                 uit = self.stel_vraag(kr, v, soort, ses, vrij=True)
                 if uit is None:
-                    return
+                    break
                 self.vrij_aantal += 1
                 self.vrij_goed += uit[1]
+                self.verwerk(v, uit[1], False)
+                if not uit[1]:
+                    fouten.append(dict(v=v, antw=uit[0], goed=False, tabel=None, tijd=ses.laatste_tijd_ms))
                 if uit[2]:
-                    return
+                    break
+        if fouten:
+            k = self.s.menu(kr, f"Je had {len(fouten)} {'fout' if len(fouten) == 1 else 'fouten'}. "
+                                "Wil je ze nog eens proberen?",
+                            [("Dezelfde vragen", "precies dezelfde vragen opnieuw"),
+                             ("Gelijkaardige vragen", "dezelfde soort, met nieuwe getallen"),
+                             ("Nee, stoppen", "")])
+            keuze = {0: "fouten", 1: "gelijkaardig"}.get(k)
+            if keuze:
+                self.totaal = len(fouten)
+                vragen = ([r["v"] for r in fouten] if keuze == "fouten" else
+                          [E.maak_herhaling(E.herhaal_data(r["v"]), jaar, vermijd) for r in fouten])
+                res, gestopt = self.speel(kr + ["Fouten opnieuw"], soort,
+                                          "fouten_opnieuw" if keuze == "fouten" else "gelijkaardig",
+                                          jaar, lambda nr: vragen[nr], len(vragen), False)
+                if not gestopt:
+                    self.na_reeks("Vrij oefenen", soort, jaar, False, res)
+
+    def herhalen(self, kr, items):
+        """Vragen uit de herhaalbak (met nieuwe getallen), op het eigen leerjaar van het kind."""
+        jaar = self.app.inst.leerjaar
+        vragen = [E.maak_herhaling(i["data"], jaar) for i in items]
+        tabel = False  # herhalen gebeurt als gewone vraag; tabel-onderwerpen ook
+        res, gestopt = self.speel(kr, "Herhalen · eenheden", "herhaalbak", jaar, lambda nr: vragen[nr],
+                                  len(vragen), tabel, items)
+        return res, gestopt
+
+    def hervat(self, data):
+        """'Verder waar je was': dezelfde oefening als de vorige keer."""
+        gekozen, jaar, soort = self.keuze(data["eenheden"], data["niveau"], data["soort"])
+        if data["vorm"] == "vrij":
+            self.vrij_oefenen(gekozen, jaar, soort)
+        else:
+            self.reeks(gekozen, jaar, soort, tabel=data["vorm"] == "tabel")
 
     def spiekbrief(self, kr):
         toetsen = {k: None for k in (ESC, ord("q"), *ENTER)}

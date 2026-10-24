@@ -78,6 +78,22 @@ MIGRATIES = [
     ALTER TABLE kinderen ADD COLUMN pincode TEXT;
     ALTER TABLE antwoorden ADD COLUMN verwacht TEXT;
     """,
+    # versie 3: de herhaalbak (Leitner): foute onderwerpen komen op latere dagen terug
+    """
+    CREATE TABLE herhaalbak (
+        id          TEXT PRIMARY KEY,
+        kind_id     TEXT NOT NULL REFERENCES kinderen(id) ON DELETE CASCADE,
+        vaardigheid TEXT NOT NULL,
+        onderwerp   TEXT NOT NULL,
+        data        TEXT NOT NULL,
+        bak         INTEGER NOT NULL,
+        volgende    TEXT NOT NULL,
+        toegevoegd  TEXT NOT NULL,
+        gewijzigd   TEXT NOT NULL,
+        UNIQUE (kind_id, vaardigheid, onderwerp)
+    );
+    CREATE INDEX herhaalbak_kind_volgende ON herhaalbak(kind_id, volgende);
+    """,
 ]
 
 # deze velden van Instellingen staan in de tabel kinderen, de rest in instellingen.data
@@ -275,6 +291,47 @@ class Opslag:
             rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND dag BETWEEN ? AND ? "
                                      "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
         return [dict(r) for r in rijen]
+
+    def gezien_sleutels(self, kind_id, vaardigheid, sinds):
+        """Vraagsleutels die dit kind sinds die dag al kreeg (om herhaling te vermijden)."""
+        rijen = self.con.execute("SELECT DISTINCT sleutel FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
+                                 "AND dag >= ?", (kind_id, vaardigheid, str(sinds)))
+        return {r[0] for r in rijen}
+
+    def recente_antwoorden(self, kind_id, vaardigheid, aantal=200):
+        rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
+                                 "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, aantal))
+        return [dict(r) for r in rijen]
+
+    # ---- herhaalbak ----------------------------------------------------------------
+
+    def herhaal_zet(self, kind_id, vaardigheid, onderwerp, data, bak, volgende):
+        nu = klok.iso()
+        self._schrijf("INSERT INTO herhaalbak (id, kind_id, vaardigheid, onderwerp, data, bak, volgende, toegevoegd, "
+                      "gewijzigd) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                      "ON CONFLICT(kind_id, vaardigheid, onderwerp) DO UPDATE SET data = excluded.data, "
+                      "bak = excluded.bak, volgende = excluded.volgende, gewijzigd = excluded.gewijzigd",
+                      (_nieuw_id(), kind_id, vaardigheid, onderwerp, json.dumps(data, ensure_ascii=False), bak,
+                       str(volgende), nu, nu))
+
+    def herhaal_weg(self, kind_id, vaardigheid, onderwerp):
+        self._schrijf("DELETE FROM herhaalbak WHERE kind_id = ? AND vaardigheid = ? AND onderwerp = ?",
+                      (kind_id, vaardigheid, onderwerp))
+
+    def herhaalbak(self, kind_id, tot_dag=None):
+        """Items in de herhaalbak (alleen die tot en met tot_dag aan de beurt zijn, als die gegeven is)."""
+        if tot_dag is None:
+            rijen = self.con.execute("SELECT * FROM herhaalbak WHERE kind_id = ? ORDER BY volgende, bak",
+                                     (kind_id,))
+        else:
+            rijen = self.con.execute("SELECT * FROM herhaalbak WHERE kind_id = ? AND volgende <= ? "
+                                     "ORDER BY volgende, bak", (kind_id, str(tot_dag)))
+        uit = []
+        for r in rijen:
+            d = dict(r)
+            d["data"] = json.loads(d["data"])
+            uit.append(d)
+        return uit
 
     # ---- ouder, pincodes, wissen ------------------------------------------------
 

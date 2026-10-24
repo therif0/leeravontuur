@@ -67,7 +67,8 @@ class TestRapport(unittest.TestCase):
 
     def test_leeg(self):
         r = rapporten.maak_rapport(self.o, self.kind, rapporten.Periode(date(2026, 1, 1), date(2026, 1, 2), "x"))
-        self.assertIn("nog niet geoefend", rapporten.regels(r)[-1][0])
+        self.assertTrue(any("nog niet geoefend" in t for t, _ in rapporten.regels(r)))
+        self.assertTrue(any("Eenheden omzetten: bezig" in t for t, _ in rapporten.regels(r)))
 
     def test_kalender(self):
         dagen = rapporten.kalender(self.o, self.kind.id, 2026, 10)

@@ -8,7 +8,10 @@ from leeravontuur.kern import wachtwoord
 from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen import ouder
-from test_schermen import ESC, OK, Basis
+try:
+    from .test_schermen import ESC, OK, Basis
+except ImportError:  # ook zo te starten: python -m unittest discover -s tests
+    from test_schermen import ESC, OK, Basis
 
 WW = "geheim1"
 
@@ -76,7 +79,7 @@ class TestRapportenScherm(OuderBasis):
     def test_rapport_export_en_kalender(self):
         o = self.met_wachtwoord(("Test", "5"))
         # eerst als kind 3 vragen vrij oefenen
-        self.speel([OK, OK, "1", "1", "1", "1", "1", OK, "1", OK, OK, "1", OK, OK, "1", OK, OK, ESC, ESC, ESC, ESC,
+        self.speel([OK, OK, "2", "1", "1", "1", "1", OK, "1", OK, OK, "1", OK, OK, "1", OK, OK, ESC, ESC, ESC, ESC,
                     ESC, ESC], opslag=o)
         toetsen = [OK, "3", *WW, OK, "1", "1", "1", "e", OK, "k", ESC, ESC, ESC, ESC, ESC, ESC]
         scherm, _ = self.speel(toetsen, opslag=o)
@@ -128,7 +131,7 @@ class TestKinderenBeheren(OuderBasis):
 class TestTimer(OuderBasis):
     def vrije_vraag(self, zichtbaar):
         o = self.opslag(("Test", "5", {"timer_zichtbaar": zichtbaar}))
-        scherm, _ = self.speel([OK, OK, "1", "1", "1", "1", "1", OK, "1", OK, ESC, ESC, ESC, ESC, ESC, ESC],
+        scherm, _ = self.speel([OK, OK, "2", "1", "1", "1", "1", OK, "1", OK, ESC, ESC, ESC, ESC, ESC, ESC],
                                opslag=o)
         return any(" s)" in b for b in scherm.beelden)
 

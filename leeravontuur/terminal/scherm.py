@@ -153,11 +153,14 @@ class Scherm:
             self.win.timeout(1000 if self.slot else -1)
         except (curses.error, AttributeError):
             pass
+        wachtbeurten = 0
         while True:
             try:
                 k = self.win.get_wch()
-            except curses.error:  # geen toets binnen de tijd
-                if self.slot and time.monotonic() - self._laatste_toets >= self.slot:
+            except curses.error:  # geen toets binnen de tijd (telkens 1 seconde)
+                wachtbeurten += 1
+                stil = max(time.monotonic() - self._laatste_toets, wachtbeurten * 1.0)
+                if self.slot and stil >= self.slot:
                     raise Vergrendeld()
                 continue
             if isinstance(k, str):
@@ -261,7 +264,7 @@ class Scherm:
             elif k in (ESC, ord("q")):
                 return None
 
-    def lezer(self, kruimel, regels, knoppen, toetsen):
+    def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen"):
         """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}."""
         top = 0
         while True:
@@ -276,7 +279,7 @@ class Scherm:
                 lijnen += [(s, rol) for s in stukken]
             zicht = h - 4
             top = max(0, min(top, len(lijnen) - zicht))
-            self.nieuw(kruimel, [("↑↓", "scrollen", None)] + list(knoppen))
+            self.nieuw(kruimel, [("↑↓", scroll_uitleg, None)] + list(knoppen))
             for i, (tekst, rol) in enumerate(lijnen[top:top + zicht]):
                 self.put(2 + i, 4, tekst, rol)
             if top + zicht < len(lijnen):

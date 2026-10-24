@@ -12,7 +12,7 @@ from dataclasses import dataclass, field
 from datetime import date, timedelta
 from pathlib import Path
 
-from . import catalogus, klok, leerjaren
+from . import catalogus, herhaling, klok, leerjaren, vaardigheden
 
 DAGEN = ["ma", "di", "wo", "do", "vr", "za", "zo"]
 MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september",
@@ -82,6 +82,9 @@ class Rapport:
     per_dag: dict = field(default_factory=dict)          # "JJJJ-MM-DD" -> [aantal, juist]
     per_vaardigheid: dict = field(default_factory=dict)  # id -> {"aantal", "juist", "tijd_ms", "modi": Counter}
     denkfouten: Counter = field(default_factory=Counter)
+    status: list = field(default_factory=list)        # [(vaardigheid, status, aantal, laatst, pct)]
+    herhaalbak: int = 0
+    herhaal_vandaag: int = 0
 
     @property
     def procent(self):
@@ -91,6 +94,9 @@ class Rapport:
 def maak_rapport(opslag, kind, periode):
     rijen = opslag.antwoorden(kind.id, periode.van.isoformat(), periode.tot.isoformat())
     r = Rapport(kind, periode, rijen)
+    r.status = herhaling.overzicht(opslag, kind.id, list(vaardigheden.REGISTER.values()))
+    r.herhaalbak = len(opslag.herhaalbak(kind.id))
+    r.herhaal_vandaag = len(herhaling.aan_de_beurt(opslag, kind.id))
     for a in rijen:
         r.aantal += 1
         r.juist += a["juist"]
@@ -129,6 +135,7 @@ def regels(r):
            (f"Periode: {r.periode.tekst}", "dim"), ("", "")]
     if not r.aantal:
         uit.append(("In deze periode werd er nog niet geoefend.", ""))
+        uit += _status_regels(r)
         return uit
     dagen = len(r.per_dag)
     uit += [("SAMENVATTING", "accent"),
@@ -153,6 +160,7 @@ def regels(r):
         uit += [("", ""), ("MEEST GEMAAKTE DENKFOUTEN", "accent")]
         for code, k in r.denkfouten.most_common(5):
             uit.append((f"  {k}× {catalogus.denkfout(code)}", ""))
+    uit += _status_regels(r)
     fouten = [a for a in r.antwoorden if not a["juist"]][-10:]
     if fouten:
         uit += [("", ""), ("LAATSTE FOUTEN", "accent")]
@@ -160,6 +168,20 @@ def regels(r):
             tijd = a["tijdstip"][8:10] + "/" + a["tijdstip"][5:7] + " " + a["tijdstip"][11:16]
             juist = f" (juist: {a['verwacht']})" if a.get("verwacht") else ""
             uit.append((f"  {tijd}  {a['vraag']}  schreef {a['gegeven'] or '—'}{juist}", ""))
+    return uit
+
+
+def _status_regels(r):
+    """Status per vaardigheid (los van de periode) en de herhaalbak."""
+    if not r.status:
+        return []
+    uit = [("", ""), ("STATUS PER VAARDIGHEID (alle tijd)", "accent")]
+    for v, st, n, laatst, pct in r.status:
+        rol = "goed" if st == herhaling.BEHEERST else "dim" if st == herhaling.NIET_GEZIEN else ""
+        extra = "" if not n else f" · {n} vragen · laatst {datum(laatst)} · laatste 20: {pct} % juist"
+        uit.append((f"  {v.naam}: {st}{extra}", rol))
+    uit.append((f"  Herhaalbak: {r.herhaalbak} {'onderwerp' if r.herhaalbak == 1 else 'onderwerpen'}"
+                f" ({r.herhaal_vandaag} vandaag aan de beurt)", "info"))
     return uit
 
 

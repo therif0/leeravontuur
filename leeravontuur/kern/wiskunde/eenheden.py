@@ -167,23 +167,54 @@ def diagnose(v, gegeven):
     return None
 
 
-def maak_vraag(eenheden, leerjaar, tabel=False, vorige=None):
+def onderwerp(v, tabel=False):
+    """Het onderwerp van een vraag (voor herhaling en gewichten): bv. 'km>m' of 'km>m|tabel'."""
+    return f"{v.van}>{v.naar}" + ("|tabel" if tabel else "")
+
+
+def onderwerp_van_sleutel(sleutel):
+    """'wiskunde.eenheden.omzetten:km>m:3,5' -> 'km>m' (of None als het geen omzetting is)."""
+    delen = sleutel.split(":")
+    if len(delen) != 3 or delen[0] != OMZETTEN.id:
+        return None
+    return delen[1]
+
+
+def herhaal_data(v, tabel=False):
+    """Wat de herhaalbak moet onthouden om later een gelijkaardige vraag (met een nieuw getal) te maken."""
+    return {"van": v.van, "naar": v.naar, "tabel": tabel}
+
+
+def maak_herhaling(data, leerjaar, vermijd=()):
+    return maak_vraag([data["van"], data["naar"]], leerjaar, data.get("tabel", False),
+                      paar=(data["van"], data["naar"]), vermijd=vermijd)
+
+
+def maak_vraag(eenheden, leerjaar, tabel=False, vorige=None, paar=None, vermijd=(), gewichten=None):
     """Maakt een willekeurige omzetting tussen twee gekozen eenheden van dezelfde soort.
 
     De moeilijkheid komt uit de leerlijn van het gegeven leerjaar. Lukt het niet binnen die
     grenzen (bv. door een vreemde keuze van eenheden), dan worden de grenzen wat losser.
+    paar = vaste (van, naar); vermijd = vraagsleutels die recent al kwamen;
+    gewichten = {"km>m": 2.5, …} om moeilijke omzettingen vaker te kiezen.
     """
     p = leerlijnen.parameters(OMZETTEN.id, leerjaar)
     los = leerlijnen.parameters(OMZETTEN.id, "m2")
-    paren = [(a, b) for a in eenheden for b in eenheden
-             if a != b and CATEGORIE[a] == CATEGORIE[b]]
+    if paar:
+        paren = [tuple(paar)]
+    else:
+        paren = [(a, b) for a in eenheden for b in eenheden
+                 if a != b and CATEGORIE[a] == CATEGORIE[b]]
     if not paren:
         raise ValueError("kies minstens 2 eenheden van dezelfde soort")
     kort = [q for q in paren if abs(MACHT[q[0]] - MACHT[q[1]]) <= p["max_stap"]]
     paren = kort or paren
+    w = None
+    if gewichten:
+        w = [gewichten.get(f"{a}>{b}", 1.0) for a, b in paren]
     for poging in range(6000):
         nv = p if poging < 3000 else los
-        van, naar = random.choice(paren)
+        van, naar = random.choices(paren, weights=w, k=1)[0] if w else random.choice(paren)
         n = random.randint(*nv["cijfers"])
         m = random.randint(10 ** (n - 1), 10 ** n - 1)
         if n > 1 and m % 10 == 0:
@@ -196,6 +227,8 @@ def maak_vraag(eenheden, leerjaar, tabel=False, vorige=None):
         if tabel and not past_in_tabel(v):
             continue
         if vorige and vorige.sleutel == v.sleutel:
+            continue
+        if v.sleutel in vermijd and poging < 2000:  # lukt het niet, dan toch maar een eerder gezien getal
             continue
         return v
     van, naar = random.choice(paren)

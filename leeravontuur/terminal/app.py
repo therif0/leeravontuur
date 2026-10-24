@@ -4,7 +4,9 @@ import curses
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-from ..kern import instellingen, klok, leerjaren
+import json
+
+from ..kern import herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar
@@ -69,6 +71,16 @@ class App:
         self.opslag.bewaar_instellingen(self.kind.id, te_bewaren)
         self.basis = te_bewaren
         self.kind = self.opslag.kind(self.kind.id) or self.kind
+
+    def onthoud_oefening(self, data):
+        """Voor 'Verder waar je was'."""
+        self.opslag.zet_algemeen(f"laatste_oefening:{self.kind.id}", json.dumps(data, ensure_ascii=False))
+
+    def laatste_oefening(self):
+        try:
+            return json.loads(self.opslag.algemeen(f"laatste_oefening:{self.kind.id}") or "null")
+        except ValueError:
+            return None
 
     def sessie(self, modus, vaardigheid, leerjaar):
         return Sessie(self.opslag, self.kind.id, modus, vaardigheid, leerjaar, na_antwoord=self.ververs_status)
@@ -146,25 +158,79 @@ class App:
                     info.append(f"Vandaag al {n} {'vraag' if n == 1 else 'vragen'} geoefend, {j} juist.{lof}")
                 if self.opslag.probleem:
                     info.append(self.opslag.probleem)
+                te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?", [
+                    ("▶ Verder", self.voorstel()[0]),
                     ("Leren & oefenen", "wiskunde (taal en Frans volgen)"),
+                    (f"Herhalen ({te_herhalen})", "vragen die je moeilijk vond, met nieuwe getallen"
+                     if te_herhalen else "vandaag niets te herhalen"),
                     ("Spiekbrieven", "uitleg om terug te kijken"),
-                    ("Opties", "leerjaar, kleuren (ook kleurenblind), muis …"),
+                    ("Opties", "kleuren (ook kleurenblind), muis, avatar …"),
                     ("Wissel van kind", "iemand anders wil oefenen"),
                     ("Stoppen", "")], info=info,
                     onder=f"{MAKER} · gratis · {MOTTO.lower()}")
-                if k is None or k == 4:
+                if k is None or k == 6:
                     return
                 if k == 0:
-                    self.leren()
+                    self.voorstel()[1]()
                 elif k == 1:
-                    self.spiekbrieven()
+                    self.leren()
                 elif k == 2:
-                    self.opties()
+                    self.herhalen()
                 elif k == 3:
+                    self.spiekbrieven()
+                elif k == 4:
+                    self.opties()
+                elif k == 5:
                     self.wissel_van_kind()
             except TerugNaar:
                 continue
+
+    def voorstel(self):
+        """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders leren."""
+        n = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
+        if n:
+            return f"eerst je {n} herhaalvragen", self.herhalen
+        vorige = self.laatste_oefening()
+        if vorige and vorige.get("onderwerp") == "eenheden":
+            vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
+            kr = [HOOFD, "Leren", "Wiskunde", "Eenheden"]
+            return f"eenheden · {vorm} · {vorige['soort'].lower()}", lambda: Eenheden(self, kr).hervat(vorige)
+        return "kies iets om te leren", self.leren
+
+    def herhalen(self):
+        kr = [HOOFD, "Herhalen"]
+        items = herhaling.aan_de_beurt(self.opslag, self.kind.id)[:10]
+        if not items:
+            self.s.lezer(kr, [("Vandaag is er niets te herhalen. Goed zo!", "goed"), ("", ""),
+                              ("Vragen die je fout had, komen hier de volgende dagen terug, met nieuwe getallen.",
+                               ""), ("Na 3 keer juist zijn ze beheerst.", "dim")],
+                         [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
+            return
+        res, _ = Eenheden(self, kr).herhalen(kr, items)
+        if not res:
+            return
+        na = {i["onderwerp"]: i for i in self.opslag.herhaalbak(self.kind.id)}
+        beheerst = later = morgen = 0
+        for item, r in zip(items, res):
+            if item["onderwerp"] not in na:
+                beheerst += 1
+            elif r["goed"]:
+                later += 1
+            else:
+                morgen += 1
+        goed = sum(r["goed"] for r in res)
+        regels = [(f"Je herhaalde {len(res)} {'vraag' if len(res) == 1 else 'vragen'}: {goed} juist.",
+                   "goed" if goed == len(res) else "accent"), ("", "")]
+        if beheerst:
+            regels.append((f"✔ {beheerst} {'onderwerp is' if beheerst == 1 else 'onderwerpen zijn'} nu beheerst "
+                           f"en {'verdwijnt' if beheerst == 1 else 'verdwijnen'} uit de herhaalbak.", "goed"))
+        if later:
+            regels.append((f"{later} {'vraag komt' if later == 1 else 'vragen komen'} over een paar dagen nog eens "
+                           "terug (om te zien of het blijft zitten).", "info"))
+        if morgen:
+            regels.append((f"✘ {morgen} {'vraag komt' if morgen == 1 else 'vragen komen'} morgen terug.", "fout"))
+        self.s.lezer(kr + ["Klaar"], regels, [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
 
     def leren(self):
         kr = [HOOFD, "Leren"]

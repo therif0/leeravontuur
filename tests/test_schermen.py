@@ -78,7 +78,7 @@ class TestStart(Basis):
 
     def test_wissel_van_kind_met_eigen_instellingen(self):
         o = self.opslag(("Amira", "3", {"thema": "rood-groen"}), ("Imrane", "5"))
-        scherm, app = self.speel([OK, "1", "4", "2", ESC], opslag=o)  # Amira, dan wisselen naar Imrane
+        scherm, app = self.speel([OK, "1", "6", "2", ESC], opslag=o)  # Amira, dan wisselen naar Imrane
         self.assertTrue(self.ergens(scherm, "Hallo Amira!"))
         self.assertEqual(app.kind.naam, "Imrane")
         self.assertEqual(app.inst.thema, "standaard")
@@ -92,7 +92,7 @@ class TestStart(Basis):
     def test_startargument_wordt_niet_bewaard(self):
         o = self.opslag(("Test", "5"))
         # gestart met --contrast; in Opties de muis uitzetten (rij 3 + 2*4 = 11)
-        scherm, app = self.speel([OK, OK, "3", ("klik", 11, 10), ESC, ESC], opslag=o,
+        scherm, app = self.speel([OK, OK, "5", ("klik", 11, 10), ESC, ESC], opslag=o,
                                  voorrang={"thema": "contrast"})
         bewaard = o.instellingen_van(app.kind.id)
         self.assertEqual(bewaard.thema, "standaard")
@@ -104,7 +104,7 @@ class TestReeks(Basis):
     def test_reeks_van_tien_wordt_bewaard(self):
         o = self.opslag(("Test", "5"))
         antwoorden = ["1", OK, OK] * 10
-        toetsen = [OK, OK, "1", "1", "1", "2", "2", OK, *antwoorden, ESC, ESC, ESC, ESC, ESC]
+        toetsen = [OK, OK, "2", "1", "1", "2", "2", OK, *antwoorden, ESC, ESC, ESC, ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertTrue(self.ergens(scherm, "Je score:"))
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Leren › Wiskunde › Eenheden"))
@@ -122,7 +122,7 @@ class TestReeks(Basis):
 
     def test_vrij_oefenen_tip(self):
         o = self.opslag(("Test", "5"))
-        toetsen = [OK, OK, "1", "1", "1", "1", "1", OK, "?", "5", OK, ESC, ESC, ESC, ESC, ESC]
+        toetsen = [OK, OK, "2", "1", "1", "1", "1", OK, "?", "5", OK, ESC, ESC, ESC, ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertTrue(self.ergens(scherm, "Tip:"))
         rijen = o.antwoorden(app.kind.id)
@@ -134,40 +134,40 @@ class TestMuis(Basis):
         rij = TABEL_Y + 3
         cel_m = TABEL_X + 1 + 3 * 6          # 4de kolom: m
         rand_m = cel_m + 5                   # de rand rechts van m = komma achter m
-        toetsen = [OK, OK, "1", "1", "1", "3", "2", OK,
+        toetsen = [OK, OK, "2", "1", "1", "3", "2", OK,
                    ("klik", rij, cel_m + 2), "4", ("klik", rij, rand_m),
                    ESC, ESC, ESC, ESC, ESC]
         scherm, _ = self.speel(toetsen)
         self.assertTrue(self.ergens(scherm, "Aflezen met de komma achter m: 4 m"))
 
     def test_menu_en_opties_klikken(self):
-        # hoofdmenu: Opties staat op rij 5 + 2*2 = 9; in Opties staat Kleuren op rij 3 + 2*2 = 7
+        # hoofdmenu: Opties staat op rij 5 + 2*4 = 13; in Opties staat Kleuren op rij 3 + 2*2 = 7
         o = self.opslag(("Test", "5"))
-        toetsen = [OK, OK, ("klik", 9, 10), ("klik", 7, 10), ESC, ESC]
+        toetsen = [OK, OK, ("klik", 13, 10), ("klik", 7, 10), ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertEqual(app.inst.thema, "rood-groen")
         self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
 
     def test_avatar_en_animaties_uitzetten(self):
         o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([OK, OK, "3", ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
+        scherm, app = self.speel([OK, OK, "5", ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
         inst = o.instellingen_van(app.kind.id)
         self.assertEqual((inst.avatar, inst.animaties), (False, False))
         self.assertTrue(self.ergens(scherm, "Animaties"))
 
     def test_knop_in_voetbalk(self):
-        scherm, _ = self.speel([OK, OK, "1"])
+        scherm, _ = self.speel([OK, OK, "2"])
         y, x = scherm.zoek("[Esc]")
-        scherm2, _ = self.speel([OK, OK, "1", ("klik", y, x + 1), ESC])
+        scherm2, _ = self.speel([OK, OK, "2", ("klik", y, x + 1), ESC])
         # na de klik op [Esc] staan we terug in het hoofdmenu
         self.assertIn("Wat wil je doen?", scherm2.beelden[-1])
 
     def test_broodkruimel_terug_naar_hoofdmenu(self):
-        scherm, _ = self.speel([OK, OK, "1", "1", "1", ("klik", 0, 2), ESC])
+        scherm, _ = self.speel([OK, OK, "2", "1", "1", ("klik", 0, 2), ESC])
         self.assertIn("Wat wil je doen?", scherm.beelden[-1])
 
     def test_scrollwiel_in_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, "2", "1", *[("wiel", 1)] * 8, ESC, ESC, ESC])
+        scherm, _ = self.speel([OK, OK, "4", "1", *[("wiel", 1)] * 8, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "VOORBEELD"))
 
 
