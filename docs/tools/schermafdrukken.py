@@ -160,12 +160,21 @@ def maak_voorbeeld(map_):
     from datetime import datetime, timedelta
 
     os.environ["LEERAVONTUUR_DATA"] = str(map_)
-    from leeravontuur.kern import catalogus, herhaling, klok, wachtwoord  # noqa: F401
+    from leeravontuur.kern import avatar, catalogus, feedback, herhaling, klok, sessie, wachtwoord  # noqa: F401
     from leeravontuur.kern.onderwerp import ONDERWERPEN
     from leeravontuur.kern.opslag import Opslag
     from leeravontuur.kern.sessie import Sessie
 
     rng = random.Random(5)
+
+    class Stopwatch:  # elke vraag duurt 3 à 15 seconden (anders staat er 0 s in het rapport)
+        t = 0.0
+
+        @classmethod
+        def monotonic(cls):
+            cls.t += rng.uniform(1.5, 7.5)
+            return cls.t
+    echte_tijd, sessie.time = sessie.time, Stopwatch
     opslag = Opslag.open()
     opslag.zet_ouder_wachtwoord(wachtwoord.maak("ouder"))
     kind = opslag.nieuw_kind("Imrane", "5")
@@ -187,7 +196,19 @@ def maak_voorbeeld(map_):
                     herhaling.fout(opslag, kind.id, o.id, o.onderwerp(v), o.herhaal_data(v))
             ses.sluit()
     klok.zet(None)
-    opslag.punten_bij(kind.id, 250, "startpunten voor de handleiding")
+    sessie.time = echte_tijd
+    opslag.punten_bij(kind.id, 250, "bonus van de ouders: goed rapport")
+    # wat gekocht, een pakje onderweg, een bewaarde combinatie en een opmerking
+    for laag, sleutel, prijs in [("vorm", "rond", 60), ("kleur", "groen", 30), ("hoed", "pet", 90),
+                                 ("accessoire", "zakhorloge", 130)]:
+        opslag.zet_bezit(kind.id, laag, sleutel, prijs, True)
+        opslag.punten_bij(kind.id, -prijs, f"gekocht: {sleutel}")
+    opslag.zet_bezit(kind.id, "ogen", "ster", 120, False, {"soort": "pakje", "nodig": 10}, False)
+    opslag.punten_bij(kind.id, -120, "gekocht: Sterogen")
+    kleren = {**avatar.STANDAARD, "vorm": "rond", "kleur": "groen", "hoed": "pet", "accessoire": "zakhorloge"}
+    opslag.bewaar_avatar(kind.id, kleren)
+    opslag.bewaar_outfit(kind.id, "Op uitstap", kleren)
+    feedback.bewaar("Imrane", "De schatkaart is leuk! Mag er ook een kaart met eilanden komen?", "hoofdmenu")
     opslag.sluit()
 
 
@@ -217,11 +238,12 @@ class Draai:
     """Eén keer het programma starten en er toetsen naar sturen."""
 
     def __init__(self, voorbeeld, zaad, argumenten=(), kind=True):
-        self.map = Path(tempfile.mkdtemp(prefix="leeravontuur-beeld-"))
-        shutil.copytree(voorbeeld, self.map, dirs_exist_ok=True)
+        self.map = Path("/tmp/leeravontuur")
+        shutil.rmtree(self.map, ignore_errors=True)
+        shutil.copytree(voorbeeld, self.map)
         tmux("kill-session", "-t", SESSIE)
         omgeving = (f"LEERAVONTUUR_DATA={self.map} LEERAVONTUUR_ZAAD={zaad} ESCDELAY=300 "
-                    f"LEERAVONTUUR_DOCUMENTEN={self.map / 'documenten'}")
+                    f"LEERAVONTUUR_DOCUMENTEN={self.map / 'Documenten'}")
         opdracht = f"cd {WORTEL} && {omgeving} {sys.executable} oefeningen.py {' '.join(argumenten)}"
         tmux("new-session", "-d", "-s", SESSIE, "-x", str(BREED), "-y", str(HOOG), opdracht)
         self.wacht("Leeravontuur")

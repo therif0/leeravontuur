@@ -84,7 +84,7 @@ vinden, bv. "onthouden vergeten" of "de tweede rij niet opgeschoven".
 - de komma op de verkeerde plaats in het product
 <!-- /auto -->
 
-## De staartdeling
+## Staartdeling
 
 De staartdeling groeit **stap voor stap** mee. Onderaan staat telkens één vraag:
 

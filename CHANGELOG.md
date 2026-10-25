@@ -16,6 +16,8 @@ In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 - Het programma herkent o.a.: omtrek en oppervlakte verwisseld, de randjes binnenin meegeteld, vergeten te delen
   door 2, straal en diameter verwisseld, kolom en rij omgewisseld, cm niet omgezet naar m.
 - Winkel: een potlood achter het oor.
+- Een volledige **handleiding** met schermafdrukken: [docs/handleiding](docs/handleiding/README.md). Elk onderdeel,
+  elke optie, wat er per leerjaar aan bod komt, welke denkfouten het programma herkent, en alle startargumenten.
 
 ## 0.14.0 — meer eenheden
 - **Eenheden:** naast lengte en massa nu ook **inhoud** (hl … ml), **oppervlakte** (km² … mm², met ha, a en ca;

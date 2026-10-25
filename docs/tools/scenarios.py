@@ -608,3 +608,214 @@ def _(d):
     d.toets("3")
     d.wacht("FORMULES|OPPERVLAKTE")
     d.foto("meetkunde-spiekbrief", "De spiekbrief van Meetkunde")
+
+
+# ---- deel 2: de rest van het programma -------------------------------------------------------------------
+
+def tafel_antwoord(d):
+    m = re.search(r"(\d+) ([×:+−]) (\d+) =", scherm_tekst(d))
+    a, op, b = int(m.group(1)), m.group(2), int(m.group(3))
+    return str({"×": a * b, ":": a // b if b else 0, "+": a + b, "−": a - b}[op])
+
+
+@scenario("snelrekenen")
+def _(d):
+    d.toets("3")
+    d.wacht("Wat wil je snel rekenen")
+    d.foto("snelrekenen-menu", "Snelrekenen: wat wil je snel rekenen?")
+    d.toets("1")
+    d.wacht("Hoe\\?")
+    d.foto("snelrekenen-hoe", "60 seconden of 20 sommen")
+    d.toets("2")
+    d.wacht("Som 1 van 20")
+    for i in range(20):
+        if i == 6:
+            d.foto("snelrekenen-bezig", "20 sommen: de klok loopt mee")
+        antwoord(d, tafel_antwoord(d) if i != 4 else "1")
+    time.sleep(0.5)
+    d.foto("snelrekenen-klaar", "Het resultaat met je record")
+
+
+@scenario("herhalen")
+def _(d):
+    d.toets("4")
+    time.sleep(0.5)
+    d.foto("herhalen-start", "Herhalen")
+
+
+@scenario("avatar")
+def _(d):
+    d.toets("5")
+    d.wacht("winkel")
+    d.foto("avatar-hub", "Mijn avatar")
+    d.toets("w")
+    d.wacht("Wat wil je bekijken")
+    d.foto("avatar-winkel", "De winkel")
+    d.toets("6")
+    time.sleep(0.4)
+    d.foto("avatar-hoeden", "De hoeden in de winkel")
+    d.toets("Down", "Enter")
+    time.sleep(0.4)
+    d.foto("avatar-kopen", "Bij elke aankoop een rekenvraag")
+    m = re.search(r"Je hebt (\d+) punten. Dit kost (\d+) punten", scherm_tekst(d))
+    antwoord(d, str(int(m.group(1)) - int(m.group(2))))
+    time.sleep(0.4)
+    d.foto("avatar-gekocht", "Gekocht!")
+
+
+@scenario("avatar-kast")
+def _(d):
+    d.toets("5")
+    d.wacht("winkel")
+    d.toets("k")
+    d.wacht("Kies wat je aantrekt")
+    d.toets("Down", "Down", "Down", "Down", "Down", "Left")
+    d.foto("avatar-kast", "De kast: kies wat je aantrekt")
+    d.toets("c")
+    time.sleep(0.4)
+    d.foto("avatar-combinaties", "Combinaties")
+
+
+@scenario("spiekbrieven")
+def _(d):
+    d.toets("6")
+    d.wacht("Welke spiekbrief")
+    d.foto("spiekbrieven", "Spiekbrieven")
+
+
+@scenario("opties")
+def _(d):
+    d.toets("7")
+    d.wacht("Kies een optie")
+    d.foto("opties", "Opties")
+
+
+@scenario("zeg-het-ons")
+def _(d):
+    d.toets("9")
+    d.wacht("Wat wil je ons vertellen")
+    d.toets(("tekst", "De schatkaart is leuk!"))
+    d.foto("zeg-het-ons", "Zeg het ons")
+    d.toets("Enter")
+    d.foto("zeg-het-ons-bedankt", "Je opmerking is bewaard")
+
+
+def ouderdeel(d):
+    d.toets("Enter")
+    d.wacht("Wie ben jij?")
+    d.toets("3")
+    d.wacht("Ouderwachtwoord")
+
+
+@scenario("ouder-menu", kind=False)
+def _(d):
+    ouderdeel(d)
+    d.foto("ouder-wachtwoord", "Het ouderwachtwoord")
+    d.toets(("tekst", "ouder"), "Enter")
+    d.wacht("Rapporten")
+    d.foto("ouder-menu", "Het ouderdeel")
+
+
+@scenario("ouder-rapport", kind=False)
+def _(d):
+    ouderdeel(d)
+    d.toets(("tekst", "ouder"), "Enter")
+    d.wacht("Rapporten")
+    d.toets("1")
+    d.wacht("Van welk kind")
+    d.toets("1")
+    d.wacht("Welke periode")
+    d.foto("ouder-periode", "Welke periode?")
+    d.toets("4")
+    time.sleep(0.5)
+    d.foto("ouder-rapport", "Een rapport")
+    d.toets(*["Down"] * 12)
+    d.foto("ouder-rapport-onderwerpen", "Het rapport per onderwerp")
+    d.toets("k")
+    time.sleep(0.4)
+    d.foto("ouder-kalender", "De kalender")
+    d.toets("Escape", "e")
+    time.sleep(0.4)
+    d.foto("ouder-export", "Een rapport exporteren")
+
+
+@scenario("ouder-kinderen", kind=False)
+def _(d):
+    ouderdeel(d)
+    d.toets(("tekst", "ouder"), "Enter")
+    d.wacht("Rapporten")
+    d.toets("2")
+    d.wacht("Welk kind")
+    d.toets("1")
+    time.sleep(0.4)
+    d.foto("ouder-kind", "De instellingen van een kind")
+
+
+@scenario("ouder-punten", kind=False)
+def _(d):
+    ouderdeel(d)
+    d.toets(("tekst", "ouder"), "Enter")
+    d.wacht("Rapporten")
+    d.toets("3")
+    d.wacht("Van welk kind")
+    d.toets("1")
+    time.sleep(0.4)
+    d.foto("ouder-punten", "Het puntenlogboek")
+
+
+@scenario("ouder-opmerkingen", kind=False)
+def _(d):
+    ouderdeel(d)
+    d.toets(("tekst", "ouder"), "Enter")
+    d.wacht("Rapporten")
+    d.toets("5")
+    time.sleep(0.4)
+    d.foto("ouder-opmerkingen", "Opmerkingen uit 'Zeg het ons'")
+
+
+def thema_beeld(d, naam, titel):
+    oefen(d, 5, 1)
+    d.wacht("Vrij oefenen")
+    d.zoek("Arceer", OPNIEUW)
+    t = int(re.search(r"Arceer (\d+)/", scherm_tekst(d)).group(1))
+    for _ in range(t + 1):
+        d.toets("Space", "Right")
+    d.toets("Enter")
+    d.foto(naam, titel)
+
+
+@scenario("start-standaard")
+def _(d):
+    thema_beeld(d, "start-standaard", "Het standaardthema")
+
+
+@scenario("start-kleurenblind", argumenten=["--kleurenblind"])
+def _(d):
+    thema_beeld(d, "start-kleurenblind", "--kleurenblind")
+
+
+@scenario("start-blauw-geel", argumenten=["--kleurenblind", "blauw-geel"])
+def _(d):
+    thema_beeld(d, "start-blauw-geel", "--kleurenblind blauw-geel")
+
+
+@scenario("start-contrast", argumenten=["--contrast"])
+def _(d):
+    thema_beeld(d, "start-contrast", "--contrast")
+
+
+@scenario("start-geen-kleur", argumenten=["--geen-kleur"])
+def _(d):
+    thema_beeld(d, "start-geen-kleur", "--geen-kleur")
+
+
+@scenario("start-ascii", argumenten=["--ascii"])
+def _(d):
+    thema_beeld(d, "start-ascii", "--ascii")
+
+
+@scenario("start-ouder", argumenten=["--ouder"], kind=False)
+def _(d):
+    d.toets("Enter")
+    d.wacht("Ouderwachtwoord")
+    d.foto("start-ouder", "--ouder: meteen naar het ouderdeel")
