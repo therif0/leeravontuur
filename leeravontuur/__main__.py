@@ -11,7 +11,7 @@ os.environ.setdefault("ESCDELAY", "25")  # Esc meteen laten reageren (moet vóó
 from . import LICENTIE, MAKER, MOTTO, NAAM, VERSIE  # noqa: E402
 
 
-def lees_argumenten(argv):
+def maak_parser():
     p = argparse.ArgumentParser(
         prog="oefeningen.py",
         description=f"{NAAM}: een gratis leerprogramma van {MAKER}. {MOTTO}.")
@@ -29,7 +29,11 @@ def lees_argumenten(argv):
     p.add_argument("--debug", action="store_true", help="bij een fout meteen stoppen met de volledige melding")
     p.add_argument("--test", action="store_true", help="de automatische tests uitvoeren")
     p.add_argument("--versie", action="store_true", help="versie tonen")
-    return p.parse_args(argv)
+    return p
+
+
+def lees_argumenten(argv):
+    return maak_parser().parse_args(argv)
 
 
 def snelkoppeling():
@@ -114,6 +118,9 @@ def main(argv=None):
         return toon_fouten()
     if args.debug:
         os.environ["LEERAVONTUUR_DEBUG"] = "1"
+    if os.environ.get("LEERAVONTUUR_ZAAD"):  # altijd dezelfde vragen (voor de schermafdrukken in de handleiding)
+        import random
+        random.seed(os.environ["LEERAVONTUUR_ZAAD"])
 
     import curses
     import locale

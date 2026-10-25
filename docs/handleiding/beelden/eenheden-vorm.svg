@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Eenheden: hoe wil je oefenen?">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="387" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Eenheden</text>
+<text x="44" y="75" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Hoe wil je oefenen?</text>
+<rect x="62" y="98" width="171" height="18" fill="#e5e510"/>
+<text x="62" y="111" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> 1. Vrij oefenen   </text>
+<text x="251" y="111" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">zoveel vragen als je wil, met tip en uitleg</text>
+<text x="8" y="147" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       2. Reeks van 10     </text>
+<text x="251" y="147" textLength="324" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">10 vragen, daarna je score en uitleg</text>
+<text x="8" y="183" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       3. Tabel-oefening   </text>
+<text x="251" y="183" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">vul de eenhedentabel in met Tab, ook met de muis</text>
+<text x="8" y="219" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       4. Spiekbrief       </text>
+<text x="251" y="219" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">hoe werkt omzetten?</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="45" height="18" fill="#11a8cd"/>
+<rect x="242" y="422" width="45" height="18" fill="#000000"/>
+<rect x="287" y="422" width="432" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok  </text>
+<text x="242" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="287" y="435" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                          </text>
+</g></svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Welke eenheden?">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="522" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Eenheden › Vrij oefenen</text>
+<text x="44" y="75" textLength="270" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Welke eenheden wil je oefenen?</text>
+<rect x="62" y="98" width="144" height="18" fill="#e5e510"/>
+<text x="62" y="111" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> 1. Massa       </text>
+<text x="224" y="111" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">t  kg  hg  dag  g  dg  cg  mg</text>
+<text x="8" y="147" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       2. Lengte        </text>
+<text x="224" y="147" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">km  hm  dam  m  dm  cm  mm</text>
+<text x="8" y="183" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       3. Inhoud        </text>
+<text x="224" y="183" textLength="198" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">hl  dal  l  dl  cl  ml</text>
+<text x="8" y="219" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       4. Oppervlakte   </text>
+<text x="224" y="219" textLength="486" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">km²  hm²  dam²  m²  dm²  cm²  mm²  ha  a  ca  (5de lj)</text>
+<text x="8" y="255" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       5. Volume        </text>
+<text x="224" y="255" textLength="414" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">m³  dm³  cm³  hl  dal  l  dl  cl  ml  (6de lj)</text>
+<text x="8" y="291" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       6. Door elkaar   </text>
+<text x="224" y="291" textLength="279" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">alles wat bij je leerjaar hoort</text>
+<text x="8" y="327" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       7. Zelf kiezen   </text>
+<text x="224" y="327" textLength="225" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">duid zelf de eenheden aan</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="45" height="18" fill="#11a8cd"/>
+<rect x="242" y="422" width="45" height="18" fill="#000000"/>
+<rect x="287" y="422" width="432" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok  </text>
+<text x="242" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="287" y="435" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                          </text>
+</g></svg>
