@@ -30,7 +30,8 @@ class Vraag:
     invoer: str = "getal"  # "getal", "janee" (typ ja of nee), "lijn" (aanduiden op de getallenlijn),
     #                        "rooster" (cijferen onder elkaar), "staart" (staartdeling stap voor stap),
     #                        "breuk" (typ een breuk), "vergelijk" (<, > of =), "balk" (arceren op de breukbalk)
-    #                        "veld" (kleuren in het honderdveld), "duur" (typ 2 u 15 min) of "klok" (typ 11.15)
+    #                        "veld" (kleuren in het honderdveld), "duur" (typ 2 u 15 min), "klok" (typ 11.15),
+    #                        "woord" (een hoek benoemen), "plek" (typ C4) of "coord" (kruisje op de schatkaart)
     model: object = None   # een visueel model (bv. kern.modellen.Getallenlijn)
     verwacht_tekst: str = ""  # zo tonen we het juiste antwoord, als het anders is dan het getal (bv. "64 rest 4")
     model_na: object = None   # een model dat pas na het nakijken getoond wordt (uitleg die het antwoord verklapt)

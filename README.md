@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.14, bèta):**
+**Wat er nu in zit (versie 0.15, bèta):**
 - **Eenheden omzetten:** lengte (km … mm), massa (t … mg), inhoud (hl … ml), oppervlakte (km² … mm², ha, a,
   ca; vanaf het 5de leerjaar) en volume (m³, dm³, cm³ en de liter; vanaf het 6de), of alles **door elkaar**
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
@@ -51,6 +51,14 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     (typ `11.15`); herkent *"je rekende met 100 in plaats van 60"*
   - geld: euro en cent, wisselgeld, wat je samen betaalt
   - snelheid (vanaf het 6de): afstand = snelheid × tijd, en km/u ↔ m/s in het 1ste middelbaar
+- **Meetkunde:**
+  - oppervlakte en omtrek op een **cm²-rooster** (tel de vakjes en de randjes; ook halve vakjes bij een driehoek)
+  - **formules** voor rechthoek, vierkant, driehoek, parallellogram, trapezium, cirkel en het volume van balk en
+    kubus, met de formule ingevuld in de uitleg
+  - **hoeken** benoemen bij een tekening of een aantal graden, de derde hoek van een driehoek (6de)
+  - **schatkaart**: lees de coördinaat af (`C4`) of zet een kruisje met de pijltjes of de muis; in het 1ste
+    middelbaar een assenstelsel met negatieve getallen
+  - **schaal** (6de): 1 : 1000, van de kaart naar het echt en terug
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

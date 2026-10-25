@@ -31,11 +31,15 @@ HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -
          "breuk": "Typ een breuk met /: 3/4 · een gemengd getal met een spatie: 1 3/4",
          "vergelijk": "Typ < (kleiner dan), > (groter dan) of = (gelijk aan) en druk Enter.",
          "duur": "Typ uren en minuten, bv. 2 u 15 min (of 2u15).",
-         "klok": "Typ een tijdstip, bv. 11.15 u (of 11:15)."}
+         "klok": "Typ een tijdstip, bv. 11.15 u (of 11:15).",
+         "woord": "Typ scherp, recht, stomp, gestrekt of vol en druk Enter.",
+         "plek": "Eerst de letter (of x), dan het getal (of y): bv. C4 of (3, −2)."}
 ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 3/4).",
               "vergelijk": "Typ <, > of =.",
               "duur": "Typ uren en minuten, bv. 2 u 15 min. Minuten: hoogstens 59.",
-              "klok": "Typ een tijdstip, bv. 11.15 u. Minuten: hoogstens 59."}
+              "klok": "Typ een tijdstip, bv. 11.15 u. Minuten: hoogstens 59.",
+              "woord": "Typ scherp, recht, stomp, gestrekt of vol.",
+              "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel)."}
 INVOER = {**R.INVOER, **B.INVOER}  # invoersoorten met een eigen invoer-object
 
 

@@ -9,7 +9,9 @@ De getallenlijn neemt 4 rijen in:  y   tekstjes bij markeringen ("start", "nu")
 from decimal import Decimal
 
 from ..kern.getal import fmt
-from ..kern.modellen import (Breukbalk, Breukbalken, Getallenlijn, Groepjes, Honderdveld,
+import math
+
+from ..kern.modellen import (Breukbalk, Breukbalken, Figuur, Getallenlijn, Groepjes, Hoek, Honderdveld, Kaart,
                              Procentstrook)
 
 HOOGTE = 4
@@ -138,6 +140,12 @@ def teken_model(s, y, model, x0=8):
         return teken_veld(s, y, model.gekleurd)
     if isinstance(model, Procentstrook):
         return teken_strook(s, y, model, x0)
+    if isinstance(model, Figuur):
+        return teken_figuur(s, y, model, x0)
+    if isinstance(model, Kaart):
+        return teken_kaart(s, y, model, x0)
+    if isinstance(model, Hoek):
+        return teken_hoek(s, y, model.graden, x0)
     return 0, 0
 
 
@@ -182,3 +190,118 @@ def teken_strook(s, y, strook, x0=8):
         if x0 + 2 < xp - len(deel) // 2 and xp + len(deel) < x0 + STROOK_B - len(totaal):
             s.put(y + 3, xp - len(deel) // 2, deel, "goed")
     return 4, STROOK_B + 8
+
+
+# ---- meetkunde -----------------------------------------------------------------------------------------
+
+VAK_B = 4  # een vakje van het cm²-rooster: 3 tekens binnenin + de lijn
+
+
+def teken_figuur(s, y, fig, x0=8):
+    """Een figuur op een rooster met lijnen; elk vakje = 1 cm². Met fig.rand wordt de omtrek aangeduid.
+    Geeft (hoogte, breedte)."""
+    def gekleurd(r, k):
+        return (r, k) in fig.vakjes
+
+    for r in range(fig.rijen + 1):
+        for k in range(fig.kolommen + 1):
+            s.put(y + 2 * r, x0 + VAK_B * k, "┼", "dim")
+            if k < fig.kolommen:  # horizontaal randje boven vakje (r, k)
+                rand = fig.rand and gekleurd(r - 1, k) != gekleurd(r, k)
+                s.put(y + 2 * r, x0 + VAK_B * k + 1, "━━━" if rand else "───", "goed" if rand else "dim")
+            if r < fig.rijen:  # verticaal randje links van vakje (r, k)
+                rand = fig.rand and gekleurd(r, k - 1) != gekleurd(r, k)
+                s.put(y + 2 * r + 1, x0 + VAK_B * k, "┃" if rand else "│", "goed" if rand else "dim")
+                if (r, k) in fig.vakjes:
+                    s.put(y + 2 * r + 1, x0 + VAK_B * k + 1, "███", "accent2")
+                elif (r, k) in fig.halve:
+                    s.put(y + 2 * r + 1, x0 + VAK_B * k + 1, "▒▒▒", "accent2")
+    hoogte = 2 * fig.rijen + 1
+    legende = "███ = 1 cm²" + ("   ▒▒▒ = een half vakje" if fig.halve else "")
+    s.put(y + hoogte, x0, legende, "dim")
+    s.put(y + hoogte, x0, "███", "accent2")
+    if fig.halve:
+        s.put(y + hoogte, x0 + legende.index("▒"), "▒▒▒", "accent2")
+    return hoogte + 1, max(VAK_B * fig.kolommen + 1, len(legende))
+
+
+KAART_B = 3  # breedte van een kolom op de schatkaart
+
+
+def kaart_plaats(kaart, x, y, y0, x0=8):
+    """(rij, kolom) op het scherm van punt (x, y) van de kaart."""
+    return y0 + kaart.ys()[::-1].index(y), x0 + 3 + KAART_B * kaart.xs().index(x) + 1
+
+
+def teken_kaart(s, y0, kaart, x0=8, cursor=None, actie=None):
+    """De schatkaart (kolommen A, B … onderaan, rij 1 onderaan) of een assenstelsel. cursor = (x, y) van het kind,
+    actie(x, y) = klikactie per punt. Geeft (hoogte, breedte)."""
+    xs, ys = kaart.xs(), kaart.ys()
+    for i, yy in enumerate(ys[::-1]):
+        rij = y0 + i
+        s.put(rij, x0, f"{fmt_getal(yy):>2}", "bold")
+        for xx in xs:
+            _, kol = kaart_plaats(kaart, xx, yy, y0, x0)
+            if kaart.assen and yy == 0:
+                s.put(rij, kol - 1, "───", "dim")
+            teken = "┼" if kaart.assen and xx == 0 and yy == 0 else (
+                "│" if kaart.assen and xx == 0 else ("─" if kaart.assen and yy == 0 else "·"))
+            s.put(rij, kol, teken, "dim")
+            if (xx, yy) in kaart.punten:
+                punt = kaart.punten[(xx, yy)]
+                teken, rol = punt if isinstance(punt, tuple) else (punt, "accent")
+                s.put(rij, kol, teken, rol)
+            if cursor == (xx, yy):
+                s.put(rij, kol - 1, "[", "cursor")
+                s.put(rij, kol + 1, "]", "cursor")
+            if actie is not None:
+                s.zones.voeg(rij, kol - 1, 1, KAART_B, actie(xx, yy))
+    onder = y0 + len(ys)
+    for xx in xs:
+        _, kol = kaart_plaats(kaart, xx, ys[0], y0, x0)
+        tekst = kaart.naam(xx, 1)[0] if not kaart.assen else fmt_getal(xx)
+        s.put(onder, kol - (len(tekst) - 1), tekst, "bold")
+    return len(ys) + 1, 3 + KAART_B * len(xs) + 1
+
+
+def fmt_getal(n):
+    return f"−{-n}" if n < 0 else str(n)
+
+
+HOEK_R = 6  # lengte van een been, in rijen
+
+
+def hoek_teken(graden):
+    """Het lijnteken voor een been onder deze hoek."""
+    if graden < 20 or graden > 160:
+        return "─"
+    if graden < 70:
+        return "╱"
+    if graden <= 110:
+        return "│"
+    return "╲"
+
+
+def teken_hoek(s, y, graden, x0=8):
+    """Een hoek: het ene been naar rechts, het andere onder `graden` (tegen de klok in). Geeft (hoogte, breedte).
+    Het schuine been krijgt één lijnteken per rij; bij een vlakke hoek verbindt '_' de tekens."""
+    hoekpunt_y, hoekpunt_x = y + HOEK_R, x0 + 2 * HOEK_R + 4
+    s.put(hoekpunt_y, hoekpunt_x + 1, "─" * (2 * HOEK_R + 4), "bold")
+    if graden in (0, 180):
+        if graden == 180:
+            s.put(hoekpunt_y, hoekpunt_x - 2 * HOEK_R - 4, "─" * (2 * HOEK_R + 4), "bold")
+    else:
+        teken = hoek_teken(graden)
+        stap = 2 / math.tan(math.radians(graden)) if graden != 90 else 0  # kolommen per rij (een teken is 2× zo hoog)
+        lengte = 2 * HOEK_R + 4  # het schuine been mag niet verder dan het rechte
+        rijen = HOEK_R if abs(stap) * HOEK_R <= lengte else max(1, int(lengte / abs(stap)))
+        vorige = hoekpunt_x
+        for r in range(1, rijen + 1):
+            kol = hoekpunt_x + max(-lengte, min(lengte, round(r * stap)))
+            if abs(kol - vorige) > 1:  # vlakke hoek: de tussenruimte verbinden
+                van, tot = sorted((vorige, kol))
+                s.put(hoekpunt_y - r, van + 1, "_" * (tot - van - 1), "bold")
+            s.put(hoekpunt_y - r, kol, teken, "bold")
+            vorige = kol
+    s.put(hoekpunt_y, hoekpunt_x, "●", "accent")
+    return HOEK_R + 1, 4 * HOEK_R + 9

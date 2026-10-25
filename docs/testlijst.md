@@ -19,6 +19,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Eenheden → Tabel-oefening → Oppervlakte:** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
 - [ ] **Tijd, geld en snelheid → Tijd:** bij "… min = ? u ? min" typ je bv. `2 u 15 min`; bij "Hoe laat kom je
   aan?" typ je bv. `11.15`.
+- [ ] **Meetkunde → Oppervlakte en omtrek:** na een vraag over de omtrek staat de rand in het groen.
+- [ ] **Meetkunde → Schatkaart:** bij "Zet een kruisje op …" verplaats je het kruisje met de pijltjes of een klik.
 
 ## 3. Reeks, herhalen en punten
 - [ ] **Reeks van 10** (eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.

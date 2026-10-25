@@ -217,3 +217,62 @@ class Procentstrook:
     procent: Decimal
     eenheid: str = ""
     toon_deel: bool = False  # na het nakijken: ook het deel onder de pijl
+
+
+@dataclass
+class Figuur:
+    """Een figuur op een rooster van vakjes van 1 cm². `vakjes` = {(rij, kolom)} helemaal gekleurd,
+    `halve` = {(rij, kolom)} half gekleurd (de schuine kant van een driehoek, linksonder gekleurd)."""
+    rijen: int
+    kolommen: int
+    vakjes: set = field(default_factory=set)
+    halve: set = field(default_factory=set)
+    rand: bool = False  # de omtrek aanduiden (na het nakijken)
+
+    def oppervlakte(self):
+        return Decimal(len(self.vakjes)) + Decimal(len(self.halve)) / 2
+
+    def omtrek(self):
+        """Het aantal randjes van 1 cm tussen een gekleurd en een wit vakje (alleen voor figuren zonder halve)."""
+        return sum((r + dr, k + dk) not in self.vakjes for r, k in self.vakjes
+                   for dr, dk in ((0, 1), (0, -1), (1, 0), (-1, 0)))
+
+    def binnenranden(self):
+        """De randjes tussen twee gekleurde vakjes (die tellen niet mee bij de omtrek)."""
+        return (4 * len(self.vakjes) - self.omtrek()) // 2
+
+
+KOLOMLETTERS = "ABCDEFGHIJ"
+
+
+@dataclass
+class Kaart:
+    """Een schatkaart: een rooster met kolommen A, B, C … en rijen 1, 2, 3 … (rij 1 onderaan), of een
+    assenstelsel van −n tot n (`assen`). `punten` = {(x, y): teken of (teken, rol)}; x en y zijn kolom- en
+    rijnummers (vanaf 1) of coördinaten."""
+    kolommen: int = 10
+    rijen: int = 10
+    assen: int = 0
+    punten: dict = field(default_factory=dict)
+
+    def xs(self):
+        return list(range(-self.assen, self.assen + 1)) if self.assen else list(range(1, self.kolommen + 1))
+
+    def ys(self):
+        return list(range(-self.assen, self.assen + 1)) if self.assen else list(range(1, self.rijen + 1))
+
+    def naam(self, x, y):
+        """C4 op een schatkaart, (3, −2) in een assenstelsel."""
+        if self.assen:
+            return f"({fmt_geheel(x)}, {fmt_geheel(y)})"
+        return f"{KOLOMLETTERS[x - 1]}{y}"
+
+
+def fmt_geheel(n):
+    return f"−{-n}" if n < 0 else str(n)
+
+
+@dataclass
+class Hoek:
+    """Een hoek van `graden` (0–180): het ene been naar rechts, het andere draait tegen de klok in."""
+    graden: int

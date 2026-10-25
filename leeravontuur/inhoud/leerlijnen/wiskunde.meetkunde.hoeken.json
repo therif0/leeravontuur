@@ -1,0 +1,63 @@
+{
+ "vaardigheid": "wiskunde.meetkunde.hoeken",
+ "omschrijving": "scherp, recht, stomp, gestrekt; hoeken in een driehoek",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "hoeken": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "tekening",
+    "graden"
+   ],
+   "hoeken": [
+    "scherp",
+    "recht",
+    "stomp"
+   ]
+  },
+  "5": {
+   "soorten": [
+    "tekening",
+    "graden"
+   ],
+   "hoeken": [
+    "scherp",
+    "recht",
+    "stomp",
+    "gestrekt"
+   ]
+  },
+  "6": {
+   "soorten": [
+    "tekening",
+    "graden",
+    "driehoek"
+   ],
+   "hoeken": [
+    "scherp",
+    "recht",
+    "stomp",
+    "gestrekt",
+    "vol"
+   ]
+  },
+  "m1": {
+   "soorten": [
+    "graden",
+    "driehoek",
+    "nevenhoek"
+   ],
+   "hoeken": [
+    "scherp",
+    "recht",
+    "stomp",
+    "gestrekt",
+    "vol"
+   ]
+  }
+ }
+}

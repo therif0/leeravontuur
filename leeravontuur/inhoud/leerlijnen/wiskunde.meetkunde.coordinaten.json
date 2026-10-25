@@ -1,0 +1,52 @@
+{
+ "vaardigheid": "wiskunde.meetkunde.coordinaten",
+ "omschrijving": "coördinaten: de schatkaart en het assenstelsel",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "kolommen": "int",
+  "rijen": "int",
+  "assen": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "aflezen",
+    "aanduiden"
+   ],
+   "kolommen": 6,
+   "rijen": 6,
+   "assen": 0
+  },
+  "5": {
+   "soorten": [
+    "aflezen",
+    "aanduiden"
+   ],
+   "kolommen": 8,
+   "rijen": 8,
+   "assen": 0
+  },
+  "6": {
+   "soorten": [
+    "aflezen",
+    "aanduiden"
+   ],
+   "kolommen": 10,
+   "rijen": 10,
+   "assen": 0
+  },
+  "m1": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "assen_aflezen",
+    "assen_aanduiden"
+   ],
+   "kolommen": 10,
+   "rijen": 10,
+   "assen": 5
+  }
+ }
+}

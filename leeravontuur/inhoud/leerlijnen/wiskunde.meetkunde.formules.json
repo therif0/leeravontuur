@@ -1,0 +1,68 @@
+{
+ "vaardigheid": "wiskunde.meetkunde.formules",
+ "omschrijving": "oppervlakte, omtrek en volume uitrekenen",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "max": "int",
+  "komma": "bool"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "rechthoek_omtrek",
+    "vierkant_omtrek",
+    "rechthoek_opp",
+    "vierkant_opp"
+   ],
+   "max": 10,
+   "komma": false
+  },
+  "5": {
+   "soorten": [
+    "rechthoek_opp",
+    "rechthoek_omtrek",
+    "vierkant_opp",
+    "vierkant_omtrek",
+    "driehoek_opp"
+   ],
+   "max": 12,
+   "komma": false
+  },
+  "6": {
+   "soorten": [
+    "rechthoek_opp",
+    "rechthoek_omtrek",
+    "vierkant_opp",
+    "vierkant_omtrek",
+    "driehoek_opp",
+    "parallellogram_opp",
+    "trapezium_opp",
+    "cirkel_omtrek",
+    "cirkel_opp",
+    "balk_volume",
+    "kubus_volume"
+   ],
+   "max": 15,
+   "komma": false
+  },
+  "m1": {
+   "soorten": [
+    "rechthoek_opp",
+    "rechthoek_omtrek",
+    "vierkant_opp",
+    "vierkant_omtrek",
+    "driehoek_opp",
+    "parallellogram_opp",
+    "trapezium_opp",
+    "cirkel_omtrek",
+    "cirkel_opp",
+    "balk_volume",
+    "kubus_volume"
+   ],
+   "max": 20,
+   "komma": true
+  }
+ }
+}

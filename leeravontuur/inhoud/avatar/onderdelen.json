@@ -537,6 +537,19 @@
     "..GWBG",
     "...GG."
    ]
+  },
+  "potlood": {
+   "naam": "Potlood achter het oor",
+   "anker": "oren",
+   "dy": -5,
+   "dx": 11,
+   "pixels": [
+    "....P",
+    "...YY",
+    "..YY.",
+    ".YY..",
+    ".M..."
+   ]
   }
  }
 }

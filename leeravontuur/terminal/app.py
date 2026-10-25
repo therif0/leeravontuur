@@ -16,6 +16,7 @@ from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import grootheden as TG
 from ..kern.wiskunde import hoofdrekenen as H
+from ..kern.wiskunde import meetkunde as MK
 from ..kern.wiskunde import procenten as PR
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
@@ -334,7 +335,7 @@ class App:
         kr = [HOOFD, "Leren"]
         while True:
             try:
-                k = self.s.menu(kr, "Welk vak?", [("Wiskunde", "eenheden (meer onderwerpen volgen)")])
+                k = self.s.menu(kr, "Welk vak?", [("Wiskunde", "rekenen, eenheden, breuken, meetkunde …")])
                 if k is None:
                     return
                 self.wiskunde(kr + ["Wiskunde"])
@@ -350,7 +351,8 @@ class App:
                 ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
                 ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
                 ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
-                ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD)]
+                ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
+                ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER)]
 
     def wiskunde(self, kr):
         domeinen = self.domeinen()
