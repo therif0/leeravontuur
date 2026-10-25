@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Hoe moeilijk?">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="621" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="621" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Hoofdrekenen › Maa… › Vrij oefenen</text>
+<text x="44" y="75" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Hoe moeilijk?</text>
+<text x="8" y="111" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       1. Makkelijk       </text>
+<text x="242" y="111" textLength="108" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">4de leerjaar</text>
+<rect x="62" y="134" width="162" height="18" fill="#e5e510"/>
+<text x="62" y="147" textLength="162" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> 2. Normaal       </text>
+<text x="242" y="147" textLength="108" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">5de leerjaar</text>
+<text x="8" y="183" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       3. Moeilijk        </text>
+<text x="242" y="183" textLength="108" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">6de leerjaar</text>
+<text x="8" y="219" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       4. Heel moeilijk   </text>
+<text x="242" y="219" textLength="135" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">1ste middelbaar</text>
+<text x="44" y="273" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd">Jouw leerjaar: 5de leerjaar</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="45" height="18" fill="#11a8cd"/>
+<rect x="242" y="422" width="45" height="18" fill="#000000"/>
+<rect x="287" y="422" width="432" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok  </text>
+<text x="242" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="287" y="435" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                          </text>
+</g></svg>

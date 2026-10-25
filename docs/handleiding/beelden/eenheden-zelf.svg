@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Zelf eenheden kiezen">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="648" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="648" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Eenheden › Vrij oefenen › Zelf kiezen</text>
+<text x="44" y="75" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Duid minstens 2 eenheden van dezelfde soort aan.</text>
+<text x="44" y="111" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Massa</text>
+<text x="179" y="111" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Lengte</text>
+<text x="314" y="111" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Inhoud</text>
+<text x="449" y="111" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Oppervlakte</text>
+<text x="584" y="111" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Volume</text>
+<text x="8" y="147" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] t          [ ] km         [ ] hl         [ ] km²        [ ] m³         </text>
+<text x="8" y="165" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [x] kg         [ ] hm         [ ] dal        [ ] hm²        [ ] dm³        </text>
+<rect x="44" y="170" width="90" height="18" fill="#e5e510"/>
+<text x="44" y="183" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> [x] hg   </text>
+<text x="134" y="183" textLength="594" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      [ ] dam        [ ] l          [ ] dam²       [ ] cm³        </text>
+<text x="8" y="201" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] dag        [ ] m          [ ] dl         [ ] m²         [ ] hl         </text>
+<text x="8" y="219" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] g          [ ] dm         [ ] cl         [ ] dm²        [ ] dal        </text>
+<text x="8" y="237" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] dg         [ ] cm         [ ] ml         [ ] cm²        [ ] l          </text>
+<text x="8" y="255" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] cg         [ ] mm                        [ ] mm²        [ ] dl         </text>
+<text x="8" y="273" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     [ ] mg                                       [ ] ha         [ ] cl         </text>
+<text x="8" y="291" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">                                                  [ ] a          [ ] ml         </text>
+<text x="8" y="309" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">                                                  [ ] ca                        </text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="72" height="18" fill="#000000"/>
+<rect x="89" y="422" width="90" height="18" fill="#11a8cd"/>
+<rect x="179" y="422" width="63" height="18" fill="#000000"/>
+<rect x="242" y="422" width="72" height="18" fill="#11a8cd"/>
+<rect x="314" y="422" width="45" height="18" fill="#000000"/>
+<rect x="359" y="422" width="360" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Spatie]</text>
+<text x="89" y="435" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> aan/uit  </text>
+<text x="179" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="242" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> klaar  </text>
+<text x="314" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="359" y="435" textLength="360" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                  </text>
+</g></svg>

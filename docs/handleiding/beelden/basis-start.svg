@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Het startscherm">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="117" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur</text>
+<text x="143" y="129" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">┌────────────────────────────────────────────────┐</text>
+<text x="143" y="147" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="584" y="147" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="165" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="260" y="165" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">L E E R A V O N T U U R</text>
+<text x="584" y="165" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="584" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="269" y="201" textLength="198" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd">rekenen · taal · Frans</text>
+<text x="584" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="584" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="237" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="179" y="237" textLength="369" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Een gratis leerprogramma van Solve It Now</text>
+<text x="584" y="237" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="255" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="251" y="255" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Iedereen moet kunnen leren</text>
+<text x="584" y="255" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="273" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="584" y="273" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="291" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="224" y="291" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">Druk op een toets om te beginnen</text>
+<text x="584" y="291" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="309" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="584" y="309" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">│</text>
+<text x="143" y="327" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">└────────────────────────────────────────────────┘</text>
+<text x="143" y="363" textLength="279" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">versie 0.15.0 · CC BY-NC-SA 4.0</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="63" height="18" fill="#000000"/>
+<rect x="80" y="422" width="90" height="18" fill="#11a8cd"/>
+<rect x="170" y="422" width="45" height="18" fill="#000000"/>
+<rect x="215" y="422" width="504" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="80" y="435" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> starten  </text>
+<text x="170" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="215" y="435" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> stoppen                                                </text>
+</g></svg>

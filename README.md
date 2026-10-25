@@ -135,6 +135,10 @@ Het venster moet minstens **80×24** tekens groot zijn.
 git pull
 ```
 
+## Handleiding
+De volledige handleiding met schermafdrukken staat in [docs/handleiding](docs/handleiding/README.md): elk onderdeel,
+elke optie, wat er per leerjaar aan bod komt, de herkende denkfouten, het ouderdeel en alle startargumenten.
+
 ## Na een nieuwe versie
 - Wat er nieuw is: [CHANGELOG.md](CHANGELOG.md).
 - Een korte testlijst voor de ouder (± 15 minuten): [docs/testlijst.md](docs/testlijst.md).

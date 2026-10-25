@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="De spiekbrief van Meetkunde">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="576" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="576" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Meetkunde › Opp… › Spiekbrief</text>
+<text x="44" y="57" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">OPPERVLAKTE EN OMTREK</text>
+<text x="8" y="75" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Oppervlakte = hoeveel vakjes van 1 cm² erin passen (cm²).                 </text>
+<text x="8" y="93" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Omtrek = de lengte van de rand rondom (cm).                               </text>
+<text x="44" y="129" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">FORMULES</text>
+<text x="8" y="147" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      rechthoek    opp = l × b             omtrek = 2 × (l + b)                 </text>
+<text x="8" y="165" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      vierkant     opp = z × z             omtrek = 4 × z                       </text>
+<text x="8" y="183" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      driehoek     opp = b × h : 2                                              </text>
+<text x="8" y="201" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      parallellogram  opp = b × h          trapezium  opp = (B + b) × h : 2     </text>
+<text x="8" y="219" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      cirkel       omtrek = 2 × π × r      opp = π × r × r                      </text>
+<text x="8" y="237" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">                   (π ≈ 3,14; straal r = de helft van de diameter d)            </text>
+<text x="8" y="255" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      balk         volume = l × b × h      kubus  volume = z × z × z            </text>
+<text x="44" y="291" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">HOEKEN</text>
+<text x="8" y="309" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      scherp: kleiner dan 90°    recht = 90°    stomp: tussen 90° en 180°       </text>
+<text x="8" y="327" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      gestrekt = 180° (een rechte lijn)    vol = 360° (helemaal rond)           </text>
+<text x="8" y="345" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      De 3 hoeken van een driehoek zijn samen 180°. Nevenhoeken samen: 180°.    </text>
+<text x="44" y="381" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">COÖRDINATEN</text>
+<text x="8" y="399" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Schatkaart: eerst de letter (kolom), dan het getal (rij): C4.             </text>
+<text x="530" y="417" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">▼ scroll voor meer ▼</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="99" height="18" fill="#11a8cd"/>
+<rect x="152" y="422" width="45" height="18" fill="#000000"/>
+<rect x="197" y="422" width="522" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> scrollen  </text>
+<text x="152" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="197" y="435" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                                    </text>
+</g></svg>

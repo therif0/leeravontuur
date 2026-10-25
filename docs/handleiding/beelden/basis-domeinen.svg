@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="De domeinen van Wiskunde">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="288" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde</text>
+<text x="44" y="75" textLength="135" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Welk onderwerp?</text>
+<rect x="62" y="98" width="243" height="18" fill="#e5e510"/>
+<text x="62" y="111" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> 1. Eenheden               </text>
+<text x="323" y="111" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">lengte, massa, inhoud, oppervlakte, volume</text>
+<text x="8" y="129" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       2. Hoofdrekenen             </text>
+<text x="323" y="129" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">tafels, plus en min, × 10, dubbel en helft</text>
+<text x="8" y="147" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       3. Getallen                 </text>
+<text x="323" y="147" textLength="405" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">plaatswaarde, afronden, deelbaarheid, getalle</text>
+<text x="8" y="165" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       4. Cijferen                 </text>
+<text x="323" y="165" textLength="342" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">onder elkaar: + − × en de staartdeling</text>
+<text x="8" y="183" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       5. Breuken                  </text>
+<text x="323" y="183" textLength="396" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">breukbalk, vereenvoudigen, vergelijken, + −,</text>
+<text x="8" y="201" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       6. Procenten                </text>
+<text x="323" y="201" textLength="360" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">honderdveld, procent van, korting en btw</text>
+<text x="8" y="219" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       7. Tijd, geld en snelheid   </text>
+<text x="323" y="219" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">uren en minuten, wisselgeld, km/u</text>
+<text x="8" y="237" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       8. Meetkunde                </text>
+<text x="323" y="237" textLength="405" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">oppervlakte en omtrek, formules, hoeken, scha</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="45" height="18" fill="#11a8cd"/>
+<rect x="242" y="422" width="45" height="18" fill="#000000"/>
+<rect x="287" y="422" width="432" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok  </text>
+<text x="242" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="287" y="435" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                          </text>
+</g></svg>

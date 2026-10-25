@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Opmerkingen uit &#x27;Zeg het ons&#x27;">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="324" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="324" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Ouders › Opmerkingen</text>
+<text x="44" y="57" textLength="531" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Opmerkingen uit &#x27;Zeg het ons&#x27;, nieuwste eerst. Ze staan in:</text>
+<text x="44" y="75" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">  /tmp/leeravontuur/feedback.txt</text>
+<text x="44" y="111" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">25/10 18:07 · Imrane</text>
+<text x="8" y="129" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      De schatkaart is leuk! Mag er ook een kaart met eilanden komen?           </text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="99" height="18" fill="#11a8cd"/>
+<rect x="152" y="422" width="45" height="18" fill="#000000"/>
+<rect x="197" y="422" width="522" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> scrollen  </text>
+<text x="152" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="197" y="435" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                                    </text>
+</g></svg>

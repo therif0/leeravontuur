@@ -86,6 +86,10 @@ Python 3.10+.
   naar `main`. Samenvoegen pas als de CI groen is én de vader akkoord geeft (merge-commit, geen squash).
 - Elke versie: `VERSIE` in `leeravontuur/__init__.py`, een stukje in `CHANGELOG.md` (in gewone taal), README
   bijwerken, na het samenvoegen een tag `vX.Y.Z` en een GitHub-release met de tekst uit de changelog.
+- De handleiding (`docs/handleiding/`) volgt mee: nieuwe onderwerpen, opties en startargumenten erin beschrijven,
+  daarna `python3 docs/tools/handleiding.py` (tabellen per leerjaar, denkfouten, spiekbrieven, argumenten) en de
+  schermafdrukken opnieuw maken met `python3 docs/tools/schermafdrukken.py [naam…]` (tmux nodig; de beelden staan
+  in `docs/tools/scenarios.py`). `tests/test_handleiding.py` wordt rood als iets ontbreekt.
 - Na een nieuwe versie doorloopt de vader `docs/testlijst.md`; opmerkingen van het kind staan in `feedback.txt`
   (ouderdeel → Opmerkingen).
 

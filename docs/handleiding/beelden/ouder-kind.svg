@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="De instellingen van een kind">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="378" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Ouders › Kinderen › Imrane</text>
+<text x="44" y="57" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Instellingen van Imrane</text>
+<rect x="62" y="80" width="270" height="18" fill="#e5e510"/>
+<text x="62" y="93" textLength="270" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Naam                         </text>
+<text x="341" y="93" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Imrane</text>
+<text x="8" y="129" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Leerjaar                      </text>
+<text x="341" y="129" textLength="108" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">5de leerjaar</text>
+<text x="8" y="165" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Timer zichtbaar voor het kind </text>
+<text x="341" y="165" textLength="18" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">ja</text>
+<text x="8" y="201" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Pincode bij het starten       </text>
+<text x="341" y="201" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">nee</text>
+<text x="8" y="237" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Winkel: 2x een foute som      </text>
+<text x="341" y="237" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">pakje komt na 10 juiste antwoorden</text>
+<text x="8" y="273" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Gegevens exporteren           </text>
+<text x="341" y="273" textLength="252" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">alle antwoorden (CSV + JSON)</text>
+<text x="8" y="309" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Alles van dit kind wissen                                                </text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="99" height="18" fill="#11a8cd"/>
+<rect x="296" y="422" width="45" height="18" fill="#000000"/>
+<rect x="341" y="422" width="378" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> wijzigen  </text>
+<text x="296" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="341" y="435" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                    </text>
+</g></svg>
