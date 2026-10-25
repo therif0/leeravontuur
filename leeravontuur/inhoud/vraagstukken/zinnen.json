@@ -1,0 +1,525 @@
+{
+ "uitleg": "Verwoordingen per rekenstructuur en variant. {a} = een gegeven (aanduidbaar), {a ding} = het gegeven met het woord erbij (1 broodje, 3 broodjes), {ding.enk}/{ding.mv}, {de:ding}, {elk:ding}, {een:ding}, *woord* = een sleutelwoord. Per variant: 'zinnen' = groepen met alternatieven (schud = de volgorde mag wisselen), 'vraag' = alternatieven, 'antwoord' = de antwoordzin met {?}, 'gevraagd' = wat er gezocht wordt.",
+ "stappenplan": [
+  {
+   "nr": 1,
+   "naam": "Lees",
+   "vakken": "Gegeven en Gevraagd",
+   "uitleg": "Lees goed. Wat weet je? Wat wordt er gevraagd?"
+  },
+  {
+   "nr": 2,
+   "naam": "Plan",
+   "vakken": "Welke bewerking?",
+   "uitleg": "Wat moet je eerst doen, en wat daarna?"
+  },
+  {
+   "nr": 3,
+   "naam": "Reken",
+   "vakken": "Oplossing",
+   "uitleg": "Reken stap voor stap in je klad."
+  },
+  {
+   "nr": 4,
+   "naam": "Controle",
+   "vakken": "Antwoord",
+   "uitleg": "Schrijf een antwoordzin. Kan je antwoord kloppen?"
+  }
+ ],
+ "structuren": {
+  "samen": {
+   "samen": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}."
+     ],
+     [
+      "{m2} {werkt} {wie} er {b}.",
+      "{m2} zijn het er {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} *samen*?",
+     "Hoeveel {ding.mv} zijn dat *in totaal*?"
+    ],
+    "antwoord": "{wie} {werkt} {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} samen"
+   },
+   "deel": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} en {m2} {werkt} {wie} *samen* {t ding}.",
+      "*In totaal* {werkt} {wie} {t ding} {m1} en {m2}."
+     ],
+     [
+      "{m1} waren het er {a}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} {m2}?"
+    ],
+    "antwoord": "{m2} {werkt} {wie} {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {m2}"
+   }
+  },
+  "verschil": {
+   "meer": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}."
+     ],
+     [
+      "{m2} {werkt} {wie} er {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} {m2} *meer* dan {m1}?",
+     "Hoeveel {ding.mv} is dat {m2} *meer*?"
+    ],
+    "antwoord": "Dat zijn er {?} meer.",
+    "gevraagd": "hoeveel {ding.mv} meer"
+   },
+   "erbij": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}."
+     ],
+     [
+      "{m2} {werkt} {wie} er {d} *meer*.",
+      "{m2} zijn het er {d} *meer*."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} {m2}?"
+    ],
+    "antwoord": "{m2} {werkt} {wie} {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {m2}"
+   },
+   "minder": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}."
+     ],
+     [
+      "Dat zijn er {d} *minder* dan {m2}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} {m2}?"
+    ],
+    "antwoord": "{m2} {werkt} {wie} {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {m2}"
+   }
+  },
+  "groepen": {
+   "totaal": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{wie} heeft {a houder}.",
+      "Er zijn {a houder}."
+     ],
+     [
+      "{op} {elk:houder} {liggen} {b ding}.",
+      "Er {liggen} {b ding} {op} *{elk:houder}*."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} zijn er *in totaal*?",
+     "Hoeveel {ding.mv} {liggen} er *samen* {op} de {houder.mv}?"
+    ],
+    "antwoord": "Er zijn {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} in totaal"
+   },
+   "per": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} verdeelt {t ding} *eerlijk* over {a houder}.",
+      "{wie} heeft {t ding} en {a houder}."
+     ],
+     [
+      "{op} {elk:houder} moeten er *evenveel* komen."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} komen er {op} {elk:houder}?"
+    ],
+    "antwoord": "{op} {elk:houder} komen {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {op} één {houder.enk}"
+   },
+   "aantal": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{wie} heeft {t ding}."
+     ],
+     [
+      "{op} *{elk:houder}* {liggen} {b ding}.",
+      "Er passen {b ding} {op} *{elk:houder}*."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {houder.mv} zijn er nodig?",
+     "Hoeveel {houder.mv} heeft {wie} nodig?"
+    ],
+    "antwoord": "Er zijn {?} {houder.mv} nodig.",
+    "gevraagd": "het aantal {houder.mv}"
+   }
+  },
+  "rest": {
+   "volle": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {n ding}."
+     ],
+     [
+      "{op} {elk:houder} passen {b ding}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {houder.mv} kan {wie} *helemaal vol* maken?"
+    ],
+    "antwoord": "{wie} kan {?} {houder.mv} vol maken.",
+    "gevraagd": "het aantal volle {houder.mv}"
+   },
+   "over": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {n ding}."
+     ],
+     [
+      "{op} {elk:houder} passen {b ding}."
+     ],
+     [
+      "{wie} maakt zoveel mogelijk {houder.mv} vol."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} blijven er *over*?"
+    ],
+    "antwoord": "Er blijven {?} {ding.mv} over.",
+    "gevraagd": "het aantal {ding.mv} dat overblijft"
+   },
+   "nodig": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {n ding}."
+     ],
+     [
+      "{op} {elk:houder} passen {b ding}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {houder.mv} heeft {wie} nodig voor *alle* {ding.mv}?"
+    ],
+    "antwoord": "{wie} heeft {?} {houder.mv} nodig.",
+    "gevraagd": "het aantal {houder.mv} voor alle {ding.mv}"
+   }
+  },
+  "samen_delen": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {a ding}."
+     ],
+     [
+      "Er komen er nog {b} *bij*.",
+      "{wie} krijgt er nog {b} *bij*."
+     ],
+     [
+      "{wie} verdeelt *alle* {ding.mv} *eerlijk* over {n houder}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} komen er {op} {elk:houder}?"
+    ],
+    "antwoord": "{op} {elk:houder} komen {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {op} één {houder.enk}"
+   }
+  },
+  "wisselgeld": {
+   "een": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {een:ding} {waar}."
+     ],
+     [
+      "{de:ding} kost {p}."
+     ],
+     [
+      "{wie} betaalt met {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel geld krijgt {wie} *terug*?",
+     "Hoeveel *wisselgeld* krijgt {wie}?"
+    ],
+    "antwoord": "{wie} krijgt € {?} terug.",
+    "gevraagd": "het wisselgeld"
+   },
+   "meer": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {a ding} {waar}.",
+      "{waar} koopt {wie} {a ding}."
+     ],
+     [
+      "*{elk:ding}* kost {p}.",
+      "Voor *{een:ding}* betaal je {p}."
+     ],
+     [
+      "{wie} betaalt met {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel geld krijgt {wie} *terug*?",
+     "Hoeveel *wisselgeld* krijgt {wie}?"
+    ],
+    "antwoord": "{wie} krijgt € {?} terug.",
+    "gevraagd": "het wisselgeld"
+   }
+  },
+  "twee_soorten": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {a ding} en {c ding2} {waar}."
+     ],
+     [
+      "*{elk:ding}* kost {p}."
+     ],
+     [
+      "*{elk:ding2}* kost {q}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel moet {wie} *in totaal* betalen?",
+     "Hoeveel betaalt {wie} *samen*?"
+    ],
+    "antwoord": "{wie} betaalt € {?}.",
+    "gevraagd": "wat {wie} in totaal betaalt"
+   },
+   "wissel": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {a ding} en {c ding2} {waar}."
+     ],
+     [
+      "*{elk:ding}* kost {p}."
+     ],
+     [
+      "*{elk:ding2}* kost {q}."
+     ],
+     [
+      "{wie} betaalt met {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel geld krijgt {wie} *terug*?"
+    ],
+    "antwoord": "{wie} krijgt € {?} terug.",
+    "gevraagd": "het wisselgeld"
+   }
+  },
+  "per_kg": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {m} {ding.mv} {waar}."
+     ],
+     [
+      "*1 kg* {ding.mv} kost {k}.",
+      "Je betaalt {k} *per kg*."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel moet {wie} betalen?",
+     "Hoeveel kost dat?"
+    ],
+    "antwoord": "{wie} betaalt € {?}.",
+    "gevraagd": "de prijs die {wie} betaalt"
+   },
+   "wissel": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} koopt {m} {ding.mv} {waar}."
+     ],
+     [
+      "*1 kg* {ding.mv} kost {k}."
+     ],
+     [
+      "{wie} betaalt met {b}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel geld krijgt {wie} *terug*?"
+    ],
+    "antwoord": "{wie} krijgt € {?} terug.",
+    "gevraagd": "het wisselgeld"
+   }
+  },
+  "korting": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} wil {een:ding} kopen {waar}."
+     ],
+     [
+      "{de:ding} kost {P}."
+     ],
+     [
+      "Vandaag is er {k} *korting*.",
+      "Er is {k} *korting* op alles."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel betaalt {wie} *nu* voor {de:ding}?"
+    ],
+    "antwoord": "{wie} betaalt € {?}.",
+    "gevraagd": "de prijs met korting"
+   },
+   "alleen": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{de:ding} kost {P} {waar}."
+     ],
+     [
+      "Er is {k} *korting*."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel euro *korting* krijg je?"
+    ],
+    "antwoord": "Je krijgt € {?} korting.",
+    "gevraagd": "de korting in euro"
+   }
+  },
+  "sparen": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} wil {een:ding} kopen van {P}."
+     ],
+     [
+      "{wie} heeft al {h} gespaard."
+     ],
+     [
+      "*Elke week* spaart {wie} er {s} bij."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel weken moet {wie} *nog* sparen?"
+    ],
+    "antwoord": "{wie} moet nog {?} weken sparen.",
+    "gevraagd": "het aantal weken sparen"
+   }
+  },
+  "recept": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "Voor {n1} personen heb je {x} {ing} nodig.",
+      "Het recept voor {gerecht}: {x} {ing} voor {n1} personen."
+     ],
+     [
+      "{wie} maakt {gerecht} voor {n2} personen."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ing} heeft {wie} nodig?"
+    ],
+    "antwoord": "{wie} heeft {?} {eenheid} {ing} nodig.",
+    "gevraagd": "hoeveel {ing} voor {n2} personen"
+   }
+  },
+  "breuk_van": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "@zin"
+     ],
+     [
+      "@deel"
+     ]
+    ],
+    "vraag": [
+     "@vraag"
+    ],
+    "antwoord": "@antwoord",
+    "gevraagd": "het deel van de {groep.mv}"
+   },
+   "niet": {
+    "schud": false,
+    "zinnen": [
+     [
+      "@zin"
+     ],
+     [
+      "@deel"
+     ]
+    ],
+    "vraag": [
+     "@vraag_niet"
+    ],
+    "antwoord": "@antwoord_niet",
+    "gevraagd": "het andere deel van de {groep.mv}"
+   }
+  },
+  "omtrek": {
+   "gewoon": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {een:plek} van {l} lang en {b} breed.",
+      "{een:plek} is {l} lang en {b} breed."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel meter {rond.enk} is er nodig @doel?"
+    ],
+    "antwoord": "Er is {?} m {rond.enk} nodig.",
+    "gevraagd": "de lengte van {de:rond} (de omtrek)"
+   },
+   "prijs": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {een:plek} van {l} lang en {b} breed."
+     ],
+     [
+      "{wie} zet er {een:rond} *rondom*."
+     ],
+     [
+      "*Eén meter* {rond.enk} kost {q}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel kost {de:rond}?"
+    ],
+    "antwoord": "{de:rond} kost € {?}.",
+    "gevraagd": "de prijs van {de:rond}"
+   }
+  }
+ }
+}

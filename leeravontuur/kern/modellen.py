@@ -276,3 +276,51 @@ def fmt_geheel(n):
 class Hoek:
     """Een hoek van `graden` (0–180): het ene been naar rechts, het andere draait tegen de klok in."""
     graden: int
+
+
+# ---- vraagstukken ---------------------------------------------------------------------------------------
+
+@dataclass
+class Stuk:
+    """Een stukje van een zin in een vraagstuk: tekst, een aanduidbaar gegeven of een sleutelwoord."""
+    tekst: str
+    gegeven: str | None = None   # id van het gegeven (een getal dat het kind kan aanduiden)
+    sleutel: bool = False        # een sleutelwoord ('per', 'samen', 'terug' …): oplichten bij tip 1
+
+
+@dataclass
+class Gegeven:
+    id: str
+    waarde: Decimal
+    tekst: str                   # zoals in het verhaal: '€ 3,20', '750 g', '3/4'
+    naam: str                    # waar het voor staat: 'de prijs van 1 kg kersen'
+    eenheid: str = ""
+    nodig: bool = True
+
+
+@dataclass
+class Rekenstap:
+    """Eén stap van de oplossing. De operanden zijn ids van gegevens of eerdere stappen, of vaste getallen."""
+    op: str                      # + − × : en 'omzet', 'pct' (a % van b), 'boven' (delen, naar boven), 'heel', 'rest'
+    operanden: list
+    id: str
+    uitkomst: Decimal
+    naam: str                    # wat je ermee vindt: 'de prijs van de kersen'
+    hint: str                    # tip zonder getallen: 'je weet wat 1 kg kost en hoeveel kg … → ×'
+    waarom: str                  # na het nakijken, met getallen
+    reken: str = ""              # zo schrijf je de stap: '0,75 × 3,20 = 2,40'
+    eenheid: str = ""
+
+
+@dataclass
+class Verhaal:
+    """Een vraagstuk als data: zinnen (lijsten van Stukken; de laatste is de vraag), gegevens en de oplossing."""
+    zinnen: list
+    gegevens: dict
+    stappen: list
+    gevraagd: str
+    opties: list                 # wat er gevraagd kan worden (3 keuzes, de juiste zit erbij)
+    antwoordzin: tuple           # (voor, na) rond het invulvak
+    eenheid: str = ""            # van het antwoord ('€', 'm', 'broodjes' …)
+    controle: tuple | None = None  # (laagste, hoogste, uitleg): een antwoord daarbuiten kan niet kloppen
+    paden: list = field(default_factory=list)  # foute paden: [(code, tekst, waarde, {stap-id: waarde})]

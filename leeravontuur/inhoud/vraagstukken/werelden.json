@@ -1,0 +1,448 @@
+{
+ "uitleg": "Werelden voor de verhaalmachine (kern/wiskunde/vraagstukken.py). Een woord is 'enkelvoud|meervoud|lidwoord'. '@naam' = een naam uit 'namen'. Elk soort item hoort bij een rekenstructuur: groep (×, :, rest, eerlijk verdelen), tel (samen, verschil), koop (wisselgeld, twee soorten), kg (prijs per kg), duur (korting, sparen), recept, deel (breuk van), tuin (omtrek). Bereiken zijn [min, max]; prijzen in euro.",
+ "namen": ["Lotte", "Bram", "Noor", "Amira", "Lucas", "Yasmine", "Wout", "Fien", "Mohamed", "Elise", "Jonas", "Lina",
+           "Arthur", "Hanne", "Milan", "Zoë", "Ilias", "Ella", "Seppe", "Nora", "Rayan", "Marie", "Louis", "Sara",
+           "Kobe", "Aya", "Finn", "Lisa", "Emre", "Julie"],
+ "werelden": [
+  {
+   "id": "bakkerij", "naam": "de bakkerij",
+   "intro": ["Het is druk in de bakkerij.", "Het ruikt lekker in de bakkerij."],
+   "weetjes": [
+    {"zin": "De bakkerij is al {x} jaar open.", "x": [8, 60], "naam": "hoe lang de bakkerij al open is"},
+    {"zin": "De bakker begint elke dag om {x} uur.", "x": [3, 6], "naam": "het uur waarop de bakker begint"},
+    {"zin": "Er werken {x} mensen in de bakkerij.", "x": [3, 9], "naam": "het aantal mensen dat er werkt"}
+   ],
+   "groep": [
+    {"wie": ["de bakker", "bakker Jef"], "houder": "plaat|platen|de", "ding": "broodje|broodjes|het",
+     "op": "op", "liggen": "liggen", "per": [12, 30], "aantal": [3, 12]},
+    {"wie": ["de bakker"], "houder": "doos|dozen|de", "ding": "praline|pralines|de",
+     "op": "in", "liggen": "zitten", "per": [6, 24], "aantal": [4, 15]}
+   ],
+   "tel": [
+    {"wie": ["de bakker", "bakker Jef"], "werkt": "verkoopt", "ding": "brood|broden|het", "bereik": [60, 400],
+     "momenten": ["op zaterdag", "op zondag"]},
+    {"wie": ["de bakker"], "werkt": "bakt", "ding": "croissant|croissants|de", "bereik": [40, 250],
+     "momenten": ["'s morgens", "'s middags"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de bakkerij", "ding": "pistolet|pistolets|de", "prijs": [0.4, 0.9]},
+    {"wie": ["@naam"], "waar": "in de bakkerij", "ding": "croissant|croissants|de", "prijs": [0.9, 1.6]},
+    {"wie": ["@naam"], "waar": "in de bakkerij", "ding": "brood|broden|het", "prijs": [2.2, 3.9]},
+    {"wie": ["@naam"], "waar": "in de bakkerij", "ding": "taart|taarten|de", "prijs": [9, 24]}
+   ],
+   "recept": [
+    {"wie": ["de bakker", "@naam"], "gerecht": "wafels", "ingredienten": [
+     {"naam": "bloem", "eenheid": "g", "per_persoon": [40, 80]}, {"naam": "melk", "eenheid": "ml", "per_persoon": [50, 100]}]}
+   ]
+  },
+  {
+   "id": "bouwwerf", "naam": "de bouwwerf",
+   "intro": ["Op de bouwwerf wordt een nieuw huis gebouwd.", "De bouwvakkers zijn al vroeg aan het werk."],
+   "weetjes": [
+    {"zin": "Het huis krijgt {x} kamers.", "x": [4, 9], "naam": "het aantal kamers"},
+    {"zin": "Er werken {x} bouwvakkers op de werf.", "x": [3, 12], "naam": "het aantal bouwvakkers"},
+    {"zin": "De kraan is {x} hoog.", "x": [18, 45], "eenheid": "m", "naam": "de hoogte van de kraan"}
+   ],
+   "groep": [
+    {"wie": ["de metselaar", "metselaar Ali"], "houder": "rij|rijen|de", "ding": "baksteen|bakstenen|de",
+     "op": "in", "liggen": "liggen", "per": [20, 60], "aantal": [5, 20]},
+    {"wie": ["de bouwvakker"], "houder": "pallet|pallets|de", "ding": "zak|zakken|de",
+     "op": "op", "liggen": "liggen", "per": [10, 40], "aantal": [3, 12]}
+   ],
+   "tel": [
+    {"wie": ["de metselaar", "metselaar Ali"], "werkt": "legt", "ding": "baksteen|bakstenen|de", "bereik": [150, 900],
+     "momenten": ["op maandag", "op dinsdag"]},
+    {"wie": ["de vrachtwagen"], "werkt": "brengt", "ding": "dakpan|dakpannen|de", "bereik": [200, 1500],
+     "momenten": ["'s morgens", "'s middags"]}
+   ],
+   "koop": [
+    {"wie": ["de aannemer"], "waar": "in de bouwmarkt", "ding": "zak cement|zakken cement|de", "prijs": [4, 9]},
+    {"wie": ["@naam"], "waar": "in de bouwmarkt", "ding": "schroevendraaier|schroevendraaiers|de", "prijs": [3, 12]}
+   ],
+   "duur": [
+    {"wie": ["@naam"], "waar": "in de bouwmarkt", "ding": "boormachine|boormachines|de", "prijs": [40, 160]}
+   ],
+   "tuin": [
+    {"wie": ["de aannemer"], "plek": "bouwgrond|bouwgronden|de", "rond": "hek|hekken|het", "doel": "om de bouwgrond *rondom* af te sluiten",
+     "lengte": [15, 40], "breedte": [8, 25], "prijs": [3, 9]}
+   ]
+  },
+  {
+   "id": "boerderij", "naam": "de boerderij",
+   "intro": ["Op de boerderij is het oogsttijd.", "Op de boerderij is iedereen vroeg op."],
+   "weetjes": [
+    {"zin": "Op de boerderij wonen {x} koeien.", "x": [12, 90], "naam": "het aantal koeien"},
+    {"zin": "De boer is {x} jaar oud.", "x": [35, 70], "naam": "de leeftijd van de boer"},
+    {"zin": "De tractor is {x} jaar oud.", "x": [3, 30], "naam": "de leeftijd van de tractor"}
+   ],
+   "groep": [
+    {"wie": ["de boer", "boerin Mia"], "houder": "krat|kratten|de", "ding": "appel|appels|de",
+     "op": "in", "liggen": "zitten", "per": [20, 50], "aantal": [4, 16]},
+    {"wie": ["de boerin", "boer Staf"], "houder": "doos|dozen|de", "ding": "ei|eieren|het",
+     "op": "in", "liggen": "zitten", "per": [6, 30], "aantal": [5, 20]}
+   ],
+   "tel": [
+    {"wie": ["de boer", "boerin Mia"], "werkt": "plukt", "ding": "appel|appels|de", "bereik": [120, 800],
+     "momenten": ["op vrijdag", "op zaterdag"]},
+    {"wie": ["de boerin"], "werkt": "raapt", "ding": "ei|eieren|het", "bereik": [30, 180],
+     "momenten": ["'s morgens", "'s avonds"]}
+   ],
+   "kg": [
+    {"wie": ["@naam"], "waar": "in de hoevewinkel", "ding": "aardappel|aardappelen|de", "prijs": [0.8, 2], "gram": [1500, 5000]},
+    {"wie": ["@naam"], "waar": "in de hoevewinkel", "ding": "kers|kersen|de", "prijs": [3, 8], "gram": [250, 1500]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de hoevewinkel", "ding": "fles melk|flessen melk|de", "prijs": [0.9, 1.8]},
+    {"wie": ["@naam"], "waar": "in de hoevewinkel", "ding": "potje confituur|potjes confituur|het", "prijs": [2.5, 5]}
+   ],
+   "deel": [
+    {"groep": "koe|koeien|de", "totaal": [12, 90], "zin": "Op de boerderij wonen {t groep}.",
+     "deel": "{f} van de koeien staat in de wei.", "vraag": "Hoeveel koeien staan er in de wei?",
+     "vraag_niet": "Hoeveel koeien staan er *niet* in de wei?", "antwoord": "Er staan {?} koeien in de wei.",
+     "antwoord_niet": "Er staan {?} koeien niet in de wei."}
+   ],
+   "tuin": [
+    {"wie": ["de boer"], "plek": "weide|weides|de", "rond": "draad|draden|de", "doel": "om de weide *rondom* af te sluiten",
+     "lengte": [30, 90], "breedte": [20, 60], "prijs": [1, 3]}
+   ]
+  },
+  {
+   "id": "bibliotheek", "naam": "de bibliotheek",
+   "intro": ["In de bibliotheek is het stil.", "De bibliotheek krijgt nieuwe boeken."],
+   "weetjes": [
+    {"zin": "De bibliotheek is {x} uur per week open.", "x": [20, 45], "naam": "hoe lang de bibliotheek open is"},
+    {"zin": "Er staan {x} computers in de bibliotheek.", "x": [4, 16], "naam": "het aantal computers"}
+   ],
+   "groep": [
+    {"wie": ["de bibliothecaris", "juf Ann"], "houder": "plank|planken|de", "ding": "boek|boeken|het",
+     "op": "op", "liggen": "staan", "per": [20, 45], "aantal": [4, 15]},
+    {"wie": ["de bibliothecaris"], "houder": "bak|bakken|de", "ding": "strip|strips|de",
+     "op": "in", "liggen": "zitten", "per": [15, 40], "aantal": [3, 10]}
+   ],
+   "tel": [
+    {"wie": ["de bibliotheek"], "werkt": "koopt", "ding": "boek|boeken|het", "bereik": [80, 600], "momenten": ["in januari", "in februari"]},
+    {"wie": ["@naam"], "werkt": "leest", "ding": "bladzijde|bladzijden|de", "bereik": [30, 250], "momenten": ["op maandag", "op dinsdag"]}
+   ],
+   "deel": [
+    {"groep": "boek|boeken|het", "totaal": [20, 120], "zin": "Op de plank staan {t groep}.",
+     "deel": "{f} van de boeken zijn strips.", "vraag": "Hoeveel boeken zijn strips?",
+     "vraag_niet": "Hoeveel boeken zijn *geen* strips?", "antwoord": "Er zijn {?} strips.",
+     "antwoord_niet": "Er zijn {?} boeken die geen strip zijn."}
+   ]
+  },
+  {
+   "id": "schoolreis", "naam": "de schoolreis",
+   "intro": ["De school gaat op schoolreis.", "Vandaag is het schoolreis!"],
+   "weetjes": [
+    {"zin": "De bus vertrekt om {x} uur.", "x": [7, 9], "naam": "het uur van vertrek"},
+    {"zin": "De rit duurt {x}.", "x": [35, 90], "eenheid": "min", "naam": "hoe lang de rit duurt"},
+    {"zin": "De school heeft {x} klassen.", "x": [6, 18], "naam": "het aantal klassen"}
+   ],
+   "groep": [
+    {"wie": ["de directeur", "meester Tom"], "houder": "bus|bussen|de", "ding": "leerling|leerlingen|de",
+     "op": "in", "liggen": "zitten", "per": [40, 60], "aantal": [2, 8]},
+    {"wie": ["juf Ann", "meester Tom"], "houder": "groepje|groepjes|het", "ding": "kind|kinderen|het",
+     "op": "in", "liggen": "zitten", "per": [4, 8], "aantal": [3, 8]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in het souvenirwinkeltje", "ding": "postkaart|postkaarten|de", "prijs": [0.5, 1.5]},
+    {"wie": ["@naam"], "waar": "in het souvenirwinkeltje", "ding": "sleutelhanger|sleutelhangers|de", "prijs": [2, 5]},
+    {"wie": ["@naam"], "waar": "aan de kiosk", "ding": "ijsje|ijsjes|het", "prijs": [1.5, 3]}
+   ],
+   "deel": [
+    {"groep": "leerling|leerlingen|de", "totaal": [20, 30], "zin": "In de klas zitten {t groep}.",
+     "deel": "{f} van de leerlingen neemt een lunchpakket mee.", "vraag": "Hoeveel leerlingen nemen een lunchpakket mee?",
+     "vraag_niet": "Hoeveel leerlingen nemen *geen* lunchpakket mee?", "antwoord": "{?} leerlingen nemen een lunchpakket mee.",
+     "antwoord_niet": "{?} leerlingen nemen geen lunchpakket mee."}
+   ]
+  },
+  {
+   "id": "markt", "naam": "de markt",
+   "intro": ["Het is marktdag.", "Op de markt staan veel kraampjes."],
+   "weetjes": [
+    {"zin": "Er staan {x} kraampjes op de markt.", "x": [15, 60], "naam": "het aantal kraampjes"},
+    {"zin": "De markt begint om {x} uur.", "x": [7, 9], "naam": "het uur waarop de markt begint"},
+    {"zin": "Een bos bloemen kost {x}.", "x": [5, 15], "eenheid": "€", "naam": "de prijs van een bos bloemen"}
+   ],
+   "groep": [
+    {"wie": ["de groenteboer", "@naam"], "houder": "zak|zakken|de", "ding": "sinaasappel|sinaasappels|de",
+     "op": "in", "liggen": "zitten", "per": [6, 15], "aantal": [5, 20]}
+   ],
+   "tel": [
+    {"wie": ["de groenteboer"], "werkt": "verkoopt", "ding": "bloemkool|bloemkolen|de", "bereik": [30, 160], "momenten": ["op woensdag", "op zaterdag"]}
+   ],
+   "kg": [
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "tomaat|tomaten|de", "prijs": [2, 5], "gram": [250, 2000]},
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "druif|druiven|de", "prijs": [3, 7], "gram": [250, 1500]},
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "appel|appels|de", "prijs": [1.5, 3.5], "gram": [500, 3000]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "meloen|meloenen|de", "prijs": [1.5, 4]},
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "bloemkool|bloemkolen|de", "prijs": [1.2, 2.8]},
+    {"wie": ["@naam"], "waar": "op de markt", "ding": "bos tulpen|bossen tulpen|de", "prijs": [4, 9]}
+   ]
+  },
+  {
+   "id": "sportclub", "naam": "de sportclub",
+   "intro": ["De voetbalclub heeft een drukke week.", "Bij de sportclub is het feest."],
+   "weetjes": [
+    {"zin": "De club bestaat al {x} jaar.", "x": [10, 95], "naam": "hoe lang de club al bestaat"},
+    {"zin": "Het veld is {x} lang.", "x": [60, 105], "eenheid": "m", "naam": "de lengte van het veld"},
+    {"zin": "De training begint om {x} uur.", "x": [17, 19], "naam": "het uur van de training"}
+   ],
+   "groep": [
+    {"wie": ["de trainer", "trainer Karim"], "houder": "net|netten|het", "ding": "bal|ballen|de",
+     "op": "in", "liggen": "zitten", "per": [8, 16], "aantal": [3, 9]},
+    {"wie": ["de trainer"], "houder": "ploeg|ploegen|de", "ding": "speler|spelers|de",
+     "op": "in", "liggen": "zitten", "per": [5, 11], "aantal": [2, 8]}
+   ],
+   "tel": [
+    {"wie": ["de club"], "werkt": "verkoopt", "ding": "ticket|tickets|het", "bereik": [120, 900], "momenten": ["op zaterdag", "op zondag"]},
+    {"wie": ["@naam"], "werkt": "loopt", "ding": "ronde|rondes|de", "bereik": [8, 40], "momenten": ["op maandag", "op woensdag"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de kantine", "ding": "flesje water|flesjes water|het", "prijs": [1, 2]},
+    {"wie": ["@naam"], "waar": "in de kantine", "ding": "hotdog|hotdogs|de", "prijs": [2, 4]},
+    {"wie": ["@naam"], "waar": "in de clubwinkel", "ding": "paar kousen|paar kousen|het", "prijs": [4, 9]}
+   ],
+   "duur": [
+    {"wie": ["@naam"], "waar": "in de sportwinkel", "ding": "paar voetbalschoenen|paar voetbalschoenen|het", "prijs": [40, 120]},
+    {"wie": ["@naam"], "waar": "in de sportwinkel", "ding": "voetbal|voetballen|de", "prijs": [20, 45]}
+   ],
+   "tuin": [
+    {"wie": ["de club"], "plek": "trainingsveld|trainingsvelden|het", "rond": "lint|linten|het", "doel": "om het veld *rondom* af te zetten",
+     "lengte": [40, 100], "breedte": [25, 65], "prijs": [1, 2]}
+   ]
+  },
+  {
+   "id": "feest", "naam": "het verjaardagsfeest",
+   "intro": ["Er is een verjaardagsfeest.", "Vandaag wordt er een feestje gegeven."],
+   "weetjes": [
+    {"zin": "Het feest begint om {x} uur.", "x": [14, 16], "naam": "het uur waarop het feest begint"},
+    {"zin": "De jarige wordt {x} jaar.", "x": [8, 12], "naam": "de leeftijd van de jarige"},
+    {"zin": "Er hangen {x} slingers in de zaal.", "x": [5, 20], "naam": "het aantal slingers"}
+   ],
+   "groep": [
+    {"wie": ["@naam"], "houder": "zakje|zakjes|het", "ding": "snoepje|snoepjes|het",
+     "op": "in", "liggen": "zitten", "per": [6, 15], "aantal": [6, 14]},
+    {"wie": ["@naam"], "houder": "tafel|tafels|de", "ding": "bord|borden|het",
+     "op": "op", "liggen": "staan", "per": [4, 10], "aantal": [3, 8]}
+   ],
+   "tel": [
+    {"wie": ["@naam"], "werkt": "blaast", "ding": "ballon|ballonnen|de", "bereik": [15, 60], "momenten": ["'s morgens", "'s middags"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de feestwinkel", "ding": "pakje ballonnen|pakjes ballonnen|het", "prijs": [1.5, 4]},
+    {"wie": ["@naam"], "waar": "in de feestwinkel", "ding": "slinger|slingers|de", "prijs": [2, 6]},
+    {"wie": ["@naam"], "waar": "in de feestwinkel", "ding": "zak chips|zakken chips|de", "prijs": [1.2, 2.5]}
+   ],
+   "recept": [
+    {"wie": ["@naam"], "gerecht": "pannenkoeken", "ingredienten": [
+     {"naam": "bloem", "eenheid": "g", "per_persoon": [40, 80]}, {"naam": "melk", "eenheid": "ml", "per_persoon": [80, 150]}]},
+    {"wie": ["@naam"], "gerecht": "fruitsla", "ingredienten": [{"naam": "aardbeien", "eenheid": "g", "per_persoon": [50, 120]}]}
+   ]
+  },
+  {
+   "id": "moestuin", "naam": "de moestuin",
+   "intro": ["In de moestuin groeit van alles.", "Het is lente in de moestuin."],
+   "weetjes": [
+    {"zin": "De moestuin ligt {x} van het huis.", "x": [10, 60], "eenheid": "m", "naam": "de afstand tot het huis"},
+    {"zin": "Er staan {x} fruitbomen in de tuin.", "x": [2, 9], "naam": "het aantal fruitbomen"}
+   ],
+   "groep": [
+    {"wie": ["opa", "oma", "@naam"], "houder": "rij|rijen|de", "ding": "slaplant|slaplanten|de",
+     "op": "in", "liggen": "staan", "per": [8, 20], "aantal": [3, 10]},
+    {"wie": ["oma"], "houder": "mand|manden|de", "ding": "aardappel|aardappelen|de",
+     "op": "in", "liggen": "zitten", "per": [15, 40], "aantal": [3, 9]}
+   ],
+   "tel": [
+    {"wie": ["opa", "oma"], "werkt": "oogst", "ding": "tomaat|tomaten|de", "bereik": [20, 140], "momenten": ["in juli", "in augustus"]}
+   ],
+   "tuin": [
+    {"wie": ["opa", "oma", "@naam"], "plek": "moestuin|moestuinen|de", "rond": "hek|hekken|het", "doel": "om de moestuin *rondom* af te sluiten",
+     "lengte": [6, 25], "breedte": [4, 15], "prijs": [3, 9]},
+    {"wie": ["oma"], "plek": "bloemperk|bloemperken|het", "rond": "boordsteen|boordstenen|de", "doel": "om het bloemperk *rondom* af te boorden",
+     "lengte": [3, 12], "breedte": [2, 8], "prijs": [2, 6]}
+   ],
+   "koop": [
+    {"wie": ["opa", "oma"], "waar": "in het tuincentrum", "ding": "zakje zaadjes|zakjes zaadjes|het", "prijs": [1, 3]},
+    {"wie": ["opa", "oma"], "waar": "in het tuincentrum", "ding": "plantje|plantjes|het", "prijs": [0.8, 2.5]}
+   ]
+  },
+  {
+   "id": "keuken", "naam": "de keuken",
+   "intro": ["Het is zondag en er wordt gekookt.", "In de keuken staat alles klaar."],
+   "weetjes": [
+    {"zin": "De oven staat op {x} graden.", "x": [160, 220], "naam": "de temperatuur van de oven"},
+    {"zin": "Het eten moet {x} in de oven.", "x": [15, 45], "eenheid": "min", "naam": "de baktijd"}
+   ],
+   "recept": [
+    {"wie": ["papa", "mama", "@naam"], "gerecht": "spaghetti", "ingredienten": [
+     {"naam": "spaghetti", "eenheid": "g", "per_persoon": [80, 125]}, {"naam": "gehakt", "eenheid": "g", "per_persoon": [75, 125]}]},
+    {"wie": ["papa", "mama", "@naam"], "gerecht": "soep", "ingredienten": [
+     {"naam": "water", "eenheid": "ml", "per_persoon": [200, 300]}, {"naam": "wortelen", "eenheid": "g", "per_persoon": [50, 100]}]},
+    {"wie": ["papa", "mama", "@naam"], "gerecht": "rijstpap", "ingredienten": [
+     {"naam": "rijst", "eenheid": "g", "per_persoon": [30, 60]}, {"naam": "melk", "eenheid": "ml", "per_persoon": [150, 250]}]}
+   ],
+   "kg": [
+    {"wie": ["papa", "mama"], "waar": "bij de slager", "ding": "gehakt|gehakt|het", "prijs": [8, 14], "gram": [300, 1500]}
+   ]
+  },
+  {
+   "id": "fietstocht", "naam": "de fietstocht",
+   "intro": ["Het is mooi weer om te fietsen.", "De familie maakt een fietstocht."],
+   "weetjes": [
+    {"zin": "Ze vertrekken om {x} uur.", "x": [9, 14], "naam": "het uur van vertrek"},
+    {"zin": "Er fietsen {x} mensen mee.", "x": [3, 9], "naam": "het aantal fietsers"}
+   ],
+   "tel": [
+    {"wie": ["@naam"], "werkt": "fietst", "ding": "kilometer|kilometer|de", "bereik": [8, 60], "momenten": ["op zaterdag", "op zondag"]},
+    {"wie": ["de groep"], "werkt": "rijdt", "ding": "kilometer|kilometer|de", "bereik": [15, 90], "momenten": ["voor de middag", "na de middag"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in het café", "ding": "pannenkoek|pannenkoeken|de", "prijs": [3, 6]},
+    {"wie": ["@naam"], "waar": "in het café", "ding": "drankje|drankjes|het", "prijs": [2, 3.5]}
+   ],
+   "duur": [
+    {"wie": ["@naam"], "waar": "in de fietsenwinkel", "ding": "fiets|fietsen|de", "prijs": [120, 400]},
+    {"wie": ["@naam"], "waar": "in de fietsenwinkel", "ding": "fietshelm|fietshelmen|de", "prijs": [25, 70]}
+   ]
+  },
+  {
+   "id": "dierentuin", "naam": "de dierentuin",
+   "intro": ["Het is druk in de dierentuin.", "In de dierentuin is het voedertijd."],
+   "weetjes": [
+    {"zin": "De giraf is {x} hoog.", "x": [4, 6], "eenheid": "m", "naam": "de hoogte van de giraf"},
+    {"zin": "De dierentuin heeft {x} olifanten.", "x": [2, 8], "naam": "het aantal olifanten"},
+    {"zin": "De dierentuin is {x} jaar oud.", "x": [40, 180], "naam": "de leeftijd van de dierentuin"}
+   ],
+   "groep": [
+    {"wie": ["de verzorger", "verzorgster Lien"], "houder": "emmer|emmers|de", "ding": "vis|vissen|de",
+     "op": "in", "liggen": "zitten", "per": [10, 30], "aantal": [3, 10]},
+    {"wie": ["de verzorger"], "houder": "bak|bakken|de", "ding": "wortel|wortels|de",
+     "op": "in", "liggen": "zitten", "per": [12, 40], "aantal": [3, 8]}
+   ],
+   "tel": [
+    {"wie": ["de dierentuin"], "werkt": "ontvangt", "ding": "bezoeker|bezoekers|de", "bereik": [300, 2500], "momenten": ["op zaterdag", "op zondag"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de dierentuin", "ding": "ticket|tickets|het", "prijs": [12, 25]},
+    {"wie": ["@naam"], "waar": "in de dierentuin", "ding": "knuffel|knuffels|de", "prijs": [6, 18]}
+   ],
+   "deel": [
+    {"groep": "bezoeker|bezoekers|de", "totaal": [40, 400], "zin": "In de dierentuin zijn er vandaag {t groep}.",
+     "deel": "{f} van de bezoekers gaat naar de pinguïns kijken.", "vraag": "Hoeveel bezoekers gaan naar de pinguïns kijken?",
+     "vraag_niet": "Hoeveel bezoekers gaan *niet* naar de pinguïns kijken?", "antwoord": "{?} bezoekers gaan naar de pinguïns kijken.",
+     "antwoord_niet": "{?} bezoekers gaan niet naar de pinguïns kijken."}
+   ]
+  },
+  {
+   "id": "speelgoedwinkel", "naam": "de speelgoedwinkel",
+   "intro": ["In de speelgoedwinkel is het solden.", "De speelgoedwinkel heeft nieuwe spellen."],
+   "weetjes": [
+    {"zin": "De winkel is open tot {x} uur.", "x": [17, 19], "naam": "het uur waarop de winkel sluit"},
+    {"zin": "In de winkel staan {x} rekken.", "x": [8, 30], "naam": "het aantal rekken"}
+   ],
+   "groep": [
+    {"wie": ["de verkoper", "verkoopster Sofie"], "houder": "rek|rekken|het", "ding": "spel|spellen|het",
+     "op": "in", "liggen": "staan", "per": [10, 30], "aantal": [3, 10]},
+    {"wie": ["de verkoper"], "houder": "doos|dozen|de", "ding": "knikker|knikkers|de",
+     "op": "in", "liggen": "zitten", "per": [20, 50], "aantal": [4, 12]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "kaartspel|kaartspellen|het", "prijs": [3, 8]},
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "puzzel|puzzels|de", "prijs": [6, 15]},
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "strip|strips|de", "prijs": [5, 9]}
+   ],
+   "duur": [
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "bordspel|bordspellen|het", "prijs": [25, 60]},
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "legodoos|legodozen|de", "prijs": [30, 120]},
+    {"wie": ["@naam"], "waar": "in de speelgoedwinkel", "ding": "spelcomputer|spelcomputers|de", "prijs": [150, 350]}
+   ]
+  },
+  {
+   "id": "frituur", "naam": "de frituur",
+   "intro": ["Het is vrijdag: frietjesdag!", "Aan de frituur staat een lange rij."],
+   "weetjes": [
+    {"zin": "De frituur is open sinds {x} uur.", "x": [11, 17], "naam": "het uur waarop de frituur opengaat"},
+    {"zin": "Er staan {x} mensen in de rij.", "x": [4, 15], "naam": "het aantal mensen in de rij"}
+   ],
+   "koop": [
+    {"wie": ["@naam", "papa", "mama"], "waar": "in de frituur", "ding": "pak friet|pakken friet|het", "prijs": [2.5, 4]},
+    {"wie": ["@naam", "papa", "mama"], "waar": "in de frituur", "ding": "frikandel|frikandellen|de", "prijs": [2, 3.2]},
+    {"wie": ["@naam", "papa", "mama"], "waar": "in de frituur", "ding": "potje mayonaise|potjes mayonaise|het", "prijs": [0.6, 1.2]}
+   ],
+   "tel": [
+    {"wie": ["de frituur"], "werkt": "verkoopt", "ding": "pak friet|pakken friet|het", "bereik": [80, 400], "momenten": ["op vrijdag", "op zaterdag"]}
+   ],
+   "kg": [
+    {"wie": ["de frituurbaas"], "waar": "bij de groothandel", "ding": "aardappel|aardappelen|de", "prijs": [0.6, 1.4], "gram": [5000, 25000]}
+   ]
+  },
+  {
+   "id": "jeugdbeweging", "naam": "de jeugdbeweging",
+   "intro": ["Het is zondag: tijd voor de jeugdbeweging.", "De leiding bereidt het kamp voor."],
+   "weetjes": [
+    {"zin": "Het kamp duurt {x} dagen.", "x": [5, 12], "naam": "hoe lang het kamp duurt"},
+    {"zin": "De leiding is met {x}.", "x": [4, 12], "naam": "het aantal leiders"},
+    {"zin": "Het lokaal ligt {x} van de school.", "x": [1, 6], "eenheid": "km", "naam": "de afstand tot de school"}
+   ],
+   "groep": [
+    {"wie": ["de leiding", "leider Jens"], "houder": "tent|tenten|de", "ding": "kind|kinderen|het",
+     "op": "in", "liggen": "slapen", "per": [4, 8], "aantal": [3, 10]},
+    {"wie": ["de leiding"], "houder": "kist|kisten|de", "ding": "zaklamp|zaklampen|de",
+     "op": "in", "liggen": "zitten", "per": [6, 15], "aantal": [2, 6]}
+   ],
+   "tel": [
+    {"wie": ["de groep"], "werkt": "wandelt", "ding": "kilometer|kilometer|de", "bereik": [5, 25], "momenten": ["op dag 1", "op dag 2"]},
+    {"wie": ["de jeugdbeweging"], "werkt": "verkoopt", "ding": "wafel|wafels|de", "bereik": [100, 800], "momenten": ["op zaterdag", "op zondag"]}
+   ],
+   "koop": [
+    {"wie": ["de leiding"], "waar": "in de supermarkt", "ding": "brood|broden|het", "prijs": [1.5, 3]},
+    {"wie": ["@naam"], "waar": "in de kampwinkel", "ding": "drankje|drankjes|het", "prijs": [0.5, 1.5]}
+   ],
+   "deel": [
+    {"groep": "lid|leden|het", "totaal": [20, 80], "zin": "De jeugdbeweging heeft {t groep}.",
+     "deel": "{f} van de leden gaat mee op kamp.", "vraag": "Hoeveel leden gaan mee op kamp?",
+     "vraag_niet": "Hoeveel leden gaan *niet* mee op kamp?", "antwoord": "{?} leden gaan mee op kamp.",
+     "antwoord_niet": "{?} leden gaan niet mee op kamp."}
+   ],
+   "recept": [
+    {"wie": ["de leiding"], "gerecht": "chocomelk", "ingredienten": [{"naam": "melk", "eenheid": "ml", "per_persoon": [150, 250]}]}
+   ]
+  },
+  {
+   "id": "school", "naam": "de school",
+   "intro": ["Op school is het een gewone dag.", "De school organiseert een eetfestijn."],
+   "weetjes": [
+    {"zin": "De school heeft {x} klassen.", "x": [6, 18], "naam": "het aantal klassen"},
+    {"zin": "De speeltijd duurt {x}.", "x": [15, 20], "eenheid": "min", "naam": "hoe lang de speeltijd duurt"},
+    {"zin": "De juf is {x} jaar oud.", "x": [25, 60], "naam": "de leeftijd van de juf"}
+   ],
+   "groep": [
+    {"wie": ["juf Ann", "meester Tom"], "houder": "rij|rijen|de", "ding": "stoel|stoelen|de",
+     "op": "in", "liggen": "staan", "per": [6, 20], "aantal": [4, 15]},
+    {"wie": ["juf Ann"], "houder": "doos|dozen|de", "ding": "potlood|potloden|het",
+     "op": "in", "liggen": "zitten", "per": [10, 24], "aantal": [3, 12]}
+   ],
+   "tel": [
+    {"wie": ["de school"], "werkt": "verkoopt", "ding": "kaart|kaarten|de", "bereik": [80, 500], "momenten": ["in de eerste week", "in de tweede week"]}
+   ],
+   "koop": [
+    {"wie": ["@naam"], "waar": "in de papierwinkel", "ding": "schrift|schriften|het", "prijs": [1.2, 3]},
+    {"wie": ["@naam"], "waar": "in de papierwinkel", "ding": "balpen|balpennen|de", "prijs": [0.8, 2]},
+    {"wie": ["@naam"], "waar": "in de papierwinkel", "ding": "map|mappen|de", "prijs": [2, 5]}
+   ],
+   "deel": [
+    {"groep": "leerling|leerlingen|de", "totaal": [18, 30], "zin": "In de klas zitten {t groep}.",
+     "deel": "{f} van de leerlingen komt met de fiets naar school.", "vraag": "Hoeveel leerlingen komen met de fiets?",
+     "vraag_niet": "Hoeveel leerlingen komen *niet* met de fiets?", "antwoord": "{?} leerlingen komen met de fiets.",
+     "antwoord_niet": "{?} leerlingen komen niet met de fiets."}
+   ],
+   "tuin": [
+    {"wie": ["de school"], "plek": "speelplaats|speelplaatsen|de", "rond": "hek|hekken|het", "doel": "om de speelplaats *rondom* af te sluiten",
+     "lengte": [20, 50], "breedte": [15, 35], "prijs": [4, 12]}
+   ]
+  }
+ ]
+}

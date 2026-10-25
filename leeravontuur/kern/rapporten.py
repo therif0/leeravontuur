@@ -112,7 +112,30 @@ def maak_rapport(opslag, kind, periode):
         pv["modi"][a["modus"]] += 1
         if a["diagnose"]:
             r.denkfouten[a["diagnose"]] += 1
+        extra = _extra(a)
+        if extra.get("vraagstuk"):  # vraagstukken: tips, meteen juist, het klad
+            vs = pv.setdefault("vraagstuk", Counter())
+            vs["aantal"] += 1
+            vs["tips"] += extra.get("tips", 0)
+            vs["zonder_tip"] += bool(a["juist"] and not extra.get("tips"))
+            vs["meteen"] += bool(a["juist"] and extra.get("eerste_fout") is None)
+            vs["klad"] += bool(extra.get("klad"))
+            vs["klad_ok"] += bool(extra.get("klad_ok"))
+            if extra.get("klad_fout") and extra["klad_fout"] != a["diagnose"]:
+                r.denkfouten[extra["klad_fout"]] += 1
     return r
+
+
+def _extra(a):
+    try:
+        uit = json.loads(a.get("extra") or "{}")
+    except (TypeError, ValueError):
+        return {}
+    return uit if isinstance(uit, dict) else {}
+
+
+def _getal(x):
+    return f"{x:.1f}".replace(".", ",").replace(",0", "")
 
 
 def _balk(deel, geheel, breedte=10):
@@ -156,6 +179,11 @@ def regels(r):
                     f"gemiddeld {round(pv['tijd_ms'] / n / 1000)} s", "bold"))
         modi = " · ".join(f"{MODI.get(m, m)} {k}" for m, k in pv["modi"].most_common())
         uit.append((f"    {modi}", "dim"))
+        if pv.get("vraagstuk"):
+            vs = pv["vraagstuk"]
+            uit.append((f"    gemiddeld {_getal(vs['tips'] / vs['aantal'])} tips per vraagstuk · juist zonder tip: "
+                        f"{vs['zonder_tip']} · meteen juist: {vs['meteen']} · met klad: {vs['klad']} "
+                        f"(helemaal juist: {vs['klad_ok']})", "dim"))
     if r.denkfouten:
         uit += [("", ""), ("MEEST GEMAAKTE DENKFOUTEN", "accent")]
         for code, k in r.denkfouten.most_common(5):

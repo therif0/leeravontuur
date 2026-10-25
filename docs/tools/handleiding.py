@@ -79,6 +79,14 @@ PARAMETERS = {  # parameter → wat het betekent (vaardigheid.parameter gaat voo
     "komma": "ook afmetingen met ,5",
     "hoeken": "soorten hoeken",
     "schalen": "schalen",
+    "wiskunde.vraagstukken.oplossen.structuren": "soorten vraagstukken",
+    "wiskunde.vraagstukken.oplossen.max": "getallen tot",
+    "factor": "groepjes, stuks of keer: hoogstens",
+    "geld": "prijzen in stappen van (€)",
+    "gram": "gewichten in stappen van (g)",
+    "wiskunde.vraagstukken.oplossen.procenten": "procent korting",
+    "overbodig": "kans op een overbodig gegeven",
+    "intro": "kans op een inleidende zin",
 }
 
 SOORTEN = {  # de interne namen van soorten vragen → leesbaar
@@ -112,6 +120,20 @@ SOORTEN = {  # de interne namen van soorten vragen → leesbaar
     "graden": "bij een aantal graden", "nevenhoek": "nevenhoeken", "assen_aflezen": "assenstelsel: aflezen",
     "assen_aanduiden": "assenstelsel: aanduiden", "naar_echt": "kaart → echt", "naar_kaart": "echt → kaart",
     "schaal_zoeken": "de schaal zoeken",
+    # vraagstukken (structuur/variant)
+    "samen/samen": "samen (+)", "samen/deel": "het ontbrekende deel (−)", "verschil/meer": "hoeveel meer? (−)",
+    "verschil/erbij": "zoveel meer: hoeveel? (+)", "verschil/minder": "'minder dan' maar optellen (valkuil)",
+    "groepen/totaal": "groepjes: hoeveel in totaal? (×)", "groepen/per": "eerlijk verdelen (:)",
+    "groepen/aantal": "hoeveel groepjes? (:)", "rest/volle": "hoeveel volle? (: met rest)",
+    "rest/over": "wat blijft er over? (de rest)", "rest/nodig": "hoeveel nodig? (naar boven afronden)",
+    "samen_delen/gewoon": "samen en dan verdelen (+ :)", "wisselgeld/een": "wisselgeld (−)",
+    "wisselgeld/meer": "wisselgeld bij meer stuks (× −)", "twee_soorten/gewoon": "twee soorten kopen (× × +)",
+    "twee_soorten/wissel": "twee soorten en wisselgeld (4 stappen)", "per_kg/gewoon": "prijs per kg (omzetten, ×)",
+    "per_kg/wissel": "prijs per kg en wisselgeld (3 stappen)", "korting/gewoon": "prijs met korting (% −)",
+    "korting/alleen": "hoeveel korting? (%)", "sparen/gewoon": "sparen: hoeveel weken? (− : naar boven)",
+    "recept/gewoon": "recept voor meer of minder personen (: ×)", "breuk_van/gewoon": "een breuk van een aantal (: ×)",
+    "breuk_van/niet": "het andere deel (: × −)", "omtrek/gewoon": "omtrek: een hek rondom (+ ×)",
+    "omtrek/prijs": "omtrek en prijs (+ × ×)",
     # waar dezelfde naam iets anders betekent (vaardigheid.soort gaat voor)
     "wiskunde.procenten.van.van": "procent van een getal",
     "wiskunde.meetkunde.hoeken.driehoek": "de derde hoek van een driehoek",
@@ -144,6 +166,10 @@ def waarde(vaardigheid, naam, w):
         return ", ".join(getal(m) for m in w)
     if naam == "assen":
         return f"−{w} … {w}" if w else "nee (schatkaart)"
+    if w in ([], 0) and naam in ("procenten", "gram", "noemers"):
+        return "—"  # (komt in dat leerjaar niet voor)
+    if naam in ("overbodig", "intro"):
+        return f"{round(w * 100)} %"
     if naam == "schalen":
         return ", ".join(f"1 : {getal(s)}" for s in w)
     if isinstance(w, list):
@@ -169,7 +195,7 @@ def leerlijn_tabel(vaardigheid):
                 cellen.append("—")
             elif w == vorige:
                 cellen.append("idem")
-            elif isinstance(w, list) and isinstance(vorige, list) and naam not in ("plaatsen", "cijfers") \
+            elif isinstance(w, list) and isinstance(vorige, list) and vorige and naam not in ("plaatsen", "cijfers") \
                     and set(vorige) < set(w):
                 cellen.append("+ " + waarde(vaardigheid, naam, [x for x in w if x not in vorige]))
             else:

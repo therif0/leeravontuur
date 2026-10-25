@@ -2,6 +2,29 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.16.0 — vraagstukken
+- Nieuw domein **Vraagstukken**: verhaaltjes oplossen in **4 stappen**, met het schema Gegeven · Gevraagd ·
+  Oplossing · Antwoord erin:
+  1. **Lees:** duid de getallen aan die je nodig hebt (pijltjes en spatie, of klik) en kies wat er gevraagd wordt.
+  2. **Plan:** welke bewerking eerst, welke daarna? (mag je overslaan)
+  3. **Reken** in je **klad**: typ rekenregels zoals `0,75 x 3,20 = 2,40` of `750 g = 0,75 kg`. Je typt `x` voor
+     maal en `:` voor delen. Elke regel krijgt meteen ✔ of ✘, met een hint die het antwoord niet verklapt.
+  4. **Controle:** vul de antwoordzin in; het programma kijkt ook of je antwoord kan kloppen.
+- **Meteen antwoorden mag.** Juist? Extra punten. Fout? Eén tweede kans, met een hulpje als de denkfout te
+  herkennen is (bv. "dat is de prijs van alle bloemkolen, maar gevraagd is het wisselgeld") en de vraag om klad
+  te maken.
+- **Tips met `?`**, telkens een beetje meer: eerst lichten de belangrijke woorden en getallen op, dan wat er
+  gevraagd wordt, dan welke bewerkingen, en dan hulp bij de regel waar het misloopt. Nooit het antwoord zelf.
+  Een tip kost wat punten, zonder tip zijn er extra punten. Een juist klad geeft ook extra punten.
+- Een **verhaalmachine** mengt rekenstructuren (samen, verschil, groepjes, delen met rest, wisselgeld, prijs per kg,
+  korting, sparen, recept, breuk van, omtrek …) met 16 werelden (bakkerij, bouwwerf, boerderij, dierentuin …):
+  zo zijn er duizenden verschillende verhalen, soms met een **overbodig gegeven** of een **omgekeerde vraag**.
+  Herhalen = hetzelfde soort vraagstuk in een andere wereld.
+- De denkfouten (een andere bewerking, gestopt na een tussenstap, een stap vergeten, niet omgezet, een overbodig
+  gegeven gebruikt, de komma …) komen automatisch uit de oplossing, en worden ook in het klad herkend.
+- **Rapport:** per vraagstuk het aantal tips, hoeveel er meteen juist waren en hoeveel met (een juist) klad.
+- Winkel: een kladblok.
+
 ## 0.15.0 — meetkunde
 - Nieuw domein **Meetkunde**:
   - **Oppervlakte en omtrek** op een rooster met echt vierkante vakjes van 1 cm²: tel de vakjes en de randjes. Na

@@ -18,6 +18,7 @@ from . import maatje
 from . import modellen as M
 from . import balk as B
 from . import rooster as R
+from . import vraagstuk as VI
 from .scherm import ENTER, ESC, TerugNaar
 
 REEKS = 10
@@ -40,7 +41,12 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
               "klok": "Typ een tijdstip, bv. 11.15 u. Minuten: hoogstens 59.",
               "woord": "Typ scherp, recht, stomp, gestrekt of vol.",
               "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel)."}
-INVOER = {**R.INVOER, **B.INVOER}  # invoersoorten met een eigen invoer-object
+INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen invoer-object
+
+
+def vraagtekst(v):
+    """De vraag zoals in het rapport ('7 × 8 = ?'; een vraagstuk eindigt zelf al op een vraagteken)."""
+    return v.tekst if v.tekst.endswith("?") else v.tekst + " ?"
 
 
 class Oefenaar:
@@ -54,6 +60,7 @@ class Oefenaar:
         self.verdiend = 0
         self.vrij_goed = self.vrij_aantal = 0
         self.laatste_d = None
+        self.herkansing = False  # het laatste antwoord was pas juist na een tweede kans (telt als fout om te herhalen)
 
     # ---- menu's -------------------------------------------------------------------
 
@@ -146,6 +153,8 @@ class Oefenaar:
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
         obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
+        eigen = bool(obj and getattr(obj, "eigen_tekst", False))  # het object tekent zelf de vraag (vraagstuk)
+        self.herkansing = False
         ses.vraag_getoond()
         lof = random.choice(LOF)
         while True:
@@ -171,7 +180,9 @@ class Oefenaar:
                 self.voortgang(2, nr, resultaten, soort)
             y, x = 6, 6
             vy, vx = y, x + len(v.tekst) + 2  # waar het antwoordvak staat
-            if lijnen or obj or vx + 14 + len(v.eenheid) <= 62:  # past naast de vraag (links van het maatje)
+            if eigen:
+                pass
+            elif lijnen or obj or vx + 14 + len(v.eenheid) <= 62:  # past naast de vraag (links van het maatje)
                 s.put(y, x, v.tekst + "  ", "bold")
             else:  # lange vraag: over meer regels, het antwoordvak eronder
                 regels = textwrap.wrap(v.tekst, 54)
@@ -185,7 +196,12 @@ class Oefenaar:
                     s.put(vy, vx + 15, v.eenheid, "bold")
             fb, fx, breed = y + 3, x, 70  # waar de feedback begint (rij, kolom) en hoe breed ze mag zijn
             hint_y = None
-            if obj:
+            if eigen:
+                obj.teken(s, 4, goed, tip)
+                fb, fx = 4 + obj.hoogte(goed is not None), 4
+                hint_y = min(fb + 2, s.maat()[0] - 2)
+                melding = obj.melding
+            elif obj:
                 obj.teken(s, 8, goed, tip)
                 if getattr(obj, "naast", None):  # hoog invoer-object: de feedback komt ernaast
                     fb, fx = obj.naast
@@ -214,8 +230,15 @@ class Oefenaar:
                         fb = max(fb, 9 + h + 1)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
-                s.put(fb, fx, melding, obj.melding_rol if obj else "fout")
-                if tip:
+                if eigen:  # de melding mag over 3 regels (dan valt de hint weg)
+                    stukken = textwrap.wrap(melding, 74)[:3]
+                    for i, stuk in enumerate(stukken):
+                        s.put(fb + i, fx, stuk, obj.melding_rol)
+                    if len(stukken) > 2:
+                        hint_y = s.maat()[0]  # buiten het scherm
+                else:
+                    s.put(fb, fx, melding, obj.melding_rol if obj else "fout")
+                if tip and not eigen:
                     tekst = obj.hulp(o) if obj else o.tip(v)
                     van = fb + 1 if obj else fb
                     for i, stuk in enumerate(textwrap.wrap(("Hulp: " if obj else "Tip: ") + tekst,
@@ -230,7 +253,12 @@ class Oefenaar:
                     s.cursor(True, vy, vx + 1 + len(buf))
             else:
                 s.cursor(False)
-                if goed:
+                if eigen:
+                    kop, rol = (("✔ " + lof + extra, "goed") if goed else
+                                (f"✘ Niet juist. Het juiste antwoord is {v.verwacht}.{extra}", "fout"))
+                    uitleg = ([] if goed or not d else [d[1]]) + (obj.uitleg_na if goed is False or vrij else
+                                                                 obj.uitleg_na[:1])
+                elif goed:
                     kop, rol = "✔ " + lof + extra, "goed"
                     uitleg = o.uitleg(v) if vrij else []
                 elif obj and obj.fouten and getal == v.antwoord:
@@ -263,7 +291,7 @@ class Oefenaar:
             if k == ESC:
                 s.cursor(False)
                 return None
-            if k == ord("?"):
+            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)):
                 tip = tip_gebruikt = True
                 continue
             if obj:
@@ -291,8 +319,14 @@ class Oefenaar:
             goed = o.nakijken(v, getal) and not (obj and obj.fouten)
             d = (obj and (obj.diagnose or o.diagnose_rijen(v, obj.rijen()))) or o.diagnose(v, getal)
             extra_data = {"stapfouten": obj.fouten} if obj and obj.fouten else None
+            if obj and getattr(obj, "extra", None):
+                extra_data = {**(extra_data or {}), **obj.extra}
+                tip_gebruikt = tip_gebruikt or bool(obj.extra.get("tips"))
+                self.herkansing = obj.extra.get("eerste_fout") is not None
+                if goed:
+                    d = None
             self.laatste_d = d
-            ses.antwoord(v.sleutel, v.tekst + " ?", buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
+            ses.antwoord(v.sleutel, vraagtekst(v), buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
                          extra=extra_data, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
             extra = self.tijd_tekst(ses) + (f"  +{ses.laatste_punten} punten" if ses.laatste_punten else "")
             gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
@@ -358,7 +392,7 @@ class Oefenaar:
                     return resultaten, True
                 resultaten.append(dict(o=o, v=v, antw=uit[0], goed=uit[1], tijd=ses.laatste_tijd_ms,
                                        d=self.laatste_d))
-                self.verwerk(o, v, uit[1], items[nr] if items else None)
+                self.verwerk(o, v, uit[1] and not self.herkansing, items[nr] if items else None)
                 if uit[-1]:
                     return resultaten, True
             if modus == "reeks" and len(vragen) == REEKS and all(r["goed"] for r in resultaten):
@@ -428,7 +462,7 @@ class Oefenaar:
                        ("Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen.", "dim"), ("", "")]
         for i, r in fouten:
             o, v = r["o"], r["v"]
-            regels.append((f"Vraag {i + 1}:  {v.tekst} ?", "bold"))
+            regels.append((f"Vraag {i + 1}:  {vraagtekst(v)}", "bold"))
             regels.append((f"   ✘ Jij schreef: {r['antw'].strip()}    Juist is: {v.verwacht}", "fout"))
             d = r.get("d") or o.diagnose(v, o.lees_vraag(v, r["antw"]))
             if d:
@@ -460,7 +494,7 @@ class Oefenaar:
                     break
                 self.vrij_aantal += 1
                 self.vrij_goed += uit[1]
-                self.verwerk(o, v, uit[1])
+                self.verwerk(o, v, uit[1] and not self.herkansing)
                 if not uit[1]:
                     fouten.append(dict(o=o, v=v, antw=uit[0], goed=False, tijd=ses.laatste_tijd_ms))
                 if uit[2]:

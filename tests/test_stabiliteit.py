@@ -19,7 +19,8 @@ from datetime import datetime, timedelta
 from pathlib import Path
 from unittest import mock
 
-from leeravontuur.kern import catalogus, foutlog, klok, leerjaren
+from leeravontuur.kern import catalogus, foutlog, klok, leerjaren, verhaal
+from leeravontuur.kern.wiskunde import vraagstukken
 from leeravontuur.kern.instellingen import Instellingen
 from leeravontuur.kern.opslag import MIGRATIES, Opslag
 from leeravontuur.kern.onderwerp import Vraag
@@ -61,7 +62,11 @@ class TestGeneratoren(TempData):
                     v = o.maak(jaar, rng=rng)  # ook in een leerjaar waar het onderwerp niet bestaat
                     self.assertLess(time.monotonic() - begin, 1.0, f"{oid} {jaar} is te traag")
                     self.assertIsInstance(v, Vraag)
-                    self.assertLessEqual(len(v.tekst), 108, v.tekst)  # past op 2 regels
+                    if v.invoer == "vraagstuk":  # een verhaal: hoogstens 4 regels in het kader
+                        self.assertLessEqual(len(verhaal.regels(v.model.zinnen, vraagstukken.BREEDTE)),
+                                             vraagstukken.REGELS, v.tekst)
+                    else:
+                        self.assertLessEqual(len(v.tekst), 108, v.tekst)  # past op 2 regels
                     if v.invoer != "veld":
                         self.assertTrue(o.nakijken(v, o.lees_vraag(v, v.verwacht)), (oid, v.tekst, v.verwacht))
                     o.uitleg(v)

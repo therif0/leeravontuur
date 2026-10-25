@@ -65,6 +65,14 @@ Nederlands (Vlaams), met komma als decimaalteken.
   `Vraag.model_na` wordt pas na het nakijken getoond (uitleg die het antwoord verklapt). Modellen worden getekend
   via `terminal/modellen.teken_model`; is een model hoger dan 7 rijen, dan komt de feedback ernaast (een
   invoer-object vraagt dat met het attribuut `naast = (rij, kolom)`).
+- **Vraagstukken** (`kern/wiskunde/vraagstukken.py`): een verhaalmachine = rekenstructuur (Python: getallen en
+  stappen als `Rekenstap`) × wereld (`inhoud/vraagstukken/werelden.json`) × verwoording (`zinnen.json`, sjablonen
+  van `kern/verhaal.py`). De foute paden (denkfouten) volgen automatisch uit de stappen; het klad leest
+  `kern/klad.py`. Het onderwerp (voor herhaling) is de structuur, zodat herhalen een andere wereld geeft. Invoer
+  `"vraagstuk"` = `terminal/vraagstuk.py` (4 stappen). Haakjes in de Oefenaar voor zo'n invoer-object: `eigen_tekst`
+  (tekent zelf de vraag), `eigen_tip` (`?` gaat naar het object), `extra` (bewaard bij het antwoord en gebruikt
+  voor de punten) en `uitleg_na`. `tests/test_vraagstukken.py` maakt elke structuur in elk leerjaar en kijkt na
+  dat het verhaal klopt, past (4 × 56 tekens) en mooi uitkomt.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in
