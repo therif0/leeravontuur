@@ -538,7 +538,7 @@ def _(d):
     d.zoek("omtrek", OPNIEUW)
     d.foto("meetkunde-omtrek", "De omtrek op het cm²-rooster")
     antwoord(d, "1")
-    d.foto("meetkunde-omtrek-uitleg", "Na het nakijken: de omtrek in het groen")
+    d.foto("meetkunde-omtrek-uitleg", "Na het nakijken: de omtrek aangeduid")
 
 
 @scenario("meetkunde-driehoek")

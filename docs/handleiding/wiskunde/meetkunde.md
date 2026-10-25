@@ -6,15 +6,15 @@ Oppervlakte en omtrek op een rooster, formules, hoeken, coördinaten (de schatka
 
 ## Oppervlakte en omtrek
 
-Een figuur op een rooster met vakjes van 1 cm². **Oppervlakte** = tel de vakjes (cm²); **omtrek** = tel de
-randjes rondom (cm). Na het nakijken van een omtrekvraag staat de rand in het **groen**.
+Een figuur op een rooster met **vierkante** vakjes van 1 cm². **Oppervlakte** = tel de vakjes (cm²); **omtrek** = tel de
+randjes rondom (cm). Na het nakijken van een omtrekvraag is de rand **aangeduid** (in de accentkleur van het thema).
 
 ![De omtrek op het cm²-rooster](../beelden/meetkunde-omtrek.svg)
 
-![Na het nakijken: de omtrek in het groen](../beelden/meetkunde-omtrek-uitleg.svg)
+![Na het nakijken: de omtrek aangeduid](../beelden/meetkunde-omtrek-uitleg.svg)
 
-Er zijn rechthoeken, L-vormen en trappen, en vanaf het 5de driehoeken met **halve vakjes** (▒▒▒): twee halve
-vakjes = één heel. Bij een driehoek vraagt het programma alleen de oppervlakte.
+Er zijn rechthoeken, L-vormen en trappen, en vanaf het 5de driehoeken met **halve vakjes** (een driehoekje: de helft
+van een vakje): twee halve vakjes = één heel. Bij een driehoek vraagt het programma alleen de oppervlakte.
 
 ![Een driehoek met halve vakjes](../beelden/meetkunde-driehoek.svg)
 
