@@ -88,8 +88,8 @@ Je hebt **Python 3.10 of nieuwer** nodig.
 ### Linux (bv. Fedora)
 Python staat er meestal al op.
 ```bash
-git clone https://github.com/therif0/oefeningenImrane.git
-cd oefeningenImrane
+git clone https://github.com/therif0/leeravontuur.git
+cd leeravontuur
 python3 oefeningen.py
 ```
 Een snelkoppeling in het startmenu maken (eenmalig): `python3 oefeningen.py --snelkoppeling`
@@ -97,8 +97,8 @@ Een snelkoppeling in het startmenu maken (eenmalig): `python3 oefeningen.py --sn
 ### macOS
 Installeer Python via [python.org](https://www.python.org/downloads/) (of `brew install python`) en doe daarna in de Terminal:
 ```bash
-git clone https://github.com/therif0/oefeningenImrane.git
-cd oefeningenImrane
+git clone https://github.com/therif0/leeravontuur.git
+cd leeravontuur
 python3 oefeningen.py
 ```
 
@@ -106,8 +106,8 @@ python3 oefeningen.py
 1. Installeer Python via [python.org](https://www.python.org/downloads/) of de Microsoft Store.
 2. Open **Windows Terminal** (aanbevolen; het gewone opdrachtvenster werkt ook) en doe:
 ```bat
-git clone https://github.com/therif0/oefeningenImrane.git
-cd oefeningenImrane
+git clone https://github.com/therif0/leeravontuur.git
+cd leeravontuur
 py -m pip install -r requirements.txt
 py oefeningen.py
 ```
