@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Een rapport exporteren">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="315" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Ouders › Exporteren</text>
+<text x="44" y="57" textLength="252" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ Het rapport is opgeslagen:</text>
+<text x="8" y="93" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      /tmp/leeravontuur-beeld-jsmkcco3/documenten/Leeravontuur - Imrane -       </text>
+<text x="8" y="111" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        2026-09-26 tot 2026-10-25.txt                                           </text>
+<text x="8" y="129" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      /tmp/leeravontuur-beeld-jsmkcco3/documenten/Leeravontuur - Imrane -       </text>
+<text x="8" y="147" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        2026-09-26 tot 2026-10-25.csv                                           </text>
+<text x="8" y="183" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">    Het CSV-bestand opent in Excel of LibreOffice Calc (alle antwoorden).       </text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="99" height="18" fill="#11a8cd"/>
+<rect x="152" y="422" width="63" height="18" fill="#000000"/>
+<rect x="215" y="422" width="504" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> scrollen  </text>
+<text x="152" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="215" y="435" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok                                                     </text>
+</g></svg>

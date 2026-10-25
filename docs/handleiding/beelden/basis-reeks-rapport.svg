@@ -11,14 +11,14 @@
 <text x="44" y="165" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd">Vandaag in totaal: 8 van 10 juist.</text>
 <text x="44" y="201" textLength="333" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Wat ging er mis? Lees de uitleg goed:</text>
 <text x="44" y="219" textLength="621" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen.</text>
-<text x="44" y="255" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vraag 4:  6 × 3 = ?</text>
-<text x="44" y="273" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">   ✘ Jij schreef: 1    Juist is: 18</text>
-<text x="8" y="291" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Ken je 6 × 2 = 12? Dan nog 6 erbij: 18.                                  </text>
-<text x="8" y="309" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       6 × 3 = 18                                                               </text>
-<text x="44" y="345" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vraag 8:  7 × 7 = ?</text>
-<text x="44" y="363" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">   ✘ Jij schreef: 1    Juist is: 49</text>
-<text x="8" y="381" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Ken je 7 × 6 = 42? Dan nog 7 erbij: 49.                                  </text>
-<text x="8" y="399" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       7 × 7 = 49                                                               </text>
+<text x="44" y="255" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vraag 4:  2 × 4 = ?</text>
+<text x="44" y="273" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">   ✘ Jij schreef: 1    Juist is: 8</text>
+<text x="8" y="291" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       × 2 = verdubbelen: 4 → 8.                                                </text>
+<text x="8" y="309" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       2 × 4 = 8                                                                </text>
+<text x="44" y="345" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vraag 8:  8 × 10 = ?</text>
+<text x="44" y="363" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">   ✘ Jij schreef: 1    Juist is: 80</text>
+<text x="8" y="381" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       × 8 = verdubbelen: 10 → 20 → 40 → 80.                                    </text>
+<text x="8" y="399" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       8 × 10 = 80                                                              </text>
 <text x="530" y="417" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">▼ scroll voor meer ▼</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="36" height="18" fill="#000000"/>

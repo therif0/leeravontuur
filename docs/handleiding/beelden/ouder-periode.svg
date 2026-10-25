@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Welke periode?">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="387" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Ouders › Rapporten › Imrane</text>
+<text x="44" y="75" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Welke periode?</text>
+<rect x="62" y="98" width="189" height="18" fill="#e5e510"/>
+<text x="62" y="111" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> 1. Vandaag          </text>
+<text x="269" y="111" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">25/10/2026</text>
+<text x="8" y="147" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       2. Deze week          </text>
+<text x="269" y="147" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">19/10/2026 – 25/10/2026</text>
+<text x="8" y="183" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       3. Deze maand         </text>
+<text x="269" y="183" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">01/10/2026 – 25/10/2026</text>
+<text x="8" y="219" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       4. Laatste 30 dagen   </text>
+<text x="269" y="219" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">26/09/2026 – 25/10/2026</text>
+<text x="8" y="255" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       5. Dit schooljaar     </text>
+<text x="269" y="255" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">01/09/2026 – 25/10/2026</text>
+<text x="8" y="291" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       6. Zelf kiezen        </text>
+<text x="269" y="291" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">van … tot …</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="45" height="18" fill="#11a8cd"/>
+<rect x="242" y="422" width="45" height="18" fill="#000000"/>
+<rect x="287" y="422" width="432" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> ok  </text>
+<text x="242" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="287" y="435" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> terug                                          </text>
+</g></svg>

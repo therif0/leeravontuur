@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="736" height="448" viewBox="0 0 736 448" role="img" aria-label="Opties">
+<rect width="736" height="448" rx="6" fill="#1e1e1e"/>
+<g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
+<rect x="8" y="8" width="198" height="18" fill="#11a8cd"/>
+<text x="8" y="21" textLength="198" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Opties</text>
+<text x="44" y="39" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Kies een optie en druk Enter (of klik) om ze te wijzigen.</text>
+<rect x="62" y="62" width="234" height="18" fill="#e5e510"/>
+<text x="62" y="75" textLength="234" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Naam                     </text>
+<text x="305" y="75" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Imrane</text>
+<text x="8" y="111" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Leerjaar                  </text>
+<text x="305" y="111" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">5de leerjaar  (wijzigen: ouders)</text>
+<text x="8" y="147" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Kleuren                   </text>
+<text x="305" y="147" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">standaard</text>
+<text x="8" y="183" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Eenvoudige tekens         </text>
+<text x="305" y="183" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">automatisch</text>
+<text x="8" y="219" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Muis                      </text>
+<text x="305" y="219" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
+<text x="8" y="255" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Typrichting in tabellen   </text>
+<text x="305" y="255" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">→ naar rechts</text>
+<text x="8" y="291" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Avatar                    </text>
+<text x="305" y="291" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
+<text x="8" y="327" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Animaties                 </text>
+<text x="305" y="327" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
+<rect x="314" y="350" width="45" height="18" fill="#0dbc79"/>
+<rect x="368" y="350" width="45" height="18" fill="#cd3131"/>
+<rect x="422" y="350" width="72" height="18" fill="#e5e510"/>
+<text x="44" y="363" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Voorbeeld:</text>
+<text x="143" y="363" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ juist</text>
+<text x="233" y="363" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ fout</text>
+<text x="314" y="363" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000">  5  </text>
+<text x="368" y="363" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">! 6  </text>
+<text x="422" y="363" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> actief </text>
+<text x="44" y="381" textLength="630" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,</text>
+<text x="44" y="399" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">--ascii, --geen-muis   (zie python3 oefeningen.py --help)</text>
+<rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
+<rect x="17" y="422" width="36" height="18" fill="#000000"/>
+<rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>
+<rect x="134" y="422" width="63" height="18" fill="#000000"/>
+<rect x="197" y="422" width="99" height="18" fill="#11a8cd"/>
+<rect x="296" y="422" width="45" height="18" fill="#000000"/>
+<rect x="341" y="422" width="378" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="36" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[↑↓]</text>
+<text x="53" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> kiezen  </text>
+<text x="134" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="197" y="435" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> wijzigen  </text>
+<text x="296" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="341" y="435" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> klaar                                    </text>
+</g></svg>
