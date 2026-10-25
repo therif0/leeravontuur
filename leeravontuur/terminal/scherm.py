@@ -212,7 +212,7 @@ class Scherm:
             return buf[:-1]
         if 32 <= k < 0x110000 and len(buf) < max_lengte:
             ch = chr(k)
-            if ch.isalnum() or ch in ",. -−/":
+            if ch.isalnum() or ch in ",. -−/<>=%€":
                 return buf + ch
         return buf
 

@@ -99,7 +99,7 @@ def teken(config=None, uitdrukking="normaal"):
         _plaats(raster, haar, top - len(haar) + 1, 0, kleuren)
     if c["hoed"]:
         hoed = d["hoed"][c["hoed"]]["pixels"]
-        _plaats(raster, hoed, top - len(hoed) + 1, 0, kleuren)
+        _plaats(raster, hoed, max(0, top - len(hoed) + 1), 0, kleuren)  # nooit boven het raster uit
     if c["accessoire"]:
         acc = d["accessoire"][c["accessoire"]]
         if acc["anker"] == "top":
@@ -117,6 +117,13 @@ TIPS = {
     "verkeerde_richting": "Andere kant op!",
     "factor_10": "Tel de kolommen!",
     "niet_omgezet": "Vergeet niet om te zetten!",
+    "onthouden_vergeten": "Onthouden!",
+    "kleinste_van_grootste": "Lenen, niet omdraaien!",
+    "tellers_en_noemers": "De noemer blijft!",
+    "niet_gelijknamig": "Eerst gelijknamig!",
+    "niet_vereenvoudigd": "Kan nog eenvoudiger!",
+    "teller_noemer_omgewisseld": "Noemer = alle stukken!",
+    "grotere_noemer_groter": "Grote noemer = klein stuk!",
 }
 
 

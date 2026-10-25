@@ -1,0 +1,51 @@
+{
+ "vaardigheid": "wiskunde.breuken.optellen",
+ "omschrijving": "breuken optellen en aftrekken",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemer_max": "int",
+  "kgv": "bool",
+  "vereenvoudigd": "bool"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "gelijknamig"
+   ],
+   "noemer_max": 10,
+   "kgv": false,
+   "vereenvoudigd": false
+  },
+  "5": {
+   "soorten": [
+    "gelijknamig",
+    "ongelijknamig"
+   ],
+   "noemer_max": 12,
+   "kgv": false,
+   "vereenvoudigd": true
+  },
+  "6": {
+   "soorten": [
+    "gelijknamig",
+    "ongelijknamig",
+    "gemengd"
+   ],
+   "noemer_max": 12,
+   "kgv": true,
+   "vereenvoudigd": true
+  },
+  "m1": {
+   "soorten": [
+    "ongelijknamig",
+    "gemengd",
+    "negatief"
+   ],
+   "noemer_max": 15,
+   "kgv": true,
+   "vereenvoudigd": true
+  }
+ }
+}

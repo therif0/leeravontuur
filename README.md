@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.10):**
+**Wat er nu in zit (versie 0.11):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -32,6 +32,13 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - herkent denkfouten: onthouden vergeten, de kleinste van de grootste afgetrokken, de tweede rij niet
     opgeschoven, de komma op de verkeerde plaats
   - **staartdeling stap voor stap**: deel, vermenigvuldig, trek af, haal neer; de staartdeling groeit mee
+- **Breuken** met de **breukbalk**: de noemer bepaalt in hoeveel stukken de balk verdeeld is (`↑` `↓`), met
+  `←` `→` en spatie (of een klik) arceer je stukken, met `v` voeg je stukken samen (vereenvoudigen)
+  - herkennen en arceren, gelijkwaardige breuken en vereenvoudigen, vergelijken (`<` `>` `=`), optellen en
+    aftrekken (gelijknamig maken), een breuk van een getal (bolletjes in groepjes), × en :, breuk ↔ kommagetal
+  - herkent denkfouten: tellers én noemers opgeteld (1/2 + 1/3 = 2/5), niet volledig vereenvoudigd,
+    "grotere noemer = grotere breuk", teller en noemer omgewisseld …
+  - na een fout tonen balken onder elkaar waarom (bv. 1/2 = 3/6 en 1/3 = 2/6)
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

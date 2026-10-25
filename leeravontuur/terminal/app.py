@@ -10,6 +10,7 @@ from ..kern import herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar
+from ..kern.wiskunde import breuken as BR
 from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import hoofdrekenen as H
@@ -284,45 +285,43 @@ class App:
                 if t.niveau < 1:
                     raise
 
+    def domeinen(self):
+        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp)."""
+        return [("Eenheden", "lengte en massa omzetten", None, None),
+                ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
+                ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
+                ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
+                ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN)]
+
     def wiskunde(self, kr):
+        domeinen = self.domeinen()
         while True:
             try:
-                k = self.s.menu(kr, "Welk onderwerp?", [("Eenheden", "lengte en massa omzetten"),
-                                                       ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft"),
-                                                       ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn"),
-                                                       ("Cijferen", "onder elkaar: + − × en de staartdeling")])
+                k = self.s.menu(kr, "Welk onderwerp?", [(naam, uitleg) for naam, uitleg, *_ in domeinen])
                 if k is None:
                     return
-                if k == 0:
-                    Eenheden(self, kr + ["Eenheden"]).menu()
-                elif k == 1:
-                    Oefenaar(self, kr + ["Hoofdrekenen"], H.ALLE, "Hoofdrekenen").menu()
-                elif k == 2:
-                    Oefenaar(self, kr + ["Getallen"], G.ALLE, "Getallen").menu()
+                naam, _, onderwerpen, _ = domeinen[k]
+                if onderwerpen is None:
+                    Eenheden(self, kr + [naam]).menu()
                 else:
-                    Oefenaar(self, kr + ["Cijferen"], C.ALLE, "Cijferen").menu()
+                    Oefenaar(self, kr + [naam], onderwerpen, naam).menu()
             except TerugNaar as t:
                 if t.niveau < len(kr) - 1:
                     raise
 
     def spiekbrieven(self):
         kr = [HOOFD, "Spiekbrieven"]
+        domeinen = self.domeinen()
         while True:
             try:
-                k = self.s.menu(kr, "Welke spiekbrief?", [("Eenheden", "lengte en massa omzetten"),
-                                                         ("Hoofdrekenen", "slimme trucjes"),
-                                                         ("Getallen", "plaatswaarde, afronden, deelbaarheid"),
-                                                         ("Cijferen", "onder elkaar en de staartdeling")])
+                k = self.s.menu(kr, "Welke spiekbrief?", [(naam, uitleg) for naam, uitleg, *_ in domeinen])
                 if k is None:
                     return
-                if k == 0:
-                    Eenheden(self, kr).spiekbrief(kr + ["Eenheden"])
-                elif k == 2:
-                    Oefenaar(self, kr, G.ALLE, "Getallen").spiekbrief(kr + ["Getallen"], G.PLAATSWAARDE)
-                elif k == 3:
-                    Oefenaar(self, kr, C.ALLE, "Cijferen").spiekbrief(kr + ["Cijferen"], C.OPTELLEN)
+                naam, _, onderwerpen, spiek = domeinen[k]
+                if onderwerpen is None:
+                    Eenheden(self, kr).spiekbrief(kr + [naam])
                 else:
-                    Oefenaar(self, kr, H.ALLE, "Hoofdrekenen").spiekbrief(kr + ["Hoofdrekenen"], H.TAFELS)
+                    Oefenaar(self, kr, onderwerpen, naam).spiekbrief(kr + [naam], spiek)
             except TerugNaar as t:
                 if t.niveau < 1:
                     raise

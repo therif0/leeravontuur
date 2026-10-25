@@ -8,9 +8,10 @@ maakt voor de herhaalbak. De terminal (terminal/oefenaar.py) gebruikt alleen dez
 import random
 from dataclasses import dataclass, field
 from decimal import Decimal
+from fractions import Fraction
 
 from . import leerlijnen
-from .getal import fmt, lees_getal
+from .getal import GetypteBreuk, fmt, fmt_breuk, lees_breuk, lees_getal
 from .vaardigheden import DENKFOUTEN, Vaardigheid, registreer
 
 ONDERWERPEN = {}  # vaardigheid-id -> Onderwerp
@@ -26,15 +27,23 @@ class Vraag:
     data: dict = field(default_factory=dict)   # om uitleg en herhaling te maken
     leerjaar: str = "5"
     invoer: str = "getal"  # "getal", "janee" (typ ja of nee), "lijn" (aanduiden op de getallenlijn),
-    #                        "rooster" (cijferen onder elkaar) of "staart" (staartdeling stap voor stap)
+    #                        "rooster" (cijferen onder elkaar), "staart" (staartdeling stap voor stap),
+    #                        "breuk" (typ een breuk), "vergelijk" (<, > of =), "balk" (arceren op de breukbalk)
+    #                        of "veld" (kleuren in het honderdveld)
     model: object = None   # een visueel model (bv. kern.modellen.Getallenlijn)
     verwacht_tekst: str = ""  # zo tonen we het juiste antwoord, als het anders is dan het getal (bv. "64 rest 4")
+    model_na: object = None   # een model dat pas na het nakijken getoond wordt (uitleg die het antwoord verklapt)
 
     @property
     def verwacht(self):
         if self.verwacht_tekst:
             return self.verwacht_tekst
-        tekst = self.antwoord if isinstance(self.antwoord, str) else fmt(self.antwoord)
+        if isinstance(self.antwoord, str):
+            tekst = self.antwoord
+        elif isinstance(self.antwoord, Fraction):
+            tekst = fmt_breuk(self.antwoord)
+        else:
+            tekst = fmt(self.antwoord)
         return tekst + (f" {self.eenheid}" if self.eenheid else "")
 
 
@@ -65,6 +74,15 @@ class Onderwerp:
 
     def diagnose(self, v, getal):
         return None
+
+    def nakijken(self, v, getal):
+        """Is het (gelezen) antwoord juist? Een GetypteBreuk telt op zijn waarde, tenzij de vraag de
+        eenvoudigste vorm eist (data["vereenvoudigd"])."""
+        if isinstance(getal, GetypteBreuk):
+            if getal.waarde != v.antwoord:
+                return False
+            return getal.eenvoudigst or not v.data.get("vereenvoudigd")
+        return getal == v.antwoord
 
     def diagnose_rijen(self, v, rijen):
         """Bij een rooster: diagnose uit alle ingevulde rijen (tekst of None per rij). None = gebruik diagnose()."""
@@ -119,6 +137,11 @@ class Onderwerp:
         if v.invoer == "janee":
             t = tekst.strip().lower()
             return {"ja": "ja", "j": "ja", "nee": "nee", "n": "nee", "neen": "nee"}.get(t)
+        if v.invoer == "vergelijk":
+            t = tekst.strip()
+            return t if t in ("<", ">", "=") else None
+        if v.invoer in ("breuk", "balk"):
+            return lees_breuk(tekst)
         return self.lees(tekst)
 
     def onderwerp_van_sleutel(self, sleutel):

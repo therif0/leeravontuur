@@ -13,8 +13,10 @@ from ..kern import avatar as A
 from ..kern import herhaling, leerjaren, selectie
 from ..kern import punten as P
 from ..kern.getal import fmt
+from ..kern.modellen import Getallenlijn
 from . import maatje
 from . import modellen as M
+from . import balk as B
 from . import rooster as R
 from .scherm import ENTER, ESC, TerugNaar
 
@@ -25,7 +27,12 @@ VORMEN = [("Vrij oefenen", "vrij", "zoveel vragen als je wil, met tip en uitleg"
           ("Spiekbrief", None, "slimme trucjes om terug te kijken")]
 HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -5",
          "janee": "Typ ja of nee en druk Enter.",
-         "lijn": "Pijl ▼ op het juiste streepje en Enter. Ligt het ertussen? Zoom in met +"}
+         "lijn": "Pijl ▼ op het juiste streepje en Enter. Ligt het ertussen? Zoom in met +",
+         "breuk": "Typ een breuk met /: 3/4 · een gemengd getal met een spatie: 1 3/4",
+         "vergelijk": "Typ < (kleiner dan), > (groter dan) of = (gelijk aan) en druk Enter."}
+ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 3/4).",
+              "vergelijk": "Typ <, > of =."}
+INVOER = {**R.INVOER, **B.INVOER}  # invoersoorten met een eigen invoer-object
 
 
 class Oefenaar:
@@ -130,7 +137,7 @@ class Oefenaar:
         tip_gebruikt, extra, getal, d = False, "", None, None
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
-        obj = R.INVOER[v.invoer](v, o) if v.invoer in R.INVOER else None      # rooster of staartdeling
+        obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
         ses.vraag_getoond()
         lof = random.choice(LOF)
         while True:
@@ -168,7 +175,8 @@ class Oefenaar:
                 s.tekstvak(vy, vx, buf, 12, rol)
                 if v.eenheid:
                     s.put(vy, vx + 15, v.eenheid, "bold")
-            fb = y + 3  # waar de feedback begint
+            fb, fx, breed = y + 3, x, 70  # waar de feedback begint (rij, kolom) en hoe breed ze mag zijn
+            hint_y = None
             if obj:
                 obj.teken(s, 8, goed, tip)
                 fb = 8 + obj.hoogte(goed is not None) + 1
@@ -181,19 +189,27 @@ class Oefenaar:
                 if len(lijnen) > 1:
                     s.put(8, 4, f"Ingezoomd ({len(lijnen) - 1}×): tussen {fmt(lijn.van)} en {fmt(lijn.tot)}", "info")
                 fb = 14
-            elif v.model is not None:
-                M.teken_getallenlijn(s, 9, v.model, goed_bij=v.antwoord if goed is False else None)
-                fb = 14
+            elif (model := v.model if goed is None else (v.model_na or v.model)) is not None:
+                if isinstance(model, Getallenlijn):
+                    M.teken_getallenlijn(s, 9, model, goed_bij=v.antwoord if goed is False else None)
+                    fb = 14
+                else:
+                    h, b = M.teken_model(s, 9, model)  # rij 9: onder het maatje
+                    if h > 7:  # hoog model: de feedback komt ernaast
+                        fb, fx = 10, 8 + b + 3
+                        breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 3)
+                    else:
+                        fb = max(fb, 9 + h + 1)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
-                s.put(fb, x, melding, obj.melding_rol if obj else "fout")
+                s.put(fb, fx, melding, obj.melding_rol if obj else "fout")
                 if tip:
                     tekst = obj.hulp(o) if obj else o.tip(v)
                     van = fb + 1 if obj else fb
                     for i, stuk in enumerate(textwrap.wrap(("Hulp: " if obj else "Tip: ") + tekst,
-                                                           70 if lijnen or obj else 54)[:2 if obj else 3]):
-                        s.put(van + i, x, stuk, "accent")
-                s.put(fb + 3, x, obj.hint if obj else HINTS.get(v.invoer, HINTS["getal"]), "dim")
+                                                           min(breed, 70 if lijnen or obj else 54))[:2 if obj else 3]):
+                        s.put(van + i, fx, stuk, "accent")
+                s.put(hint_y or fb + 3, x, obj.hint if obj else HINTS.get(v.invoer, HINTS["getal"]), "dim")
                 if obj and obj.cursor_pos:
                     s.cursor(True, *obj.cursor_pos)
                 elif lijnen or obj:
@@ -203,20 +219,23 @@ class Oefenaar:
             else:
                 s.cursor(False)
                 if goed:
-                    s.put(fb, x, "✔ " + lof + extra, "goed")
+                    kop, rol = "✔ " + lof + extra, "goed"
                     uitleg = o.uitleg(v) if vrij else []
                 elif obj and obj.fouten and getal == v.antwoord:
-                    n = obj.fouten
-                    s.put(fb, x, f"! De uitkomst klopt, maar onderweg ging het {n} keer mis.{extra}", "accent")
+                    kop, rol = f"! De uitkomst klopt, maar onderweg ging het {obj.fouten} keer mis.{extra}", "accent"
                     uitleg = ([d[1]] if d else []) + o.uitleg(v)
                 else:
-                    s.put(fb, x, f"✘ Niet juist. Het juiste antwoord is {v.verwacht}.{extra}", "fout")
+                    kop, rol = f"✘ Niet juist. Het juiste antwoord is {v.verwacht}.{extra}", "fout"
                     uitleg = ([d[1]] if d else []) + o.uitleg(v)
-                yy = fb + 2
+                yy = fb
+                for stuk in textwrap.wrap(kop, breed):
+                    s.put(yy, fx, stuk, rol)
+                    yy += 1
+                yy += 1
                 for regel in uitleg:
-                    for stuk in textwrap.wrap(regel, 70):
+                    for stuk in textwrap.wrap(regel, breed):
                         if yy < s.maat()[0] - 1:
-                            s.put(yy, x, stuk, "accent")
+                            s.put(yy, fx, stuk, "accent")
                         yy += 1
             if spring:
                 s.pauze(170)
@@ -254,11 +273,10 @@ class Oefenaar:
                 getal = o.lees_vraag(v, buf)
             if getal is None:
                 tip = False
-                melding = ("Typ eerst je antwoord." if not buf.strip() else
-                           "Typ ja of nee." if v.invoer == "janee" else
-                           "Dat is geen getal. Gebruik een komma voor kommagetallen, bv. 0,25.")
+                melding = ("Typ eerst je antwoord." if not buf.strip() else ONLEESBAAR.get(
+                    v.invoer, "Dat is geen getal. Gebruik een komma voor kommagetallen, bv. 0,25."))
                 continue
-            goed = getal == v.antwoord and not (obj and obj.fouten)
+            goed = o.nakijken(v, getal) and not (obj and obj.fouten)
             d = (obj and (obj.diagnose or o.diagnose_rijen(v, obj.rijen()))) or o.diagnose(v, getal)
             extra_data = {"stapfouten": obj.fouten} if obj and obj.fouten else None
             self.laatste_d = d

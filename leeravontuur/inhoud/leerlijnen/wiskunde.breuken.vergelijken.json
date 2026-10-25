@@ -1,0 +1,40 @@
+{
+ "vaardigheid": "wiskunde.breuken.vergelijken",
+ "omschrijving": "breuken vergelijken (<, >, =)",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemer_max": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "gelijknamig",
+    "gelijke_teller"
+   ],
+   "noemer_max": 10
+  },
+  "5": {
+   "soorten": [
+    "gelijknamig",
+    "gelijke_teller",
+    "ongelijknamig"
+   ],
+   "noemer_max": 12
+  },
+  "6": {
+   "soorten": [
+    "gelijke_teller",
+    "ongelijknamig"
+   ],
+   "noemer_max": 15
+  },
+  "m1": {
+   "soorten": [
+    "ongelijknamig"
+   ],
+   "noemer_max": 20
+  }
+ }
+}

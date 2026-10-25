@@ -1,0 +1,51 @@
+{
+ "vaardigheid": "wiskunde.breuken.kommagetal",
+ "omschrijving": "breuk en kommagetal omzetten",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemers": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "naar_komma"
+   ],
+   "noemers": [
+    2,
+    10
+   ]
+  },
+  "5": {
+   "soorten": [
+    "naar_komma",
+    "naar_breuk"
+   ],
+   "noemers": [
+    2,
+    4,
+    5,
+    10,
+    100
+   ]
+  },
+  "6": {
+   "soorten": [
+    "naar_komma",
+    "naar_breuk"
+   ],
+   "noemers": [
+    2,
+    4,
+    5,
+    8,
+    10,
+    20,
+    25,
+    50,
+    100
+   ]
+  }
+ }
+}

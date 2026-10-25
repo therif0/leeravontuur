@@ -1,0 +1,52 @@
+{
+ "vaardigheid": "wiskunde.breuken.van",
+ "omschrijving": "breuk van een getal, vermenigvuldigen en delen",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemer_max": "int",
+  "stambreuk": "bool",
+  "max": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "van"
+   ],
+   "noemer_max": 10,
+   "stambreuk": true,
+   "max": 50
+  },
+  "5": {
+   "soorten": [
+    "van",
+    "maal_nat"
+   ],
+   "noemer_max": 10,
+   "stambreuk": false,
+   "max": 100
+  },
+  "6": {
+   "soorten": [
+    "van",
+    "maal_nat",
+    "maal_breuk",
+    "deel_nat"
+   ],
+   "noemer_max": 12,
+   "stambreuk": false,
+   "max": 200
+  },
+  "m1": {
+   "soorten": [
+    "maal_breuk",
+    "deel_nat",
+    "deel_breuk"
+   ],
+   "noemer_max": 12,
+   "stambreuk": false,
+   "max": 200
+  }
+ }
+}

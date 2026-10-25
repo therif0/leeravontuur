@@ -4,6 +4,7 @@ Getallenlijn: van..tot met streepjes om de `stap`, een pijl (aflezen) en markeri
 Een getallenlijn kan inzoomen: het stuk tussen twee streepjes wordt de nieuwe lijn met 10 keer kleinere stappen.
 """
 
+import math
 from dataclasses import dataclass, field, replace
 from decimal import Decimal
 
@@ -163,3 +164,56 @@ class Staartdeling:
                     regels.append(rechts_op(st.antwoord, st.plaats))
         tekst = ["".join(r.get(x, " ") for x in range(max(r) + 1)) for r in regels]
         return tekst, quotient
+
+
+@dataclass
+class Breukbalk:
+    """Een blok verdeeld in `noemer` gelijke stukken; `gearceerd` = de nummers van de gearceerde stukken."""
+    noemer: int
+    gearceerd: set = field(default_factory=set)
+    label: str = ""
+
+    @classmethod
+    def van(cls, teller, noemer, label=""):
+        return cls(noemer, set(range(teller)), label)
+
+    @property
+    def teller(self):
+        return len(self.gearceerd)
+
+    def vereenvoudig(self):
+        """Voeg telkens f stukken samen (f = kleinste deler van teller en noemer). None als het niet kan."""
+        g = math.gcd(self.teller, self.noemer)
+        if g <= 1:
+            return None
+        f = next(d for d in range(2, g + 1) if g % d == 0)
+        return Breukbalk(self.noemer // f, set(range(self.teller // f)), self.label)
+
+
+@dataclass
+class Breukbalken:
+    """Balken onder elkaar, even breed (vergelijken, gelijknamig maken)."""
+    balken: list
+
+
+@dataclass
+class Groepjes:
+    """Een breuk van een getal: `totaal` bolletjes in `groepen` groepjes; de eerste `gekleurd` groepjes gekleurd."""
+    totaal: int
+    groepen: int
+    gekleurd: int = 0
+
+
+@dataclass
+class Honderdveld:
+    """10 × 10 vakjes; `gekleurd` = de nummers 0–99 (rij × 10 + kolom)."""
+    gekleurd: set = field(default_factory=set)
+
+
+@dataclass
+class Procentstrook:
+    """Een strook met 0 % … 100 % bovenaan en 0 … totaal onderaan; `procent` wordt aangeduid."""
+    totaal: Decimal
+    procent: Decimal
+    eenheid: str = ""
+    toon_deel: bool = False  # na het nakijken: ook het deel onder de pijl

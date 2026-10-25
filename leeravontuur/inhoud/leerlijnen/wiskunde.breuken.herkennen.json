@@ -1,0 +1,80 @@
+{
+ "vaardigheid": "wiskunde.breuken.herkennen",
+ "omschrijving": "breuken herkennen en arceren op de breukbalk",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemers": "lijst"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "aflezen",
+    "arceren"
+   ],
+   "noemers": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    10
+   ]
+  },
+  "4": {
+   "soorten": [
+    "aflezen",
+    "arceren"
+   ],
+   "noemers": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    10,
+    12
+   ]
+  },
+  "5": {
+   "soorten": [
+    "aflezen",
+    "arceren"
+   ],
+   "noemers": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    15,
+    16
+   ]
+  },
+  "6": {
+   "soorten": [
+    "aflezen",
+    "arceren"
+   ],
+   "noemers": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    12,
+    15,
+    16,
+    18,
+    20
+   ]
+  }
+ }
+}

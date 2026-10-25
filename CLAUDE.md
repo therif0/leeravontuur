@@ -43,6 +43,11 @@ Nederlands (Vlaams), met komma als decimaalteken.
   `model` uit `kern/modellen.py` (alleen data: Getallenlijn, Rooster, Staartdeling). De terminal tekent het:
   `terminal/modellen.py` (getallenlijn) en `terminal/rooster.py` (invoer-objecten voor rooster en staartdeling).
   Hulp per vakje komt uit `Onderwerp.kolom_hulp`, diagnose uit alle rijen uit `Onderwerp.diagnose_rijen`.
+  Verder: `"breuk"` (typen: `lees_breuk` geeft een `GetypteBreuk` die de vorm bewaart), `"vergelijk"` (<, >, =),
+  `"balk"` (arceren op de breukbalk, `terminal/balk.py`). Nakijken gaat via `Onderwerp.nakijken` (standaard
+  `==`; een breuk telt op zijn waarde, behalve als `data["vereenvoudigd"]` de eenvoudigste vorm eist).
+  `Vraag.model_na` wordt pas na het nakijken getoond (uitleg die het antwoord verklapt). Modellen worden getekend
+  via `terminal/modellen.teken_model`; is een model hoger dan 7 rijen, dan komt de feedback ernaast.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in
@@ -55,7 +60,8 @@ Python 3.10+.
 ## Testen
 - `python3 -m unittest discover -s tests` (of `python3 oefeningen.py --test`). Draait ook in CI op 3 systemen.
 - Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik", y, x), ("wiel", ±1)).
-- Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met X10-codes (`\e[M` + 3 bytes).
+- Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
+  `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.
 
 ## Plan
 Het volledige plan in 27 fasen staat in `docs/plan.md`.

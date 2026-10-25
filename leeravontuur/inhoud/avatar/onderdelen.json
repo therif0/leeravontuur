@@ -445,6 +445,15 @@
     "..OKO......OKO..",
     "..OKKO....OKKO.."
    ]
+  },
+  "koksmuts": {
+   "naam": "Koksmuts",
+   "pixels": [
+    "....WW.WW.WW....",
+    "...WWWWWWWWWW...",
+    "....WWWWWWWW....",
+    "....SSSSSSSS...."
+   ]
   }
  },
  "accessoire": {
