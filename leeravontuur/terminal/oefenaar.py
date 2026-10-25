@@ -179,7 +179,11 @@ class Oefenaar:
             hint_y = None
             if obj:
                 obj.teken(s, 8, goed, tip)
-                fb = 8 + obj.hoogte(goed is not None) + 1
+                if getattr(obj, "naast", None):  # hoog invoer-object: de feedback komt ernaast
+                    fb, fx = obj.naast
+                    breed, hint_y = 78 - fx, 9 + obj.hoogte() + 1
+                else:
+                    fb = 8 + obj.hoogte(goed is not None) + 1
                 melding = obj.melding
             elif lijnen:
                 lijn = lijnen[-1]

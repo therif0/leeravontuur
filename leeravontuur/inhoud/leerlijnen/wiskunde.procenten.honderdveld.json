@@ -1,0 +1,35 @@
+{
+ "vaardigheid": "wiskunde.procenten.honderdveld",
+ "omschrijving": "procent als per honderd op het honderdveld",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "vijfvouden": "bool"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": {
+   "soorten": [
+    "aflezen",
+    "kleuren"
+   ],
+   "vijfvouden": true
+  },
+  "6": {
+   "soorten": [
+    "aflezen",
+    "kleuren",
+    "kleuren_breuk"
+   ],
+   "vijfvouden": false
+  },
+  "m1": {
+   "soorten": [
+    "aflezen",
+    "kleuren_breuk"
+   ],
+   "vijfvouden": false
+  }
+ }
+}

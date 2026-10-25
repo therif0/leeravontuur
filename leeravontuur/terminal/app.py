@@ -14,6 +14,7 @@ from ..kern.wiskunde import breuken as BR
 from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import hoofdrekenen as H
+from ..kern.wiskunde import procenten as PR
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
@@ -291,7 +292,8 @@ class App:
                 ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
                 ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
                 ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
-                ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN)]
+                ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
+                ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD)]
 
     def wiskunde(self, kr):
         domeinen = self.domeinen()

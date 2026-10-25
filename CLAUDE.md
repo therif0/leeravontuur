@@ -44,10 +44,11 @@ Nederlands (Vlaams), met komma als decimaalteken.
   `terminal/modellen.py` (getallenlijn) en `terminal/rooster.py` (invoer-objecten voor rooster en staartdeling).
   Hulp per vakje komt uit `Onderwerp.kolom_hulp`, diagnose uit alle rijen uit `Onderwerp.diagnose_rijen`.
   Verder: `"breuk"` (typen: `lees_breuk` geeft een `GetypteBreuk` die de vorm bewaart), `"vergelijk"` (<, >, =),
-  `"balk"` (arceren op de breukbalk, `terminal/balk.py`). Nakijken gaat via `Onderwerp.nakijken` (standaard
+  `"balk"` (arceren op de breukbalk) en `"veld"` (kleuren in het honderdveld), beide in `terminal/balk.py`. Nakijken gaat via `Onderwerp.nakijken` (standaard
   `==`; een breuk telt op zijn waarde, behalve als `data["vereenvoudigd"]` de eenvoudigste vorm eist).
   `Vraag.model_na` wordt pas na het nakijken getoond (uitleg die het antwoord verklapt). Modellen worden getekend
-  via `terminal/modellen.teken_model`; is een model hoger dan 7 rijen, dan komt de feedback ernaast.
+  via `terminal/modellen.teken_model`; is een model hoger dan 7 rijen, dan komt de feedback ernaast (een
+  invoer-object vraagt dat met het attribuut `naast = (rij, kolom)`).
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in

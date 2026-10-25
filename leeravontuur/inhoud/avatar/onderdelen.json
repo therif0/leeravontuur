@@ -513,6 +513,17 @@
     "C........C",
     ".CCC..CCC."
    ]
+  },
+  "stropdas": {
+   "naam": "Stropdas",
+   "anker": "mond",
+   "dy": 2,
+   "dx": 1,
+   "pixels": [
+    ".YY.",
+    ".CC.",
+    "CCCC"
+   ]
   }
  }
 }

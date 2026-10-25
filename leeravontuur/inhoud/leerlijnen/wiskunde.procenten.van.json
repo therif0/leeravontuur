@@ -1,0 +1,67 @@
+{
+ "vaardigheid": "wiskunde.procenten.van",
+ "omschrijving": "procent van een getal",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "procenten": "lijst",
+  "max": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": {
+   "soorten": [
+    "van"
+   ],
+   "procenten": [
+    10,
+    20,
+    25,
+    50,
+    75
+   ],
+   "max": 200
+  },
+  "6": {
+   "soorten": [
+    "van",
+    "welk_procent"
+   ],
+   "procenten": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    40,
+    50,
+    60,
+    75,
+    80
+   ],
+   "max": 400
+  },
+  "m1": {
+   "soorten": [
+    "van",
+    "welk_procent"
+   ],
+   "procenten": [
+    1,
+    2,
+    4,
+    5,
+    8,
+    12,
+    15,
+    35,
+    45,
+    65,
+    85
+   ],
+   "max": 600
+  }
+ }
+}

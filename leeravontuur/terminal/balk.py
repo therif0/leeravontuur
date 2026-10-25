@@ -1,8 +1,9 @@
 """Interactieve modellen als invoer-objecten voor terminal/oefenaar.py (zelfde vorm als terminal/rooster.py):
-de breukbalk (arceren, noemer kiezen, vereenvoudigen).
+de breukbalk (arceren, noemer kiezen, vereenvoudigen) en het honderdveld (vakjes kleuren).
 """
 
 import curses
+from decimal import Decimal
 
 from ..kern.getal import GetypteBreuk
 from ..kern.modellen import Breukbalk
@@ -95,4 +96,68 @@ class BalkInvoer:
         return []
 
 
-INVOER = {"balk": BalkInvoer}
+class VeldInvoer:
+    """Het honderdveld: vakjes kleuren met de pijltjes en spatie, een hele rij met r, of met de muis."""
+    X0 = 10
+
+    def __init__(self, v, o):
+        self.v, self.o = v, o
+        self.gekleurd = set(v.model.gekleurd)
+        self.cursor = 0
+        self.melding, self.melding_rol = "", "fout"
+        self.fouten, self.diagnose, self.cursor_pos = 0, None, None
+        self.hint = "Pijltjes + spatie (of klik) = vakje · r (of klik op ▶) = hele rij"
+        self.naast = (13, self.X0 + 23)  # (rij, kolom) van de feedback: rechts van het veld
+
+    def hoogte(self, nagekeken=False):
+        return 10
+
+    def knoppen(self):
+        return [("spatie", "kleur", ord(" ")), ("r", "hele rij", ord("r")), ("Enter", "klaar", 10),
+                ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+
+    def teken(self, s, y, uitslag=None, hulp=False):
+        bezig = uitslag is None
+        y += 1  # onder het maatje
+        M.teken_veld(s, y, self.gekleurd, self.X0, self.cursor if bezig else None,
+                     (lambda i: ("vak", i)) if bezig else None, (lambda r: ("rij", r)) if bezig else None)
+        n = len(self.gekleurd)
+        s.put(y, self.X0 + 23, f"{n} van de 100", "bold" if bezig else ("goed" if uitslag else "fout"))
+        s.put(y + 1, self.X0 + 23, f"= {n} %", "bold" if bezig else ("goed" if uitslag else "fout"))
+
+    def toets(self, k):
+        if isinstance(k, tuple):
+            if k[0] == "vak":
+                self.cursor = k[1]
+                self.gekleurd ^= {k[1]}
+            elif k[0] == "rij":
+                self.cursor = k[1] * 10
+                self.rij()
+            return None
+        if k in ENTER:
+            n = len(self.gekleurd)
+            return f"{n} %", Decimal(n)
+        stap = {curses.KEY_LEFT: (0, -1), curses.KEY_RIGHT: (0, 1), curses.KEY_UP: (-1, 0), curses.KEY_DOWN: (1, 0)}
+        if k in stap:
+            r, c = divmod(self.cursor, 10)
+            dr, dc = stap[k]
+            self.cursor = min(9, max(0, r + dr)) * 10 + min(9, max(0, c + dc))
+        elif k == ord(" "):
+            self.gekleurd ^= {self.cursor}
+        elif k in (ord("r"), ord("R")):
+            self.rij()
+        return None
+
+    def rij(self):
+        """Kleur de rij van de cursor helemaal (of maak ze leeg als ze al vol is)."""
+        rij = set(range(self.cursor // 10 * 10, self.cursor // 10 * 10 + 10))
+        self.gekleurd = self.gekleurd - rij if rij <= self.gekleurd else self.gekleurd | rij
+
+    def hulp(self, o):
+        return o.tip(self.v)
+
+    def rijen(self):
+        return []
+
+
+INVOER = {"balk": BalkInvoer, "veld": VeldInvoer}

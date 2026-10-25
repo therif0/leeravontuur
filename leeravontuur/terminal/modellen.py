@@ -6,8 +6,11 @@ De getallenlijn neemt 4 rijen in:  y   tekstjes bij markeringen ("start", "nu")
                                    y+3 de getallen onder de streepjes
 """
 
+from decimal import Decimal
+
 from ..kern.getal import fmt
-from ..kern.modellen import Breukbalk, Breukbalken, Getallenlijn, Groepjes
+from ..kern.modellen import (Breukbalk, Breukbalken, Getallenlijn, Groepjes, Honderdveld,
+                             Procentstrook)
 
 HOOGTE = 4
 
@@ -131,4 +134,51 @@ def teken_model(s, y, model, x0=8):
     if isinstance(model, Getallenlijn):
         teken_getallenlijn(s, y + 1, model)
         return 5, 76
+    if isinstance(model, Honderdveld):
+        return teken_veld(s, y, model.gekleurd)
+    if isinstance(model, Procentstrook):
+        return teken_strook(s, y, model, x0)
     return 0, 0
+
+
+# ---- procenten -----------------------------------------------------------------------------------------
+
+def teken_veld(s, y, gekleurd, x0=10, cursor=None, actie=None, rij_actie=None):
+    """Het honderdveld: 10 rijen van 10 vakjes (elk 2 tekens breed). Geeft (hoogte, breedte)."""
+    for r in range(10):
+        if rij_actie is not None:
+            s.put(y + r, x0 - 2, "▶", "dim")
+            s.zones.voeg(y + r, x0 - 2, 1, 1, rij_actie(r))
+        for c in range(10):
+            i = r * 10 + c
+            vol = i in gekleurd
+            rol = "cursor" if cursor == i else ("accent2" if vol else "dim")
+            s.put(y + r, x0 + 2 * c, "■" if vol else "□", rol)  # met een spatie ertussen: telbaar
+            if actie is not None:
+                s.zones.voeg(y + r, x0 + 2 * c, 1, 2, actie(i))
+    return 10, 20 + (x0 - 8)
+
+
+STROOK_B = 50
+
+
+def teken_strook(s, y, strook, x0=8):
+    """Procentstrook: 0 % … 100 % boven 0 … totaal, met een pijl bij het gevraagde percentage."""
+    def x(p):
+        return x0 + int(Decimal(p) * STROOK_B / 100)
+    xp = x(strook.procent)
+    s.put(y, xp, f"▼ {fmt(strook.procent)} %", "accent")
+    for xx in range(x0, x0 + STROOK_B + 1):
+        s.put(y + 1, xx, "█" if xx <= xp else "░", "accent2" if xx <= xp else "dim")
+    for p in (0, 25, 50, 75, 100):
+        tekst = f"{p} %"
+        s.put(y + 2, min(x(p), x0 + STROOK_B - len(tekst) + 1) if p else x0, tekst, "dim")
+    eenheid = f" {strook.eenheid}" if strook.eenheid else ""
+    s.put(y + 3, x0, "0", "bold")
+    totaal = fmt(strook.totaal) + eenheid
+    s.put(y + 3, x0 + STROOK_B - len(totaal) + 1, totaal, "bold")
+    if strook.toon_deel:
+        deel = fmt(strook.totaal * strook.procent / 100) + eenheid
+        if x0 + 2 < xp - len(deel) // 2 and xp + len(deel) < x0 + STROOK_B - len(totaal):
+            s.put(y + 3, xp - len(deel) // 2, deel, "goed")
+    return 4, STROOK_B + 8
