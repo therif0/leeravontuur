@@ -38,6 +38,30 @@ class TestModellen(unittest.TestCase):
         self.assertEqual(MK.lees_coord(a, "3 −2"), (3, -2))
         self.assertIsNone(MK.lees_coord(a, "(7, 1)"))
 
+    def test_rooster_vakjes_zijn_vierkant(self):
+        fig = Figuur(2, 3, {(0, 0)}, {(1, 1)})
+        p = TM.figuur_pixels(fig)
+        self.assertEqual((len(p), len(p[0])), (4 * 2 + 1, 4 * 3 + 1))
+        # een heel vakje: 3 × 3 pixels vulling, omringd door lijnen
+        self.assertTrue(all(p[1 + i][1 + j] == "vulling" for i in range(3) for j in range(3)))
+        self.assertTrue(all(p[0][x] == "lijn" and p[4][x] == "lijn" for x in range(5)))
+        self.assertTrue(all(p[y][0] == "lijn" and p[y][4] == "lijn" for y in range(5)))
+        # een half vakje: de driehoek linksonder, 6 van de 9 pixels
+        half = [[p[5 + i][5 + j] == "vulling" for j in range(3)] for i in range(3)]
+        self.assertEqual(half, [[True, False, False], [True, True, False], [True, True, True]])
+        # een leeg vakje blijft leeg
+        self.assertTrue(all(p[1 + i][9 + j] is None for i in range(3) for j in range(3)))
+
+    def test_rand_ligt_op_de_omtrek(self):
+        fig = Figuur(5, 8, {(0, 0), (1, 0), (2, 0), (2, 1), (2, 2)}, rand=True)
+        p = TM.figuur_pixels(fig)
+        # elk randje van 1 cm = de 3 pixels tussen twee hoekpunten
+        randjes = sum(all(p[y][x + d] == "rand" for d in (1, 2, 3)) for y in range(0, len(p), 4)
+                      for x in range(0, len(p[0]) - 1, 4))
+        randjes += sum(all(p[y + d][x] == "rand" for d in (1, 2, 3)) for y in range(0, len(p) - 1, 4)
+                       for x in range(0, len(p[0]), 4))
+        self.assertEqual(randjes, fig.omtrek())
+
     def test_hoek_tekening_past(self):
         class S:
             def __init__(self):
@@ -179,7 +203,7 @@ class TestSchermen(Basis):
             scherm, app = self.speel([*naar(1), *"5", OK, *STOP], opslag=o)
         self.assertEqual(o.antwoorden(app.kind.id)[0]["diagnose"], "omtrek_oppervlakte")
         self.assertTrue(self.ergens(scherm, "███ = 1 cm²"))
-        self.assertTrue(self.ergens(scherm, "━━━"))  # na het nakijken: de omtrek in het groen
+        self.assertTrue(self.ergens(scherm, "━━━"))  # na het nakijken: de omtrek aangeduid
 
     def test_spiekbrief(self):
         scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "8", ESC, ESC, ESC])

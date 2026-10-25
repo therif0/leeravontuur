@@ -141,6 +141,36 @@ def pixels_mogelijk():
         return False
 
 
+# Pixels die een kleur van het thema volgen (bv. het cm²-rooster): pixelrol → rol in het palet, of een eigen kleur
+PIXELROLLEN = {"vulling": "accent2", "rand": "accent", "lijn": ((240, "wit"),)}
+
+
+def _pixelkleur(rol, thema_naam, veel):
+    if rol is None:
+        return -1
+    bron = PIXELROLLEN[rol]
+    spec = bron[0] if isinstance(bron, tuple) else PALETTEN.get(thema_naam, PALETTEN["standaard"])[bron][0]
+    return _kleur(spec, veel, -1)
+
+
+def rol_pixel(boven, onder=None, thema_naam="standaard"):
+    """Curses-attribuut voor een halfblok met de kleuren van twee pixelrollen ("vulling", "rand", "lijn" of None)
+    in dit thema. 0 als het niet kan (bv. de kleurparen zijn op)."""
+    sleutel = ("rol", thema_naam, boven, onder)
+    if sleutel in _paren:
+        return _paren[sleutel]
+    try:
+        veel = curses.COLORS >= 256
+        nummer = _EERSTE + len(_paren)
+        if nummer >= curses.COLOR_PAIRS:
+            return 0
+        curses.init_pair(nummer, _pixelkleur(boven, thema_naam, veel), _pixelkleur(onder, thema_naam, veel))
+        _paren[sleutel] = curses.color_pair(nummer)
+    except curses.error:
+        _paren[sleutel] = 0
+    return _paren[sleutel]
+
+
 def pixel(voor, achter=None):
     """Curses-attribuut voor een halfblok met deze voorgrond- en achtergrondkleur ('#rrggbb' of None)."""
     sleutel = (voor, achter)
