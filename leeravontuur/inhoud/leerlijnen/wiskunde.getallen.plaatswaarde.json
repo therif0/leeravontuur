@@ -1,0 +1,31 @@
+{
+ "vaardigheid": "wiskunde.getallen.plaatswaarde",
+ "omschrijving": "plaatswaarde van natuurlijke en kommagetallen",
+ "doelen": [],
+ "parameters": {
+  "max_cijfers": "int",
+  "decimalen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "max_cijfers": 4,
+   "decimalen": 0
+  },
+  "4": {
+   "max_cijfers": 5,
+   "decimalen": 2
+  },
+  "5": {
+   "max_cijfers": 7,
+   "decimalen": 3
+  },
+  "6": {
+   "max_cijfers": 7,
+   "decimalen": 3
+  },
+  "m1": {
+   "max_cijfers": 7,
+   "decimalen": 3
+  }
+ }
+}

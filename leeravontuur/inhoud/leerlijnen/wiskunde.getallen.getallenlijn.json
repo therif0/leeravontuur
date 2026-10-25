@@ -1,0 +1,66 @@
+{
+ "vaardigheid": "wiskunde.getallen.getallenlijn",
+ "omschrijving": "getallenlijn: aflezen, aanduiden met inzoomen, sprongen, negatieve getallen",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "max": "int",
+  "decimalen": "int",
+  "negatief": "bool"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "sprong"
+   ],
+   "max": 1000,
+   "decimalen": 0,
+   "negatief": false
+  },
+  "4": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "sprong"
+   ],
+   "max": 10000,
+   "decimalen": 1,
+   "negatief": false
+  },
+  "5": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "sprong",
+    "temperatuur"
+   ],
+   "max": 10000,
+   "decimalen": 2,
+   "negatief": true
+  },
+  "6": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "sprong",
+    "temperatuur"
+   ],
+   "max": 100000,
+   "decimalen": 3,
+   "negatief": true
+  },
+  "m1": {
+   "soorten": [
+    "aflezen",
+    "aanduiden",
+    "sprong",
+    "temperatuur"
+   ],
+   "max": 100000,
+   "decimalen": 3,
+   "negatief": true
+  }
+ }
+}

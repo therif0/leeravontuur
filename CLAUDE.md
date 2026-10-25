@@ -37,6 +37,8 @@ Nederlands (Vlaams), met komma als decimaalteken.
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py`. Het scherm is dan
   automatisch `terminal/oefenaar.py` (vrij, reeks, rapport, fouten opnieuw, herhaalbak, punten, maatje).
   Eenheden heeft (nog) een eigen scherm vanwege de tabel.
+  Een `Vraag` kan `invoer="janee"` (typ ja/nee) of `invoer="lijn"` (aanduiden op de getallenlijn, met zoom)
+  hebben, en een visueel `model` uit `kern/modellen.py` (data) dat `terminal/modellen.py` tekent.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in

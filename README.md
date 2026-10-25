@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.8):**
+**Wat er nu in zit (versie 0.9):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -20,6 +20,11 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - elke uitleg toont een strategie stap voor stap (compenseren, splitsen, × 9 = × 10 − 1 …)
   - herkent denkfouten (bv. *"bij compenseren moest je 1 aftrekken, je deed het omgekeerd"*)
   - vanaf het 1ste middelbaar ook met negatieve getallen
+- **Getallen:** plaatswaarde (E, T, H … t, h, d), afronden, deelbaarheid (kenmerken, delers; vanaf het 6de
+  ook priemgetallen, ggd en kgv) en de **getallenlijn**:
+  - aflezen bij een pijl, sprongen (plus = naar rechts, min = naar links), een thermometer met negatieve getallen
+  - **aanduiden**: zet de pijl met `←` `→` of een muisklik op het juiste streepje; ligt het getal tussen twee
+    streepjes, dan **zoom je in** met `+` (en terug met `−`)
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

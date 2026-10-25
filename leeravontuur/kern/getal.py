@@ -33,3 +33,17 @@ def lees_getal(tekst):
     if not re.fullmatch(r"\d+(\.\d+)?|\.\d+", t):
         return None
     return -Decimal(t) if negatief else Decimal(t)
+
+
+def fmt_groot(d):
+    """Zoals fmt, maar met spaties tussen de duizendtallen: 47352 -> '47 352'."""
+    tekst = fmt(d)
+    teken = "−" if tekst.startswith("−") else ""
+    tekst = tekst.lstrip("−")
+    geheel, _, komma = tekst.partition(",")
+    groepen = []
+    while len(geheel) > 3:
+        groepen.insert(0, geheel[-3:])
+        geheel = geheel[:-3]
+    groepen.insert(0, geheel)
+    return teken + " ".join(groepen) + ("," + komma if komma else "")

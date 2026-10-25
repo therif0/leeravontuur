@@ -25,10 +25,13 @@ class Vraag:
     eenheid: str = ""      # achter het antwoordvak (bv. "cm")
     data: dict = field(default_factory=dict)   # om uitleg en herhaling te maken
     leerjaar: str = "5"
+    invoer: str = "getal"  # "getal", "janee" (typ ja of nee) of "lijn" (aanduiden op de getallenlijn)
+    model: object = None   # een visueel model (bv. kern.modellen.Getallenlijn)
 
     @property
     def verwacht(self):
-        return fmt(self.antwoord) + (f" {self.eenheid}" if self.eenheid else "")
+        tekst = self.antwoord if isinstance(self.antwoord, str) else fmt(self.antwoord)
+        return tekst + (f" {self.eenheid}" if self.eenheid else "")
 
 
 class Onderwerp:
@@ -98,6 +101,13 @@ class Onderwerp:
 
     def lees(self, tekst):
         return lees_getal(tekst)
+
+    def lees_vraag(self, v, tekst):
+        """Leest het antwoord voor deze vraag (getal, of ja/nee)."""
+        if v.invoer == "janee":
+            t = tekst.strip().lower()
+            return {"ja": "ja", "j": "ja", "nee": "nee", "n": "nee", "neen": "nee"}.get(t)
+        return self.lees(tekst)
 
     def onderwerp_van_sleutel(self, sleutel):
         return None

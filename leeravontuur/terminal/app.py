@@ -10,6 +10,7 @@ from ..kern import herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar
+from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import hoofdrekenen as H
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
@@ -286,13 +287,16 @@ class App:
         while True:
             try:
                 k = self.s.menu(kr, "Welk onderwerp?", [("Eenheden", "lengte en massa omzetten"),
-                                                       ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft")])
+                                                       ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft"),
+                                                       ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn")])
                 if k is None:
                     return
                 if k == 0:
                     Eenheden(self, kr + ["Eenheden"]).menu()
-                else:
+                elif k == 1:
                     Oefenaar(self, kr + ["Hoofdrekenen"], H.ALLE, "Hoofdrekenen").menu()
+                else:
+                    Oefenaar(self, kr + ["Getallen"], G.ALLE, "Getallen").menu()
             except TerugNaar as t:
                 if t.niveau < len(kr) - 1:
                     raise
@@ -302,11 +306,14 @@ class App:
         while True:
             try:
                 k = self.s.menu(kr, "Welke spiekbrief?", [("Eenheden", "lengte en massa omzetten"),
-                                                         ("Hoofdrekenen", "slimme trucjes")])
+                                                         ("Hoofdrekenen", "slimme trucjes"),
+                                                         ("Getallen", "plaatswaarde, afronden, deelbaarheid")])
                 if k is None:
                     return
                 if k == 0:
                     Eenheden(self, kr).spiekbrief(kr + ["Eenheden"])
+                elif k == 2:
+                    Oefenaar(self, kr, G.ALLE, "Getallen").spiekbrief(kr + ["Getallen"], G.PLAATSWAARDE)
                 else:
                     Oefenaar(self, kr, H.ALLE, "Hoofdrekenen").spiekbrief(kr + ["Hoofdrekenen"], H.TAFELS)
             except TerugNaar as t:

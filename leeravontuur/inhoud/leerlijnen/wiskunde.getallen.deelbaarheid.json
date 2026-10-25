@@ -1,0 +1,89 @@
+{
+ "vaardigheid": "wiskunde.getallen.deelbaarheid",
+ "omschrijving": "kenmerken van deelbaarheid, delers, veelvouden, priem, ggd, kgv",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "delers": "lijst",
+  "max": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "deelbaar"
+   ],
+   "delers": [
+    2,
+    5,
+    10
+   ],
+   "max": 100
+  },
+  "4": {
+   "soorten": [
+    "deelbaar"
+   ],
+   "delers": [
+    2,
+    5,
+    10,
+    100
+   ],
+   "max": 1000
+  },
+  "5": {
+   "soorten": [
+    "deelbaar",
+    "delers"
+   ],
+   "delers": [
+    2,
+    3,
+    4,
+    5,
+    9,
+    10,
+    25,
+    100
+   ],
+   "max": 10000
+  },
+  "6": {
+   "soorten": [
+    "deelbaar",
+    "delers",
+    "priem",
+    "ggd",
+    "kgv"
+   ],
+   "delers": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    9,
+    10,
+    25,
+    100
+   ],
+   "max": 100000
+  },
+  "m1": {
+   "soorten": [
+    "deelbaar",
+    "priem",
+    "ggd",
+    "kgv"
+   ],
+   "delers": [
+    3,
+    4,
+    6,
+    9,
+    25
+   ],
+   "max": 1000000
+  }
+ }
+}

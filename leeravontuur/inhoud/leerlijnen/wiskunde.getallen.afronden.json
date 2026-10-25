@@ -1,0 +1,67 @@
+{
+ "vaardigheid": "wiskunde.getallen.afronden",
+ "omschrijving": "afronden op een gevraagde plaats",
+ "doelen": [],
+ "parameters": {
+  "plaatsen": "lijst",
+  "max_cijfers": "int",
+  "decimalen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "plaatsen": [
+    1,
+    2
+   ],
+   "max_cijfers": 3,
+   "decimalen": 0
+  },
+  "4": {
+   "plaatsen": [
+    1,
+    2,
+    3,
+    0
+   ],
+   "max_cijfers": 5,
+   "decimalen": 1
+  },
+  "5": {
+   "plaatsen": [
+    1,
+    2,
+    3,
+    0,
+    -1
+   ],
+   "max_cijfers": 6,
+   "decimalen": 2
+  },
+  "6": {
+   "plaatsen": [
+    1,
+    2,
+    3,
+    4,
+    0,
+    -1,
+    -2
+   ],
+   "max_cijfers": 7,
+   "decimalen": 3
+  },
+  "m1": {
+   "plaatsen": [
+    2,
+    3,
+    4,
+    5,
+    0,
+    -1,
+    -2
+   ],
+   "max_cijfers": 7,
+   "decimalen": 3
+  }
+ }
+}
