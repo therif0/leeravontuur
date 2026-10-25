@@ -1,15 +1,16 @@
 """De terminal-app: startscherm, hoofdmenu, menu's per vak en domein, en opties."""
 
 import curses
+import json
+import os
+import time
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-import json
-
-from ..kern import herhaling, instellingen, klok, leerjaren
+from ..kern import foutlog, herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
-from .scherm import ENTER, ESC, Scherm, TerugNaar
+from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
 from ..kern.wiskunde import breuken as BR
 from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
@@ -100,6 +101,9 @@ class App:
 
     def start(self, ouder=False):
         self.startscherm()
+        if self.opslag.probleem:  # bv. een teruggezette reservekopie: meteen zeggen, niet pas in het hoofdmenu
+            self.s.lezer([HOOFD, "Let op"], [("! " + self.opslag.probleem, "accent")],
+                         [("Enter", "verder", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
         if ouder:
             from .schermen.ouder import Ouderdeel
             Ouderdeel(self).open()
@@ -191,6 +195,32 @@ class App:
                 actie()
             except TerugNaar:
                 continue
+            except (SystemExit, KeyboardInterrupt, Vergrendeld):
+                raise
+            except Exception as e:  # vangnet: een fout in een scherm sluit het programma niet af
+                self.oeps(e)
+
+    def oeps(self, fout):
+        """Een onverwachte fout: bewaren in fouten.log, het kind geruststellen en terug naar het menu.
+        Drie fouten binnen een minuut: dan toch stoppen (geen eindeloze lus)."""
+        if os.environ.get("LEERAVONTUUR_DEBUG"):
+            raise fout
+        nu = time.monotonic()
+        self._fouten = [t for t in getattr(self, "_fouten", []) if nu - t < 60] + [nu]
+        foutlog.schrijf(" › ".join(self.s.kruimel), fout)
+        if len(self._fouten) >= 3:
+            raise fout
+        try:
+            self.s.cursor(False)
+            self.s.lezer([HOOFD, "Oeps"], [
+                ("! Oei, er ging iets mis.", "accent"), ("", ""),
+                ("Je punten en antwoorden zijn bewaard. Je gaat terug naar het menu.", ""), ("", ""),
+                ("Voor de ouder: de fout staat in het foutenlogboek", "dim"),
+                (f"  {foutlog.pad()}", "dim"),
+                ("  (of start met --fouten om ze te bekijken).", "dim")],
+                [("Enter", "naar het menu", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
+        except Exception:
+            pass
 
     def teken_avatar_menu(self):
         """Rechts in het hoofdmenu: de avatar en de punten."""
@@ -215,8 +245,18 @@ class App:
         n = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
         if n:
             return f"eerst je {n} herhaalvragen", self.herhalen
+        try:
+            return self._vorige_voorstel()
+        except (KeyError, IndexError, TypeError, ValueError, AttributeError):  # oude of vreemde gegevens
+            return "kies iets om te leren", self.leren
+
+    def _vorige_voorstel(self):
         vorige = self.laatste_oefening()
-        if vorige and vorige.get("onderwerp") == "oefenaar":
+        if not isinstance(vorige, dict):
+            return "kies iets om te leren", self.leren
+        if vorige.get("onderwerp") == "oefenaar" and not 0 <= vorige["niveau"] < len(leerjaren.NIVEAUS):
+            return "kies iets om te leren", self.leren
+        if vorige.get("onderwerp") == "oefenaar":
             from ..kern import catalogus
             o = catalogus.ONDERWERPEN.get(vorige["vaardigheid"])
             if o:

@@ -25,6 +25,8 @@ def lees_argumenten(argv):
     p.add_argument("--wachtwoord-vergeten", action="store_true",
                    help="het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard)")
     p.add_argument("--snelkoppeling", action="store_true", help="menu-snelkoppeling maken (Linux)")
+    p.add_argument("--fouten", action="store_true", help="de laatste fouten uit het foutenlogboek tonen")
+    p.add_argument("--debug", action="store_true", help="bij een fout meteen stoppen met de volledige melding")
     p.add_argument("--test", action="store_true", help="de automatische tests uitvoeren")
     p.add_argument("--versie", action="store_true", help="versie tonen")
     return p.parse_args(argv)
@@ -72,6 +74,20 @@ def wachtwoord_vergeten():
     return 0
 
 
+def toon_fouten():
+    from .kern import foutlog
+    meldingen = foutlog.meldingen()
+    if not meldingen:
+        print("Er staan geen fouten in het logboek. Prima!")
+        return 0
+    for m in meldingen[-3:]:
+        print(m)
+        print()
+    print(f"{len(meldingen)} {'melding' if len(meldingen) == 1 else 'meldingen'} in {foutlog.pad()}")
+    print("Je kunt dit bestand doorsturen als er iets misloopt.")
+    return 0
+
+
 def draai_tests():
     import unittest
     map_ = Path(__file__).resolve().parent.parent / "tests"
@@ -94,10 +110,15 @@ def main(argv=None):
         return snelkoppeling()
     if args.wachtwoord_vergeten:
         return wachtwoord_vergeten()
+    if args.fouten:
+        return toon_fouten()
+    if args.debug:
+        os.environ["LEERAVONTUUR_DEBUG"] = "1"
 
     import curses
     import locale
 
+    from .kern import foutlog
     from .kern.opslag import Opslag
     from .terminal.app import App
 
@@ -114,18 +135,39 @@ def main(argv=None):
     if args.geen_muis:
         voorrang["muis"] = False
 
+    from .kern import slot
+    al_open = slot.bezet()
+    if al_open:
+        print(f"{NAAM} staat al open ({al_open}).")
+        print("Twee keer tegelijk openen kan antwoorden doen verloren gaan.")
+        try:
+            antwoord = input("Toch starten? Typ j en Enter (anders stopt het): ") if sys.stdin.isatty() else "j"
+        except EOFError:
+            antwoord = ""
+        if antwoord.strip().lower() not in ("j", "ja"):
+            return 0
+    slot.neem()
     opslag = Opslag.open()
-    locale.setlocale(locale.LC_ALL, "")
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+    except locale.Error:  # een onbekende taalinstelling: dan gewoon zonder
+        pass
     houder = {}
 
     def draai(win):
         houder["app"] = app = App(win, opslag, voorrang)
         app.start(ouder=args.ouder)
 
+    mislukt = None
     try:
         curses.wrapper(draai)
     except (KeyboardInterrupt, SystemExit):
         pass
+    except Exception as e:  # laatste vangnet: geen Python-melding voor het kind, wel een logboek
+        if args.debug:
+            raise
+        foutlog.schrijf("buiten het menu", e)
+        mislukt = e
     app = houder.get("app")
     groet = "Tot de volgende keer!"
     if app and app.kind:
@@ -135,10 +177,13 @@ def main(argv=None):
             groet += f" Vandaag: {j} van {n} juist."
     opslag.sluit()
     print(groet)
+    if mislukt is not None:
+        print("Oei, er ging iets mis en het programma moest stoppen. Je antwoorden zijn bewaard.")
+        print(f"De fout staat in {foutlog.pad()} (bekijk ze met --fouten).")
     if opslag.probleem:
         print(opslag.probleem)
     print(f"{NAAM} · een gratis leerprogramma van {MAKER}")
-    return 0
+    return 1 if mislukt is not None else 0
 
 
 if __name__ == "__main__":

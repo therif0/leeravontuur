@@ -146,12 +146,14 @@ class TestOpenen(unittest.TestCase):
         finally:
             map_.chmod(0o700)
 
-    def test_terugval_bij_onbruikbaar_bestand(self):
+    def test_onbruikbaar_bestand_gaat_opzij(self):
         pad = Path(self.tmp.name) / "kapot.db"
         pad.write_text("dit is geen databank", encoding="utf-8")
         o = Opslag.open(pad)
-        self.assertIsNotNone(o.probleem)
-        self.assertEqual(o.pad, ":memory:")
+        self.assertIn("geen reservekopie", o.probleem)
+        self.assertEqual(o.pad, str(pad))  # een nieuwe databank, die wel bewaart
+        self.assertEqual(len(list(Path(self.tmp.name).glob("kapot.db.beschadigd-*"))), 1)
+        o.sluit()
 
 
 if __name__ == "__main__":

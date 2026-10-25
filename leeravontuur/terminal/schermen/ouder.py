@@ -3,7 +3,7 @@
 import curses
 from datetime import date
 
-from ...kern import klok, leerjaren, rapporten, wachtwoord
+from ...kern import foutlog, klok, leerjaren, rapporten, wachtwoord
 from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
 from ..scherm import ENTER, ESC, TerugNaar, Vergrendeld
@@ -137,6 +137,11 @@ class Ouderdeel:
 
     # ---- menu --------------------------------------------------------------------
 
+    @staticmethod
+    def fouten_info():
+        n = foutlog.aantal()
+        return [f"! {n} onverwachte {'fout' if n == 1 else 'fouten'} bewaard · bekijk ze met --fouten"] if n else []
+
     def menu(self):
         while True:
             k = self.s.menu(KR, "Ouderdeel", [
@@ -145,7 +150,7 @@ class Ouderdeel:
                 ("Punten", "logboek bekijken, bonuspunten geven"),
                 ("Wachtwoord wijzigen", ""),
                 ("Sluiten", "")],
-                info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."])
+                info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."] + self.fouten_info())
             if k is None or k == 4:
                 return
             if k == 0:

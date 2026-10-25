@@ -4,10 +4,13 @@ Afspraken:
 - Alles wat bewaard wordt, gaat via deze klasse.
 - Antwoorden worden alleen toegevoegd, nooit aangepast (een trigger bewaakt dat).
 - Elk record heeft een UUID en tijdstempels; het schema groeit via MIGRATIES.
-- Lukt bewaren niet, dan werkt het programma gewoon verder (en meldt het één keer een probleem).
+- Lukt bewaren of lezen niet, dan werkt het programma gewoon verder (en meldt het één keer een probleem).
+- Elke dag een reservekopie (map 'reserve', ververst bij het afsluiten), en altijd een kopie vóór een migratie. Een beschadigd bestand wordt
+  opzij gezet en de nieuwste goede kopie teruggezet.
 """
 
 import json
+import shutil
 import sqlite3
 import uuid
 from dataclasses import asdict, dataclass, replace
@@ -19,6 +22,9 @@ from .instellingen import Instellingen
 from .paden import data_map
 
 BESTAND = "leeravontuur.db"
+RESERVE = "reserve"   # map naast de databank met reservekopieën
+DAGKOPIEEN = 7        # zoveel dagelijkse kopieën blijven bewaard
+MIGRATIEKOPIEEN = 3   # en zoveel kopieën van vóór een migratie
 
 MIGRATIES = [
     # versie 1: kinderen, instellingen, sessies, antwoorden
@@ -150,6 +156,44 @@ class Kind:
     leerjaar: str
 
 
+def _beschadigd(fout):
+    """Is dit een beschadigd bestand (en niet bv. een vergrendelde databank)?"""
+    if isinstance(fout, sqlite3.OperationalError):
+        return False
+    tekst = str(fout).lower()
+    return "not a database" in tekst or "malformed" in tekst or "corrupt" in tekst
+
+
+def _goed(pad):
+    """Is dit databankbestand leesbaar en heel?"""
+    try:
+        con = sqlite3.connect(str(pad))
+        try:
+            return con.execute("PRAGMA quick_check").fetchone()[0] == "ok"
+        finally:
+            con.close()
+    except sqlite3.Error:
+        return False
+
+
+def _ruim_op(map_, patroon, bewaar):
+    """Houd alleen de nieuwste `bewaar` bestanden die op het patroon passen."""
+    try:
+        bestanden = sorted(map_.glob(patroon), key=lambda k: k.stat().st_mtime)
+        for oud in bestanden[:-bewaar]:
+            oud.unlink()
+    except OSError:
+        pass
+
+
+def _json(tekst, standaard):
+    """JSON uit de databank lezen; is het beschadigd, dan de standaardwaarde (geen crash)."""
+    try:
+        return json.loads(tekst)
+    except (TypeError, ValueError):
+        return standaard
+
+
 def _nieuw_id():
     return str(uuid.uuid4())
 
@@ -158,7 +202,7 @@ class Opslag:
     def __init__(self, pad=":memory:"):
         self.pad = str(pad)
         self.probleem = None  # tekst als er iets niet bewaard kon worden
-        self.con = sqlite3.connect(self.pad)
+        self.con = sqlite3.connect(self.pad, timeout=5)  # wacht even als een ander programma schrijft
         try:
             self.con.row_factory = sqlite3.Row
             self.con.execute("PRAGMA foreign_keys = ON")
@@ -169,16 +213,83 @@ class Opslag:
 
     @classmethod
     def open(cls, pad=None):
-        """Opent de databank in de datamap. Lukt dat niet: een databank in het geheugen + een melding."""
+        """Opent de databank in de datamap en maakt (één keer per dag) een reservekopie.
+
+        Is het bestand beschadigd, dan wordt het opzij gezet en de nieuwste goede reservekopie teruggezet.
+        Lukt openen helemaal niet: een databank in het geheugen + een melding."""
         pad = Path(pad) if pad else data_map() / BESTAND
         try:
             pad.parent.mkdir(parents=True, exist_ok=True)
-            opslag = cls(pad)
+            try:
+                opslag = cls(pad)
+                opslag.controleer()
+            except sqlite3.DatabaseError as e:
+                if not _beschadigd(e):
+                    raise
+                opslag = cls._herstel(pad)
         except (OSError, sqlite3.Error, OpslagFout) as e:
             opslag = cls(":memory:")
             opslag.probleem = f"Je vooruitgang wordt nu niet bewaard ({e})."
             return opslag
+        opslag.dagkopie()
         opslag.zet_om_uit_json(inst_mod.pad())
+        return opslag
+
+    def controleer(self):
+        """Geeft een sqlite3.DatabaseError als het bestand beschadigd is."""
+        uitslag = self.con.execute("PRAGMA quick_check").fetchone()[0]
+        if uitslag != "ok":
+            self.con.close()
+            raise sqlite3.DatabaseError(f"database disk image is malformed ({uitslag})")
+
+    # ---- reservekopieën ---------------------------------------------------------
+
+    def reserve_map(self):
+        return Path(self.pad).parent / RESERVE
+
+    def _kopie(self, naam):
+        """Een veilige kopie (sqlite-backup, ook terwijl de databank open is). Mag nooit crashen."""
+        if self.pad == ":memory:":
+            return None
+        try:
+            map_ = self.reserve_map()
+            map_.mkdir(parents=True, exist_ok=True)
+            doel = map_ / naam
+            kopie = sqlite3.connect(str(doel))
+            try:
+                self.con.backup(kopie)
+            finally:
+                kopie.close()
+            return doel
+        except (OSError, sqlite3.Error):
+            return None
+
+    def dagkopie(self):
+        """Eén reservekopie per dag; de oudste verdwijnen (er blijven er DAGKOPIEEN)."""
+        if self.pad == ":memory:":
+            return
+        if not (self.reserve_map() / f"leeravontuur-{klok.dag()}.db").exists():
+            self._kopie(f"leeravontuur-{klok.dag()}.db")
+        _ruim_op(self.reserve_map(), "leeravontuur-????-??-??.db", DAGKOPIEEN)
+
+    @classmethod
+    def _herstel(cls, pad):
+        """Het bestand is beschadigd: zet het opzij en zet de nieuwste goede reservekopie terug."""
+        opzij = pad.with_name(f"{pad.name}.beschadigd-{klok.nu():%Y%m%d-%H%M%S}")
+        pad.replace(opzij)
+        kopieen = sorted((pad.parent / RESERVE).glob("leeravontuur-*.db"), key=lambda k: k.stat().st_mtime,
+                         reverse=True)
+        for kopie in kopieen:
+            if _goed(kopie):
+                shutil.copy2(kopie, pad)
+                opslag = cls(pad)
+                datum = klok.nu().fromtimestamp(kopie.stat().st_mtime).strftime("%d/%m/%Y %H:%M")
+                opslag.probleem = (f"De databank was beschadigd. De reservekopie van {datum} is teruggezet "
+                                   f"(het beschadigde bestand: {opzij.name}).")
+                return opslag
+        opslag = cls(pad)
+        opslag.probleem = (f"De databank was beschadigd en er was geen reservekopie. Er is een nieuwe gestart "
+                           f"(het beschadigde bestand: {opzij.name}).")
         return opslag
 
     # ---- schema --------------------------------------------------------------
@@ -196,6 +307,9 @@ class Opslag:
         huidig = self.versie
         if huidig > len(MIGRATIES):
             raise OpslagFout("de databank is van een nieuwere versie van het programma")
+        if 0 < huidig < len(MIGRATIES):  # een bestaande databank wordt omgezet: eerst een kopie
+            self._kopie(f"leeravontuur-voor-v{len(MIGRATIES)}.db")
+            _ruim_op(self.reserve_map(), "leeravontuur-voor-v*.db", MIGRATIEKOPIEEN)
         for nr in range(huidig + 1, len(MIGRATIES) + 1):
             try:
                 c.executescript(f"BEGIN;\n{MIGRATIES[nr - 1]}\nUPDATE schema SET versie = {nr};\nCOMMIT;")
@@ -220,13 +334,32 @@ class Opslag:
             self.probleem = f"Bewaren lukte niet ({e})."
             return False
 
+    def _lees(self, sql, waarden=()):
+        """De rijen van een leesopdracht. Lukt lezen niet (bv. de databank is vergrendeld of beschadigd), dan een
+        lege lijst en een melding: het programma mag daardoor nooit crashen."""
+        try:
+            return self.con.execute(sql, waarden).fetchall()
+        except sqlite3.Error as e:
+            self.probleem = f"Lezen uit de databank lukte niet ({e})."
+            return []
+
+    def _een(self, sql, waarden=(), standaard=None):
+        rijen = self._lees(sql, waarden)
+        return rijen[0] if rijen else standaard
+
     def sluit(self):
-        self.con.close()
+        """Sluit de databank en ververst de reservekopie van vandaag (zo is een teruggezette kopie zo recent
+        mogelijk: van de laatste keer dat het programma gewoon afgesloten werd)."""
+        try:
+            if self.pad != ":memory:" and self.probleem is None:
+                self._kopie(f"leeravontuur-{klok.dag()}.db")
+        finally:
+            self.con.close()
 
     # ---- algemeen --------------------------------------------------------------
 
     def algemeen(self, sleutel, standaard=None):
-        rij = self.con.execute("SELECT waarde FROM algemeen WHERE sleutel = ?", (sleutel,)).fetchone()
+        rij = self._een("SELECT waarde FROM algemeen WHERE sleutel = ?", (sleutel,))
         return rij[0] if rij else standaard
 
     def zet_algemeen(self, sleutel, waarde):
@@ -236,11 +369,11 @@ class Opslag:
     # ---- kinderen en instellingen ---------------------------------------------
 
     def kinderen(self):
-        rijen = self.con.execute("SELECT id, naam, leerjaar FROM kinderen ORDER BY naam COLLATE NOCASE, aangemaakt")
+        rijen = self._lees("SELECT id, naam, leerjaar FROM kinderen ORDER BY naam COLLATE NOCASE, aangemaakt")
         return [Kind(r["id"], r["naam"], r["leerjaar"]) for r in rijen]
 
     def kind(self, kind_id):
-        r = self.con.execute("SELECT id, naam, leerjaar FROM kinderen WHERE id = ?", (kind_id,)).fetchone()
+        r = self._een("SELECT id, naam, leerjaar FROM kinderen WHERE id = ?", (kind_id,))
         return Kind(r["id"], r["naam"], r["leerjaar"]) if r else None
 
     def nieuw_kind(self, naam, leerjaar, inst=None):
@@ -261,8 +394,10 @@ class Opslag:
         kind = self.kind(kind_id)
         if kind is None:
             raise OpslagFout(f"onbekend kind {kind_id}")
-        rij = self.con.execute("SELECT data FROM instellingen WHERE kind_id = ?", (kind_id,)).fetchone()
-        data = json.loads(rij[0]) if rij else {}
+        rij = self._een("SELECT data FROM instellingen WHERE kind_id = ?", (kind_id,))
+        data = _json(rij[0], {}) if rij else {}
+        if not isinstance(data, dict):
+            data = {}
         velden = {f for f in Instellingen.__dataclass_fields__ if f not in _IN_KINDEREN}
         inst = Instellingen(**{k: v for k, v in data.items() if k in velden})
         inst.naam, inst.leerjaar = kind.naam, kind.leerjaar
@@ -317,44 +452,44 @@ class Opslag:
         """(aantal, juist) voor een kind tussen twee dagen (JJJJ-MM-DD of date, beide inbegrepen)."""
         van = str(van)
         tot = str(tot) if tot is not None else van
-        r = self.con.execute("SELECT COUNT(*), COALESCE(SUM(juist), 0) FROM antwoorden "
-                             "WHERE kind_id = ? AND dag BETWEEN ? AND ?", (kind_id, van, tot)).fetchone()
+        r = self._een("SELECT COUNT(*), COALESCE(SUM(juist), 0) FROM antwoorden "
+                      "WHERE kind_id = ? AND dag BETWEEN ? AND ?", (kind_id, van, tot), (0, 0))
         return r[0], r[1]
 
     def antwoorden(self, kind_id, van=None, tot=None):
         """Alle antwoorden van een kind, eventueel tussen twee dagen (beide inbegrepen), oudste eerst."""
         if van is None:
-            rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? ORDER BY tijdstip, rowid",
-                                     (kind_id,))
+            rijen = self._lees("SELECT * FROM antwoorden WHERE kind_id = ? ORDER BY tijdstip, rowid",
+                               (kind_id,))
         else:
-            rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND dag BETWEEN ? AND ? "
-                                     "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
+            rijen = self._lees("SELECT * FROM antwoorden WHERE kind_id = ? AND dag BETWEEN ? AND ? "
+                               "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
         return [dict(r) for r in rijen]
 
     def sessie_overzicht(self, kind_id, modus, vaardigheid):
         """Afgesloten sessies van één soort: [{start, aantal, juist, tijd_ms}], oudste eerst."""
-        rijen = self.con.execute(
-            "SELECT s.id, s.start, COUNT(a.id) AS aantal, COALESCE(SUM(a.juist), 0) AS juist, "
-            "COALESCE(SUM(a.tijd_ms), 0) AS tijd_ms FROM sessies s LEFT JOIN antwoorden a ON a.sessie_id = s.id "
-            "WHERE s.kind_id = ? AND s.modus = ? AND s.vaardigheid = ? AND s.einde IS NOT NULL "
-            "GROUP BY s.id ORDER BY s.start, s.rowid", (kind_id, modus, vaardigheid))
+        rijen = self._lees(
+                           "SELECT s.id, s.start, COUNT(a.id) AS aantal, COALESCE(SUM(a.juist), 0) AS juist, "
+                           "COALESCE(SUM(a.tijd_ms), 0) AS tijd_ms FROM sessies s LEFT JOIN antwoorden a ON a.sessie_id = s.id "
+                           "WHERE s.kind_id = ? AND s.modus = ? AND s.vaardigheid = ? AND s.einde IS NOT NULL "
+                           "GROUP BY s.id ORDER BY s.start, s.rowid", (kind_id, modus, vaardigheid))
         return [dict(r) for r in rijen]
 
     def gezien_sleutels(self, kind_id, vaardigheid, sinds):
         """Vraagsleutels die dit kind sinds die dag al kreeg (om herhaling te vermijden)."""
-        rijen = self.con.execute("SELECT DISTINCT sleutel FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
-                                 "AND dag >= ?", (kind_id, vaardigheid, str(sinds)))
+        rijen = self._lees("SELECT DISTINCT sleutel FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
+                           "AND dag >= ?", (kind_id, vaardigheid, str(sinds)))
         return {r[0] for r in rijen}
 
     def recente_antwoorden(self, kind_id, vaardigheid, aantal=200):
-        rijen = self.con.execute("SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
-                                 "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, aantal))
+        rijen = self._lees("SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
+                           "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, aantal))
         return [dict(r) for r in rijen]
 
     def al_juist(self, kind_id, sleutel):
         """Had dit kind deze exacte vraag ooit al juist? (dan levert ze geen punten meer op)"""
-        r = self.con.execute("SELECT 1 FROM antwoorden WHERE kind_id = ? AND sleutel = ? AND juist = 1 LIMIT 1",
-                             (kind_id, sleutel)).fetchone()
+        r = self._een("SELECT 1 FROM antwoorden WHERE kind_id = ? AND sleutel = ? AND juist = 1 LIMIT 1",
+                      (kind_id, sleutel))
         return r is not None
 
     # ---- punten en avatar --------------------------------------------------------------
@@ -368,17 +503,16 @@ class Opslag:
                       (_nieuw_id(), kind_id, klok.iso(t), klok.dag(t), int(punten), reden, sleutel))
 
     def punten_saldo(self, kind_id):
-        return self.con.execute("SELECT COALESCE(SUM(punten), 0) FROM punten WHERE kind_id = ?",
-                                (kind_id,)).fetchone()[0]
+        return self._een("SELECT COALESCE(SUM(punten), 0) FROM punten WHERE kind_id = ?", (kind_id,), (0,))[0]
 
     def punten_log(self, kind_id, aantal=20):
-        rijen = self.con.execute("SELECT * FROM punten WHERE kind_id = ? ORDER BY tijdstip DESC, rowid DESC LIMIT ?",
-                                 (kind_id, aantal))
+        rijen = self._lees("SELECT * FROM punten WHERE kind_id = ? ORDER BY tijdstip DESC, rowid DESC LIMIT ?",
+                           (kind_id, aantal))
         return [dict(r) for r in rijen]
 
     def avatar(self, kind_id):
-        r = self.con.execute("SELECT config FROM avatar WHERE kind_id = ?", (kind_id,)).fetchone()
-        return json.loads(r[0]) if r else None
+        r = self._een("SELECT config FROM avatar WHERE kind_id = ?", (kind_id,))
+        return _json(r[0], None) if r else None
 
     def bewaar_avatar(self, kind_id, config):
         self._schrijf("INSERT INTO avatar (kind_id, config, gewijzigd) VALUES (?, ?, ?) "
@@ -388,11 +522,11 @@ class Opslag:
     # ---- winkel --------------------------------------------------------------------
 
     def bezit(self, kind_id):
-        rijen = self.con.execute("SELECT * FROM bezit WHERE kind_id = ? ORDER BY gekocht", (kind_id,))
+        rijen = self._lees("SELECT * FROM bezit WHERE kind_id = ? ORDER BY gekocht", (kind_id,))
         uit = []
         for r in rijen:
             d = dict(r)
-            d["levering"] = json.loads(d["levering"]) if d["levering"] else None
+            d["levering"] = _json(d["levering"], None) if d["levering"] else None
             uit.append(d)
         return uit
 
@@ -410,13 +544,13 @@ class Opslag:
 
     def sinds(self, kind_id, tijdstip):
         """(juiste antwoorden, totale antwoordtijd in ms) sinds een tijdstip."""
-        r = self.con.execute("SELECT COALESCE(SUM(juist), 0), COALESCE(SUM(tijd_ms), 0) FROM antwoorden "
-                             "WHERE kind_id = ? AND tijdstip >= ?", (kind_id, tijdstip)).fetchone()
+        r = self._een("SELECT COALESCE(SUM(juist), 0), COALESCE(SUM(tijd_ms), 0) FROM antwoorden "
+                      "WHERE kind_id = ? AND tijdstip >= ?", (kind_id, tijdstip), (0, 0))
         return r[0], r[1]
 
     def outfits(self, kind_id):
-        rijen = self.con.execute("SELECT * FROM outfits WHERE kind_id = ? ORDER BY aangemaakt", (kind_id,))
-        return [dict(r, config=json.loads(r["config"])) for r in rijen]
+        rijen = self._lees("SELECT * FROM outfits WHERE kind_id = ? ORDER BY aangemaakt", (kind_id,))
+        return [dict(r, config=_json(r["config"], {})) for r in rijen]
 
     def bewaar_outfit(self, kind_id, naam, config):
         self._schrijf("INSERT INTO outfits (id, kind_id, naam, config, aangemaakt) VALUES (?, ?, ?, ?, ?)",
@@ -443,15 +577,15 @@ class Opslag:
     def herhaalbak(self, kind_id, tot_dag=None):
         """Items in de herhaalbak (alleen die tot en met tot_dag aan de beurt zijn, als die gegeven is)."""
         if tot_dag is None:
-            rijen = self.con.execute("SELECT * FROM herhaalbak WHERE kind_id = ? ORDER BY volgende, bak",
-                                     (kind_id,))
+            rijen = self._lees("SELECT * FROM herhaalbak WHERE kind_id = ? ORDER BY volgende, bak",
+                               (kind_id,))
         else:
-            rijen = self.con.execute("SELECT * FROM herhaalbak WHERE kind_id = ? AND volgende <= ? "
-                                     "ORDER BY volgende, bak", (kind_id, str(tot_dag)))
+            rijen = self._lees("SELECT * FROM herhaalbak WHERE kind_id = ? AND volgende <= ? "
+                               "ORDER BY volgende, bak", (kind_id, str(tot_dag)))
         uit = []
         for r in rijen:
             d = dict(r)
-            d["data"] = json.loads(d["data"])
+            d["data"] = _json(d["data"], {})
             uit.append(d)
         return uit
 
@@ -467,7 +601,7 @@ class Opslag:
             self.zet_algemeen("ouder_wachtwoord", opgeslagen)
 
     def pincode(self, kind_id):
-        r = self.con.execute("SELECT pincode FROM kinderen WHERE id = ?", (kind_id,)).fetchone()
+        r = self._een("SELECT pincode FROM kinderen WHERE id = ?", (kind_id,))
         return r[0] if r else None
 
     def zet_pincode(self, kind_id, opgeslagen):
@@ -480,5 +614,5 @@ class Opslag:
             self._schrijf("DELETE FROM algemeen WHERE sleutel = 'laatste_kind'")
 
     def sessies(self, kind_id):
-        rijen = self.con.execute("SELECT * FROM sessies WHERE kind_id = ? ORDER BY start", (kind_id,))
+        rijen = self._lees("SELECT * FROM sessies WHERE kind_id = ? ORDER BY start", (kind_id,))
         return [dict(r) for r in rijen]

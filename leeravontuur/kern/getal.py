@@ -21,9 +21,9 @@ def fmt(d):
 def lees_getal(tekst):
     """Leest wat het kind typte. '3,5' en '0.25' zijn kommagetallen, '3.500' is 3500.
 
-    Een eenheid achteraan ('0,25 g') mag. Geeft None als het geen getal is.
+    Een eenheid achteraan ('0,25 g', '2 °C', '35 %') mag. Geeft None als het geen getal is.
     """
-    t = re.sub(r"[a-z]+$", "", tekst.strip().lower()).replace(" ", "").replace("−", "-")
+    t = re.sub(r"[^\d.,]+$", "", tekst.strip().lower()).replace(" ", "").replace("−", "-")  # eenheid achteraan weg
     negatief = t.startswith("-")
     if negatief:
         t = t[1:]

@@ -19,6 +19,23 @@ WIEL_NEER = getattr(curses, "BUTTON5_PRESSED", 0x200000)
 KLIK = curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED
 
 
+def is_functietoets(k):
+    """Een curses-toetscode (pijltje, F1, KEY_RESIZE …), geen getypt teken."""
+    return isinstance(k, int) and curses.KEY_MIN <= k <= curses.KEY_MAX
+
+
+def teken_van(k):
+    """Het getypte teken bij een toets, of None (functietoets, Enter, klik …).
+
+    Tekens met een code in het bereik van de curses-toetscodes (bv. œ, ą) komen van toets() als ("teken", ch),
+    zodat ze nooit met een pijltje verward worden (chr(KEY_LEFT) is 'Ą')."""
+    if isinstance(k, tuple) and len(k) == 2 and k[0] == "teken":
+        return k[1]
+    if isinstance(k, int) and 32 <= k < 0x110000 and k != 127 and not is_functietoets(k):
+        return chr(k)
+    return None
+
+
 class TerugNaar(Exception):
     """Klik op de broodkruimel: ga terug naar het scherm op dit niveau (0 = hoofdmenu)."""
 
@@ -37,6 +54,7 @@ class Scherm:
         self.inst = inst
         self.kleuren = kleuren
         self.zones = Klikzones()
+        self.kruimel = []
         self.status = ""       # rechts in de titelbalk
         self.status_kort = ""  # als er weinig plaats is
         self.slot = None       # seconden zonder toets waarna Vergrendeld volgt (None = nooit)
@@ -101,6 +119,7 @@ class Scherm:
         h, w = self.win.getmaxyx()
         self.put(0, 0, " " * w, "titel")
         delen = [kruimel] if isinstance(kruimel, str) else list(kruimel)
+        self.kruimel = list(delen)  # waar we zijn (voor het foutenlogboek)
         # te lang? kort de middelste stukken in (het eerste en het laatste blijven volledig)
         while sum(len(d) for d in delen) + 3 * (len(delen) - 1) + 2 > w and len(delen) > 2:
             midden = max(range(1, len(delen) - 1), key=lambda i: len(delen[i]))
@@ -172,7 +191,12 @@ class Scherm:
                     raise Vergrendeld()
                 continue
             if isinstance(k, str):
-                k = ord(k) if len(k) == 1 else NIETS
+                if len(k) != 1:
+                    k = NIETS
+                elif is_functietoets(ord(k)):
+                    return ("teken", k)  # een echt teken dat toevallig dezelfde code heeft als een toets
+                else:
+                    k = ord(k)
             if k == curses.KEY_RESIZE:
                 if sys.platform == "win32" and hasattr(curses, "resize_term"):
                     try:
@@ -206,14 +230,11 @@ class Scherm:
     @staticmethod
     def bewerk(buf, k, max_lengte=14):
         """Typen in een antwoordvak. Geeft de nieuwe tekst terug."""
-        if not isinstance(k, int):
-            return buf
         if k in BACKSPACE:
             return buf[:-1]
-        if 32 <= k < 0x110000 and len(buf) < max_lengte:
-            ch = chr(k)
-            if ch.isalnum() or ch in ",. -−/<>=%€":
-                return buf + ch
+        ch = teken_van(k)
+        if ch is not None and len(buf) < max_lengte and (ch.isalnum() or ch in ",. -−/<>=%€"):
+            return buf + ch
         return buf
 
     # ---- algemene schermen -----------------------------------------------
@@ -347,13 +368,13 @@ class Scherm:
             if k in ENTER:
                 self.cursor(False)
                 return buf.strip()
-            if isinstance(k, int):
-                if k in BACKSPACE:
-                    buf = buf[:-1]
-                elif cijfers:
-                    if chr(k).isdigit() and len(buf) < max_lengte:
-                        buf += chr(k)
-                elif verborgen and 32 <= k < 0x110000 and len(buf) < max_lengte:
-                    buf += chr(k)
-                elif 32 <= k < 0x110000 and len(buf) < max_lengte and (chr(k).isalnum() or chr(k) in " -'"):
-                    buf += chr(k)
+            ch = teken_van(k)
+            if k in BACKSPACE:
+                buf = buf[:-1]
+            elif ch is None or len(buf) >= max_lengte:
+                pass
+            elif cijfers:
+                if ch in "0123456789":
+                    buf += ch
+            elif verborgen or ch.isalnum() or ch in " -'":
+                buf += ch

@@ -4,7 +4,7 @@ import time
 
 from ...kern import snelrekenen as SR
 from .. import maatje
-from ..scherm import BACKSPACE, ENTER, ESC, NIETS
+from ..scherm import BACKSPACE, ENTER, ESC, NIETS, teken_van
 
 HOOFD = "Leeravontuur"
 
@@ -96,8 +96,8 @@ class Snelrekenen:
                 elif isinstance(k, int):
                     if k in BACKSPACE:
                         buf = buf[:-1]
-                    elif 32 <= k < 0x110000 and (chr(k).isdigit() or chr(k) in ",-−") and len(buf) < 10:
-                        buf += chr(k)
+                    elif (teken_van(k) or "x") in "0123456789,-−" and len(buf) < 10:
+                        buf += teken_van(k)
         s.cursor(False)
         rondes = self.o.sessie_overzicht(self.app.kind.id, modus, SR.vaardigheid(soort))
         if not rondes or rondes[-1]["aantal"] == 0:

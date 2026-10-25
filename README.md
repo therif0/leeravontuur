@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.12):**
+**Wat er nu in zit (versie 0.12.1):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -130,6 +130,7 @@ git pull
 | `--ouder` | meteen naar het ouderdeel |
 | `--geen-muis` | muis uit, zodat je tekst gewoon kunt selecteren (met de muis aan lukt dat meestal met Shift ingedrukt) |
 | `--versie` | versie tonen |
+| `--fouten` | de laatste onverwachte fouten tonen (uit `fouten.log`, om door te sturen als er iets misloopt) |
 | `--test` | de automatische tests uitvoeren |
 
 Alles kan ook in het menu **Opties**; dat wordt bewaard.
@@ -151,6 +152,15 @@ afschermen, geef je kind dan een eigen gebruikersaccount op de computer.
 
 Daar staat het bestand `leeravontuur.db` met de kinderen, hun instellingen en elk antwoord (met datum en
 antwoordtijd). Er worden geen gegevens verstuurd: alles blijft op de computer.
+
+**Reservekopieën en fouten:**
+- In de submap `reserve` staat elke dag een kopie (de laatste 7 dagen; ververst bij het afsluiten), en een kopie
+  van vóór elke grote update van het programma.
+- Raakt `leeravontuur.db` toch beschadigd, dan zet het programma zelf de nieuwste goede kopie terug (en zegt het
+  dat). Het beschadigde bestand blijft staan als `leeravontuur.db.beschadigd-…`.
+- Zelf een kopie terugzetten: sluit het programma en kopieer een bestand uit `reserve` naar `leeravontuur.db`.
+- Loopt er iets onverwachts mis, dan komt het kind terug in het menu en wordt de fout bewaard in `fouten.log`
+  (bekijk met `--fouten`). Het programma twee keer tegelijk openen geeft eerst een waarschuwing.
 
 ## Voor ontwikkelaars
 - Structuur en afspraken: [CLAUDE.md](CLAUDE.md). Het volledige plan: [docs/plan.md](docs/plan.md).

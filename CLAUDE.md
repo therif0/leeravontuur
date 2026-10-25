@@ -27,6 +27,19 @@ Nederlands (Vlaams), met komma als decimaalteken.
   Antwoorden worden alleen toegevoegd, nooit aangepast (een trigger bewaakt dat). Elk record heeft een UUID.
   Elke oefening loopt via een `kern/sessie.py`-`Sessie` (`vraag_getoond()` → `antwoord(...)`), zodat tijd,
   vraagsleutel en diagnose altijd bewaard worden.
+- **Stabiliteit** (een kind mag nooit een crash of verloren werk zien):
+  - Lezen uit de databank via `Opslag._lees`/`_een` (geven bij een fout een standaardwaarde), schrijven via
+    `_schrijf`. JSON uit de databank via `_json`. Reservekopieën in `reserve/` (per dag, vóór elke migratie);
+    een beschadigd bestand wordt automatisch hersteld uit de nieuwste goede kopie.
+  - `Onderwerp.maak` gebruikt `jaar_voor` (nooit parameters `None`); `maak_herhaling` mag nooit crashen.
+    `onderwerp_van_sleutel` moet elke eigen sleutel aankunnen (let op ':' in de sleutel).
+  - Toetsen: getypte tekens met een code van een curses-toets (257–511, bv. œ) komen als `("teken", ch)`.
+    Gebruik `scherm.teken_van(k)` om een getypt teken te krijgen, nooit `chr(k)` op een toetscode.
+  - Vangnet: een fout in een scherm → `App.oeps` (fouten.log via `kern/foutlog.py`, terug naar het hoofdmenu).
+    `--debug` of `LEERAVONTUUR_DEBUG=1` zet het vangnet uit. Slotbestand tegen twee keer openen: `kern/slot.py`.
+  - `tests/test_stabiliteit.py` (elke generator × elk leerjaar, herhaling over leerjaren, databank, vangnet en de
+    aapjestest) moet groen blijven. Langer zoeken: `LEERAVONTUUR_AAP=3000 LEERAVONTUUR_AAP_SEEDS=40` en
+    `LEERAVONTUUR_AAP_RONDES=15`.
 - Instellingen staan per kind in de databank. Startargumenten (`--kleurenblind` …) gelden voor die sessie
   en worden niet bewaard (`App.voorrang`).
 - Tijd altijd via `kern/klok.py` (tests zetten de klok vast).

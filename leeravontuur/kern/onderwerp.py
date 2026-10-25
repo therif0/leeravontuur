@@ -10,7 +10,8 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from fractions import Fraction
 
-from . import leerlijnen
+from . import foutlog, leerlijnen
+from .leerjaren import LEERJAREN
 from .getal import GetypteBreuk, fmt, fmt_breuk, lees_breuk, lees_getal
 from .vaardigheden import DENKFOUTEN, Vaardigheid, registreer
 
@@ -111,7 +112,19 @@ class Onderwerp:
     def aangeboden(self, leerjaar):
         return self.parameters(leerjaar) is not None
 
+    def jaar_voor(self, leerjaar):
+        """Het leerjaar om een vraag te maken: dit leerjaar, of (als het onderwerp daar nog niet bestaat) het
+        eerste hogere leerjaar waar het wel bestaat, anders het dichtste lagere."""
+        if self.aangeboden(leerjaar):
+            return leerjaar
+        i = LEERJAREN.index(leerjaar) if leerjaar in LEERJAREN else 0
+        for jaar in LEERJAREN[i + 1:] + LEERJAREN[:i][::-1]:
+            if self.aangeboden(jaar):
+                return jaar
+        return leerjaar
+
     def maak(self, leerjaar, vermijd=(), gewichten=None, rng=random, data=None):
+        leerjaar = self.jaar_voor(leerjaar)
         p = self.parameters(leerjaar)
         laatste = None
         for poging in range(400):
@@ -127,7 +140,13 @@ class Onderwerp:
         return None
 
     def maak_herhaling(self, data, leerjaar, vermijd=()):
-        return self.maak(leerjaar, vermijd, data=data)
+        """Een gelijkaardige vraag. Mag nooit crashen: past de bewaarde data niet (meer), bv. uit een oudere
+        versie, dan komt er een gewone vraag van dit onderwerp (en een melding in het foutenlogboek)."""
+        try:
+            return self.maak(leerjaar, vermijd, data=data)
+        except Exception as e:
+            foutlog.schrijf(f"herhaling {self.id} met {data!r}", e)
+            return self.maak(leerjaar, vermijd)
 
     def lees(self, tekst):
         return lees_getal(tekst)

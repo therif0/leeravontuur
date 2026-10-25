@@ -265,8 +265,13 @@ class MaalDeel10(Onderwerp):
                                                                           "onderwerp": "× 10"})
 
     def onderwerp_van_sleutel(self, sleutel):
-        delen = sleutel.split(":")
-        return f"{delen[1][0]} {delen[1][1:]}" if len(delen) >= 3 and delen[0] == self.id else None
+        # sleutel = id:<op><m>:<getal>, en op kan zelf ':' zijn (id::10:3)
+        if not sleutel.startswith(self.id + ":"):
+            return None
+        rest = sleutel[len(self.id) + 1:]
+        if len(rest) < 2:
+            return None
+        return f"{rest[0]} {rest[1:].split(':')[0]}"
 
     def _stappen(self, m):
         m = D(m)

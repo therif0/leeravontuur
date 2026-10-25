@@ -2,6 +2,9 @@
 
 Toetsen geef je op als tekens ("a", "\\n"), curses-codes (curses.KEY_DOWN) of muisacties:
 ("klik", y, x) en ("wiel", 1) of ("wiel", -1). ("wacht",) doet alsof er even niets getypt wordt.
+("grootte", h, w) maakt het venster h × w (zoals een gebruiker die het venster versleept).
+
+Tekent een scherm heel vaak zonder op een toets te wachten, dan hangt het: dat geeft een fout (HangtFout).
 """
 
 import curses
@@ -9,6 +12,13 @@ import curses
 
 class ToetsenOp(Exception):
     """Alle opgegeven toetsen zijn gebruikt."""
+
+
+class HangtFout(Exception):
+    """Het scherm wordt steeds opnieuw getekend zonder dat het op een toets wacht (een eindeloze lus)."""
+
+
+MAX_ZONDER_TOETS = 200
 
 
 class NepScherm:
@@ -20,6 +30,7 @@ class NepScherm:
         self.raster = [[" "] * breedte for _ in range(hoogte)]
         self.beelden = []  # tekst van elk getoond scherm (bij elke refresh)
         self._muis = (0, 0, 0, 0, 0)
+        self._zonder_toets = 0
 
     # --- wat curses ook heeft ---
     def getmaxyx(self):
@@ -46,17 +57,25 @@ class NepScherm:
         pass
 
     def refresh(self):
+        self._zonder_toets += 1
+        if self._zonder_toets > MAX_ZONDER_TOETS:
+            raise HangtFout(f"{MAX_ZONDER_TOETS} keer getekend zonder op een toets te wachten")
         tekst = self.tekst()
         if not self.beelden or self.beelden[-1] != tekst:
             self.beelden.append(tekst)
 
     def get_wch(self):
+        self._zonder_toets = 0
         if not self.toetsen:
             raise ToetsenOp()
         k = self.toetsen.pop(0)
         if isinstance(k, tuple):
             if k[0] == "wacht":
                 raise curses.error("geen toets")
+            if k[0] == "grootte":
+                self.h, self.w = k[1], k[2]
+                self.erase()
+                return curses.KEY_RESIZE
             if k[0] == "klik":
                 self._muis = (0, k[2], k[1], 0, curses.BUTTON1_PRESSED)
             elif k[0] == "wiel":
