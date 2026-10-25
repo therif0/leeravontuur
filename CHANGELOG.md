@@ -4,8 +4,8 @@ In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
 ## 0.15.0 — meetkunde
 - Nieuw domein **Meetkunde**:
-  - **Oppervlakte en omtrek** op een rooster met vakjes van 1 cm²: tel de vakjes en de randjes. Na het nakijken
-    staat de omtrek in het groen. Ook L-vormen, trappen en driehoeken met halve vakjes.
+  - **Oppervlakte en omtrek** op een rooster met echt vierkante vakjes van 1 cm²: tel de vakjes en de randjes. Na
+    het nakijken is de omtrek aangeduid. Ook L-vormen, trappen en driehoeken met halve vakjes.
   - **Formules**: rechthoek, vierkant, driehoek, parallellogram, trapezium, cirkel (π = 3,14) en het volume van
     een balk en een kubus. De uitleg vult de formule in met de getallen.
   - **Hoeken**: scherp, recht, stomp, gestrekt of vol bij een tekening of een aantal graden; vanaf het 6de de
