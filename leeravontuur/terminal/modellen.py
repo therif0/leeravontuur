@@ -251,16 +251,18 @@ def teken_figuur(s, y, fig, x0=8):
             else:
                 s.put(y + t, x0 + x, "▀", thema.rol_pixel(b, o, naam))
     hoogte = (len(p) + 1) // 2
-    # de legende: 2 tekens naast elkaar zijn ongeveer een vierkant
-    s.put(y + hoogte, x0, "██", thema.rol_pixel("vulling", None, naam))
-    s.put(y + hoogte, x0 + 2, " = 1 cm²", "dim")
-    breed = 10
+    # de legende (2 regels): hetzelfde vierkantje en driehoekje van 3 × 3 pixels als in het rooster
+    vul = thema.rol_pixel("vulling", None, naam)
+    s.put(y + hoogte, x0, "███", vul)
+    s.put(y + hoogte + 1, x0, "▀▀▀", vul)
+    s.put(y + hoogte, x0 + 4, "= 1 cm²", "dim")
+    breed = 11
     if fig.halve:
-        s.put(y + hoogte, x0 + 13, "█", thema.rol_pixel("vulling", None, naam))
-        s.put(y + hoogte, x0 + 14, "▄", thema.rol_pixel("vulling", None, naam))
-        s.put(y + hoogte, x0 + 15, " = een half vakje", "dim")
-        breed = 32
-    return hoogte + 1, max(len(p[0]), breed)
+        s.put(y + hoogte, x0 + 15, "█▄", vul)
+        s.put(y + hoogte + 1, x0 + 15, "▀▀▀", vul)
+        s.put(y + hoogte, x0 + 19, "= een half vakje", "dim")
+        breed = 35
+    return hoogte + 2, max(len(p[0]), breed)
 
 
 def teken_figuur_tekens(s, y, fig, x0=8):

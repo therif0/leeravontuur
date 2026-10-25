@@ -209,7 +209,7 @@ class Oefenaar:
                     h, b = M.teken_model(s, 9, model)  # rij 9: onder het maatje
                     if h > 7:  # hoog model: de feedback komt ernaast
                         fb, fx = 10, 8 + b + 3
-                        breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 3)
+                        breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
