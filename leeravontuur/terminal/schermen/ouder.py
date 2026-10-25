@@ -3,7 +3,7 @@
 import curses
 from datetime import date
 
-from ...kern import foutlog, klok, leerjaren, rapporten, wachtwoord
+from ...kern import feedback, foutlog, klok, leerjaren, rapporten, wachtwoord
 from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
 from ..scherm import ENTER, ESC, TerugNaar, Vergrendeld
@@ -149,10 +149,13 @@ class Ouderdeel:
                 ("Kinderen", "leerjaar, timer, pincode, naam, gegevens, wissen"),
                 ("Punten", "logboek bekijken, bonuspunten geven"),
                 ("Wachtwoord wijzigen", ""),
+                (f"Opmerkingen ({len(feedback.lees())})", "wat er via 'Zeg het ons' geschreven werd"),
                 ("Sluiten", "")],
                 info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."] + self.fouten_info())
-            if k is None or k == 4:
+            if k is None or k == 5:
                 return
+            if k == 4:
+                self.opmerkingen()
             if k == 0:
                 self.rapporten()
             elif k == 1:
@@ -161,6 +164,18 @@ class Ouderdeel:
                 self.punten()
             elif k == 3:
                 self.wachtwoord_wijzigen()
+
+    def opmerkingen(self):
+        kr = KR + ["Opmerkingen"]
+        lijst = feedback.lees()
+        regels = [("Opmerkingen uit 'Zeg het ons', nieuwste eerst. Ze staan in:", "dim"),
+                  (f"  {feedback.pad()}", "dim"), ("", "")]
+        if not lijst:
+            regels.append(("Nog geen opmerkingen.", ""))
+        for m in lijst:
+            regels.append((f"{m['tijdstip'][8:10]}/{m['tijdstip'][5:7]} {m['tijdstip'][11:16]} · {m['naam']}", "accent"))
+            regels.append((f"  {m['tekst']}", ""))
+        self.s.lezer(kr, regels, [("Esc", "terug", ("terug",))], {k: None for k in (*ENTER, ESC, ("terug",))})
 
     # ---- rapporten -----------------------------------------------------------------
 

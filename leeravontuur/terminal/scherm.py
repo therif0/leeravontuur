@@ -276,7 +276,7 @@ class Scherm:
             stap = 2 if 5 + 2 * len(opties) < h - 4 else 1
             for i, (label, uitleg) in enumerate(opties):
                 y = 5 + stap * i
-                tekst = f" {i + 1}. {label.ljust(breed)} "
+                tekst = f" {(i + 1) % 10}. {label.ljust(breed)} "  # de 10de keuze heeft toets 0
                 self.put(y, 6, tekst, "cursor" if i == sel else "")
                 if uitleg:
                     self.put(y, 8 + len(tekst), uitleg, "dim")
@@ -300,6 +300,8 @@ class Scherm:
                 sel = (sel + 1) % len(opties)
             elif ord("1") <= k < ord("1") + min(len(opties), 9):
                 return k - ord("1")
+            elif k == ord("0") and len(opties) >= 10:
+                return 9
             elif k in ENTER:
                 return sel
             elif k in (ESC, ord("q")):
@@ -345,10 +347,12 @@ class Scherm:
             elif k == curses.KEY_END:
                 top = len(lijnen)
 
-    def invoer(self, kruimel, vraag, start="", max_lengte=20, verborgen=False, uitleg=(), cijfers=False):
+    def invoer(self, kruimel, vraag, start="", max_lengte=20, verborgen=False, uitleg=(), cijfers=False,
+               vrij=False):
         """Eén regel tekst laten typen (bv. een naam of wachtwoord). Geeft de tekst of None bij Esc.
 
-        verborgen = toon bolletjes in plaats van de tekens; cijfers = alleen cijfers (pincode).
+        verborgen = toon bolletjes in plaats van de tekens; cijfers = alleen cijfers (pincode);
+        vrij = alle tekens (ook leestekens), bv. voor een opmerking.
         """
         buf = start
         knoppen = [("Enter", "ok", 10), ("Esc", "terug", ESC)]
@@ -376,5 +380,5 @@ class Scherm:
             elif cijfers:
                 if ch in "0123456789":
                     buf += ch
-            elif verborgen or ch.isalnum() or ch in " -'":
+            elif verborgen or vrij or ch.isalnum() or ch in " -'":
                 buf += ch

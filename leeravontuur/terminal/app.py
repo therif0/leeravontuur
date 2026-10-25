@@ -7,7 +7,7 @@ import time
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-from ..kern import foutlog, herhaling, instellingen, klok, leerjaren
+from ..kern import feedback, foutlog, herhaling, instellingen, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
@@ -186,12 +186,14 @@ class App:
                     ("Spiekbrieven", "uitleg om terug te kijken"),
                     ("Opties", "kleuren, muis, avatar …"),
                     ("Wissel van kind", "iemand anders wil oefenen"),
+                    ("Zeg het ons", "wat vind je leuk of moeilijk?"),
                     ("Stoppen", "")], info=info,
                     onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
-                if k is None or k == 8:
+                if k is None or k == 9:
                     return
                 actie = [lambda: self.voorstel()[1](), self.leren, self.snelrekenen, self.herhalen,
-                         self.mijn_avatar, self.spiekbrieven, self.opties, self.wissel_van_kind][k]
+                         self.mijn_avatar, self.spiekbrieven, self.opties, self.wissel_van_kind,
+                         self.zeg_het_ons][k]
                 actie()
             except TerugNaar:
                 continue
@@ -221,6 +223,19 @@ class App:
                 [("Enter", "naar het menu", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
         except Exception:
             pass
+
+    def zeg_het_ons(self):
+        """Een opmerking van het kind (of de ouder) bewaren in feedback.txt."""
+        kr = [HOOFD, "Zeg het ons"]
+        tekst = self.s.invoer(kr, "Wat wil je ons vertellen?", max_lengte=70, vrij=True, uitleg=[
+            "Iets wat je leuk vindt, te moeilijk of te makkelijk, of iets wat niet werkt.",
+            "Het blijft op deze computer; je mama of papa kan het lezen en doorgeven."])
+        if not tekst:
+            return
+        gelukt = feedback.bewaar(self.inst.naam, tekst, "hoofdmenu")
+        regels = ([("✔ Bedankt! Je opmerking is bewaard.", "goed")] if gelukt else
+                  [("! Bewaren lukte niet, sorry. Zeg het gewoon aan je mama of papa.", "accent")])
+        self.s.lezer(kr, regels, [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
 
     def teken_avatar_menu(self):
         """Rechts in het hoofdmenu: de avatar en de punten."""

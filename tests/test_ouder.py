@@ -9,9 +9,9 @@ from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen import ouder
 try:
-    from .test_schermen import ESC, OK, Basis
+    from .test_schermen import ESC, OK, Basis, hm
 except ImportError:  # ook zo te starten: python -m unittest discover -s tests
-    from test_schermen import ESC, OK, Basis
+    from test_schermen import ESC, OK, Basis, hm
 
 WW = "geheim1"
 
@@ -140,3 +140,26 @@ class TestTimer(OuderBasis):
 
     def test_timer_verborgen(self):
         self.assertFalse(self.vrije_vraag(False))
+
+
+class TestZegHetOns(OuderBasis):
+    def test_opmerking_bewaren_en_lezen(self):
+        from leeravontuur.kern import feedback
+        o = self.met_wachtwoord(("Imrane", "5"))
+        tekst = "De breuken zijn leuk, maar 7/8 vs. 5/6 is moeilijk!"
+        scherm, _ = self.speel([OK, OK, hm("Zeg het ons"), *tekst, OK, OK, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Bedankt!"))
+        lijst = feedback.lees()
+        self.assertEqual([(m["naam"], m["tekst"]) for m in lijst], [("Imrane", tekst)])
+        # in het ouderdeel: Wie ben jij? → 3 Ouders, wachtwoord, 5 Opmerkingen
+        scherm, _ = self.speel([OK, "3", *WW, OK, "5", ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Opmerkingen (1)"))
+        self.assertTrue(self.ergens(scherm, "7/8 vs. 5/6"))
+
+    def test_leeg_bewaart_niets_en_stoppen_met_0(self):
+        from leeravontuur.kern import feedback
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([OK, OK, hm("Zeg het ons"), OK, hm("Stoppen"), "x"], opslag=o)
+        self.assertEqual(feedback.lees(), [])
+        self.assertEqual(hm("Stoppen"), "0")
+        self.assertEqual(scherm.toetsen, ["x"])  # met 0 gestopt: de volgende toets werd niet meer gelezen

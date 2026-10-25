@@ -15,12 +15,12 @@ OK = "\n"
 
 # keuzes in het hoofdmenu (als toets)
 HOOFDMENU = ["▶ Verder", "Leren & oefenen", "Snelrekenen", "Herhalen", "Mijn avatar", "Spiekbrieven", "Opties",
-             "Wissel van kind", "Stoppen"]
+             "Wissel van kind", "Zeg het ons", "Stoppen"]
 
 
 def hm(keuze):
-    """De toets voor een keuze in het hoofdmenu."""
-    return str(HOOFDMENU.index(keuze) + 1)
+    """De toets voor een keuze in het hoofdmenu (de 10de keuze heeft toets 0)."""
+    return str((HOOFDMENU.index(keuze) + 1) % 10)
 
 
 def hm_rij(keuze):

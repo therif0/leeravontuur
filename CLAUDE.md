@@ -77,5 +77,14 @@ Python 3.10+.
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
   `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.
 
+## Werkwijze (uitbrengen)
+- `main` = de versie die het kind gebruikt. Er wordt nooit rechtstreeks op `main` gewerkt.
+- Elke fase of verbetering op een eigen branch vanaf `main` (bv. `fase-13-werkwoorden`), met een pull request
+  naar `main`. Samenvoegen pas als de CI groen is én de vader akkoord geeft (merge-commit, geen squash).
+- Elke versie: `VERSIE` in `leeravontuur/__init__.py`, een stukje in `CHANGELOG.md` (in gewone taal), README
+  bijwerken, na het samenvoegen een tag `vX.Y.Z` en een GitHub-release met de tekst uit de changelog.
+- Na een nieuwe versie doorloopt de vader `docs/testlijst.md`; opmerkingen van het kind staan in `feedback.txt`
+  (ouderdeel → Opmerkingen).
+
 ## Plan
 Het volledige plan in 27 fasen staat in `docs/plan.md`.

@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.12.1):**
+**Wat er nu in zit (versie 0.13, eerste bèta):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -119,6 +119,12 @@ Het venster moet minstens **80×24** tekens groot zijn.
 ```bash
 git pull
 ```
+
+## Na een nieuwe versie
+- Wat er nieuw is: [CHANGELOG.md](CHANGELOG.md).
+- Een korte testlijst voor de ouder (± 15 minuten): [docs/testlijst.md](docs/testlijst.md).
+- Iets leuk, moeilijk of kapot? In het hoofdmenu staat **Zeg het ons**; de ouder leest het in het ouderdeel bij
+  **Opmerkingen** (het bestand `feedback.txt` in de gegevensmap). Er wordt niets verstuurd.
 
 ## Opties bij het starten
 | Argument | Wat het doet |
