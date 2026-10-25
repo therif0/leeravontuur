@@ -16,6 +16,9 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Cijferen → Staartdeling:** de deling groeit stap voor stap mee.
 - [ ] **Breuken → Breuken herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
 - [ ] **Procenten → Het honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
+- [ ] **Eenheden → Tabel-oefening → Oppervlakte:** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
+- [ ] **Tijd, geld en snelheid → Tijd:** bij "… min = ? u ? min" typ je bv. `2 u 15 min`; bij "Hoe laat kom je
+  aan?" typ je bv. `11.15`.
 
 ## 3. Reeks, herhalen en punten
 - [ ] **Reeks van 10** (eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.

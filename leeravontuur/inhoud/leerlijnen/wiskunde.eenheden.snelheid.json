@@ -1,0 +1,46 @@
+{
+ "vaardigheid": "wiskunde.eenheden.snelheid",
+ "omschrijving": "afstand, tijd en snelheid (km/u, m/s)",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "tijden": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": {
+   "soorten": [
+    "afstand",
+    "tijd",
+    "snelheid"
+   ],
+   "tijden": [
+    30,
+    60,
+    90,
+    120,
+    180
+   ]
+  },
+  "m1": {
+   "soorten": [
+    "afstand",
+    "tijd",
+    "snelheid",
+    "omzetten"
+   ],
+   "tijden": [
+    15,
+    30,
+    45,
+    60,
+    90,
+    120,
+    150,
+    180
+   ]
+  }
+ }
+}

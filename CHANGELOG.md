@@ -2,6 +2,19 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.14.0 — meer eenheden
+- **Eenheden:** naast lengte en massa nu ook **inhoud** (hl … ml), **oppervlakte** (km² … mm², met ha, a en ca;
+  vanaf het 5de leerjaar) en **volume** (m³, dm³, cm³, samen met de liter; vanaf het 6de).
+- De eenhedentabel heeft bij oppervlakte 2 vakjes en bij volume 3 vakjes per eenheid. Wie per eenheid maar
+  1 plaats opschuift, krijgt daar uitleg over.
+- Nieuwe keuze **Door elkaar**: alle soorten eenheden die bij je leerjaar horen.
+- Nieuw domein **Tijd, geld en snelheid**:
+  - tijd: uren, minuten en seconden omrekenen, "135 min = 2 u 15 min" (je typt `2 u 15 min`), tijdsduur en
+    hoe laat je aankomt (je typt `11.15` of `11:15`). Wie met 100 rekent in plaats van 60, krijgt uitleg.
+  - geld: euro en cent, wisselgeld en wat je samen betaalt;
+  - snelheid (vanaf het 6de): afstand, tijd en snelheid; km/u ↔ m/s in het 1ste middelbaar.
+- Winkel: een zakhorloge.
+
 ## 0.13.0 — eerste bèta (oktober 2026)
 - Alles hieronder komt nu samen in de gewone versie (`main`). Dit is de eerste versie om dagelijks te gebruiken.
 - **Zeg het ons** in het hoofdmenu: het kind (of de ouder) schrijft wat leuk, moeilijk of kapot is. Het blijft op

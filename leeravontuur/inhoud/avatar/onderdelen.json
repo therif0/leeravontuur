@@ -524,6 +524,19 @@
     ".CC.",
     "CCCC"
    ]
+  },
+  "zakhorloge": {
+   "naam": "Zakhorloge",
+   "anker": "mond",
+   "dy": -1,
+   "dx": 5,
+   "pixels": [
+    "Y.....",
+    ".Y.GG.",
+    "..GWWG",
+    "..GWBG",
+    "...GG."
+   ]
   }
  }
 }

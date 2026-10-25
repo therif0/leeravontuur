@@ -1,0 +1,71 @@
+{
+ "vaardigheid": "wiskunde.eenheden.tijd",
+ "omschrijving": "uren, minuten, seconden en tijdsduur",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "stap": "int",
+  "omrekenen": "int",
+  "max_duur": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "omrekenen",
+    "gemengd_naar",
+    "duur"
+   ],
+   "stap": 15,
+   "omrekenen": 3,
+   "max_duur": 90
+  },
+  "4": {
+   "soorten": [
+    "omrekenen",
+    "gemengd_naar",
+    "duur",
+    "naar_gemengd",
+    "eindtijd"
+   ],
+   "stap": 5,
+   "omrekenen": 4,
+   "max_duur": 150
+  },
+  "5": {
+   "soorten": [
+    "omrekenen",
+    "gemengd_naar",
+    "duur",
+    "naar_gemengd",
+    "eindtijd"
+   ],
+   "stap": 5,
+   "omrekenen": 5,
+   "max_duur": 240
+  },
+  "6": {
+   "soorten": [
+    "omrekenen",
+    "gemengd_naar",
+    "duur",
+    "naar_gemengd",
+    "eindtijd"
+   ],
+   "stap": 1,
+   "omrekenen": 5,
+   "max_duur": 300
+  },
+  "m1": {
+   "soorten": [
+    "omrekenen",
+    "gemengd_naar",
+    "duur",
+    "naar_gemengd",
+    "eindtijd"
+   ],
+   "stap": 1,
+   "omrekenen": 5,
+   "max_duur": 360
+  }
+ }
+}
