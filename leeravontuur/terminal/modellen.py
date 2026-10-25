@@ -6,13 +6,13 @@ De getallenlijn neemt 4 rijen in:  y   tekstjes bij markeringen ("start", "nu")
                                    y+3 de getallen onder de streepjes
 """
 
+import math
 from decimal import Decimal
 
 from ..kern.getal import fmt
-import math
-
 from ..kern.modellen import (Breukbalk, Breukbalken, Figuur, Getallenlijn, Groepjes, Hoek, Honderdveld, Kaart,
                              Procentstrook)
+from . import thema
 
 HOOGTE = 4
 
@@ -197,9 +197,74 @@ def teken_strook(s, y, strook, x0=8):
 VAK_B = 4  # een vakje van het cm²-rooster: 3 tekens binnenin + de lijn
 
 
+def figuur_pixels(fig):
+    """Het cm²-rooster als pixels (elk vakje 4 × 4: 1 pixel lijn en 3 × 3 vulling, dus vierkant).
+    Geeft een raster van pixelrollen: None, "lijn", "vulling" of "rand" (de omtrek, als fig.rand)."""
+    def gekleurd(r, k):
+        return (r, k) in fig.vakjes
+
+    hoog, breed = 4 * fig.rijen + 1, 4 * fig.kolommen + 1
+    p = [["lijn" if y % 4 == 0 or x % 4 == 0 else None for x in range(breed)] for y in range(hoog)]
+    for r in range(fig.rijen):
+        for k in range(fig.kolommen):
+            for i in range(3):
+                for j in range(3):
+                    # een half vakje: de driehoek linksonder (rij 1: 1 pixel, rij 2: 2, rij 3: 3)
+                    if gekleurd(r, k) or ((r, k) in fig.halve and j <= i):
+                        p[4 * r + 1 + i][4 * k + 1 + j] = "vulling"
+    if fig.rand:
+        for r in range(fig.rijen + 1):
+            for k in range(fig.kolommen + 1):
+                if k < fig.kolommen and gekleurd(r - 1, k) != gekleurd(r, k):  # randje boven vakje (r, k)
+                    for x in range(4 * k, 4 * k + 5):
+                        p[4 * r][x] = "rand"
+                if r < fig.rijen and gekleurd(r, k - 1) != gekleurd(r, k):  # randje links van vakje (r, k)
+                    for y in range(4 * r, 4 * r + 5):
+                        p[y][4 * k] = "rand"
+    return p
+
+
+def kan_pixels_rooster(s):
+    """Kan het rooster met gekleurde halfblokken (anders: met lijntekens)?"""
+    inst = getattr(s, "inst", None)
+    return (getattr(s, "kleuren", False) and not getattr(s, "ascii", True) and inst is not None
+            and inst.thema != "geen-kleur" and thema.pixels_mogelijk()
+            and thema.rol_pixel("lijn", "vulling", inst.thema) != 0)
+
+
 def teken_figuur(s, y, fig, x0=8):
-    """Een figuur op een rooster met lijnen; elk vakje = 1 cm². Met fig.rand wordt de omtrek aangeduid.
+    """Een figuur op een rooster; elk vakje = 1 cm², een echt vierkant. Met fig.rand wordt de omtrek aangeduid.
     Geeft (hoogte, breedte)."""
+    if not kan_pixels_rooster(s):
+        return teken_figuur_tekens(s, y, fig, x0)
+    naam = s.inst.thema
+    p = figuur_pixels(fig)
+    for t in range((len(p) + 1) // 2):
+        boven, onder = p[2 * t], p[2 * t + 1] if 2 * t + 1 < len(p) else [None] * len(p[0])
+        for x, (b, o) in enumerate(zip(boven, onder)):
+            if b is None and o is None:
+                continue
+            if b == o:
+                s.put(y + t, x0 + x, "█", thema.rol_pixel(b, None, naam))
+            elif b is None:
+                s.put(y + t, x0 + x, "▄", thema.rol_pixel(o, None, naam))
+            else:
+                s.put(y + t, x0 + x, "▀", thema.rol_pixel(b, o, naam))
+    hoogte = (len(p) + 1) // 2
+    # de legende: 2 tekens naast elkaar zijn ongeveer een vierkant
+    s.put(y + hoogte, x0, "██", thema.rol_pixel("vulling", None, naam))
+    s.put(y + hoogte, x0 + 2, " = 1 cm²", "dim")
+    breed = 10
+    if fig.halve:
+        s.put(y + hoogte, x0 + 13, "█", thema.rol_pixel("vulling", None, naam))
+        s.put(y + hoogte, x0 + 14, "▄", thema.rol_pixel("vulling", None, naam))
+        s.put(y + hoogte, x0 + 15, " = een half vakje", "dim")
+        breed = 32
+    return hoogte + 1, max(len(p[0]), breed)
+
+
+def teken_figuur_tekens(s, y, fig, x0=8):
+    """Terugval zonder kleuren of in ASCII-modus: het rooster met lijntekens."""
     def gekleurd(r, k):
         return (r, k) in fig.vakjes
 
@@ -208,10 +273,10 @@ def teken_figuur(s, y, fig, x0=8):
             s.put(y + 2 * r, x0 + VAK_B * k, "┼", "dim")
             if k < fig.kolommen:  # horizontaal randje boven vakje (r, k)
                 rand = fig.rand and gekleurd(r - 1, k) != gekleurd(r, k)
-                s.put(y + 2 * r, x0 + VAK_B * k + 1, "━━━" if rand else "───", "goed" if rand else "dim")
+                s.put(y + 2 * r, x0 + VAK_B * k + 1, "━━━" if rand else "───", "accent" if rand else "dim")
             if r < fig.rijen:  # verticaal randje links van vakje (r, k)
                 rand = fig.rand and gekleurd(r, k - 1) != gekleurd(r, k)
-                s.put(y + 2 * r + 1, x0 + VAK_B * k, "┃" if rand else "│", "goed" if rand else "dim")
+                s.put(y + 2 * r + 1, x0 + VAK_B * k, "┃" if rand else "│", "accent" if rand else "dim")
                 if (r, k) in fig.vakjes:
                     s.put(y + 2 * r + 1, x0 + VAK_B * k + 1, "███", "accent2")
                 elif (r, k) in fig.halve:

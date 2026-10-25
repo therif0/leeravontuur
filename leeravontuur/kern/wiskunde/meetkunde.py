@@ -87,7 +87,7 @@ class Rooster(_Meetkunde):
     def uitleg(self, v):
         d = v.data
         if d["soort"] == "omtrek":
-            return ["De omtrek is de rand rondom: tel elk randje van 1 cm (groen).",
+            return ["De omtrek is de rand rondom: tel elk randje van 1 cm (ze zijn aangeduid).",
                     f"Rondom zijn er {d['omtrek']} randjes: de omtrek is {d['omtrek']} cm."]
         if d["half"]:
             return [f"{d['vol']} hele vakjes en {d['half']} halve vakjes. 2 halve = 1 heel vakje.",
