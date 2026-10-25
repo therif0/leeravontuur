@@ -436,7 +436,11 @@
 <rect x="368" y="350" width="9" height="9" fill="#585858"/>
 <rect x="80" y="368" width="9" height="18" fill="#11a8cd"/>
 <rect x="89" y="368" width="9" height="18" fill="#11a8cd"/>
-<text x="98" y="381" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6"> = 1 cm²</text>
+<rect x="98" y="368" width="9" height="18" fill="#11a8cd"/>
+<text x="116" y="381" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">= 1 cm²</text>
+<rect x="80" y="386" width="9" height="9" fill="#11a8cd"/>
+<rect x="89" y="386" width="9" height="9" fill="#11a8cd"/>
+<rect x="98" y="386" width="9" height="9" fill="#11a8cd"/>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>
