@@ -1,0 +1,27 @@
+{
+ "vaardigheid": "wiskunde.procenten.omzetten",
+ "omschrijving": "procent, breuk en kommagetal omzetten",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": {
+   "soorten": [
+    "procent_naar_breuk",
+    "breuk_naar_procent",
+    "komma_naar_procent"
+   ]
+  },
+  "6": {
+   "soorten": [
+    "procent_naar_breuk",
+    "breuk_naar_procent",
+    "komma_naar_procent",
+    "procent_naar_komma"
+   ]
+  }
+ }
+}

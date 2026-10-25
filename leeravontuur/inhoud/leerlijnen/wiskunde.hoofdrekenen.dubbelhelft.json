@@ -1,0 +1,31 @@
+{
+ "vaardigheid": "wiskunde.hoofdrekenen.dubbelhelft",
+ "omschrijving": "Verdubbelen en halveren",
+ "doelen": [],
+ "parameters": {
+  "max": "int",
+  "decimalen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "max": 50,
+   "decimalen": 0
+  },
+  "4": {
+   "max": 200,
+   "decimalen": 0
+  },
+  "5": {
+   "max": 1000,
+   "decimalen": 0
+  },
+  "6": {
+   "max": 1000,
+   "decimalen": 1
+  },
+  "m1": {
+   "max": 10000,
+   "decimalen": 2
+  }
+ }
+}

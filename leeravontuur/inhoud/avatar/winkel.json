@@ -1,0 +1,67 @@
+{
+ "uitleg": "De winkel: prijzen in punten. 'gratis' = hebben alle kinderen meteen.",
+ "gratis": {
+  "vorm": [
+   "vierkant"
+  ],
+  "kleur": [
+   "blauw"
+  ],
+  "ogen": [
+   "gewoon"
+  ],
+  "oren": [
+   "rond",
+   "geen"
+  ]
+ },
+ "prijzen": {
+  "vorm": {
+   "rond": 60,
+   "ovaal": 80,
+   "trapezium": 100
+  },
+  "kleur": {
+   "groen": 30,
+   "rood": 30,
+   "oranje": 30,
+   "paars": 40,
+   "roze": 40,
+   "geel": 40,
+   "cyaan": 50,
+   "grijs": 50
+  },
+  "ogen": {
+   "rond": 40,
+   "slaperig": 50,
+   "knipoog": 80,
+   "ster": 120,
+   "hart": 120
+  },
+  "oren": {
+   "groot": 40,
+   "punt": 60
+  },
+  "haar": {
+   "kuif": 70,
+   "piekjes": 70,
+   "blond": 70
+  },
+  "hoed": {
+   "pet": 90,
+   "muts": 90,
+   "feest": 110,
+   "katten": 130,
+   "kroon": 300,
+   "koksmuts": 140
+  },
+  "accessoire": {
+   "strik": 60,
+   "bril": 80,
+   "snor": 100,
+   "zonnebril": 120,
+   "rekenbril": 150,
+   "stropdas": 110
+  }
+ }
+}

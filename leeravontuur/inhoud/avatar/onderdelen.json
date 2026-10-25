@@ -1,0 +1,529 @@
+{
+ "uitleg": "Pixel-art voor de avatar (16x16). Letters zijn kleuren uit 'palet'; '.' is doorzichtig. K = lichaamskleur, D = donkerder, L = lichter. Patronen van ogen, oren, mond en bril worden geplaatst op de ankers van de vorm.",
+ "palet": {
+  "O": "#1b1b2f",
+  "W": "#ffffff",
+  "B": "#101018",
+  "R": "#e23b3b",
+  "Y": "#ffd23f",
+  "P": "#ff8fb1",
+  "G": "#f5b700",
+  "S": "#c9d1d9",
+  "T": "#0f766e",
+  "M": "#7c2d12",
+  "C": "#38bdf8",
+  "E": "#16a34a",
+  "Z": "#4b5563",
+  "N": "#fff7d6"
+ },
+ "kleuren": {
+  "blauw": {
+   "naam": "Blauw",
+   "rgb": "#3b82f6"
+  },
+  "groen": {
+   "naam": "Groen",
+   "rgb": "#22c55e"
+  },
+  "rood": {
+   "naam": "Rood",
+   "rgb": "#ef4444"
+  },
+  "oranje": {
+   "naam": "Oranje",
+   "rgb": "#f97316"
+  },
+  "paars": {
+   "naam": "Paars",
+   "rgb": "#a855f7"
+  },
+  "roze": {
+   "naam": "Roze",
+   "rgb": "#ec4899"
+  },
+  "geel": {
+   "naam": "Geel",
+   "rgb": "#eab308"
+  },
+  "cyaan": {
+   "naam": "Cyaan",
+   "rgb": "#06b6d4"
+  },
+  "grijs": {
+   "naam": "Grijs",
+   "rgb": "#94a3b8"
+  }
+ },
+ "vormen": {
+  "vierkant": {
+   "naam": "Vierkant",
+   "ankers": {
+    "ogen": [
+     6,
+     4,
+     9
+    ],
+    "neus": [
+     9,
+     7
+    ],
+    "mond": [
+     11,
+     5
+    ],
+    "oren": [
+     6,
+     0,
+     14
+    ],
+    "top": 3
+   },
+   "pixels": [
+    "................",
+    "................",
+    "................",
+    "...OOOOOOOOOO...",
+    "..OLLLLLLLLLLO..",
+    "..OLKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKDO..",
+    "..ODDDDDDDDDDO..",
+    "...OOOOOOOOOO...",
+    "................"
+   ]
+  },
+  "rond": {
+   "naam": "Rond",
+   "ankers": {
+    "ogen": [
+     6,
+     4,
+     9
+    ],
+    "neus": [
+     9,
+     7
+    ],
+    "mond": [
+     11,
+     5
+    ],
+    "oren": [
+     6,
+     0,
+     14
+    ],
+    "top": 3
+   },
+   "pixels": [
+    "................",
+    "................",
+    "................",
+    ".....OOOOOO.....",
+    "...OOLLLLLLOO...",
+    "..OLLKKKKKKKKO..",
+    "..OLKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKDO..",
+    "..ODKKKKKKKKDO..",
+    "...OODDDDDDOO...",
+    ".....OOOOOO.....",
+    "................"
+   ]
+  },
+  "ovaal": {
+   "naam": "Ovaal",
+   "ankers": {
+    "ogen": [
+     6,
+     4,
+     9
+    ],
+    "neus": [
+     9,
+     7
+    ],
+    "mond": [
+     11,
+     5
+    ],
+    "oren": [
+     7,
+     1,
+     13
+    ],
+    "top": 2
+   },
+   "pixels": [
+    "................",
+    "................",
+    ".....OOOOOO.....",
+    "....OLLLLLLO....",
+    "...OLKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "...OKKKKKKKDO...",
+    "...ODKKKKKKDO...",
+    "....ODDDDDDO....",
+    ".....OOOOOO....."
+   ]
+  },
+  "trapezium": {
+   "naam": "Trapezium",
+   "ankers": {
+    "ogen": [
+     6,
+     4,
+     9
+    ],
+    "neus": [
+     9,
+     7
+    ],
+    "mond": [
+     11,
+     5
+    ],
+    "oren": [
+     7,
+     0,
+     14
+    ],
+    "top": 3
+   },
+   "pixels": [
+    "................",
+    "................",
+    "................",
+    "....OOOOOOOO....",
+    "....OLLLLLLO....",
+    "...OLKKKKKKKO...",
+    "...OKKKKKKKKO...",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    "..OKKKKKKKKKKO..",
+    ".OKKKKKKKKKKKKO.",
+    ".OKKKKKKKKKKKKO.",
+    ".OKKKKKKKKKKKDO.",
+    ".ODDDDDDDDDDDDO.",
+    ".OOOOOOOOOOOOOO.",
+    "................"
+   ]
+  }
+ },
+ "ogen": {
+  "gewoon": {
+   "naam": "Gewone ogen",
+   "pixels": [
+    "WWW",
+    "WBB",
+    "WBB"
+   ]
+  },
+  "rond": {
+   "naam": "Ronde ogen",
+   "pixels": [
+    ".W.",
+    "WBW",
+    ".W."
+   ]
+  },
+  "slaperig": {
+   "naam": "Slaperige ogen",
+   "pixels": [
+    "...",
+    "OOO",
+    "WBB"
+   ]
+  },
+  "ster": {
+   "naam": "Sterrenogen",
+   "pixels": [
+    ".Y.",
+    "YYY",
+    ".Y."
+   ]
+  },
+  "hart": {
+   "naam": "Hartjesogen",
+   "pixels": [
+    "R.R",
+    "RRR",
+    ".R."
+   ]
+  },
+  "knipoog": {
+   "naam": "Knipoog",
+   "pixels": [
+    "WWW",
+    "WBB",
+    "WBB"
+   ],
+   "rechts": [
+    "...",
+    "...",
+    "OOO"
+   ]
+  }
+ },
+ "oren": {
+  "rond": {
+   "naam": "Ronde oren",
+   "pixels": [
+    ".D",
+    "DK",
+    "DK",
+    ".D"
+   ]
+  },
+  "groot": {
+   "naam": "Grote oren",
+   "pixels": [
+    ".D",
+    "DK",
+    "DK",
+    "DK",
+    ".D"
+   ]
+  },
+  "punt": {
+   "naam": "Puntoren",
+   "pixels": [
+    "D.",
+    "KD",
+    "KD",
+    ".D"
+   ]
+  },
+  "geen": {
+   "naam": "Geen oren",
+   "pixels": []
+  }
+ },
+ "neus": [
+  "DD"
+ ],
+ "uitdrukkingen": {
+  "normaal": {
+   "mond": [
+    ".OOOO."
+   ]
+  },
+  "blij": {
+   "mond": [
+    "O....O",
+    ".OOOO."
+   ]
+  },
+  "trots": {
+   "mond": [
+    "OOOOOO",
+    ".ORRO."
+   ],
+   "ogen": [
+    "...",
+    ".O.",
+    "O.O"
+   ]
+  },
+  "verrast": {
+   "mond": [
+    "..OO..",
+    ".O..O.",
+    "..OO.."
+   ]
+  },
+  "denken": {
+   "mond": [
+    "...OO."
+   ]
+  },
+  "oeps": {
+   "mond": [
+    ".O.O.O",
+    "O.O.O."
+   ],
+   "ogen": [
+    "O.O",
+    ".O.",
+    "O.O"
+   ]
+  },
+  "aanmoedigend": {
+   "mond": [
+    "O....O",
+    ".OOOO."
+   ]
+  },
+  "geconcentreerd": {
+   "mond": [
+    "..OO.."
+   ]
+  }
+ },
+ "haar": {
+  "kuif": {
+   "naam": "Kuif",
+   "kleur": "M",
+   "pixels": [
+    "......MMM.......",
+    "....MMMMMMMM....",
+    "...MMMMMMMMMM..."
+   ]
+  },
+  "piekjes": {
+   "naam": "Piekjes",
+   "kleur": "B",
+   "pixels": [
+    "...B..B..B..B...",
+    "...BB.BB.BB.BB..",
+    "...BBBBBBBBBB..."
+   ]
+  },
+  "blond": {
+   "naam": "Blonde lok",
+   "kleur": "Y",
+   "pixels": [
+    ".......YY.......",
+    "....YYYYYYY.....",
+    "...YYYYYYYYYY..."
+   ]
+  }
+ },
+ "hoed": {
+  "pet": {
+   "naam": "Pet",
+   "pixels": [
+    "....RRRRRR......",
+    "...RRRRRRRR.....",
+    "...RRRRRRRRRRR.."
+   ]
+  },
+  "kroon": {
+   "naam": "Kroon",
+   "pixels": [
+    "...G..G..G..G...",
+    "...GGGGGGGGGG...",
+    "...GYGGYGGYGG..."
+   ]
+  },
+  "feest": {
+   "naam": "Feestmuts",
+   "pixels": [
+    "........Y.......",
+    ".......PP.......",
+    "......PYPP......",
+    ".....PPPYPP....."
+   ]
+  },
+  "muts": {
+   "naam": "Muts",
+   "pixels": [
+    "......WW........",
+    "....CCCCCC......",
+    "...CCCCCCCC.....",
+    "...WWWWWWWWWW..."
+   ]
+  },
+  "katten": {
+   "naam": "Kattenoren",
+   "pixels": [
+    "...O........O...",
+    "..OKO......OKO..",
+    "..OKKO....OKKO.."
+   ]
+  },
+  "koksmuts": {
+   "naam": "Koksmuts",
+   "pixels": [
+    "....WW.WW.WW....",
+    "...WWWWWWWWWW...",
+    "....WWWWWWWW....",
+    "....SSSSSSSS...."
+   ]
+  }
+ },
+ "accessoire": {
+  "bril": {
+   "naam": "Bril",
+   "anker": "ogen",
+   "dy": -1,
+   "dx": -1,
+   "pixels": [
+    ".OOO..OOO.",
+    "O...OO...O",
+    "O........O",
+    ".OOO..OOO."
+   ]
+  },
+  "zonnebril": {
+   "naam": "Zonnebril",
+   "anker": "ogen",
+   "dy": -1,
+   "dx": -1,
+   "pixels": [
+    ".OOO..OOO.",
+    "OBBBOOBBBO",
+    "OBBBOOBBBO",
+    ".OOO..OOO."
+   ]
+  },
+  "snor": {
+   "naam": "Snor",
+   "anker": "neus",
+   "dy": 1,
+   "dx": -2,
+   "pixels": [
+    "MMMMMM",
+    "M....M"
+   ]
+  },
+  "strik": {
+   "naam": "Strik",
+   "anker": "top",
+   "dy": -1,
+   "x": 10,
+   "pixels": [
+    "PP.PP",
+    "PPRPP",
+    "PP.PP"
+   ]
+  },
+  "rekenbril": {
+   "naam": "Rekenbril",
+   "anker": "ogen",
+   "dy": -1,
+   "dx": -1,
+   "pixels": [
+    ".CCC..CCC.",
+    "C...YY...C",
+    "C........C",
+    ".CCC..CCC."
+   ]
+  },
+  "stropdas": {
+   "naam": "Stropdas",
+   "anker": "mond",
+   "dy": 2,
+   "dx": 1,
+   "pixels": [
+    ".YY.",
+    ".CC.",
+    "CCCC"
+   ]
+  }
+ }
+}

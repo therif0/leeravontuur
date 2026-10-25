@@ -1,0 +1,94 @@
+{
+ "vaardigheid": "wiskunde.hoofdrekenen.tafels",
+ "omschrijving": "Maal- en deeltafels",
+ "doelen": [],
+ "parameters": {
+  "tafels": "lijst",
+  "max_factor": "int",
+  "delen": "bool",
+  "veelvoud": "bool",
+  "negatief": "bool"
+ },
+ "leerlijn": {
+  "3": {
+   "tafels": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    10
+   ],
+   "max_factor": 10,
+   "delen": false,
+   "veelvoud": false,
+   "negatief": false
+  },
+  "4": {
+   "tafels": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "max_factor": 10,
+   "delen": true,
+   "veelvoud": false,
+   "negatief": false
+  },
+  "5": {
+   "tafels": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "max_factor": 10,
+   "delen": true,
+   "veelvoud": true,
+   "negatief": false
+  },
+  "6": {
+   "tafels": [
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "max_factor": 12,
+   "delen": true,
+   "veelvoud": true,
+   "negatief": false
+  },
+  "m1": {
+   "tafels": [
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    11,
+    12
+   ],
+   "max_factor": 12,
+   "delen": true,
+   "veelvoud": true,
+   "negatief": true
+  }
+ }
+}

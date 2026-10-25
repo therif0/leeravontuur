@@ -1,0 +1,27 @@
+{
+ "vaardigheid": "wiskunde.procenten.korting",
+ "omschrijving": "korting, btw en procentuele verandering",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": {
+   "soorten": [
+    "korting",
+    "btw"
+   ]
+  },
+  "m1": {
+   "soorten": [
+    "korting",
+    "btw",
+    "stijging",
+    "daling"
+   ]
+  }
+ }
+}

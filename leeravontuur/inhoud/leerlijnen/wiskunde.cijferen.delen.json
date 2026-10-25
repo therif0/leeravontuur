@@ -1,0 +1,38 @@
+{
+ "vaardigheid": "wiskunde.cijferen.delen",
+ "omschrijving": "staartdeling stap voor stap",
+ "doelen": [],
+ "parameters": {
+  "cijfers": "int",
+  "deler_cijfers": "int",
+  "decimalen": "int",
+  "rest": "bool"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "cijfers": 3,
+   "deler_cijfers": 1,
+   "decimalen": 0,
+   "rest": true
+  },
+  "5": {
+   "cijfers": 4,
+   "deler_cijfers": 2,
+   "decimalen": 1,
+   "rest": true
+  },
+  "6": {
+   "cijfers": 4,
+   "deler_cijfers": 2,
+   "decimalen": 2,
+   "rest": true
+  },
+  "m1": {
+   "cijfers": 4,
+   "deler_cijfers": 2,
+   "decimalen": 2,
+   "rest": false
+  }
+ }
+}

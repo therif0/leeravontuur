@@ -1,0 +1,50 @@
+{
+ "vaardigheid": "wiskunde.hoofdrekenen.maaldeel10",
+ "omschrijving": "× en : met 10, 100, 1000",
+ "doelen": [],
+ "parameters": {
+  "machten": "lijst",
+  "decimalen": "int",
+  "max": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "machten": [
+    10,
+    100
+   ],
+   "decimalen": 0,
+   "max": 1000
+  },
+  "5": {
+   "machten": [
+    10,
+    100,
+    1000
+   ],
+   "decimalen": 2,
+   "max": 10000
+  },
+  "6": {
+   "machten": [
+    10,
+    100,
+    1000
+   ],
+   "decimalen": 3,
+   "max": 10000
+  },
+  "m1": {
+   "machten": [
+    10,
+    100,
+    1000,
+    0.1,
+    0.01
+   ],
+   "decimalen": 3,
+   "max": 10000
+  }
+ }
+}

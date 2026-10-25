@@ -1,0 +1,46 @@
+{
+ "vaardigheid": "wiskunde.breuken.gelijkwaardig",
+ "omschrijving": "gelijkwaardige breuken en vereenvoudigen",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "noemer_max": "int",
+  "factor_max": "int"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "soorten": [
+    "aanvullen"
+   ],
+   "noemer_max": 10,
+   "factor_max": 3
+  },
+  "5": {
+   "soorten": [
+    "aanvullen",
+    "vereenvoudigen",
+    "balk"
+   ],
+   "noemer_max": 12,
+   "factor_max": 4
+  },
+  "6": {
+   "soorten": [
+    "aanvullen",
+    "vereenvoudigen",
+    "balk"
+   ],
+   "noemer_max": 24,
+   "factor_max": 6
+  },
+  "m1": {
+   "soorten": [
+    "aanvullen",
+    "vereenvoudigen"
+   ],
+   "noemer_max": 60,
+   "factor_max": 12
+  }
+ }
+}

@@ -1,0 +1,37 @@
+{
+ "vaardigheid": "wiskunde.hoofdrekenen.plusmin",
+ "omschrijving": "Optellen en aftrekken uit het hoofd",
+ "doelen": [],
+ "parameters": {
+  "max": "int",
+  "decimalen": "int",
+  "negatief": "bool"
+ },
+ "leerlijn": {
+  "3": {
+   "max": 100,
+   "decimalen": 0,
+   "negatief": false
+  },
+  "4": {
+   "max": 1000,
+   "decimalen": 0,
+   "negatief": false
+  },
+  "5": {
+   "max": 10000,
+   "decimalen": 0,
+   "negatief": false
+  },
+  "6": {
+   "max": 10000,
+   "decimalen": 2,
+   "negatief": false
+  },
+  "m1": {
+   "max": 10000,
+   "decimalen": 2,
+   "negatief": true
+  }
+ }
+}
