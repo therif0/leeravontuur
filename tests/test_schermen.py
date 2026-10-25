@@ -1,5 +1,6 @@
 """Schermtests zonder echte terminal: toetsen, muisklikken en het scrollwiel via NepScherm."""
 
+import curses
 import os
 import tempfile
 import unittest
@@ -133,6 +134,15 @@ class TestReeks(Basis):
         # na een herstart staat de telling van vandaag er nog
         scherm2, _ = self.speel([OK, OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm2, "Vandaag al 10 vragen geoefend"))
+
+    def test_zelf_kiezen_met_het_toetsenbord(self):
+        # Eenheden → Vrij oefenen → Zelf kiezen: met → naar de 5de kolom (volume), m³ en dm³ aanvinken
+        toetsen = [OK, OK, "2", "1", "1", "1", "7", *[curses.KEY_RIGHT] * 4, " ", curses.KEY_DOWN, " ", OK, "3",
+                   ESC, ESC, ESC, ESC, ESC, ESC]
+        scherm, _ = self.speel(toetsen)
+        self.assertTrue(self.ergens(scherm, "[x] m³"))
+        self.assertTrue(self.ergens(scherm, "[x] dm³"))
+        self.assertTrue(self.ergens(scherm, "dm³  =") or self.ergens(scherm, "m³  ="))
 
     def test_vrij_oefenen_tip(self):
         o = self.opslag(("Test", "5"))
