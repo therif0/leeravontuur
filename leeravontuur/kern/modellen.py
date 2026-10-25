@@ -42,3 +42,124 @@ class Getallenlijn:
 
 def lijn_rond(van, tot, stap, **kw):
     return Getallenlijn(Decimal(van), Decimal(tot), Decimal(stap), **kw)
+
+
+@dataclass
+class Rooster:
+    """Cijferen onder elkaar (+, −, ×). Elk cijfer in een vakje; een komma staat tussen twee vakjes.
+
+    Kolommen tellen van links (0) naar rechts (breedte − 1). Bij + en − staan de getallen uitgelijnd op de
+    komma (`rechts` = aantal kolommen na de komma, de komma van de uitkomst staat vast). Bij × staan ze
+    rechts uitgelijnd en zet het kind de komma van de uitkomst zelf (`komma_zelf`).
+    """
+    teken: str                 # "+", "−" of "×"
+    gegeven: list              # de getallen als tekst, bv. ["347", "12,5"]
+    breedte: int
+    rechts: int = 0
+    invul: list = field(default_factory=lambda: ["uitkomst"])  # rijen om in te vullen; de laatste = de uitkomst
+    verwacht: list = field(default_factory=list)                # wat er in elke invulrij hoort (tekst)
+    komma_zelf: bool = False
+
+    def macht(self, kolom):
+        """De plaats van een kolom als macht van 10 (0 = eenheden, −1 = tienden …)."""
+        return self.breedte - 1 - self.rechts - kolom
+
+    def plaats(self, tekst):
+        """({kolom: cijfer}, kolom waarna de komma staat of None) voor een getal in dit rooster."""
+        geheel, _, na = tekst.partition(",")
+        if self.komma_zelf:  # rechts uitgelijnd
+            cijfers = geheel + na
+            eerste = self.breedte - len(cijfers)
+            komma = self.breedte - 1 - len(na) if na else None
+        else:
+            eerste = self.breedte - self.rechts - len(geheel)
+            cijfers = geheel + na
+            komma = self.breedte - self.rechts - 1 if na else None
+        return {eerste + i: c for i, c in enumerate(cijfers)}, komma
+
+    def vaste_komma(self):
+        return None if self.komma_zelf or not self.rechts else self.breedte - self.rechts - 1
+
+    def lees(self, cellen, komma=None):
+        """Leest een ingevulde rij {kolom: cijfer}. Geeft (tekst, None) of (None, melding)."""
+        if not cellen:
+            return None, "Vul eerst de uitkomst in (de onderste rij)."
+        kolommen = sorted(cellen)
+        if kolommen[-1] - kolommen[0] + 1 != len(kolommen):
+            return None, "Er staat een leeg vakje tussen je cijfers. Vul het in (eventueel met een 0)."
+        if self.komma_zelf:
+            komma = komma
+        else:
+            komma = self.vaste_komma()
+            eenheden = self.breedte - self.rechts - 1
+            if kolommen[-1] < eenheden or kolommen[0] > eenheden:
+                return None, "Vul ook de eenheden in (een 0 als het moet)."
+        geheel = "".join(cellen[k] for k in kolommen if komma is None or k <= komma)
+        na = "".join(cellen[k] for k in kolommen if komma is not None and k > komma)
+        if not geheel:
+            geheel = "0"
+        return geheel + ("," + na if na else ""), None
+
+
+@dataclass
+class Stap:
+    """Eén stap van een staartdeling: deel, maal, min of neer."""
+    soort: str
+    vraag: str
+    antwoord: int
+    tip: str
+    plaats: int                # index van het laatste cijfer van het deeltal dat meedoet
+    komma_ervoor: bool = False  # deel: zet eerst een komma in het quotiënt
+
+
+@dataclass
+class Staartdeling:
+    deeltal: str               # zoals getoond (aangevuld met nullen als er decimalen bij moeten), bv. "49,40"
+    deler: int
+    stappen: list
+    rest: int = 0
+
+    def cijfers(self):
+        return self.deeltal.replace(",", "")
+
+    def komma_index(self):
+        """Aantal cijfers voor de komma."""
+        return len(self.deeltal.partition(",")[0])
+
+    MARGE = 2  # plaats voor het minteken links
+
+    def kolom(self, i):
+        """Tekenkolom van cijfer i van het deeltal."""
+        return self.MARGE + 2 * i
+
+    def beeld(self, gedaan):
+        """Na `gedaan` stappen: (regels links als tekst, quotiënt als tekst)."""
+        k = self.komma_index()
+        regels = [{self.kolom(i): c for i, c in enumerate(self.cijfers())}]
+        if k < len(self.cijfers()):
+            regels[0][self.kolom(k) - 1] = ","
+        quotient = ""
+
+        def rechts_op(getal, p, voor=""):
+            tekst = str(getal)
+            regel = {self.kolom(p - j): c for j, c in enumerate(reversed(tekst))}
+            if voor:
+                regel[self.kolom(p - len(tekst) + 1) - 2] = voor
+            return regel
+
+        for st in self.stappen[:gedaan]:
+            if st.soort == "deel":
+                quotient += ("," if st.komma_ervoor else "") + str(st.antwoord)
+            elif st.soort == "maal":
+                regels.append(rechts_op(st.antwoord, st.plaats, "−"))
+            elif st.soort == "min":
+                links = min(regels[-1]) + (2 if regels[-1].get(min(regels[-1])) == "−" else 0)
+                regels.append({x: "─" for x in range(links, self.kolom(st.plaats) + 1)})
+                regels.append(rechts_op(st.antwoord, st.plaats))
+            elif st.soort == "neer":
+                if len(regels) > 1:
+                    regels[-1] = rechts_op(st.antwoord, st.plaats)
+                else:
+                    regels.append(rechts_op(st.antwoord, st.plaats))
+        tekst = ["".join(r.get(x, " ") for x in range(max(r) + 1)) for r in regels]
+        return tekst, quotient

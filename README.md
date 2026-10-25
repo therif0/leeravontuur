@@ -6,7 +6,7 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.9):**
+**Wat er nu in zit (versie 0.10):**
 - **Eenheden omzetten:** lengte (km … mm) en massa (t … mg)
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
@@ -24,7 +24,14 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   ook priemgetallen, ggd en kgv) en de **getallenlijn**:
   - aflezen bij een pijl, sprongen (plus = naar rechts, min = naar links), een thermometer met negatieve getallen
   - **aanduiden**: zet de pijl met `←` `→` of een muisklik op het juiste streepje; ligt het getal tussen twee
-    streepjes, dan **zoom je in** met `+` (en terug met `−`)
+    streepjes, dan **zoom je in** met `+` of het scrollwiel (en terug met `−`)
+- **Cijferen** onder elkaar in een rooster: optellen, aftrekken en vermenigvuldigen (ook met 2 cijfers en
+  kommagetallen)
+  - je typt van rechts naar links; bovenaan is een **onthouden-rij**; `Tab` gaat naar de volgende rij
+  - met `?` krijg je **hulp bij het vakje** waar je staat (bv. *"7 + 5 = 12: schrijf 2 en onthoud 1"*)
+  - herkent denkfouten: onthouden vergeten, de kleinste van de grootste afgetrokken, de tweede rij niet
+    opgeschoven, de komma op de verkeerde plaats
+  - **staartdeling stap voor stap**: deel, vermenigvuldig, trek af, haal neer; de staartdeling groeit mee
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

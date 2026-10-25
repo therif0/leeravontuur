@@ -43,6 +43,17 @@ class TestThemas(unittest.TestCase):
             self.assertEqual(len(vervanging), 1, teken)
             self.assertLess(ord(vervanging), 128)
 
+    def test_elk_speciaal_teken_heeft_een_ascii_vervanging(self):
+        """Alle niet-ASCII-tekens in de code en de inhoud worden in ASCII-modus 1 gewoon teken (geen '?')."""
+        wortel = Path(__file__).resolve().parent.parent / "leeravontuur"
+        gevonden = set()
+        for pad in [*wortel.rglob("*.py"), *wortel.rglob("*.json")]:
+            gevonden |= {c for c in pad.read_text(encoding="utf-8") if ord(c) >= 128}
+        for c in sorted(gevonden):
+            vervanging = tekens.naar_ascii(c)
+            self.assertEqual(len(vervanging), 1, c)
+            self.assertNotEqual(vervanging, "?", f"geen ASCII-vervanging voor {c!r} (voeg toe in terminal/tekens.py)")
+
 
 if __name__ == "__main__":
     unittest.main()

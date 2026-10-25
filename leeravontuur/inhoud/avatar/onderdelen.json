@@ -492,6 +492,18 @@
     "PPRPP",
     "PP.PP"
    ]
+  },
+  "rekenbril": {
+   "naam": "Rekenbril",
+   "anker": "ogen",
+   "dy": -1,
+   "dx": -1,
+   "pixels": [
+    ".CCC..CCC.",
+    "C...YY...C",
+    "C........C",
+    ".CCC..CCC."
+   ]
   }
  }
 }

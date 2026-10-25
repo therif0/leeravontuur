@@ -5,6 +5,7 @@ Elk speciaal teken wordt vervangen door precies één gewoon teken, zodat alles 
 
 import locale
 import sys
+import unicodedata
 
 _ASCII = {
     "─": "-", "│": "|", "┌": "+", "┐": "+", "└": "+", "┘": "+", "├": "+", "┤": "+",
@@ -13,12 +14,24 @@ _ASCII = {
     "▼": "v", "▲": "^", "▶": ">", "◀": "<", "→": ">", "←": "<", "↑": "^", "↓": "v", "×": "x",
     "█": "#", "━": "=", "╋": "#", "░": ".", "▀": '"', "▄": "_", "“": '"', "”": '"', "‘": "'", "’": "'",
     "…": ".", "≈": "~", "²": "2", "³": "3", "★": "*", "☆": "*", "−": "-", "÷": ":",
+    "⋮": ":", "°": "o", "€": "E", "«": '"', "»": '"', "–": "-", "—": "-",
 }
 TABEL = str.maketrans(_ASCII)
 
 
+def _gewoon(ch):
+    """Een letter met een accent wordt de letter zelf (é → e); iets anders onbekends wordt '?'."""
+    if ord(ch) < 128:
+        return ch
+    basis = unicodedata.normalize("NFKD", ch).encode("ascii", "ignore").decode()
+    return basis[:1] if len(basis) >= 1 and unicodedata.category(ch).startswith("L") else "?"
+
+
 def naar_ascii(s):
-    return s.translate(TABEL)
+    s = s.translate(TABEL)
+    if s.isascii():
+        return s
+    return "".join(_gewoon(c) for c in s)
 
 
 def ascii_nodig():

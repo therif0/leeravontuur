@@ -1,0 +1,37 @@
+{
+ "vaardigheid": "wiskunde.cijferen.optellen",
+ "omschrijving": "cijferend optellen onder elkaar",
+ "doelen": [],
+ "parameters": {
+  "cijfers": "int",
+  "decimalen": "int",
+  "termen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "cijfers": 3,
+   "decimalen": 0,
+   "termen": 2
+  },
+  "4": {
+   "cijfers": 5,
+   "decimalen": 2,
+   "termen": 2
+  },
+  "5": {
+   "cijfers": 6,
+   "decimalen": 3,
+   "termen": 3
+  },
+  "6": {
+   "cijfers": 7,
+   "decimalen": 3,
+   "termen": 3
+  },
+  "m1": {
+   "cijfers": 7,
+   "decimalen": 3,
+   "termen": 3
+  }
+ }
+}

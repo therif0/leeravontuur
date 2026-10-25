@@ -2,7 +2,7 @@
 
 from . import vaardigheden
 from .onderwerp import ONDERWERPEN  # noqa: F401
-from .wiskunde import eenheden, getallen, hoofdrekenen  # noqa: F401  (registreren zich bij het importeren)
+from .wiskunde import cijferen, eenheden, getallen, hoofdrekenen  # noqa: F401  (registreren zich bij het importeren)
 
 
 def naam(vaardigheid_id):

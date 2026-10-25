@@ -25,11 +25,15 @@ class Vraag:
     eenheid: str = ""      # achter het antwoordvak (bv. "cm")
     data: dict = field(default_factory=dict)   # om uitleg en herhaling te maken
     leerjaar: str = "5"
-    invoer: str = "getal"  # "getal", "janee" (typ ja of nee) of "lijn" (aanduiden op de getallenlijn)
+    invoer: str = "getal"  # "getal", "janee" (typ ja of nee), "lijn" (aanduiden op de getallenlijn),
+    #                        "rooster" (cijferen onder elkaar) of "staart" (staartdeling stap voor stap)
     model: object = None   # een visueel model (bv. kern.modellen.Getallenlijn)
+    verwacht_tekst: str = ""  # zo tonen we het juiste antwoord, als het anders is dan het getal (bv. "64 rest 4")
 
     @property
     def verwacht(self):
+        if self.verwacht_tekst:
+            return self.verwacht_tekst
         tekst = self.antwoord if isinstance(self.antwoord, str) else fmt(self.antwoord)
         return tekst + (f" {self.eenheid}" if self.eenheid else "")
 
@@ -61,6 +65,14 @@ class Onderwerp:
 
     def diagnose(self, v, getal):
         return None
+
+    def diagnose_rijen(self, v, rijen):
+        """Bij een rooster: diagnose uit alle ingevulde rijen (tekst of None per rij). None = gebruik diagnose()."""
+        return None
+
+    def kolom_hulp(self, v, rij, kolom):
+        """Bij een rooster: hulp voor één vakje (rij = index in model.invul, −1 = onthouden-rij)."""
+        return self.tip(v)
 
     def onderwerp(self, v):
         """Groepje voor herhaling en gewichten (bv. 'tafel 7')."""

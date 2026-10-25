@@ -1,0 +1,31 @@
+{
+ "vaardigheid": "wiskunde.cijferen.aftrekken",
+ "omschrijving": "cijferend aftrekken onder elkaar",
+ "doelen": [],
+ "parameters": {
+  "cijfers": "int",
+  "decimalen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "cijfers": 3,
+   "decimalen": 0
+  },
+  "4": {
+   "cijfers": 5,
+   "decimalen": 2
+  },
+  "5": {
+   "cijfers": 6,
+   "decimalen": 3
+  },
+  "6": {
+   "cijfers": 7,
+   "decimalen": 3
+  },
+  "m1": {
+   "cijfers": 7,
+   "decimalen": 3
+  }
+ }
+}
