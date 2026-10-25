@@ -29,9 +29,17 @@ HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -
          "janee": "Typ ja of nee en druk Enter.",
          "lijn": "Pijl ▼ op het juiste streepje en Enter. Ligt het ertussen? Zoom in met +",
          "breuk": "Typ een breuk met /: 3/4 · een gemengd getal met een spatie: 1 3/4",
-         "vergelijk": "Typ < (kleiner dan), > (groter dan) of = (gelijk aan) en druk Enter."}
+         "vergelijk": "Typ < (kleiner dan), > (groter dan) of = (gelijk aan) en druk Enter.",
+         "duur": "Typ uren en minuten, bv. 2 u 15 min (of 2u15).",
+         "klok": "Typ een tijdstip, bv. 11.15 u (of 11:15).",
+         "woord": "Typ scherp, recht, stomp, gestrekt of vol en druk Enter.",
+         "plek": "Eerst de letter (of x), dan het getal (of y): bv. C4 of (3, −2)."}
 ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 3/4).",
-              "vergelijk": "Typ <, > of =."}
+              "vergelijk": "Typ <, > of =.",
+              "duur": "Typ uren en minuten, bv. 2 u 15 min. Minuten: hoogstens 59.",
+              "klok": "Typ een tijdstip, bv. 11.15 u. Minuten: hoogstens 59.",
+              "woord": "Typ scherp, recht, stomp, gestrekt of vol.",
+              "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel)."}
 INVOER = {**R.INVOER, **B.INVOER}  # invoersoorten met een eigen invoer-object
 
 
@@ -201,7 +209,7 @@ class Oefenaar:
                     h, b = M.teken_model(s, 9, model)  # rij 9: onder het maatje
                     if h > 7:  # hoog model: de feedback komt ernaast
                         fb, fx = 10, 8 + b + 3
-                        breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 3)
+                        breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)

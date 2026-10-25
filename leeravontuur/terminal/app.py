@@ -14,7 +14,9 @@ from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
 from ..kern.wiskunde import breuken as BR
 from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
+from ..kern.wiskunde import grootheden as TG
 from ..kern.wiskunde import hoofdrekenen as H
+from ..kern.wiskunde import meetkunde as MK
 from ..kern.wiskunde import procenten as PR
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
@@ -333,7 +335,7 @@ class App:
         kr = [HOOFD, "Leren"]
         while True:
             try:
-                k = self.s.menu(kr, "Welk vak?", [("Wiskunde", "eenheden (meer onderwerpen volgen)")])
+                k = self.s.menu(kr, "Welk vak?", [("Wiskunde", "rekenen, eenheden, breuken, meetkunde …")])
                 if k is None:
                     return
                 self.wiskunde(kr + ["Wiskunde"])
@@ -343,12 +345,14 @@ class App:
 
     def domeinen(self):
         """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp)."""
-        return [("Eenheden", "lengte en massa omzetten", None, None),
+        return [("Eenheden", "lengte, massa, inhoud, oppervlakte, volume", None, None),
                 ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
                 ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
                 ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
                 ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
-                ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD)]
+                ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
+                ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
+                ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER)]
 
     def wiskunde(self, kr):
         domeinen = self.domeinen()

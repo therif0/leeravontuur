@@ -233,7 +233,7 @@ class Scherm:
         if k in BACKSPACE:
             return buf[:-1]
         ch = teken_van(k)
-        if ch is not None and len(buf) < max_lengte and (ch.isalnum() or ch in ",. -−/<>=%€"):
+        if ch is not None and len(buf) < max_lengte and (ch.isalnum() or ch in ",. -−/<>=%€:"):
             return buf + ch
         return buf
 

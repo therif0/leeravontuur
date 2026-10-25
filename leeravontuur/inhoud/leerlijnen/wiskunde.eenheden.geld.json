@@ -1,0 +1,55 @@
+{
+ "vaardigheid": "wiskunde.eenheden.geld",
+ "omschrijving": "euro en cent, betalen en wisselgeld",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "max_cent": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "euro_naar_cent",
+    "cent_naar_euro",
+    "wisselgeld"
+   ],
+   "max_cent": 999
+  },
+  "4": {
+   "soorten": [
+    "euro_naar_cent",
+    "cent_naar_euro",
+    "wisselgeld",
+    "samen"
+   ],
+   "max_cent": 2000
+  },
+  "5": {
+   "soorten": [
+    "euro_naar_cent",
+    "cent_naar_euro",
+    "wisselgeld",
+    "samen"
+   ],
+   "max_cent": 9999
+  },
+  "6": {
+   "soorten": [
+    "euro_naar_cent",
+    "cent_naar_euro",
+    "wisselgeld",
+    "samen"
+   ],
+   "max_cent": 9999
+  },
+  "m1": {
+   "soorten": [
+    "euro_naar_cent",
+    "cent_naar_euro",
+    "wisselgeld",
+    "samen"
+   ],
+   "max_cent": 9999
+  }
+ }
+}

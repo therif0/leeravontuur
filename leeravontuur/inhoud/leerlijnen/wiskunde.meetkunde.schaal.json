@@ -1,0 +1,44 @@
+{
+ "vaardigheid": "wiskunde.meetkunde.schaal",
+ "omschrijving": "kaart en werkelijkheid: 1 : 1000",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "schalen": "lijst"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": null,
+  "5": null,
+  "6": {
+   "soorten": [
+    "naar_echt",
+    "naar_kaart"
+   ],
+   "schalen": [
+    100,
+    200,
+    500,
+    1000,
+    2000,
+    5000
+   ]
+  },
+  "m1": {
+   "soorten": [
+    "naar_echt",
+    "naar_kaart",
+    "schaal_zoeken"
+   ],
+   "schalen": [
+    500,
+    1000,
+    5000,
+    10000,
+    25000,
+    50000,
+    100000
+   ]
+  }
+ }
+}

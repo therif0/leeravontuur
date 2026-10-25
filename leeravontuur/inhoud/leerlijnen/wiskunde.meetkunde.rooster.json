@@ -1,0 +1,76 @@
+{
+ "vaardigheid": "wiskunde.meetkunde.rooster",
+ "omschrijving": "oppervlakte en omtrek op het cm²-rooster",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "vormen": "lijst",
+  "rijen": "int",
+  "kolommen": "int"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": [
+    "oppervlakte",
+    "omtrek"
+   ],
+   "vormen": [
+    "rechthoek"
+   ],
+   "rijen": 4,
+   "kolommen": 6
+  },
+  "4": {
+   "soorten": [
+    "oppervlakte",
+    "omtrek"
+   ],
+   "vormen": [
+    "rechthoek",
+    "L"
+   ],
+   "rijen": 5,
+   "kolommen": 8
+  },
+  "5": {
+   "soorten": [
+    "oppervlakte",
+    "omtrek"
+   ],
+   "vormen": [
+    "rechthoek",
+    "L",
+    "trap",
+    "driehoek"
+   ],
+   "rijen": 5,
+   "kolommen": 8
+  },
+  "6": {
+   "soorten": [
+    "oppervlakte",
+    "omtrek"
+   ],
+   "vormen": [
+    "L",
+    "trap",
+    "driehoek"
+   ],
+   "rijen": 5,
+   "kolommen": 8
+  },
+  "m1": {
+   "soorten": [
+    "oppervlakte",
+    "omtrek"
+   ],
+   "vormen": [
+    "L",
+    "trap",
+    "driehoek"
+   ],
+   "rijen": 5,
+   "kolommen": 8
+  }
+ }
+}

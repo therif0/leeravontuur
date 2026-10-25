@@ -124,6 +124,10 @@ TIPS = {
     "niet_vereenvoudigd": "Kan nog eenvoudiger!",
     "teller_noemer_omgewisseld": "Noemer = alle stukken!",
     "grotere_noemer_groter": "Grote noemer = klein stuk!",
+    "tijd_met_100": "60, geen 100!",
+    "tijd_uur_vergeten": "Een uur erbij!",
+    "geld_komma": "100 cent!",
+    "snelheid_minuten": "Eerst naar uren!",
 }
 
 

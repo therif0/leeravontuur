@@ -1,11 +1,14 @@
 """Interactieve modellen als invoer-objecten voor terminal/oefenaar.py (zelfde vorm als terminal/rooster.py):
-de breukbalk (arceren, noemer kiezen, vereenvoudigen) en het honderdveld (vakjes kleuren).
+de breukbalk (arceren, noemer kiezen, vereenvoudigen), het honderdveld (vakjes kleuren) en de schatkaart
+(een kruisje zetten).
 """
 
 import curses
 from decimal import Decimal
 
 from ..kern.getal import GetypteBreuk
+from dataclasses import replace
+
 from ..kern.modellen import Breukbalk
 from . import modellen as M
 from .scherm import ENTER, ESC
@@ -160,4 +163,65 @@ class VeldInvoer:
         return []
 
 
-INVOER = {"balk": BalkInvoer, "veld": VeldInvoer}
+class CoordInvoer:
+    """De schatkaart of het assenstelsel: zet een kruisje met de pijltjes en Enter, of met een klik."""
+    X0 = 8
+
+    def __init__(self, v, o):
+        self.v, self.o = v, o
+        self.kaart = v.model
+        xs, ys = self.kaart.xs(), self.kaart.ys()
+        self.cursor = (xs[len(xs) // 2], ys[len(ys) // 2])
+        self.gekozen = None
+        self.melding, self.melding_rol = "", "fout"
+        self.fouten, self.diagnose, self.cursor_pos = 0, None, None
+        self.hint = "Pijltjes = kruisje verplaatsen · Enter (of klik) = hier!"
+        self.naast = (10, self.X0 + 3 + 3 * len(xs) + 4)
+
+    def hoogte(self, nagekeken=False):
+        return len(self.kaart.ys()) + 1
+
+    def knoppen(self):
+        return [("←→↑↓", "verplaats", None), ("Enter", "hier!", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+
+    def teken(self, s, y, uitslag=None, hulp=False):
+        bezig = uitslag is None
+        punten = dict(self.kaart.punten)
+        if not bezig and self.gekozen:
+            if not uitslag:
+                punten[(self.v.data["x"], self.v.data["y"])] = ("●", "goed")
+            punten[self.gekozen] = ("✔", "goed") if uitslag else ("✘", "fout")
+        M.teken_kaart(s, y + 1, replace(self.kaart, punten=punten), self.X0, self.cursor if bezig else None,
+                      (lambda x, yy: ("punt", x, yy)) if bezig else None)
+        if bezig:
+            s.put(y + 1, self.naast[1], "Jij: " + self.kaart.naam(*self.cursor), "bold")
+
+    def toets(self, k):
+        if isinstance(k, tuple):
+            if k[0] == "punt":
+                self.cursor = (k[1], k[2])
+                return self.kies()
+            return None
+        if k in ENTER:
+            return self.kies()
+        xs, ys = self.kaart.xs(), self.kaart.ys()
+        stap = {curses.KEY_LEFT: (-1, 0), curses.KEY_RIGHT: (1, 0), curses.KEY_UP: (0, 1), curses.KEY_DOWN: (0, -1)}
+        if k in stap:
+            dx, dy = stap[k]
+            x, y = self.cursor
+            self.cursor = (min(xs[-1], max(xs[0], x + dx)), min(ys[-1], max(ys[0], y + dy)))
+        return None
+
+    def kies(self):
+        self.gekozen = self.cursor
+        naam = self.kaart.naam(*self.cursor)
+        return naam, naam
+
+    def hulp(self, o):
+        return o.tip(self.v)
+
+    def rijen(self):
+        return []
+
+
+INVOER = {"balk": BalkInvoer, "veld": VeldInvoer, "coord": CoordInvoer}

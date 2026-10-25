@@ -524,6 +524,32 @@
     ".CC.",
     "CCCC"
    ]
+  },
+  "zakhorloge": {
+   "naam": "Zakhorloge",
+   "anker": "mond",
+   "dy": -1,
+   "dx": 5,
+   "pixels": [
+    "Y.....",
+    ".Y.GG.",
+    "..GWWG",
+    "..GWBG",
+    "...GG."
+   ]
+  },
+  "potlood": {
+   "naam": "Potlood achter het oor",
+   "anker": "oren",
+   "dy": -5,
+   "dx": 11,
+   "pixels": [
+    "....P",
+    "...YY",
+    "..YY.",
+    ".YY..",
+    ".M..."
+   ]
   }
  }
 }

@@ -16,6 +16,7 @@ REEKS = 10
 VORMEN = {"Vrij oefenen": "vrij", "Reeks van 10": "reeks", "Tabel-oefening": "tabel"}
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
 TABEL_X, TABEL_Y = 12, 7
+VANAF = {"oppervlakte": "  (5de lj)", "volume": "  (6de lj)"}
 
 
 class Eenheden:
@@ -31,22 +32,21 @@ class Eenheden:
     def kies_oefening(self, vorm):
         kr = self.kruimel + [vorm]
         while True:
-            k = self.s.menu(kr, "Welke eenheden wil je oefenen?", [
-                ("Massa", "t  kg  hg  dag  g  dg  cg  mg"),
-                ("Lengte", "km  hm  dam  m  dm  cm  mm"),
-                ("Allebei", "massa en lengte door elkaar"),
+            opties = [(E.NAMEN[c], "  ".join(E.EENHEDEN[c]) + VANAF.get(c, "")) for c in E.SOORTEN]
+            k = self.s.menu(kr, "Welke eenheden wil je oefenen?", opties + [
+                ("Door elkaar", "alles wat bij je leerjaar hoort"),
                 ("Zelf kiezen", "duid zelf de eenheden aan")])
             if k is None:
                 return None
-            if k == 3:
+            if k == len(E.SOORTEN) + 1:
                 gekozen = self.kies_zelf(kr)
                 if gekozen is None:
                     continue
                 soort = "Zelf gekozen"
+            elif k == len(E.SOORTEN):
+                gekozen, soort = "alles", "Door elkaar"
             else:
-                gekozen = [E.EENHEDEN[E.MASSA], E.EENHEDEN[E.LENGTE],
-                           E.EENHEDEN[E.MASSA] + E.EENHEDEN[E.LENGTE]][k]
-                soort = ["Massa", "Lengte", "Massa + lengte"][k]
+                gekozen, soort = E.EENHEDEN[E.SOORTEN[k]], E.NAMEN[E.SOORTEN[k]]
             niveau = self.kies_niveau(kr)
             if niveau is not None:
                 self.app.onthoud_oefening({"onderwerp": "eenheden", "vorm": VORMEN[vorm], "eenheden": gekozen,
@@ -55,6 +55,8 @@ class Eenheden:
 
     def keuze(self, gekozen, niveau, soort):
         jaar = leerjaren.leerjaar_voor_niveau(self.app.inst.leerjaar, niveau)
+        if gekozen == "alles":
+            gekozen = E.eenheden_voor(jaar)
         return gekozen, jaar, f"{soort} · {leerjaren.NIVEAUS[niveau][0]} ({leerjaren.NAMEN[jaar]})"
 
     def kies_niveau(self, kr):
@@ -68,7 +70,7 @@ class Eenheden:
 
     def kies_zelf(self, kr):
         s = self.s
-        kolommen = [E.EENHEDEN[E.MASSA], E.EENHEDEN[E.LENGTE]]
+        kolommen = [E.EENHEDEN[c] for c in E.SOORTEN]
         aan, kol, rij, melding = set(), 0, 0, ""
         knoppen = [("Spatie", "aan/uit", ord(" ")), ("Enter", "klaar", 10), ("Esc", "terug", ESC)]
         while True:
@@ -77,14 +79,14 @@ class Eenheden:
             s.cursor(False)
             s.nieuw(kr + ["Zelf kiezen"], knoppen)
             s.put(3, 4, "Duid minstens 2 eenheden van dezelfde soort aan.", "bold")
-            for c, (kop, lijst) in enumerate(zip(("Massa", "Lengte"), kolommen)):
-                x = 8 + c * 30
+            for c, (kop, lijst) in enumerate(zip([E.NAMEN[c] for c in E.SOORTEN], kolommen)):
+                x = 4 + c * 15
                 s.put(5, x, kop, "accent")
                 for r, u in enumerate(lijst):
                     vak = "[x]" if u in aan else "[ ]"
                     s.put(7 + r, x, f" {vak} {u:<4} ", "cursor" if (c, r) == (kol, rij) else "")
                     s.zones.voeg(7 + r, x, 1, 10, ("vink", c, r))
-            s.put(17, 4, melding, "fout")
+            s.put(19, 4, melding, "fout")
             k = s.toets()
             melding = ""
             if isinstance(k, tuple):
@@ -97,14 +99,14 @@ class Eenheden:
             elif k == curses.KEY_DOWN:
                 rij = min(len(kolommen[kol]) - 1, rij + 1)
             elif k in (curses.KEY_LEFT, curses.KEY_RIGHT, 9):
-                kol = 1 - kol
+                kol = (kol + (-1 if k == curses.KEY_LEFT else 1)) % len(kolommen)
                 rij = min(rij, len(kolommen[kol]) - 1)
             elif k in (ord(" "), ord("x")):
                 aan ^= {kolommen[kol][rij]}
             elif k in ENTER:
-                if any(sum(E.CATEGORIE[u] == cat for u in aan) >= 2 for cat in (E.MASSA, E.LENGTE)):
-                    return [u for lijst in kolommen for u in lijst if u in aan]
-                melding = "Kies minstens 2 eenheden bij massa of bij lengte."
+                if any(sum(u in aan for u in E.EENHEDEN[cat]) >= 2 for cat in E.SOORTEN):
+                    return list(dict.fromkeys(u for lijst in kolommen for u in lijst if u in aan))
+                melding = "Kies minstens 2 eenheden van dezelfde soort."
             elif k == ESC:
                 return None
 
@@ -229,16 +231,28 @@ class Eenheden:
     def teken_tabel(self, y, x, v, rijen, actief=None, klikbaar=False):
         s = self.s
         cols = E.TABELLEN[v.cat]
-        cw = E.CW
+        cw = E.cw(v.cat)
         lijn = lambda l, m, r: l + m.join(["─" * cw] * len(cols)) + r
         s.put(y, x, lijn("┌", "┬", "┐"), "dim")
         s.put(y + 1, x, "│", "dim")
-        for i, (lab, _, echt) in enumerate(cols):
-            cx = x + 1 + i * (cw + 1)
+        for lab, begin, n in E.koppen(v.cat):  # een kop loopt over al de vakjes van zijn eenheid
+            cx = x + 1 + begin * (cw + 1)
+            breed = n * (cw + 1) - 1
+            echt = lab in E.MACHT_IN[v.cat]
             rol = "accent" if lab == v.van else "accent2" if lab == v.naar else ("" if echt else "dim")
-            s.put(y + 1, cx, lab.center(cw), rol)
-            s.put(y + 1, cx + cw, "│", "dim")
+            s.put(y + 1, cx, lab.center(breed), rol)
+            s.put(y + 1, cx + breed, "│", "dim")
         yy = y + 2
+        if E.ALIASSEN.get(v.cat):  # tweede kopregel: ha a ca, of hl dal l dl cl ml
+            s.put(yy, x, "│", "dim")
+            namen = dict((i, lab) for lab, i in E.alias_kop(v.cat))
+            for i in range(len(cols)):
+                cx = x + 1 + i * (cw + 1)
+                lab = namen.get(i, "")
+                rol = "accent" if lab == v.van else "accent2" if lab == v.naar else "dim"
+                s.put(yy, cx, lab.center(cw)[:max(cw, len(lab))], rol)
+                s.put(yy, cx + cw, "│", "dim")
+            yy += 1
         for r, (label, cellen, komma, oordeel, eigen, komma_fout) in enumerate(rijen):
             s.put(yy, x, lijn("├", "┼", "┤"), "dim")
             s.put(yy + 1, x - 7, label.rjust(5), "bold")
@@ -252,11 +266,11 @@ class Eenheden:
                     rol = "goedvak" if oordeel[i] else "foutvak"
                 else:
                     rol = "goed" if r > 0 else ""
-                s.put(yy + 1, cx, E.cel_tekst(cellen[i], i in (komma, eigen), fout), rol)
+                s.put(yy + 1, cx, E.cel_tekst(cellen[i], i in (komma, eigen), fout, cw), rol)
                 if komma_fout and i == (komma if eigen is None else eigen):
-                    s.put(yy + 1, cx + 4, ",", "foutvak")
+                    s.put(yy + 1, cx + cw - 1, ",", "foutvak")
                 elif i in (komma, eigen) and rol in ("", "goed"):
-                    s.put(yy + 1, cx + 4, ",", "accent2" if i == eigen else "accent")
+                    s.put(yy + 1, cx + cw - 1, ",", "accent2" if i == eigen else "accent")
                 s.put(yy + 1, cx + cw, "│", "dim")
                 if klikbaar and r == 0:
                     s.zones.voeg(yy + 1, cx, 1, cw, ("cel", i))
@@ -271,8 +285,9 @@ class Eenheden:
         inst = self.app.inst
         cols = E.TABELLEN[v.cat]
         n = len(cols)
-        labels = [lab for lab, _, _ in cols]
-        komma_van, komma_naar = labels.index(v.van), labels.index(v.naar)
+        komma_van, komma_naar = E.kolom(v.cat, v.van), E.kolom(v.cat, v.naar)
+        cw = E.cw(v.cat)
+        kop_hoogte = 2 if E.ALIASSEN.get(v.cat) else 1
         verw = E.verwachte_cijfers(v)
         juist_rij = [verw.get(k) for _, k, _ in cols]
         cellen, antw, pos, laatste_cel = [None] * n, "", 0, 0
@@ -322,17 +337,17 @@ class Eenheden:
             if goed is None:
                 if eigen_komma is not None:
                     gelezen = E.aflezen(cellen, eigen_komma)
-                    plek = labels[eigen_komma]
+                    plek = E.eenheid_bij(v.cat, eigen_komma) or "dit vakje"
                     if gelezen is None:
                         tekst = "Zet eerst cijfers in de tabel."
-                    elif cols[eigen_komma][2]:
+                    elif E.eenheid_bij(v.cat, eigen_komma):
                         tekst = f"Aflezen met de komma achter {plek}: {gelezen} {plek}"
                     else:
                         tekst = f"Aflezen: {gelezen}, maar bij {plek} hoort geen eenheid."
                     s.put(ya + 2, 4, tekst, "accent2")
                 s.put(ya + 3, 4, melding, "fout")
                 if pos < n:
-                    s.cursor(True, TABEL_Y + 3, TABEL_X + 1 + pos * (E.CW + 1) + 2)
+                    s.cursor(True, TABEL_Y + 2 + kop_hoogte, TABEL_X + 1 + pos * (cw + 1) + cw // 2)
                 else:
                     s.cursor(True, ya, 16 + len(antw))
             else:
@@ -355,7 +370,8 @@ class Eenheden:
                     s.put(yy, 4, f"✘ Je hebt de komma niet verzet: die moet achter {v.naar}.", "fout")
                     yy += 1
                 elif not komma_ok:
-                    s.put(yy, 4, f"✘ Je komma stond achter {labels[eigen_komma]}, maar moest achter {v.naar}.",
+                    s.put(yy, 4, f"✘ Je komma stond achter {E.eenheid_bij(v.cat, eigen_komma) or 'een leeg vakje'}, "
+                          f"maar moest achter {v.naar}.",
                           "fout")
                     yy += 1
                 s.put(yy, 4, E.regel_uitleg(v)[0], "accent")
@@ -452,7 +468,7 @@ class Eenheden:
 
     def gewichten(self):
         recent = self.app.opslag.recente_antwoorden(self.app.kind.id, E.OMZETTEN.id, 100)
-        paren = {f"{a}>{b}" for a in E.MACHT for b in E.MACHT if a != b and E.CATEGORIE[a] == E.CATEGORIE[b]}
+        paren = {f"{a}>{b}" for c in E.SOORTEN for a in E.EENHEDEN[c] for b in E.EENHEDEN[c] if a != b}
         return selectie.gewichten(recent, E.onderwerp_van_sleutel, paren)
 
     def speel(self, kr, soort, modus, jaar, maker, aantal, tabel, items=None):

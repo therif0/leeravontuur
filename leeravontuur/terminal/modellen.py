@@ -6,11 +6,13 @@ De getallenlijn neemt 4 rijen in:  y   tekstjes bij markeringen ("start", "nu")
                                    y+3 de getallen onder de streepjes
 """
 
+import math
 from decimal import Decimal
 
 from ..kern.getal import fmt
-from ..kern.modellen import (Breukbalk, Breukbalken, Getallenlijn, Groepjes, Honderdveld,
+from ..kern.modellen import (Breukbalk, Breukbalken, Figuur, Getallenlijn, Groepjes, Hoek, Honderdveld, Kaart,
                              Procentstrook)
+from . import thema
 
 HOOGTE = 4
 
@@ -138,6 +140,12 @@ def teken_model(s, y, model, x0=8):
         return teken_veld(s, y, model.gekleurd)
     if isinstance(model, Procentstrook):
         return teken_strook(s, y, model, x0)
+    if isinstance(model, Figuur):
+        return teken_figuur(s, y, model, x0)
+    if isinstance(model, Kaart):
+        return teken_kaart(s, y, model, x0)
+    if isinstance(model, Hoek):
+        return teken_hoek(s, y, model.graden, x0)
     return 0, 0
 
 
@@ -182,3 +190,185 @@ def teken_strook(s, y, strook, x0=8):
         if x0 + 2 < xp - len(deel) // 2 and xp + len(deel) < x0 + STROOK_B - len(totaal):
             s.put(y + 3, xp - len(deel) // 2, deel, "goed")
     return 4, STROOK_B + 8
+
+
+# ---- meetkunde -----------------------------------------------------------------------------------------
+
+VAK_B = 4  # een vakje van het cm²-rooster: 3 tekens binnenin + de lijn
+
+
+def figuur_pixels(fig):
+    """Het cm²-rooster als pixels (elk vakje 4 × 4: 1 pixel lijn en 3 × 3 vulling, dus vierkant).
+    Geeft een raster van pixelrollen: None, "lijn", "vulling" of "rand" (de omtrek, als fig.rand)."""
+    def gekleurd(r, k):
+        return (r, k) in fig.vakjes
+
+    hoog, breed = 4 * fig.rijen + 1, 4 * fig.kolommen + 1
+    p = [["lijn" if y % 4 == 0 or x % 4 == 0 else None for x in range(breed)] for y in range(hoog)]
+    for r in range(fig.rijen):
+        for k in range(fig.kolommen):
+            for i in range(3):
+                for j in range(3):
+                    # een half vakje: de driehoek linksonder (rij 1: 1 pixel, rij 2: 2, rij 3: 3)
+                    if gekleurd(r, k) or ((r, k) in fig.halve and j <= i):
+                        p[4 * r + 1 + i][4 * k + 1 + j] = "vulling"
+    if fig.rand:
+        for r in range(fig.rijen + 1):
+            for k in range(fig.kolommen + 1):
+                if k < fig.kolommen and gekleurd(r - 1, k) != gekleurd(r, k):  # randje boven vakje (r, k)
+                    for x in range(4 * k, 4 * k + 5):
+                        p[4 * r][x] = "rand"
+                if r < fig.rijen and gekleurd(r, k - 1) != gekleurd(r, k):  # randje links van vakje (r, k)
+                    for y in range(4 * r, 4 * r + 5):
+                        p[y][4 * k] = "rand"
+    return p
+
+
+def kan_pixels_rooster(s):
+    """Kan het rooster met gekleurde halfblokken (anders: met lijntekens)?"""
+    inst = getattr(s, "inst", None)
+    return (getattr(s, "kleuren", False) and not getattr(s, "ascii", True) and inst is not None
+            and inst.thema != "geen-kleur" and thema.pixels_mogelijk()
+            and thema.rol_pixel("lijn", "vulling", inst.thema) != 0)
+
+
+def teken_figuur(s, y, fig, x0=8):
+    """Een figuur op een rooster; elk vakje = 1 cm², een echt vierkant. Met fig.rand wordt de omtrek aangeduid.
+    Geeft (hoogte, breedte)."""
+    if not kan_pixels_rooster(s):
+        return teken_figuur_tekens(s, y, fig, x0)
+    naam = s.inst.thema
+    p = figuur_pixels(fig)
+    for t in range((len(p) + 1) // 2):
+        boven, onder = p[2 * t], p[2 * t + 1] if 2 * t + 1 < len(p) else [None] * len(p[0])
+        for x, (b, o) in enumerate(zip(boven, onder)):
+            if b is None and o is None:
+                continue
+            if b == o:
+                s.put(y + t, x0 + x, "█", thema.rol_pixel(b, None, naam))
+            elif b is None:
+                s.put(y + t, x0 + x, "▄", thema.rol_pixel(o, None, naam))
+            else:
+                s.put(y + t, x0 + x, "▀", thema.rol_pixel(b, o, naam))
+    hoogte = (len(p) + 1) // 2
+    # de legende (2 regels): hetzelfde vierkantje en driehoekje van 3 × 3 pixels als in het rooster
+    vul = thema.rol_pixel("vulling", None, naam)
+    s.put(y + hoogte, x0, "███", vul)
+    s.put(y + hoogte + 1, x0, "▀▀▀", vul)
+    s.put(y + hoogte, x0 + 4, "= 1 cm²", "dim")
+    breed = 11
+    if fig.halve:
+        s.put(y + hoogte, x0 + 15, "█▄", vul)
+        s.put(y + hoogte + 1, x0 + 15, "▀▀▀", vul)
+        s.put(y + hoogte, x0 + 19, "= een half vakje", "dim")
+        breed = 35
+    return hoogte + 2, max(len(p[0]), breed)
+
+
+def teken_figuur_tekens(s, y, fig, x0=8):
+    """Terugval zonder kleuren of in ASCII-modus: het rooster met lijntekens."""
+    def gekleurd(r, k):
+        return (r, k) in fig.vakjes
+
+    for r in range(fig.rijen + 1):
+        for k in range(fig.kolommen + 1):
+            s.put(y + 2 * r, x0 + VAK_B * k, "┼", "dim")
+            if k < fig.kolommen:  # horizontaal randje boven vakje (r, k)
+                rand = fig.rand and gekleurd(r - 1, k) != gekleurd(r, k)
+                s.put(y + 2 * r, x0 + VAK_B * k + 1, "━━━" if rand else "───", "accent" if rand else "dim")
+            if r < fig.rijen:  # verticaal randje links van vakje (r, k)
+                rand = fig.rand and gekleurd(r, k - 1) != gekleurd(r, k)
+                s.put(y + 2 * r + 1, x0 + VAK_B * k, "┃" if rand else "│", "accent" if rand else "dim")
+                if (r, k) in fig.vakjes:
+                    s.put(y + 2 * r + 1, x0 + VAK_B * k + 1, "███", "accent2")
+                elif (r, k) in fig.halve:
+                    s.put(y + 2 * r + 1, x0 + VAK_B * k + 1, "▒▒▒", "accent2")
+    hoogte = 2 * fig.rijen + 1
+    legende = "███ = 1 cm²" + ("   ▒▒▒ = een half vakje" if fig.halve else "")
+    s.put(y + hoogte, x0, legende, "dim")
+    s.put(y + hoogte, x0, "███", "accent2")
+    if fig.halve:
+        s.put(y + hoogte, x0 + legende.index("▒"), "▒▒▒", "accent2")
+    return hoogte + 1, max(VAK_B * fig.kolommen + 1, len(legende))
+
+
+KAART_B = 3  # breedte van een kolom op de schatkaart
+
+
+def kaart_plaats(kaart, x, y, y0, x0=8):
+    """(rij, kolom) op het scherm van punt (x, y) van de kaart."""
+    return y0 + kaart.ys()[::-1].index(y), x0 + 3 + KAART_B * kaart.xs().index(x) + 1
+
+
+def teken_kaart(s, y0, kaart, x0=8, cursor=None, actie=None):
+    """De schatkaart (kolommen A, B … onderaan, rij 1 onderaan) of een assenstelsel. cursor = (x, y) van het kind,
+    actie(x, y) = klikactie per punt. Geeft (hoogte, breedte)."""
+    xs, ys = kaart.xs(), kaart.ys()
+    for i, yy in enumerate(ys[::-1]):
+        rij = y0 + i
+        s.put(rij, x0, f"{fmt_getal(yy):>2}", "bold")
+        for xx in xs:
+            _, kol = kaart_plaats(kaart, xx, yy, y0, x0)
+            if kaart.assen and yy == 0:
+                s.put(rij, kol - 1, "───", "dim")
+            teken = "┼" if kaart.assen and xx == 0 and yy == 0 else (
+                "│" if kaart.assen and xx == 0 else ("─" if kaart.assen and yy == 0 else "·"))
+            s.put(rij, kol, teken, "dim")
+            if (xx, yy) in kaart.punten:
+                punt = kaart.punten[(xx, yy)]
+                teken, rol = punt if isinstance(punt, tuple) else (punt, "accent")
+                s.put(rij, kol, teken, rol)
+            if cursor == (xx, yy):
+                s.put(rij, kol - 1, "[", "cursor")
+                s.put(rij, kol + 1, "]", "cursor")
+            if actie is not None:
+                s.zones.voeg(rij, kol - 1, 1, KAART_B, actie(xx, yy))
+    onder = y0 + len(ys)
+    for xx in xs:
+        _, kol = kaart_plaats(kaart, xx, ys[0], y0, x0)
+        tekst = kaart.naam(xx, 1)[0] if not kaart.assen else fmt_getal(xx)
+        s.put(onder, kol - (len(tekst) - 1), tekst, "bold")
+    return len(ys) + 1, 3 + KAART_B * len(xs) + 1
+
+
+def fmt_getal(n):
+    return f"−{-n}" if n < 0 else str(n)
+
+
+HOEK_R = 6  # lengte van een been, in rijen
+
+
+def hoek_teken(graden):
+    """Het lijnteken voor een been onder deze hoek."""
+    if graden < 20 or graden > 160:
+        return "─"
+    if graden < 70:
+        return "╱"
+    if graden <= 110:
+        return "│"
+    return "╲"
+
+
+def teken_hoek(s, y, graden, x0=8):
+    """Een hoek: het ene been naar rechts, het andere onder `graden` (tegen de klok in). Geeft (hoogte, breedte).
+    Het schuine been krijgt één lijnteken per rij; bij een vlakke hoek verbindt '_' de tekens."""
+    hoekpunt_y, hoekpunt_x = y + HOEK_R, x0 + 2 * HOEK_R + 4
+    s.put(hoekpunt_y, hoekpunt_x + 1, "─" * (2 * HOEK_R + 4), "bold")
+    if graden in (0, 180):
+        if graden == 180:
+            s.put(hoekpunt_y, hoekpunt_x - 2 * HOEK_R - 4, "─" * (2 * HOEK_R + 4), "bold")
+    else:
+        teken = hoek_teken(graden)
+        stap = 2 / math.tan(math.radians(graden)) if graden != 90 else 0  # kolommen per rij (een teken is 2× zo hoog)
+        lengte = 2 * HOEK_R + 4  # het schuine been mag niet verder dan het rechte
+        rijen = HOEK_R if abs(stap) * HOEK_R <= lengte else max(1, int(lengte / abs(stap)))
+        vorige = hoekpunt_x
+        for r in range(1, rijen + 1):
+            kol = hoekpunt_x + max(-lengte, min(lengte, round(r * stap)))
+            if abs(kol - vorige) > 1:  # vlakke hoek: de tussenruimte verbinden
+                van, tot = sorted((vorige, kol))
+                s.put(hoekpunt_y - r, van + 1, "_" * (tot - van - 1), "bold")
+            s.put(hoekpunt_y - r, kol, teken, "bold")
+            vorige = kol
+    s.put(hoekpunt_y, hoekpunt_x, "●", "accent")
+    return HOEK_R + 1, 4 * HOEK_R + 9

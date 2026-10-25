@@ -2,6 +2,34 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.15.0 — meetkunde
+- Nieuw domein **Meetkunde**:
+  - **Oppervlakte en omtrek** op een rooster met echt vierkante vakjes van 1 cm²: tel de vakjes en de randjes. Na
+    het nakijken is de omtrek aangeduid. Ook L-vormen, trappen en driehoeken met halve vakjes.
+  - **Formules**: rechthoek, vierkant, driehoek, parallellogram, trapezium, cirkel (π = 3,14) en het volume van
+    een balk en een kubus. De uitleg vult de formule in met de getallen.
+  - **Hoeken**: scherp, recht, stomp, gestrekt of vol bij een tekening of een aantal graden; vanaf het 6de de
+    derde hoek van een driehoek, in het 1ste middelbaar nevenhoeken.
+  - **Schatkaart**: waar ligt de schat (typ bv. `C4`), of zet zelf een kruisje met de pijltjes of een klik.
+    In het 1ste middelbaar een assenstelsel met negatieve getallen.
+  - **Schaal** (vanaf het 6de): van de kaart naar het echt en terug; in het 1ste middelbaar ook de schaal zoeken.
+- Het programma herkent o.a.: omtrek en oppervlakte verwisseld, de randjes binnenin meegeteld, vergeten te delen
+  door 2, straal en diameter verwisseld, kolom en rij omgewisseld, cm niet omgezet naar m.
+- Winkel: een potlood achter het oor.
+
+## 0.14.0 — meer eenheden
+- **Eenheden:** naast lengte en massa nu ook **inhoud** (hl … ml), **oppervlakte** (km² … mm², met ha, a en ca;
+  vanaf het 5de leerjaar) en **volume** (m³, dm³, cm³, samen met de liter; vanaf het 6de).
+- De eenhedentabel heeft bij oppervlakte 2 vakjes en bij volume 3 vakjes per eenheid. Wie per eenheid maar
+  1 plaats opschuift, krijgt daar uitleg over.
+- Nieuwe keuze **Door elkaar**: alle soorten eenheden die bij je leerjaar horen.
+- Nieuw domein **Tijd, geld en snelheid**:
+  - tijd: uren, minuten en seconden omrekenen, "135 min = 2 u 15 min" (je typt `2 u 15 min`), tijdsduur en
+    hoe laat je aankomt (je typt `11.15` of `11:15`). Wie met 100 rekent in plaats van 60, krijgt uitleg.
+  - geld: euro en cent, wisselgeld en wat je samen betaalt;
+  - snelheid (vanaf het 6de): afstand, tijd en snelheid; km/u ↔ m/s in het 1ste middelbaar.
+- Winkel: een zakhorloge.
+
 ## 0.13.0 — eerste bèta (oktober 2026)
 - Alles hieronder komt nu samen in de gewone versie (`main`). Dit is de eerste versie om dagelijks te gebruiken.
 - **Zeg het ons** in het hoofdmenu: het kind (of de ouder) schrijft wat leuk, moeilijk of kapot is. Het blijft op

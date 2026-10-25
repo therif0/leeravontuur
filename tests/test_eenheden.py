@@ -98,5 +98,62 @@ class TestVragenMaken(unittest.TestCase):
         self.assertTrue(any("VOORBEELD" in t for t, _ in regels))
 
 
+def omz_in(cat, getal, van, naar):
+    return E.Omzetting(cat, van, naar, Decimal(getal))
+
+
+class TestMeerEenheden(unittest.TestCase):
+    def test_omzettingen(self):
+        gevallen = [(E.INHOUD, "2.5", "l", "cl", "250"), (E.OPPERVLAKTE, "3", "m²", "dm²", "300"),
+                    (E.OPPERVLAKTE, "9.7", "ha", "m²", "97000"), (E.OPPERVLAKTE, "1", "a", "m²", "100"),
+                    (E.OPPERVLAKTE, "45000", "cm²", "m²", "4,5"), (E.VOLUME, "2", "m³", "dm³", "2000"),
+                    (E.VOLUME, "1", "dm³", "l", "1"), (E.VOLUME, "750", "cm³", "l", "0,75"),
+                    (E.VOLUME, "3", "hl", "m³", "0,3")]
+        for cat, getal, van, naar, juist in gevallen:
+            with self.subTest(f"{getal} {van} -> {naar}"):
+                self.assertEqual(fmt(omz_in(cat, getal, van, naar).antwoord), juist)
+
+    def test_tabel_met_meer_vakjes(self):
+        v = omz_in(E.OPPERVLAKTE, "9.7", "ha", "m²")
+        self.assertTrue(E.past_in_tabel(v))
+        self.assertEqual(E.verwachte_cijfers(v), {4: 9, 3: 7, 2: 0, 1: 0, 0: 0})
+        regels = E.tabel_tekst(E.OPPERVLAKTE)
+        self.assertTrue(all(len(t) <= 78 for t in regels))
+        self.assertIn("km²", regels[1])
+        self.assertTrue(any("ha" in t and "ca" in t for t in regels))  # de rij met ha, a, ca
+        self.assertEqual(E.eenheid_bij(E.OPPERVLAKTE, E.kolom(E.OPPERVLAKTE, "ha")), "hm² = ha")
+        self.assertTrue(all(len(t) <= 78 for t in E.tabel_tekst(E.VOLUME)))
+
+    def test_diagnose_een_vakje_per_eenheid(self):
+        v = omz_in(E.OPPERVLAKTE, "3", "m²", "dm²")  # juist: 300
+        self.assertEqual(E.diagnose(v, Decimal(30))[0], "een_vakje_per_eenheid")
+        w = omz_in(E.INHOUD, "3", "l", "dl")  # inhoud heeft 1 vakje per eenheid
+        self.assertNotEqual((E.diagnose(w, Decimal(3)) or ("",))[0], "een_vakje_per_eenheid")
+
+    def test_soorten_per_leerjaar(self):
+        self.assertNotIn("m²", E.eenheden_voor("4"))
+        self.assertIn("ha", E.eenheden_voor("5"))
+        self.assertNotIn("m³", E.eenheden_voor("5"))
+        self.assertIn("m³", E.eenheden_voor("6"))
+        for jaar in leerjaren.LEERJAREN:
+            gekozen = E.eenheden_voor(jaar)
+            for tabel in (False, True):
+                for _ in range(200):
+                    v = E.maak_vraag(gekozen, jaar, tabel)
+                    self.assertEqual(v.antwoord, v.getal * Decimal(10) ** v.stap)
+                    self.assertIn(v.van, E.EENHEDEN[v.cat] + [a for a, _ in E.ALIASSEN.get(v.cat, [])])
+                    if tabel:
+                        self.assertTrue(E.past_in_tabel(v))
+                    E.regel_uitleg(v)
+                    E.tabel_uitleg(v)
+
+    def test_spiekbrief_past(self):
+        for t, _ in E.spiekbrief():
+            self.assertLessEqual(len(t), 78, t)
+        tekst = " ".join(t for t, _ in E.spiekbrief())
+        self.assertIn("OPPERVLAKTE", tekst)
+        self.assertIn("VOLUME", tekst)
+
+
 if __name__ == "__main__":
     unittest.main()
