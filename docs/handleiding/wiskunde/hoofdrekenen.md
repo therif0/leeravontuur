@@ -70,7 +70,8 @@ rond is, anders **splitsen** in honderdtallen, tientallen en eenheden.
 
 ## × en : met 10, 100, 1000
 
-Vermenigvuldigen en delen met 10, 100, 1000 (en vanaf het 6de ook met 0,1 en 0,01): de komma verschuift.
+Vermenigvuldigen en delen met 10, 100, 1000 (en in het 1ste middelbaar ook met 0,1 en 0,01): de komma
+verschuift.
 
 ![× en : met 10, 100, 1000](../beelden/hoofdrekenen-maal10.svg)
 

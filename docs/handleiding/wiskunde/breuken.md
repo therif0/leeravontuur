@@ -104,8 +104,8 @@ breuk het grootst is.
 
 ## Optellen en aftrekken
 
-Gelijknamige breuken, ongelijknamige (eerst gelijknamig maken, later met het kgv), gemengde getallen en in het 1ste
-middelbaar een negatieve uitkomst. Is "uitkomst vereenvoudigen" aan, dan moet het antwoord zo eenvoudig mogelijk.
+Gelijknamige breuken (4de), ongelijknamige (5de: eerst gelijknamig maken; vanaf het 6de met het kgv), gemengde
+getallen (6de) en in het 1ste middelbaar een negatieve uitkomst. Is "uitkomst vereenvoudigen" aan, dan moet het antwoord zo eenvoudig mogelijk.
 
 ![Breuken optellen](../beelden/breuken-optellen.svg)
 
@@ -136,7 +136,8 @@ De klassieke fout "tellers én noemers opgeteld" wordt herkend en uitgelegd:
 ## Breuk van een getal
 
 `2/3 van 12`: de bolletjes worden in groepjes verdeeld (de noemer), en de juiste groepjes kleuren mee in de uitleg.
-Vanaf het 6de ook breuk × getal, breuk : getal en (1ste middelbaar) breuk × en : breuk.
+Vanaf het 5de ook breuk × getal, vanaf het 6de breuk × breuk en breuk : getal, en in het 1ste middelbaar
+breuk : breuk.
 
 ![Een breuk van een getal](../beelden/breuken-van.svg)
 

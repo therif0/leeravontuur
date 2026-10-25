@@ -28,8 +28,9 @@ Na de vorm kies je de soort eenheden, daarna het [niveau](../README.md#niveaus-m
 - **Volume** (m³, dm³, cm³ en hl … ml): vanaf het 6de leerjaar. Elke eenheid heeft **3 vakjes**; 1 dm³ = 1 l en
   1 cm³ = 1 ml.
 - **Door elkaar**: alle soorten die bij het gekozen leerjaar horen.
-- **Zelf kiezen**: duid zelf de eenheden aan. Met `↑` `↓` (of de pijltjes) ga je naar een eenheid, met **spatie**
-  (of een klik) zet je ze aan of uit, met `Enter` begin je. Je hebt minstens 2 eenheden van dezelfde soort nodig.
+- **Zelf kiezen**: duid zelf de eenheden aan. Met `↑` `↓` ga je naar een eenheid, met `←` `→` (of Tab) naar een
+  andere soort, met **spatie** (of een klik) zet je ze aan of uit, met `Enter` begin je. Je hebt minstens
+  2 eenheden van dezelfde soort nodig.
 
   ![Zelf eenheden kiezen](../beelden/eenheden-zelf.svg)
 
