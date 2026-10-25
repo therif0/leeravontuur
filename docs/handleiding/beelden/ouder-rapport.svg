@@ -6,9 +6,9 @@
 <text x="44" y="57" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Rapport van Imrane · 5de leerjaar</text>
 <text x="44" y="75" textLength="459" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Periode: 26/09/2026 – 25/10/2026 (laatste 30 dagen)</text>
 <text x="44" y="111" textLength="108" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">SAMENVATTING</text>
-<text x="44" y="129" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">  Vragen: 340    Juist: 274 (81 %)</text>
-<text x="8" y="147" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Geoefend op 17 dagen · actieve tijd: minder dan een minuut                </text>
-<text x="8" y="165" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Gemiddeld 0 seconden per vraag                                            </text>
+<text x="44" y="129" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">  Vragen: 380    Juist: 314 (83 %)</text>
+<text x="8" y="147" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Geoefend op 19 dagen · actieve tijd: 28 minuten                           </text>
+<text x="8" y="165" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      Gemiddeld 4 seconden per vraag                                            </text>
 <text x="44" y="201" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">PER DAG</text>
 <rect x="152" y="206" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="206" width="9" height="18" fill="#d4d4d4"/>
@@ -17,9 +17,8 @@
 <rect x="188" y="206" width="9" height="18" fill="#d4d4d4"/>
 <rect x="197" y="206" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="206" width="9" height="18" fill="#d4d4d4"/>
-<rect x="215" y="206" width="9" height="18" fill="#d4d4d4"/>
 <text x="8" y="219" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      zo 04/10  </text>
-<text x="224" y="219" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
+<text x="215" y="219" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░░   20 vragen   70 % juist                             </text>
 <rect x="152" y="224" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="224" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="224" width="9" height="18" fill="#d4d4d4"/>
@@ -29,7 +28,7 @@
 <rect x="206" y="224" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="224" width="9" height="18" fill="#d4d4d4"/>
 <text x="8" y="237" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      ma 05/10  </text>
-<text x="224" y="237" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   85 % juist                             </text>
+<text x="224" y="237" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
 <rect x="152" y="242" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="242" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="242" width="9" height="18" fill="#d4d4d4"/>
@@ -37,8 +36,11 @@
 <rect x="188" y="242" width="9" height="18" fill="#d4d4d4"/>
 <rect x="197" y="242" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="242" width="9" height="18" fill="#d4d4d4"/>
+<rect x="215" y="242" width="9" height="18" fill="#d4d4d4"/>
+<rect x="224" y="242" width="9" height="18" fill="#d4d4d4"/>
+<rect x="233" y="242" width="9" height="18" fill="#d4d4d4"/>
 <text x="8" y="255" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      di 06/10  </text>
-<text x="215" y="255" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░░   20 vragen   70 % juist                             </text>
+<text x="242" y="255" textLength="486" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">   20 vragen   95 % juist                             </text>
 <rect x="152" y="260" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="260" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="260" width="9" height="18" fill="#d4d4d4"/>
@@ -48,7 +50,7 @@
 <rect x="206" y="260" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="260" width="9" height="18" fill="#d4d4d4"/>
 <text x="8" y="273" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      wo 07/10  </text>
-<text x="224" y="273" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   75 % juist                             </text>
+<text x="224" y="273" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
 <rect x="152" y="278" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="278" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="278" width="9" height="18" fill="#d4d4d4"/>
@@ -57,9 +59,8 @@
 <rect x="197" y="278" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="278" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="278" width="9" height="18" fill="#d4d4d4"/>
-<rect x="224" y="278" width="9" height="18" fill="#d4d4d4"/>
 <text x="8" y="291" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      do 08/10  </text>
-<text x="233" y="291" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
+<text x="224" y="291" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   85 % juist                             </text>
 <rect x="152" y="296" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="296" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="296" width="9" height="18" fill="#d4d4d4"/>
@@ -68,8 +69,9 @@
 <rect x="197" y="296" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="296" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="296" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="309" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      za 10/10  </text>
-<text x="224" y="309" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   75 % juist                             </text>
+<rect x="224" y="296" width="9" height="18" fill="#d4d4d4"/>
+<text x="8" y="309" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      vr 09/10  </text>
+<text x="233" y="309" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
 <rect x="152" y="314" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="314" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="314" width="9" height="18" fill="#d4d4d4"/>
@@ -78,8 +80,8 @@
 <rect x="197" y="314" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="314" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="314" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="327" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      zo 11/10  </text>
-<text x="224" y="327" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   85 % juist                             </text>
+<text x="8" y="327" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      za 10/10  </text>
+<text x="224" y="327" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
 <rect x="152" y="332" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="332" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="332" width="9" height="18" fill="#d4d4d4"/>
@@ -88,8 +90,9 @@
 <rect x="197" y="332" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="332" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="332" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="345" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      ma 12/10  </text>
-<text x="224" y="345" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
+<rect x="224" y="332" width="9" height="18" fill="#d4d4d4"/>
+<text x="8" y="345" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      zo 11/10  </text>
+<text x="233" y="345" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
 <rect x="152" y="350" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="350" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="350" width="9" height="18" fill="#d4d4d4"/>
@@ -98,19 +101,17 @@
 <rect x="197" y="350" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="350" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="350" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="363" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      di 13/10  </text>
-<text x="224" y="363" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   75 % juist                             </text>
+<rect x="224" y="350" width="9" height="18" fill="#d4d4d4"/>
+<text x="8" y="363" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      ma 12/10  </text>
+<text x="233" y="363" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
 <rect x="152" y="368" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="368" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="368" width="9" height="18" fill="#d4d4d4"/>
 <rect x="179" y="368" width="9" height="18" fill="#d4d4d4"/>
 <rect x="188" y="368" width="9" height="18" fill="#d4d4d4"/>
 <rect x="197" y="368" width="9" height="18" fill="#d4d4d4"/>
-<rect x="206" y="368" width="9" height="18" fill="#d4d4d4"/>
-<rect x="215" y="368" width="9" height="18" fill="#d4d4d4"/>
-<rect x="224" y="368" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="381" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      wo 14/10  </text>
-<text x="233" y="381" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
+<text x="8" y="381" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      di 13/10  </text>
+<text x="206" y="381" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░░░   20 vragen   60 % juist                             </text>
 <rect x="152" y="386" width="9" height="18" fill="#d4d4d4"/>
 <rect x="161" y="386" width="9" height="18" fill="#d4d4d4"/>
 <rect x="170" y="386" width="9" height="18" fill="#d4d4d4"/>
@@ -119,9 +120,8 @@
 <rect x="197" y="386" width="9" height="18" fill="#d4d4d4"/>
 <rect x="206" y="386" width="9" height="18" fill="#d4d4d4"/>
 <rect x="215" y="386" width="9" height="18" fill="#d4d4d4"/>
-<rect x="224" y="386" width="9" height="18" fill="#d4d4d4"/>
-<text x="8" y="399" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      do 15/10  </text>
-<text x="233" y="399" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░   20 vragen   90 % juist                             </text>
+<text x="8" y="399" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      wo 14/10  </text>
+<text x="224" y="399" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">░░   20 vragen   80 % juist                             </text>
 <text x="530" y="417" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">▼ scroll voor meer ▼</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="36" height="18" fill="#000000"/>
