@@ -99,7 +99,7 @@ class Eenheden:
             elif k == curses.KEY_DOWN:
                 rij = min(len(kolommen[kol]) - 1, rij + 1)
             elif k in (curses.KEY_LEFT, curses.KEY_RIGHT, 9):
-                kol = 1 - kol
+                kol = (kol + (-1 if k == curses.KEY_LEFT else 1)) % len(kolommen)
                 rij = min(rij, len(kolommen[kol]) - 1)
             elif k in (ord(" "), ord("x")):
                 aan ^= {kolommen[kol][rij]}
