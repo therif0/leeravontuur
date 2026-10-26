@@ -176,6 +176,21 @@ class TestIndeling(unittest.TestCase):
         self.assertIn("  Wiskunde › Getallen", status)
         self.assertTrue(any(t.startswith("    Tafels: ") for t in status))
 
+    def test_per_onderwerp_past_in_de_lezer(self):
+        """PER ONDERWERP: elke regel past in de lezer (72 tekens), ook met de langste namen en grote getallen."""
+        from collections import Counter
+        r = rapporten.Rapport(self.kind, self.r.periode, [], aantal=999, juist=999, tijd_ms=999 * 99000,
+                              per_dag={"2026-10-20": [999, 999]})
+        for bron in curriculum.indeling():
+            modi = Counter({"snel60": 500, "snel20": 499} if bron.startswith("snelrekenen.") else
+                           {"reeks": 500, "vrij": 300, "tabel": 199})
+            r.per_vaardigheid[bron] = {"aantal": 999, "juist": 999, "tijd_ms": 999 * 99000, "modi": modi}
+        regels = [t for t, _ in rapporten.regels(r, curriculum.indeling())]
+        for tekst in regels:
+            self.assertLessEqual(len(tekst), 72, tekst)
+        self.assertIn("    Optellen en aftrekken, snelrekenen: 999 sommen, 100 % juist", regels)
+        self.assertEqual(sum("gemiddeld 99 s" in t for t in regels), len(r.per_vaardigheid))  # nooit weggevallen
+
     def test_export_zelfde_kolommen_plus_vak_en_domein(self):
         with tempfile.TemporaryDirectory() as tmp:
             csv_pad, txt_pad = rapporten.exporteer(self.r, tmp, curriculum.indeling())

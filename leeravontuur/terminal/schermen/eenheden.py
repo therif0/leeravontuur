@@ -21,7 +21,7 @@ class Eenheden:
     def __init__(self, app, kruimel):
         self.app = app
         self.s = app.s
-        self.kruimel = list(kruimel)  # tot en met "Eenheden"
+        self.kruimel = list(kruimel)  # tot en met het onderwerp (bv. Meten › Lengte (m))
         self.totaal = REEKS           # aantal vragen in de lopende reeks
         self.verdiend = 0             # punten in de laatste reeks
 

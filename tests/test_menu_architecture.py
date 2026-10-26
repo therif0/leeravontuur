@@ -88,6 +88,22 @@ class TestRegistry(unittest.TestCase):
             for d in vak.domeinen:
                 self.assertLessEqual(len(d.onderwerpen), CU.MAX_PER_MENU, d.id)
 
+    def test_altijd_iets_te_starten(self):
+        """Ook als de ouder de timer verbergt (geen 60 seconden) heeft elk onderwerp nog een modus voor Enter."""
+        for o in CU.onderwerpen():
+            with self.subTest(o.id):
+                self.assertTrue(set(o.modi) - {"60s"})
+
+    def test_toetsen_botsen_niet(self):
+        """De lettertoetsen zijn verschillende kleine letters en botsen niet met de menutoetsen (j k q, cijfers)."""
+        letters = [*CU.TOETS.values(), CU.SPIEK_TOETS]
+        self.assertEqual(len(letters), len(set(letters)))
+        for t in letters:
+            with self.subTest(t):
+                self.assertRegex(t, r"^[a-z]$")
+                self.assertNotIn(t, "jkq")
+        self.assertEqual(set(CU.TOETS), set(CU.MODI) - {"reeks"})
+
     def test_labels_uniek_per_menu(self):
         for vak in CU.VAKKEN:
             self.assertEqual(len({d.label for d in vak.domeinen}), len(vak.domeinen))
@@ -223,6 +239,23 @@ class TestNavigatie(TestModiStarten):
         self.assertIn("x en : met 10, 100, 1000", beelden[-1])
         for beeld in beelden:
             self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
+
+    def test_broodkruimel_uit_elke_soort_oefening(self):
+        """Een klik op de broodkruimel midden in een oefening (gewone reeks, maten, snelrekenen) gaat naar dat niveau."""
+        import curses
+        for oid, toets in [("wiskunde.hoofdrekenen.tafels", "\n"), ("wiskunde.meten.lengte", "v"),
+                           ("wiskunde.hoofdrekenen.gemengd", "\n")]:
+            o = CU.zoek(oid)
+            d = CU.domein_van(o)
+            i = d.onderwerpen.index(o)
+            naar = [OK, OK, str(HOOFDMENU.index("Wiskunde") + 1), str(CU.VAKKEN[0].domeinen.index(d) + 1),
+                    *[curses.KEY_DOWN] * i, toets, *([OK] if "reeks" in o.modi else [])]
+            kop = self.speel(naar)[-1].splitlines()[0]
+            for woord, verwacht in [("Leeravontuur", "Wat wil je doen?"), ("Wiskunde", "Welk onderwerp?"),
+                                    (d.label, "wat wil je oefenen?")]:
+                with self.subTest(oid, niveau=woord):
+                    beeld = self.speel([*naar, ("klik", 0, kop.index(woord) + 1)])[-1]
+                    self.assertIn(verwacht, beeld)
 
     def test_geen_namen_in_de_menumodules(self):
         """Namen van vakken, domeinen en onderwerpen staan alleen in het leerplan (terminal/curriculum)."""

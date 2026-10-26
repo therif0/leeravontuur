@@ -21,6 +21,7 @@ MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 MODI = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}  # ook zo in de CSV (vast)
 MODI_RAPPORT = {**MODI, "snel60": "60 seconden", "snel20": "20 sommen"}
 SNEL = ("snel60", "snel20")
+LEZER = 72  # zoveel tekens toont de lezer per regel (80 breed); langer wordt afgebroken
 
 
 @dataclass
@@ -168,12 +169,19 @@ def naam(bron):
     return catalogus.naam(bron)
 
 
-def _onderwerp_regels(label, pv, inspring, woord="vragen"):
+def _onderwerp_regels(label, pv, inspring, woord="vragen", kort=False):
+    """kort: elke regel past in de lezer (72 tekens): de gemiddelde tijd komt waar plaats is (zoals vroeger
+    achteraan de eerste regel, anders achter de manieren, anders op een eigen regel)."""
     n = pv["aantal"]
-    uit = [(f"{inspring}{label}: {n} {woord}, {round(100 * pv['juist'] / n)} % juist, "
-            f"gemiddeld {round(pv['tijd_ms'] / n / 1000)} s", "bold")]
-    modi = " · ".join(f"{MODI_RAPPORT.get(m, m)} {k}" for m, k in pv["modi"].most_common())
-    uit.append((f"{inspring}  {modi}", "dim"))
+    gemiddeld = f"gemiddeld {round(pv['tijd_ms'] / n / 1000)} s"
+    kop = f"{inspring}{label}: {n} {woord}, {round(100 * pv['juist'] / n)} % juist"
+    modi = f"{inspring}  " + " · ".join(f"{MODI_RAPPORT.get(m, m)} {k}" for m, k in pv["modi"].most_common())
+    if not kort or len(kop) + len(gemiddeld) + 2 <= LEZER:
+        uit = [(f"{kop}, {gemiddeld}", "bold"), (modi, "dim")]
+    elif len(modi) + len(gemiddeld) + 3 <= LEZER:
+        uit = [(kop, "bold"), (f"{modi} · {gemiddeld}", "dim")]
+    else:
+        uit = [(kop, "bold"), (modi, "dim"), (f"{inspring}  {gemiddeld}", "dim")]
     if pv.get("vraagstuk"):
         vs = pv["vraagstuk"]
         uit.append((f"{inspring}  gemiddeld {_getal(vs['tips'] / vs['aantal'])} tips per vraagstuk · juist zonder "
@@ -231,8 +239,8 @@ def regels(r, indeling=None):
         def regel(label, item):
             bron, pv = item
             if bron.startswith("snelrekenen."):
-                return _onderwerp_regels(f"{label}, snelrekenen", pv, "    ", "sommen")
-            return _onderwerp_regels(label, pv, "    ")
+                return _onderwerp_regels(f"{label}, snelrekenen", pv, "    ", "sommen", kort=True)
+            return _onderwerp_regels(label, pv, "    ", kort=True)
         rang = _rang(indeling)
         uit += _per_domein(sorted(r.per_vaardigheid.items(), key=lambda x: rang(x[0])), indeling, regel)
     if r.denkfouten:
