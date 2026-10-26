@@ -26,7 +26,7 @@ class _Meetkunde(Onderwerp):
         return data["soort"] if data and "soort" in data else rng.choice(p["soorten"])
 
     def spiekbrief(self):
-        return SPIEKBRIEF
+        return SPIEKBRIEF_MEETKUNDE
 
 
 # ---- oppervlakte en omtrek op het rooster ------------------------------------------------------------------
@@ -68,6 +68,9 @@ class Rooster(_Meetkunde):
                   "binnenranden": "ook de randjes binnenin de figuur geteld",
                   "halve_als_hele": "halve vakjes als hele geteld",
                   "halve_vergeten": "de halve vakjes vergeten"}
+
+    def spiekbrief(self):
+        return SPIEKBRIEF_OPPERVLAKTE
 
     def maak_met(self, p, rng, data=None):
         vorm = data["vorm"] if data and "vorm" in data else rng.choice(p["vormen"])
@@ -146,6 +149,9 @@ class Formules(_Meetkunde):
                   "opp_ipv_omtrek": "de oppervlakte berekend in plaats van de omtrek",
                   "maar_2_zijden": "maar 2 zijden opgeteld voor de omtrek",
                   "straal_diameter": "straal en diameter verwisseld"}
+
+    def spiekbrief(self):
+        return SPIEKBRIEF_OPPERVLAKTE
 
     def maak_met(self, p, rng, data=None):
         soort = self.soort(p, rng, data)
@@ -543,7 +549,8 @@ class Schaal(_Meetkunde):
         return None
 
 
-SPIEKBRIEF = [
+# twee spiekbrieven: oppervlakte en formules (in het menu bij Meten), en hoeken, coördinaten en schaal (Meetkunde)
+SPIEKBRIEF_OPPERVLAKTE = [
     ("OPPERVLAKTE EN OMTREK", "accent"),
     ("  Oppervlakte = hoeveel vakjes van 1 cm² erin passen (cm²).", ""),
     ("  Omtrek = de lengte van de rand rondom (cm).", ""),
@@ -556,7 +563,9 @@ SPIEKBRIEF = [
     ("  cirkel       omtrek = 2 × π × r      opp = π × r × r", ""),
     ("               (π ≈ 3,14; straal r = de helft van de diameter d)", ""),
     ("  balk         volume = l × b × h      kubus  volume = z × z × z", ""),
-    ("", ""),
+]
+
+SPIEKBRIEF_MEETKUNDE = [
     ("HOEKEN", "accent"),
     ("  scherp: kleiner dan 90°    recht = 90°    stomp: tussen 90° en 180°", ""),
     ("  gestrekt = 180° (een rechte lijn)    vol = 360° (helemaal rond)", ""),

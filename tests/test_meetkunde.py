@@ -106,7 +106,7 @@ class TestGeneratoren(unittest.TestCase):
             self.assertNotIn(MK.FORMULES.maak("5").data["soort"], ("cirkel_opp", "balk_volume"))
 
     def test_spiekbrief_past(self):
-        for t, _ in MK.SPIEKBRIEF:
+        for t, _ in MK.SPIEKBRIEF_OPPERVLAKTE + MK.SPIEKBRIEF_MEETKUNDE:
             self.assertLessEqual(len(t), 78, t)
 
 
@@ -208,8 +208,13 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "━━━"))  # na het nakijken: de omtrek aangeduid
 
     def test_spiekbrief(self):
+        """Meten: oppervlakte en formules; Meetkunde: hoeken, coördinaten en schaal."""
         scherm, _ = self.speel([*naar_spiekbrief("Meetkunde"), ESC, ESC, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "HOEKEN"))
+        self.assertFalse(self.ergens(scherm, "FORMULES"))
+        scherm, _ = self.speel([*naar_spiekbrief("Meten", 2), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "FORMULES"))
+        self.assertFalse(self.ergens(scherm, "HOEKEN"))
 
 
 if __name__ == "__main__":

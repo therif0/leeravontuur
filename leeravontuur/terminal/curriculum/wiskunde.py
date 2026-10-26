@@ -102,8 +102,8 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
         eenheid(E.VOLUME, "volume", "Volume (m³)"),
         maat("maten_gemengd", "Maten gemengd", "alles", "alles wat bij je leerjaar hoort"),
         maat("maten_zelf_kiezen", "Maten zelf kiezen", "zelf", "duid zelf de eenheden aan"),
-        oefenaar("meten.oppervlakte_omtrek", "Oppervlakte en omtrek", MK.ROOSTER, METEN, "Meetkunde"),
-        oefenaar("meten.formules", "Formules", MK.FORMULES, METEN, "Meetkunde"),
+        oefenaar("meten.oppervlakte_omtrek", "Oppervlakte en omtrek", MK.ROOSTER, METEN, "Oppervlakte en formules"),
+        oefenaar("meten.formules", "Formules", MK.FORMULES, METEN, "Oppervlakte en formules"),
     ), "lengte, massa, inhoud, oppervlakte, volume"),
     Domein("wiskunde.tijd_geld_snelheid", TIJD_GELD_SNELHEID, (
         oefenaar("tijd_geld_snelheid.klok", "De klok", KL.KLOK, TIJD_GELD_SNELHEID, "De klok"),

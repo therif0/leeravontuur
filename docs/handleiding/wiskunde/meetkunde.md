@@ -181,7 +181,11 @@ FORMULES
   cirkel       omtrek = 2 × π × r      opp = π × r × r
                (π ≈ 3,14; straal r = de helft van de diameter d)
   balk         volume = l × b × h      kubus  volume = z × z × z
+```
+<!-- /auto -->
 
+<!-- auto:spiekbrief wiskunde.meetkunde.hoeken -->
+```text
 HOEKEN
   scherp: kleiner dan 90°    recht = 90°    stomp: tussen 90° en 180°
   gestrekt = 180° (een rechte lijn)    vol = 360° (helemaal rond)

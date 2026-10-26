@@ -71,6 +71,20 @@ class TestRegistry(unittest.TestCase):
                     self.assertTrue(o.spiek.titel.strip())
                     self.assertTrue(callable(o.spiek.toon))
 
+    def test_zelfde_titel_zelfde_spiekbrief(self):
+        """Spiekbrieven › domein toont elke titel één keer: onderwerpen met dezelfde titel tonen dus dezelfde
+        spiekbrief (anders zou er een wegvallen of een spiekbrief van een ander domein verschijnen)."""
+        from leeravontuur.kern import catalogus
+        inhoud = {}
+        for o in CU.onderwerpen():
+            if o.spiek is not None:
+                args = getattr(o.spiek.toon, "args", ())
+                tekst = repr(catalogus.ONDERWERPEN[args[0]].spiekbrief()) if args else repr(o.spiek.toon)
+                inhoud.setdefault(o.spiek.titel, set()).add(tekst)
+        for titel, teksten in inhoud.items():
+            with self.subTest(titel):
+                self.assertEqual(len(teksten), 1)
+
     def test_niets_bewaard_zonder_onderwerp(self):
         opslag = {i for o in CU.onderwerpen() for i in o.opslag}
         self.assertEqual(opslag, BEWAARD)
@@ -217,7 +231,7 @@ class TestNavigatie(TestModiStarten):
         meten = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.meten")
         beeld = self.speel([OK, OK, str(HOOFDMENU.index("Spiekbrieven") + 1), "1", str(meten)])[-1]
         self.assertEqual(beeld.count("Eenheden omzetten"), 1)
-        self.assertIn("2. Meetkunde", beeld)
+        self.assertIn("2. Oppervlakte en formules", beeld)
         self.assertNotIn("3. ", beeld)
 
     def naar_hoofdrekenen(self):
