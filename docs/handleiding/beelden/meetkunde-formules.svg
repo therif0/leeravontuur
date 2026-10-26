@@ -143,8 +143,10 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 200,96 cm².  (1 s)</text>
-<text x="62" y="219" textLength="549" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Oppervlakte = π × straal × straal = 3,14 × 8 × 8 = 200,96 cm²</text>
+<text x="62" y="183" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 200,96 cm².  (2 s)</text>
+<text x="62" y="219" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Zo kan het:</text>
+<text x="8" y="237" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        3,14 × 8 × 8 = 200,96                                                   </text>
+<text x="62" y="255" textLength="549" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Oppervlakte = π × straal × straal = 3,14 × 8 × 8 = 200,96 cm²</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>

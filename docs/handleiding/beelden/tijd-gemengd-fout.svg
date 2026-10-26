@@ -140,11 +140,14 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 3 u 25 min.  (1 s)</text>
+<text x="62" y="183" textLength="495" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 3 u 25 min.  (2 s)</text>
 <text x="62" y="219" textLength="594" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Je deelde door 100. Een uur heeft 60 minuten: kijk hoeveel keer 60</text>
 <text x="62" y="237" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">erin past.</text>
-<text x="62" y="255" textLength="396" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Hoeveel keer past 60 min erin? 3 × 60 = 180.</text>
-<text x="62" y="273" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Er blijft 25 min over: 3 u 25 min.</text>
+<text x="62" y="255" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Zo kan het:</text>
+<text x="8" y="273" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        205 : 60 = 3 rest 25                                                    </text>
+<text x="8" y="291" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        3 × 60 + 25 = 205                                                       </text>
+<text x="62" y="309" textLength="396" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Hoeveel keer past 60 min erin? 3 × 60 = 180.</text>
+<text x="62" y="327" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Er blijft 25 min over: 3 u 25 min.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>

@@ -142,7 +142,7 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 2 %.  (1 s)</text>
+<text x="62" y="183" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 2 %.  (2 s)</text>
 <text x="62" y="219" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">0,02 = 2 honderdsten = 2 %.</text>
 <text x="62" y="237" textLength="252" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Kommagetal → procent: × 100.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>

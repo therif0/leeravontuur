@@ -9,7 +9,7 @@
 <rect x="638" y="35" width="9" height="9" fill="#d75f5f"/>
 <rect x="647" y="35" width="9" height="9" fill="#d75f5f"/>
 <rect x="656" y="35" width="9" height="9" fill="#d75f5f"/>
-<text x="503" y="39" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Bijna!</text>
+<text x="395" y="39" textLength="162" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Niet erg, probeer!</text>
 <rect x="602" y="44" width="72" height="18" fill="#d75f5f"/>
 <rect x="602" y="44" width="9" height="9" fill="#d75f5f"/>
 <rect x="611" y="44" width="9" height="9" fill="#d75f5f"/>
@@ -88,8 +88,7 @@
 <rect x="692" y="98" width="9" height="9" fill="#262626"/>
 <rect x="701" y="98" width="9" height="9" fill="#00d75f"/>
 <rect x="710" y="98" width="9" height="9" fill="#00875f"/>
-<text x="62" y="111" textLength="423" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Hoe schrijf je &#x27;vijf voor half elf&#x27; in cijfers?</text>
-<rect x="62" y="116" width="126" height="18" fill="#cd3131"/>
+<rect x="413" y="116" width="126" height="18" fill="#cd3131"/>
 <rect x="593" y="116" width="9" height="18" fill="#262626"/>
 <rect x="602" y="116" width="18" height="18" fill="#00d75f"/>
 <rect x="620" y="116" width="9" height="18" fill="#262626"/>
@@ -111,7 +110,8 @@
 <rect x="683" y="116" width="9" height="9" fill="#00d75f"/>
 <rect x="692" y="116" width="9" height="9" fill="#262626"/>
 <rect x="701" y="125" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="129" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold"> 11.25        </text>
+<text x="62" y="129" textLength="351" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Hoe schrijf je &#x27;half elf&#x27; in cijfers?  </text>
+<text x="413" y="129" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold"> 11.30        </text>
 <rect x="602" y="134" width="18" height="18" fill="#262626"/>
 <rect x="620" y="134" width="54" height="18" fill="#00875f"/>
 <rect x="674" y="134" width="9" height="18" fill="#262626"/>
@@ -141,11 +141,10 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="468" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 10.25 u.  (1 s)</text>
-<text x="62" y="219" textLength="612" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">&#x27;... half elf&#x27; gaat over het halfuur vóór elf uur, dus nog 10 uur en</text>
-<text x="62" y="237" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">iets.</text>
-<text x="62" y="255" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">10.25 u = vijf voor half elf.</text>
-<text x="62" y="273" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Let op: half vier = een half uur vóór vier = 3.30.</text>
+<text x="62" y="183" textLength="468" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 10.30 u.  (2 s)</text>
+<text x="62" y="219" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Half elf is een half uur vóór elf: 10.30 u.</text>
+<text x="62" y="237" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">10.30 u = half elf.</text>
+<text x="62" y="255" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Let op: half vier = een half uur vóór vier = 3.30.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>

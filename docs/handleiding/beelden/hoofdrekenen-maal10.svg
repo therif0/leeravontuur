@@ -141,7 +141,7 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="468" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 0,00006.  (1 s)</text>
+<text x="62" y="183" textLength="468" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 0,00006.  (2 s)</text>
 <text x="62" y="219" textLength="630" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">: 1000: de komma schuift 3 plaatsen naar links (vul aan met nullen als</text>
 <text x="62" y="237" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">het moet).</text>
 <text x="62" y="255" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">0,06 : 1000 = 0,00006</text>

@@ -164,9 +164,13 @@
 <text x="80" y="237" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">0</text>
 <text x="143" y="237" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">59 euro</text>
 <text x="467" y="237" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">295 euro</text>
-<text x="62" y="273" textLength="477" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 236 euro.  (1 s)</text>
-<text x="62" y="309" textLength="531" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">10 % = 295 : 10 = 29,5, dus 20 % = 2 × 29,5 = € 59 korting.</text>
-<text x="62" y="327" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Je betaalt € 295 − € 59 = € 236.</text>
+<text x="62" y="273" textLength="477" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 236 euro.  (2 s)</text>
+<text x="62" y="309" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Zo kan het:</text>
+<text x="8" y="327" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        295 : 10 = 29,5                                                         </text>
+<text x="8" y="345" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        2 × 29,5 = 59                                                           </text>
+<text x="8" y="363" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        295 − 59 = 236                                                          </text>
+<text x="62" y="381" textLength="531" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">10 % = 295 : 10 = 29,5, dus 20 % = 2 × 29,5 = € 59 korting.</text>
+<text x="62" y="399" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Je betaalt € 295 − € 59 = € 236.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>
