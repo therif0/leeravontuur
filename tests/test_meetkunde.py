@@ -177,7 +177,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         y, x = TM.kaart_plaats(Kaart(8, 8), 3, 2, 9)  # C2: kolom en rij omgewisseld
         with mock.patch.object(MK.COORDINATEN, "maak", side_effect=[kruis_vraag(), kruis_vraag()]):
-            scherm, app = self.speel([*naar(4), ("klik", y, x), *STOP], opslag=o)
+            scherm, app = self.speel([*naar(4), ("klik", y, x), ("klik", y, x), *STOP], opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "C2")
         self.assertFalse(rij["juist"])
@@ -200,7 +200,7 @@ class TestSchermen(Basis):
                   data={"soort": "omtrek", "vorm": "L", "onderwerp": "omtrek", "vol": 5, "half": 0, "omtrek": 12,
                         "binnen": 4})
         with mock.patch.object(MK.ROOSTER, "maak", side_effect=[v, v]):
-            scherm, app = self.speel([*naar(1), *"5", OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(1), *"5", OK, *"5", OK, *STOP], opslag=o)
         self.assertEqual(o.antwoorden(app.kind.id)[0]["diagnose"], "omtrek_oppervlakte")
         self.assertTrue(self.ergens(scherm, "███ = 1 cm²"))
         self.assertTrue(self.ergens(scherm, "━━━"))  # na het nakijken: de omtrek aangeduid

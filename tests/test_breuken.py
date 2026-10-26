@@ -189,7 +189,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         toetsen = [OP] * 4 + [" ", RECHTS] * 4 + ["v", "v"]  # 4/8 → 2/4 → 1/2
         with mock.patch.object(B.GELIJKWAARDIG, "maak", side_effect=[toon_vraag(), toon_vraag()]):
-            scherm, app = self.speel([*naar(2), *toetsen, OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(2), *toetsen, OK, OK, *STOP], opslag=o)  # fout: tweede kans, nog eens
         self.assertTrue(self.ergens(scherm, "Samengevoegd: 4/8 = 2/4"))
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "1/2")
@@ -201,11 +201,12 @@ class TestSchermen(Basis):
                   invoer="breuk", data={"soort": "vereenvoudigen", "t": 3, "n": 4, "f": 6, "vereenvoudigd": True,
                                         "onderwerp": "vereenvoudigen"})
         with mock.patch.object(B.GELIJKWAARDIG, "maak", side_effect=[v, v]):
-            scherm, app = self.speel([*naar(2), *"xx", OK, "\b", "\b", *"6/8", OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(2), *"xx", OK, "\b", "\b", *"6/8", OK, *"6/8", OK, *STOP], opslag=o)
         self.assertTrue(self.ergens(scherm, "Typ een breuk"))
         rij = o.antwoorden(app.kind.id)[0]
         self.assertFalse(rij["juist"])
         self.assertEqual(rij["diagnose"], "niet_vereenvoudigd")
+        self.assertIn('"eerste_fout": "6/8"', rij["extra"])
         self.assertTrue(self.ergens(scherm, "kan nog eenvoudiger"))
 
     def test_vergelijken(self):

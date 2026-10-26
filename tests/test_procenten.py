@@ -135,7 +135,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         toetsen = [("klik", 9, 8), ("klik", 10, 8), ("klik", 10, 8)]  # rij 1 vol, rij 2 vol en weer leeg
         with mock.patch.object(P.VELD, "maak", side_effect=[kleur_vraag(), kleur_vraag()]):
-            scherm, app = self.speel([*naar(1), *toetsen, OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(1), *toetsen, OK, OK, *STOP], opslag=o)
         self.assertEqual(o.antwoorden(app.kind.id)[0]["gegeven"], "10 %")
 
     def test_procent_van_met_strook(self):
@@ -144,7 +144,7 @@ class TestSchermen(Basis):
                   data={"soort": "van", "pct": 20, "totaal": 80, "onderwerp": "van"},
                   model=Procentstrook(D(80), D(20)), model_na=Procentstrook(D(80), D(20), toon_deel=True))
         with mock.patch.object(P.PROCENT_VAN, "maak", side_effect=[v, v]):
-            scherm, app = self.speel([*naar(3), *"20", OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(3), *"20", OK, *"20", OK, *STOP], opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["diagnose"], "procent_als_antwoord")
         self.assertTrue(self.ergens(scherm, "▼ 20 %"))
