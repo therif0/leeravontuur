@@ -41,7 +41,10 @@ Toetsen in de nieuwe onderwerpenlijst: **Enter** reeks van 10 · **V** vrij oefe
 - [ ] Zeg het ons → Zeg het ons
 - [ ] Stoppen → Stoppen
 
-Nieuwe volgorde: Verder · Herhalen · Wiskunde · Spiekbrieven · Mijn avatar · Zeg het ons · Wissel van kind · Stoppen.
+Wiskunde krijgt 8 domeinen: Getallen · Hoofdrekenen · Cijferen · Breuken en procenten · Meten ·
+Tijd, geld en snelheid · Meetkunde · Vraagstukken (elk hoogstens 10 onderwerpen: de cijfertoetsen 1–9 en 0).
+
+Nieuwe volgorde van het hoofdmenu: Verder · Herhalen · Wiskunde · Spiekbrieven · Mijn avatar · Zeg het ons · Wissel van kind · Stoppen.
 
 ## Wiskunde: de onderwerpen
 Nu: domein → onderwerp → Vrij oefenen / Reeks van 10 / Spiekbrief → Hoe moeilijk?
@@ -81,12 +84,9 @@ Na: Wiskunde → domein → onderwerp + toets → Hoe moeilijk?
 - [ ] Procent van een getal (Enter V S)
 - [ ] Korting en btw (Enter V S)
 
-### Eenheden + Tijd, geld en snelheid (+ 2 uit Meetkunde) → Meten
+### Eenheden (+ 2 uit Meetkunde) → Meten (9 onderwerpen)
 Eenheden kiest nu eerst de vorm (Vrij / Reeks / Tabel-oefening / Spiekbrief) en dan de maat. Na stap A eerst de maat,
 dan de toets.
-- [ ] De klok → Meten › De klok (Enter V S)
-- [ ] Tijd → Meten › Tijd (Enter V S)
-- [ ] Geld → Meten › Geld (Enter V S)
 - [ ] Eenheden › Lengte → Meten › Lengte (m) (Enter V S H)
 - [ ] Eenheden › Massa → Meten › Massa (g) (Enter V S H)
 - [ ] Eenheden › Inhoud → Meten › Inhoud (l) (Enter V S H)
@@ -97,7 +97,12 @@ dan de toets.
 - [ ] Eenheden › Spiekbrief → S op elk van de zeven maten
 - [ ] Oppervlakte en omtrek (Meetkunde) → Meten › Oppervlakte en omtrek (Enter V S)
 - [ ] Formules (Meetkunde) → Meten › Formules (Enter V S)
-- [ ] Snelheid → Meten › Snelheid (Enter V S)
+
+### Tijd, geld en snelheid (blijft een eigen domein, na Meten)
+- [ ] De klok (Enter V S)
+- [ ] Tijd (Enter V S)
+- [ ] Geld (Enter V S)
+- [ ] Snelheid (Enter V S)
 
 ### Meetkunde
 - [ ] Schatkaart (Enter V S)

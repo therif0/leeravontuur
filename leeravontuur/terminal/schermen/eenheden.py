@@ -37,21 +37,34 @@ class Eenheden:
                 ("Door elkaar", "alles wat bij je leerjaar hoort"),
                 ("Zelf kiezen", "duid zelf de eenheden aan")])
             if k is None:
-                return None
-            if k == len(E.SOORTEN) + 1:
-                gekozen = self.kies_zelf(kr)
-                if gekozen is None:
-                    continue
-                soort = "Zelf gekozen"
-            elif k == len(E.SOORTEN):
-                gekozen, soort = "alles", "Door elkaar"
-            else:
-                gekozen, soort = E.EENHEDEN[E.SOORTEN[k]], E.NAMEN[E.SOORTEN[k]]
-            niveau = self.kies_niveau(kr)
-            if niveau is not None:
-                self.app.onthoud_oefening({"onderwerp": "eenheden", "vorm": VORMEN[vorm], "eenheden": gekozen,
-                                           "niveau": niveau, "soort": soort})
-                return self.keuze(gekozen, niveau, soort)
+                return
+            maat = "zelf" if k == len(E.SOORTEN) + 1 else "alles" if k == len(E.SOORTEN) else E.SOORTEN[k]
+            if self.oefen(VORMEN[vorm], maat, kr):
+                return
+
+    def oefen(self, vorm, maat, kr):
+        """Eén eenheden-oefening: vorm 'vrij', 'reeks' of 'tabel'; maat = een soort (E.SOORTEN), 'alles' of 'zelf'.
+        Eerst (bij 'zelf') de eenheden aanduiden, dan het niveau. False als het kind onderweg terugging."""
+        if maat == "zelf":
+            gekozen = self.kies_zelf(kr)
+            if gekozen is None:
+                return False
+            soort = "Zelf gekozen"
+        elif maat == "alles":
+            gekozen, soort = "alles", "Door elkaar"
+        else:
+            gekozen, soort = E.EENHEDEN[maat], E.NAMEN[maat]
+        niveau = self.kies_niveau(kr)
+        if niveau is None:
+            return False
+        self.app.onthoud_oefening({"onderwerp": "eenheden", "vorm": vorm, "eenheden": gekozen,
+                                   "niveau": niveau, "soort": soort})
+        gekozen, jaar, soort = self.keuze(gekozen, niveau, soort)
+        if vorm == "vrij":
+            self.vrij_oefenen(gekozen, jaar, soort)
+        else:
+            self.reeks(gekozen, jaar, soort, tabel=vorm == "tabel")
+        return True
 
     def keuze(self, gekozen, niveau, soort):
         jaar = leerjaren.leerjaar_voor_niveau(self.app.inst.leerjaar, niveau)
@@ -670,13 +683,7 @@ class Eenheden:
                 if k == 3:
                     self.spiekbrief(self.kruimel + ["Spiekbrief"])
                     continue
-                keuze = self.kies_oefening(vormen[k][0])
-                if keuze is None:
-                    continue
-                if k == 0:
-                    self.vrij_oefenen(*keuze)
-                else:
-                    self.reeks(*keuze, tabel=(k == 2))
+                self.kies_oefening(vormen[k][0])
             except TerugNaar as t:
                 if t.niveau < mijn_niveau:
                     raise
