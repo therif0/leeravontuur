@@ -1,5 +1,9 @@
 # Handleiding Leeravontuur
 
+> **Let op:** sinds versie 0.20.0 zijn de menu's anders (Wiskunde › domein › onderwerp, met toetsen per
+> onderwerp; Opties is verhuisd). Deze handleiding en de schermafdrukken tonen nog de menu's van 0.19. Ze worden
+> later in één keer herschreven. Wat er veranderde, staat in de [CHANGELOG](../../CHANGELOG.md).
+
 Leeravontuur is een gratis leerprogramma van **Solve It Now** ("Iedereen moet kunnen leren") voor kinderen in
 Vlaanderen. Deze handleiding is voor de ouder en de leerkracht: wat elk onderdeel leert, welke keuzes er zijn,
 hoe je iets doet en wat het programma herkent als het kind een denkfout maakt.

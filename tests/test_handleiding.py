@@ -1,6 +1,9 @@
 """De handleiding (docs/handleiding) volgt het programma: elk onderwerp en elk startargument staat erin, elke
 verwijzing klopt en de automatische stukken (tabellen per leerjaar, denkfouten, spiekbrieven) zijn bijgewerkt.
-Rood? Draai `python3 docs/tools/handleiding.py` en vul de handleiding aan."""
+Rood? Draai `python3 docs/tools/handleiding.py` en vul de handleiding aan.
+
+De handleiding wordt in één handleidingproject herschreven (zie CLAUDE.md). Tot dan komt een nieuw onderwerp in
+NOG_TE_BESCHRIJVEN in plaats van in de handleiding: die lijst is de to-do van dat project."""
 
 import importlib.util
 import re
@@ -13,6 +16,8 @@ from leeravontuur.kern.onderwerp import ONDERWERPEN
 
 WORTEL = Path(__file__).resolve().parent.parent
 MAP = WORTEL / "docs" / "handleiding"
+
+NOG_TE_BESCHRIJVEN = set()  # onderwerp-ids (bv. "taal.werkwoorden.tt"), leeg na het handleidingproject
 
 
 def laad_script():
@@ -31,10 +36,18 @@ class TestHandleiding(unittest.TestCase):
 
     def test_elk_onderwerp_staat_erin(self):
         for o in ONDERWERPEN.values():
+            if o.id in NOG_TE_BESCHRIJVEN:
+                continue
             with self.subTest(o.id):
                 self.assertTrue(o.naam in self.alles, f"'{o.naam}' staat nergens in de handleiding")
                 self.assertTrue(f"auto:leerlijn {o.id} " in self.alles, f"geen tabel per leerjaar voor {o.id}")
                 self.assertTrue(f"auto:denkfouten {o.id} " in self.alles, f"geen denkfouten voor {o.id}")
+
+    def test_nog_te_beschrijven_bestaat(self):
+        """Elke id in NOG_TE_BESCHRIJVEN is een echt onderwerp (geen tikfout, niets vergeten na een hernoeming)."""
+        for i in NOG_TE_BESCHRIJVEN:
+            with self.subTest(i):
+                self.assertIn(i, ONDERWERPEN)
 
     def test_elk_startargument_staat_erin(self):
         tekst = self.paginas[MAP / "startargumenten.md"]
