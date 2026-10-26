@@ -55,7 +55,9 @@
     "sparen/gewoon",
     "recept/gewoon",
     "lint/stukken",
-    "per_stuk/een"
+    "per_stuk/een",
+    "tijdsduur/duur",
+    "tijdsduur/eind"
    ],
    "max": 10000,
    "factor": 12,
@@ -99,7 +101,10 @@
     "lint/over",
     "per_stuk/drie",
     "tegels/tegels",
-    "snelheid/afstand"
+    "snelheid/afstand",
+    "tijdsduur/duur",
+    "tijdsduur/eind",
+    "tijdsduur/begin"
    ],
    "max": 100000,
    "factor": 20,
@@ -151,7 +156,10 @@
     "tegels/prijs",
     "snelheid/tijd",
     "snelheid/minuten",
-    "schaal/echt"
+    "schaal/echt",
+    "tijdsduur/eind",
+    "tijdsduur/begin",
+    "tijdsduur/twee"
    ],
    "max": 1000000,
    "factor": 25,
@@ -197,7 +205,9 @@
     "gemiddelde/vier",
     "tegels/prijs",
     "snelheid/minuten",
-    "schaal/echt"
+    "schaal/echt",
+    "tijdsduur/begin",
+    "tijdsduur/twee"
    ],
    "max": 1000000,
    "factor": 30,

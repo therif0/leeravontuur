@@ -726,6 +726,75 @@
     "antwoord": "{wie} betaalt € {?}.",
     "gevraagd": "wat {wie} betaalt"
    }
+  },
+  "tijdsduur": {
+   "duur": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wat} {start} om {b}."
+     ],
+     [
+      "{wat} {einde} om {e}."
+     ]
+    ],
+    "vraag": [
+     "@vraag_duur"
+    ],
+    "antwoord": "@antw_duur",
+    "gevraagd": "hoe lang het duurt"
+   },
+   "eind": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wat} {start} om {b}."
+     ],
+     [
+      "@zin_duur"
+     ]
+    ],
+    "vraag": [
+     "Hoe laat {einde_v}?"
+    ],
+    "antwoord": "{wat} {einde} om {?} u.",
+    "gevraagd": "het eind-uur"
+   },
+   "begin": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wat} {einde} om {e}."
+     ],
+     [
+      "@zin_duur"
+     ]
+    ],
+    "vraag": [
+     "Hoe laat {start_v}?"
+    ],
+    "antwoord": "{wat} {start} om {?} u.",
+    "gevraagd": "het begin-uur"
+   },
+   "twee": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wat} {start} om {b}."
+     ],
+     [
+      "@zin_duur"
+     ],
+     [
+      "@stuk2"
+     ]
+    ],
+    "vraag": [
+     "@vraag2"
+    ],
+    "antwoord": "@antw2",
+    "gevraagd": "het uur van aankomst"
+   }
   }
  }
 }

@@ -52,6 +52,17 @@ class TestLezen(unittest.TestCase):
         self.juist("300 000 cm = 3 km")
         self.juist("2 u 15 min = 135 min")  # (geen duizendtal)
 
+    def test_kloktijden(self):
+        self.juist("8.45 u + 15 min = 9.00 u")
+        self.juist("9.45 u + 1 u 35 min = 11.20 u")
+        self.juist("16.05 u - 14.30 u = 1 u 35 min")
+        self.juist("16.05 u - 14.30 u = 95 min")
+        self.juist("23.40 u + 35 min = 0.15 u")  # over middernacht
+        self.juist("9:45 + 30 = 10:15")
+        self.assertIn("60 minuten", self.fout("9.50 u + 20 min = 9.70 u").melding)
+        self.assertIn("60 minuten", self.fout("9.50 + 20 = 9.70").melding)
+        self.juist("8,45 u = 8 u 27 min")  # met een komma is het een kommagetal, geen kloktijd
+
     def test_procent_en_breuk_van(self):
         r = self.juist("25 % van 80 = 20")
         self.assertEqual((r.schakels[0].ops, r.schakels[0].operanden), ([VAN], [25, 80]))

@@ -86,6 +86,9 @@ PARAMETERS = {  # parameter → wat het betekent (vaardigheid.parameter gaat voo
     "gram": "gewichten in stappen van (g)",
     "wiskunde.vraagstukken.oplossen.procenten": "procent korting",
     "overbodig": "kans op een overbodig gegeven",
+    "wiskunde.eenheden.klok.stap": "minuten (lezen) in stappen van",
+    "wiskunde.eenheden.klok.max_duur": "later/vroeger: hoogstens (minuten)",
+    "middernacht": "ook over middernacht",
     "fouten": "soorten klad",
     "wiskunde.vraagstukken.speurneus.structuren": "soorten vraagstukken",
     "wiskunde.vraagstukken.schatten.structuren": "soorten vraagstukken",
@@ -149,6 +152,11 @@ SOORTEN = {  # de interne namen van soorten vragen → leesbaar
     "per_stuk/een": "de prijs van één (:)", "per_stuk/drie": "regel van drie (: ×)",
     "alles_juist": "alles juist", "rekenfout": "met een rekenfout", "denkfout": "met een denkfout",
     "ongeveer": "ongeveer hoeveel?", "kan": "kan dat kloppen?",
+    "tijdsduur/duur": "tijdsduur: hoe lang? (−)", "tijdsduur/eind": "aankomstuur (+)",
+    "tijdsduur/begin": "vertrekuur: terugtellen (−)", "tijdsduur/twee": "aankomstuur in 2 stukken (+ +)",
+    # de klok
+    "lezen": "de wijzerklok lezen", "woorden_naar": "woorden → cijfers", "naar_woorden": "cijfers → woorden",
+    "zetten": "de wijzers zetten", "24uur": "24 uur", "later": "later", "vroeger": "vroeger",
     # waar dezelfde naam iets anders betekent (vaardigheid.soort gaat voor)
     "wiskunde.procenten.van.van": "procent van een getal",
     "wiskunde.meetkunde.hoeken.driehoek": "de derde hoek van een driehoek",

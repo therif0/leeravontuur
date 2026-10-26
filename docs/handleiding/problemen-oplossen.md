@@ -80,6 +80,9 @@ weg in het ouderdeel → Kinderen → Pincode.
 | Vreemde tekens in plaats van lijnen of symbolen | Opties → Eenvoudige tekens → aan, of start met `--ascii`. |
 | Kleuren zijn moeilijk te onderscheiden | Opties → Kleuren (kleurenblind, hoog contrast). |
 | Klikken doet rare dingen, of je wil tekst kopiëren | Opties → Muis → uit, of start met `--geen-muis`. |
+| Bij De klok verschijnt er geen klokvenster | Op Linux heeft Python soms het pakket voor vensters niet: `sudo apt install python3-tk` (Ubuntu, Debian) of `sudo dnf install python3-tkinter` (Fedora); op macOS met Homebrew `brew install python-tk`. Via ssh of zonder bureaublad kan het niet; dan tekent de terminal de klok zelf. |
+| Het klokvenster is niet te zien (terminal op volledig scherm) | Druk `F2`: de klok komt in de terminal. Of zet de terminal niet op volledig scherm maar gemaximaliseerd: dan blijft het klokvenster rechtsboven zichtbaar. |
+| Het klokvenster staat op een onhandige plek | Sleep het weg: de volgende keer komt het weer op die plek. |
 | `Esc` reageert traag | Een terminal kan `Esc` even laten wachten; het programma zet dat zelf kort. Werkt het toch traag, gebruik dan de knoppen onderaan. |
 
 ## Nog iets anders?

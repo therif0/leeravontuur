@@ -24,6 +24,7 @@ python3 oefeningen.py --help
 | `--geen-kleur` | geen kleuren gebruiken |
 | `--ascii` | alleen eenvoudige tekens (voor oude terminals) |
 | `--geen-muis` | muis uitzetten (tekst selecteren werkt dan gewoon) |
+| `--zonder-klokvenster` | de wijzerklok in de terminal tekenen, niet in een eigen venster |
 | `--ouder` | meteen naar het ouderdeel (rapporten, kinderen) |
 | `--wachtwoord-vergeten` | het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard) |
 | `--snelkoppeling` | menu-snelkoppeling maken (Linux) |
@@ -35,7 +36,7 @@ python3 oefeningen.py --help
 
 ## Weergave: voor één keer
 
-`--kleurenblind`, `--contrast`, `--geen-kleur`, `--ascii` en `--geen-muis` gelden **alleen voor die keer** en worden
+`--kleurenblind`, `--contrast`, `--geen-kleur`, `--ascii`, `--geen-muis` en `--zonder-klokvenster` gelden **alleen voor die keer** en worden
 niet bewaard. Wil je het altijd zo, kies het dan bij [Opties](opties.md) (per kind). Zo kan een ouder bv. even in
 hoog contrast kijken zonder de instellingen van het kind te veranderen. Hoe elk thema eruitziet:
 [Opties → De thema's naast elkaar](opties.md#de-themas-naast-elkaar).
@@ -43,6 +44,8 @@ hoog contrast kijken zonder de instellingen van het kind te veranderen. Hoe elk 
 - `--kleurenblind` zonder meer = rood-groen; `--kleurenblind blauw-geel` voor blauw-geel.
 - `--ascii` is voor oude terminals (bv. een oud Windows-venster) die lijnen of symbolen als vreemde tekens tonen.
 - `--geen-muis`: als klikken problemen geeft, of als je tekst wil selecteren en kopiëren.
+- `--zonder-klokvenster`: de wijzerklok gewoon in de terminal, zonder het [klokvenster](wiskunde/tijd-geld-snelheid.md#het-klokvenster)
+  (bv. via ssh, of als het venster op jouw computer niet goed werkt).
 
 ![--ascii](beelden/start-ascii.svg)
 

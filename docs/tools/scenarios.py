@@ -511,6 +511,60 @@ def _(d):
     d.foto("tijd-eindtijd-uitleg", "Aankomstuur: nagekeken")
 
 
+@scenario("klok-lezen")
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Hoe laat is het op de klok", OPNIEUW)
+    d.foto("klok-lezen", "De wijzerklok lezen")
+
+
+@scenario("klok-zetten")
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Zet de klok op", OPNIEUW)
+    d.toets("+", "Up", "Up", "Right")
+    d.foto("klok-zetten", "De wijzers zetten: de uurwijzer draait mee")
+
+
+@scenario("klok-woorden-fout")
+def _(d):
+    from leeravontuur.kern.wiskunde.klok import lees_woorden
+    from leeravontuur.kern.wiskunde.grootheden import klok_tekst
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek(r"Hoe schrijf je '[a-z ]*half [a-z]+' in cijfers", OPNIEUW, keer=80)
+    woorden = re.search(r"Hoe schrijf je '([a-z ]+)' in cijfers", scherm_tekst(d)).group(1)
+    antwoord(d, klok_tekst(lees_woorden(woorden) + 60).replace(" u", ""))
+    d.foto("klok-woorden-fout", "Half vier gelezen als half vijf: uitleg over 'half'")
+
+
+@scenario("klokvenster")
+def _(d):
+    """Het klokvenster (tkinter) kan tmux niet fotograferen: het beeld komt uit dezelfde vormen (venster/klokbeeld.py)."""
+    from schermafdrukken import BEELDEN
+    from leeravontuur.venster.klokbeeld import naar_svg, vormen
+    beelden = {
+        "klokvenster-lezen": (vormen(3 * 60 + 25), "Hoe laat is het op de klok?", []),
+        "klokvenster-zetten": (vormen(9 * 60 + 35, juist=7 * 60 + 40, uitslag="fout"),
+                               "Zet de klok op tien over half acht.",
+                               [("✘ De groene wijzers tonen hoe het moest.", "fout")]),
+    }
+    for naam, (lijst, vraag, onder) in beelden.items():
+        svg = naar_svg(lijst, boven=[(vraag, "cijfer")], onder=onder, titel=naam)
+        (BEELDEN / f"{naam}.svg").write_text(svg, encoding="utf-8")
+        print("  ", naam)
+
+
+@scenario("klok-ascii", argumenten=["--ascii"])
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Hoe laat is het op de klok", OPNIEUW)
+    d.foto("klok-ascii", "De wijzerklok in ASCII: # is de uurwijzer, * de minutenwijzer")
+
+
 @scenario("tijd-geld")
 def _(d):
     oefen(d, 7, 2)
@@ -689,6 +743,32 @@ def _(d):
     d.toets("a")
     antwoord(d, str(2 * (l + b) * n))
     d.foto("vraagstukken-tegels", "Met de omtrek gerekend in plaats van de oppervlakte: een hulpje")
+
+
+@scenario("vraagstukken-tijd")
+def _(d):
+    from leeravontuur.kern.wiskunde.grootheden import duur_tekst, klok_tekst, lees_duur, lees_klok
+    oefen(d, 9, 1)
+    for _ in range(300):
+        time.sleep(0.15)
+        t = verhaal(d)
+        tijden = re.findall(r"\b\d{1,2}\.\d{2} u", t)
+        duren = re.findall(r"(?<![\d.])(\d+ u \d+ min|\d+ min)", t)
+        if "Hoe laat" in t and len(tijden) == 1 and len(duren) == 1 and lees_klok(tijden[0]) % 60:
+            break
+        d.toets(*OPNIEUW)
+    else:
+        raise RuntimeError("geen vraagstuk met een aankomstuur gevonden")
+    b, du = lees_klok(tijden[0]), int(lees_duur(duren[0]))
+    terug = re.search(r"Hoe laat (begint|vertrek|moet)", t) is not None  # terugtellen
+    op, teken = (-1, "-") if terug else (1, "+")
+    u, m = divmod(int(b), 60)
+    honderd = u * 100 + m + op * du  # alsof een uur 100 minuten heeft
+    d.toets("Tab", ("tekst", teken), "Enter")
+    d.toets(("tekst", f"{u}.{m:02d} {teken} {du} = {honderd // 100}.{honderd % 100:02d}"), "Enter")
+    d.foto("vraagstukken-tijd-fout", "Gerekend alsof een uur 100 minuten heeft: de hint in het klad")
+    d.toets(("tekst", f"{klok_tekst(b)} {teken} {duur_tekst(du)} = {klok_tekst(b + op * du)}"), "Enter")
+    d.foto("vraagstukken-tijd", "Kloktijden in het klad: een tijdstip ± een tijdsduur = een tijdstip")
 
 
 @scenario("vraagstukken-speurneus")

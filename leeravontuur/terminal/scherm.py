@@ -13,6 +13,9 @@ ENTER = (10, 13, curses.KEY_ENTER)
 BACKSPACE = (curses.KEY_BACKSPACE, 127, 8)
 ESC = 27
 NIETS = -1
+# toetsen die het klokvenster doorgeeft (terminal/venster.py)
+VENSTER_TOETSEN = {"Enter": 10, "Escape": 27, "Left": curses.KEY_LEFT, "Right": curses.KEY_RIGHT,
+                   "Up": curses.KEY_UP, "Down": curses.KEY_DOWN, "BackSpace": curses.KEY_BACKSPACE, "Tab": 9}
 
 WIEL_OP = getattr(curses, "BUTTON4_PRESSED", 0x10000)
 WIEL_NEER = getattr(curses, "BUTTON5_PRESSED", 0x200000)
@@ -58,6 +61,7 @@ class Scherm:
         self.status = ""       # rechts in de titelbalk
         self.status_kort = ""  # als er weinig plaats is
         self.slot = None       # seconden zonder toets waarna Vergrendeld volgt (None = nooit)
+        self.klokvenster = None  # terminal/venster.Klokvenster, of None (dan tekent de terminal de klok)
         self._laatste_toets = time.monotonic()
         try:
             win.keypad(True)
@@ -115,6 +119,8 @@ class Scherm:
     def nieuw(self, kruimel, knoppen=()):
         """Leeg scherm met titelbalk (broodkruimel, klikbaar) en een voetbalk met knoppen."""
         self.win.erase()
+        if self.klokvenster:
+            self.klokvenster.nieuw_beeld()
         self.zones.wis()
         h, w = self.win.getmaxyx()
         self.put(0, 0, " " * w, "titel")
@@ -173,23 +179,37 @@ class Scherm:
         bv. ("kies", 2) of ("scroll", 1). Een klik op de broodkruimel geeft TerugNaar.
         """
         self.win.refresh()
+        venster = self.klokvenster
+        if venster:
+            venster.beeld_klaar()
         self._laatste_toets = time.monotonic()
+        tik = 100 if venster else None  # met een klokvenster: kort wachten en dan het venster nakijken
+        wacht = [w for w in (wacht_ms, tik) if w]
         try:
-            self.win.timeout(wacht_ms if wacht_ms else 1000 if self.slot else -1)
+            self.win.timeout(min(wacht) if wacht else 1000 if self.slot else -1)
         except (curses.error, AttributeError):
             pass
+        stap = (tik or wacht_ms or 1000) / 1000
         wachtbeurten = 0
         while True:
+            k = self._van_venster(venster.volgende()) if venster else None
+            if k is not None:
+                if isinstance(k, str):  # een getypt teken in het klokvenster: zoals hieronder
+                    return ("teken", k) if is_functietoets(ord(k)) else ord(k)
+                return k
             try:
                 k = self.win.get_wch()
-            except curses.error:  # geen toets binnen de tijd (telkens 1 seconde)
-                if wacht_ms:
-                    return NIETS
+            except curses.error:  # geen toets binnen de tijd
                 wachtbeurten += 1
-                stil = max(time.monotonic() - self._laatste_toets, wachtbeurten * 1.0)
+                stil = max(time.monotonic() - self._laatste_toets, wachtbeurten * stap)
+                if wacht_ms and (not tik or stil * 1000 >= wacht_ms):
+                    return NIETS
                 if self.slot and stil >= self.slot:
                     raise Vergrendeld()
                 continue
+            if k == curses.KEY_F2 and venster and venster.getekend:  # de klok in de terminal of terug in het venster
+                venster.wissel()
+                return curses.KEY_RESIZE  # opnieuw tekenen
             if isinstance(k, str):
                 if len(k) != 1:
                     k = NIETS
@@ -208,10 +228,35 @@ class Scherm:
                 actie = self._muis()
                 if actie is None:
                     continue
+                if actie == ("klokvenster",):
+                    if venster:
+                        venster.wissel()
+                    return curses.KEY_RESIZE
                 if isinstance(actie, tuple) and actie[0] == "kruimel":
                     raise TerugNaar(actie[1])
                 return actie
             return k
+
+    @staticmethod
+    def _van_venster(b):
+        """Een bericht uit het klokvenster als toets: een code, een getypt teken (str), ("wijzer", dx, dy) of
+        KEY_RESIZE (opnieuw tekenen, bv. toen het kind het venster sloot)."""
+        if not b:
+            return None
+        if "toets" in b:
+            t = b["toets"]
+            if t in VENSTER_TOETSEN:
+                return VENSTER_TOETSEN[t]
+            return t if isinstance(t, str) and len(t) == 1 else None
+        if "klik" in b:
+            try:
+                dx, dy = (float(x) for x in b["klik"])
+            except (TypeError, ValueError):
+                return None
+            return ("wijzer", dx, dy)
+        if b.get("dicht"):
+            return curses.KEY_RESIZE
+        return None
 
     def _muis(self):
         try:

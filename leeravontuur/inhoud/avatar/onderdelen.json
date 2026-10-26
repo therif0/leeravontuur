@@ -552,6 +552,7 @@
    ]
   },
   "kladblok": {"naam": "Kladblok", "anker": "mond", "dy": -1, "dx": 5, "pixels": ["Z.Z.Z", "NNNNN", "NBBNN", "NNNNN", "NBBBN", "NNNNN"]},
-  "vergrootglas": {"naam": "Vergrootglas (Speurneus)", "anker": "mond", "dy": -2, "dx": 5, "pixels": [".ZZZ..", "ZCCCZ.", "ZCWCZ.", "ZCCCZ.", ".ZZZ..", "....M.", ".....M"]}
+  "vergrootglas": {"naam": "Vergrootglas (Speurneus)", "anker": "mond", "dy": -2, "dx": 5, "pixels": [".ZZZ..", "ZCCCZ.", "ZCWCZ.", "ZCCCZ.", ".ZZZ..", "....M.", ".....M"]},
+  "wekker": {"naam": "Wekker", "anker": "mond", "dy": -2, "dx": 5, "pixels": ["R...R", ".RRR.", "RWBWR", "RWBBR", "RWWWR", ".RRR.", "B...B"]}
  }
 }

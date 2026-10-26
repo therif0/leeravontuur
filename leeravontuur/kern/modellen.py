@@ -324,6 +324,7 @@ class Verhaal:
     eenheid: str = ""            # van het antwoord ('€', 'm', 'broodjes' …)
     controle: tuple | None = None  # (laagste, hoogste, uitleg): een antwoord daarbuiten kan niet kloppen
     paden: list = field(default_factory=list)  # foute paden: [(code, tekst, waarde, {stap-id: waarde})]
+    soort: str = "getal"         # het antwoord: een getal, een tijdstip ('klok', in minuten) of een tijdsduur ('duur')
 
 
 @dataclass
@@ -346,3 +347,15 @@ class Keuze:
     opties: list
     juist: int
     uitleg: list
+
+
+@dataclass
+class Wijzerklok:
+    """Een wijzerklok die `minuten` (na middernacht) aanwijst. De terminal tekent ze rond, met 2 wijzers."""
+    minuten: int
+    wijzers: bool = True
+
+    def hoeken(self):
+        """(hoek uurwijzer, hoek minutenwijzer) in graden, met de klok mee vanaf 12."""
+        u, m = divmod(int(self.minuten) % 720, 60)
+        return (u + m / 60) * 30, m * 6

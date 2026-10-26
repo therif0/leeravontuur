@@ -16,7 +16,7 @@ Scrollen met `↑` `↓` of het scrollwiel, terug met `Esc`.
 | Cijferen | onder elkaar optellen, aftrekken, vermenigvuldigen, de staartdeling | [Cijferen](wiskunde/cijferen.md#spiekbrief) |
 | Breuken | teller en noemer, gelijknamig maken, vereenvoudigen, breuk van | [Breuken](wiskunde/breuken.md#spiekbrief) |
 | Procenten | procent = per honderd, handige procenten, korting en btw | [Procenten](wiskunde/procenten.md#spiekbrief) |
-| Tijd, geld en snelheid | 60 minuten in een uur, wisselgeld, afstand = snelheid × tijd | [Tijd, geld en snelheid](wiskunde/tijd-geld-snelheid.md#spiekbrief) |
+| Tijd, geld en snelheid | 60 minuten in een uur, de wijzerklok, half vier = 3.30, wisselgeld, afstand = snelheid × tijd | [Tijd, geld en snelheid](wiskunde/tijd-geld-snelheid.md#spiekbrief) |
 | Meetkunde | formules, soorten hoeken, coördinaten, schaal | [Meetkunde](wiskunde/meetkunde.md#spiekbrief) |
 | Vraagstukken | de 4 stappen, sleutelwoorden, het klad, kan dat kloppen? | [Vraagstukken](wiskunde/vraagstukken.md#spiekbrief) |
 

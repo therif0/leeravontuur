@@ -35,6 +35,7 @@ class Instellingen:
     avatar: bool = True
     animaties: bool = True
     winkel_straf: str = "pakje"  # bij 2x een foute som in de winkel: pakje / tijd / kosten / geen
+    klokvenster: bool = True  # de wijzerklok in een eigen venster (tkinter), als dat kan
 
     def gecontroleerd(self):
         """Zet ongeldige waarden terug op de standaard."""
@@ -54,7 +55,7 @@ class Instellingen:
             self.typrichting = std.typrichting
         if self.winkel_straf not in STRAFFEN:
             self.winkel_straf = std.winkel_straf
-        for veld in ("timer_zichtbaar", "avatar", "animaties"):
+        for veld in ("timer_zichtbaar", "avatar", "animaties", "klokvenster"):
             if not isinstance(getattr(self, veld), bool):
                 setattr(self, veld, getattr(std, veld))
         return self

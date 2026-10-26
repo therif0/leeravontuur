@@ -18,9 +18,11 @@
 <text x="8" y="201" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       6. Procenten                </text>
 <text x="323" y="201" textLength="360" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">honderdveld, procent van, korting en btw</text>
 <text x="8" y="219" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       7. Tijd, geld en snelheid   </text>
-<text x="323" y="219" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">uren en minuten, wisselgeld, km/u</text>
+<text x="323" y="219" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">de klok, uren en minuten, wisselgeld, km/u</text>
 <text x="8" y="237" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       8. Meetkunde                </text>
 <text x="323" y="237" textLength="405" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">oppervlakte en omtrek, formules, hoeken, scha</text>
+<text x="8" y="255" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       9. Vraagstukken             </text>
+<text x="323" y="255" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">oplossen in 4 stappen, Speurneus, schatten</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="36" height="18" fill="#000000"/>
 <rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>

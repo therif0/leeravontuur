@@ -8,7 +8,7 @@ import unittest
 from leeravontuur.kern.instellingen import Instellingen
 from leeravontuur.kern.opslag import Opslag
 from leeravontuur.terminal.app import App
-from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
+from leeravontuur.terminal.nepscherm import NepKlokvenster, NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 
 ESC = "\x1b"
@@ -55,10 +55,12 @@ class Basis(unittest.TestCase):
                 o.zet_algemeen("laatste_kind", kind.id)
         return o
 
-    def speel(self, toetsen, opslag=None, voorrang=None, **scherm_opties):
-        """Speelt de toetsen af. Geeft (nepscherm, app). Stopt netjes als de toetsen op zijn."""
+    def speel(self, toetsen, opslag=None, voorrang=None, klokvenster=None, **scherm_opties):
+        """Speelt de toetsen af. Geeft (nepscherm, app). Stopt netjes als de toetsen op zijn.
+        klokvenster: een NepKlokvenster (anders tekent de terminal de klok, zoals zonder beeldscherm)."""
         scherm = NepScherm(toetsen, **scherm_opties)
         app = App(scherm, opslag or self.opslag(("Test", "5")), voorrang, kleuren=False)
+        app.s.klokvenster = klokvenster
         try:
             app.start()
         except ToetsenOp:
@@ -279,6 +281,134 @@ class TestSpeurneusEnSchatten(Basis):
         rij = o.antwoorden(app.kind.id)[-1]
         self.assertEqual(rij["vaardigheid"], "wiskunde.vraagstukken.schatten")
         self.assertTrue(rij["gegeven"].startswith("a)"))
+
+
+class TestKlok(Basis):
+    """Leren › Wiskunde › Tijd, geld en snelheid › De klok › Vrij oefenen, met een vaste vraag."""
+    START = [OK, OK, "2", "1", "7", "4", "1", "2"]
+
+    def vaste_vraag(self, soort, t):
+        import random
+        from decimal import Decimal
+        from unittest import mock
+        from leeravontuur.kern.modellen import Wijzerklok
+        from leeravontuur.kern.wiskunde import klok as K
+        v = K.KLOK.maak_met(K.KLOK.parameters("5"), random.Random(1), {"soort": soort, "t": t})
+        if v.data.get("t") != t:  # de soort kiest zelf een tijd: zet ze vast
+            v.data["t"], v.antwoord = t, Decimal(t)
+            v.verwacht_tekst = K.woorden(t) if soort == "naar_woorden" else K.klok12(t)
+            if isinstance(v.model, Wijzerklok) and soort != "zetten":
+                v.model = Wijzerklok(t)
+        patch = mock.patch.object(K.KLOK, "maak", return_value=v)
+        patch.start()
+        self.addCleanup(patch.stop)
+        return v
+
+    def test_lezen_ook_in_ascii(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"3.25", OK, ESC, ESC, ESC, ESC, ESC], opslag=o,
+                                 voorrang={"ascii": True})
+        self.assertTrue(self.ergens(scherm, "Hoe laat"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["vaardigheid"], rij["juist"]), ("wiskunde.eenheden.klok", 1))
+        for beeld in scherm.beelden:
+            self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
+
+    def test_half_vier_is_geen_half_vijf(self):
+        v = self.vaste_vraag("woorden_naar", 3 * 60 + 30)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["juist"], rij["diagnose"]), (0, "klok_half"), v.tekst)
+
+    def test_in_woorden(self):
+        self.vaste_vraag("naar_woorden", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"vijf voor half vier", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
+
+    def test_wijzers_zetten(self):
+        v = self.vaste_vraag("zetten", 7 * 60 + 40)
+        stappen = (int(v.antwoord) - int(v.model.minuten)) % 720
+        toetsen = [ord("+")] * (stappen // 60) + [curses.KEY_RIGHT] * (stappen % 60)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *toetsen, OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
+        beeld = next(b for b in scherm.beelden if "Zet de klok" in b).split("\n")
+        self.assertIn("[Enter]", beeld[-1])  # de hint staat niet over de knoppen
+
+
+class TestKlokvenster(TestKlok):
+    """De klok in een eigen venster (zonder echt proces): de terminal verwijst ernaar, klikken en toetsen uit het
+    venster komen in de oefening, en zonder klok in beeld verdwijnt het venster."""
+
+    def test_lezen_in_het_venster(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        kv = NepKlokvenster([{"toets": "3"}, {"toets": "."}, {"toets": "2"}, {"toets": "5"}, {"toets": "Enter"}])
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ("wacht",), ("wacht",),
+                                  ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC], opslag=o, klokvenster=kv)
+        self.assertTrue(self.ergens(scherm, "De klok staat in een eigen venster"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["gegeven"], rij["juist"]), ("3.25", 1))
+        getoond = [b for b in kv.gekregen if b.get("doe") == "toon"]
+        self.assertEqual(getoond[0]["minuten"], 205)
+        self.assertEqual(getoond[0]["tekst"], "Hoe laat is het op de klok?")
+        self.assertEqual(getoond[-1]["uitslag"], "goed")
+        self.assertEqual(kv.gekregen[-1], {"doe": "verberg"})  # terug in het menu: het venster weg
+
+    def test_wijzers_zetten_met_een_klik_in_het_venster(self):
+        v = self.vaste_vraag("zetten", 7 * 60)
+        o = self.opslag(("Test", "5"))
+        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}])  # de lange wijzer recht naar boven
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
+                                 opslag=o, klokvenster=kv)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertTrue(rij["gegeven"].endswith(".00 u") or rij["gegeven"].endswith(".00"), rij["gegeven"])
+        toon = [b for b in kv.gekregen if b.get("doe") == "toon"]
+        self.assertTrue(toon[0]["klikbaar"])
+        if not rij["juist"]:  # het uur stond anders: dan tonen groene wijzers hoe het moest
+            self.assertEqual(toon[-1]["juist"], int(v.antwoord) % 720)
+
+    def test_venster_gesloten_dan_klok_in_de_terminal(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        kv = NepKlokvenster([{"dicht": True}])
+        scherm, _ = self.speel([*self.START, ("wacht",), ("wacht",), ESC, ESC, ESC, ESC], klokvenster=kv)
+        laatste = next(b for b in reversed(scherm.beelden) if "Hoe laat is het" in b)
+        self.assertNotIn("klokvenster", laatste)
+        self.assertIn("12", laatste)  # de wijzerplaat in de terminal
+
+    def test_f2_klok_in_de_terminal_en_terug(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        kv = NepKlokvenster()
+        scherm, _ = self.speel([*self.START, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
+        vragen = [b for b in scherm.beelden if "Hoe laat is het" in b]
+        self.assertIn("Zie je hem niet? Druk F2", vragen[0])
+        self.assertNotIn("eigen venster", vragen[-1])  # nu de klok in de terminal
+        self.assertIn({"doe": "verberg"}, kv.gekregen)
+        self.assertTrue(kv.in_terminal)  # en dat blijft zo, ook bij de volgende vraag
+        kv = NepKlokvenster()
+        scherm, _ = self.speel([*self.START, curses.KEY_F2, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
+        self.assertIn("eigen venster", [b for b in scherm.beelden if "Hoe laat is het" in b][-1])  # terug
+
+    def test_tekst_blijft_links_van_het_venster(self):
+        self.vaste_vraag("later", 8 * 60 + 50)
+        kv = NepKlokvenster()
+        scherm, _ = self.speel([*self.START, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
+        nagekeken = next(b for b in scherm.beelden if "Niet juist" in b)
+        beeld = nagekeken.split("\n")
+        for regel in beeld[11:23]:  # onder het oefenmaatje: de feedback en de uitleg
+            self.assertLessEqual(len(regel.rstrip()), 60, regel)
+
+    def test_versleepte_plek_onthouden(self):
+        o = self.opslag(("Test", "5"))
+        bewaard = []
+        kv = NepKlokvenster([{"plek": [10, 20, 300, 390]}])
+        kv.bij_plek = bewaard.append
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        self.speel([*self.START, ("wacht",), ("wacht",), ESC, ESC, ESC, ESC], opslag=o, klokvenster=kv)
+        self.assertEqual(bewaard, [[10, 20, 300, 390]])
 
 
 class TestTypen(Basis):

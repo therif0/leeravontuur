@@ -2,7 +2,7 @@
 
 from . import vaardigheden
 from .onderwerp import ONDERWERPEN  # noqa: F401
-from .wiskunde import (breuken, cijferen, eenheden, getallen, grootheden, hoofdrekenen, meetkunde,  # noqa: F401
+from .wiskunde import (breuken, cijferen, eenheden, getallen, grootheden, hoofdrekenen, klok, meetkunde,  # noqa: F401
                        procenten, vraagstukken)  # (registreren zich bij het importeren)
 
 

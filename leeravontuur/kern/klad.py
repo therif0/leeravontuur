@@ -102,6 +102,11 @@ def _tokens(tekst):
             i += 1
             continue
         if c.isdigit():
+            k = re.match(r"(\d{1,2})(?::(\d{2})(?:\s*u(?![A-Za-z]))?|\.(\d{2})\s*u(?![A-Za-z]))(?![\d.,])", t[i:])
+            if k and int(k.group(1)) < 24 and int(k.group(2) or k.group(3)) < 60:  # een tijdstip: 9.45 u of 9:45
+                uit.append(("tijdstip", int(k.group(1)) * 60 + int(k.group(2) or k.group(3)), k.group(0)))
+                i += len(k.group(0))
+                continue
             m = re.match(r"\d{1,3}(?: \d{3})+(?![\d.,])|\d+(?:[.,]\d+)*", t[i:])  # ook 300 000
             uit.append(("getal", m.group(0).replace(" ", ""), m.group(0)))
             i += len(m.group(0))
@@ -153,10 +158,12 @@ class _Fout(Exception):
 class _Lezer:
     """Rekent één deel (tussen twee =) uit. Eenheden tellen bij + en − niet mee, behalve bij omzetten."""
 
-    def __init__(self, tokens):
+    def __init__(self, tokens, tijd=False):
         self.t = tokens
         self.i = 0
         self.ops, self.operanden = [], []
+        self.tijd = tijd    # er staat een tijdstip in de regel: tijdsduren tellen in minuten
+        self.klok = False   # er staat een tijdstip in dit deel
 
     def kijk(self):
         return self.t[self.i] if self.i < len(self.t) else (None, None, None)
@@ -198,6 +205,13 @@ class _Lezer:
         if soort == "eenheid" and waarde == "€":  # € 3,20
             self.neem()
             soort, waarde, _ = self.kijk()
+        if soort == "tijdstip":
+            self.neem()
+            self.klok = True
+            self.operanden.append(Fraction(waarde))
+            return Fraction(waarde)
+        if self.tijd and soort == "getal":
+            return self.duur()
         if soort != "getal":
             raise _Fout("getal verwacht")
         self.neem()
@@ -213,6 +227,24 @@ class _Lezer:
         return g
 
 
+    def duur(self):
+        """Een tijdsduur in minuten: 20, 20 min, 1 u, 1 u 20 min, 1 u 20."""
+        totaal = Fraction(0)
+        while self.kijk()[0] == "getal":
+            g = _getal(self.neem()[1])
+            if g is None:
+                raise _Fout("getal")
+            eenheid = self.kijk()[1].lower() if self.kijk()[0] == "eenheid" else ""
+            if eenheid:
+                self.neem()
+            factor = soort_van(eenheid)[1] if soort_van(eenheid)[0] == "tijd" else Fraction(60)
+            totaal += g * factor / 60
+            if eenheid not in ("u", "uur", "uren"):
+                break
+        self.operanden.append(totaal)
+        return totaal
+
+
 def _reken(op, a, b):
     if a is None or b is None:
         return None
@@ -225,8 +257,20 @@ def _reken(op, a, b):
     return a / b if b else None
 
 
-def _grootheid(tokens):
-    """Een deel dat alleen een getal (met eenheden) is: 750 g, € 3,20, 2 u 15 min, 6 rest 1. Anders None."""
+def _grootheid(tokens, tijd=False):
+    """Een deel dat alleen een getal (met eenheden) is: 750 g, € 3,20, 2 u 15 min, 6 rest 1. Anders None.
+    Met tijd (er staat een tijdstip in de regel) is een tijdsduur in minuten, en een tijdstip ook."""
+    if len(tokens) == 1 and tokens[0][0] == "tijdstip":
+        return Grootheid(Fraction(tokens[0][1]), "klok", "klok")
+    g = _grootheid_(tokens)
+    if tijd and g is not None and g.soort == "tijd":
+        return Grootheid(g.basis / 60, "min", "tijd", g.basis)
+    if tijd and g is not None and not g.eenheid and g.rest is None:
+        return Grootheid(g.getal, "min", "tijd", g.getal * 60)  # een kaal getal is hier minuten
+    return g
+
+
+def _grootheid_(tokens):
     euro_voor = bool(tokens) and tokens[0][:2] == ("eenheid", "€")
     toks = tokens[1:] if euro_voor else tokens
     if not toks or toks[0][0] != "getal":
@@ -286,6 +330,8 @@ def _netjes(tokens):
     for i, (soort, waarde, tekst) in enumerate(tokens):
         if soort == "getal":
             tekst = tekst.replace(".", ",") if _decimalen(tekst) else tekst
+        elif soort == "tijdstip":
+            tekst = re.sub(r"\s*u$", " u", tekst)
         elif soort == "op":
             fractie = tekst == "/" and i + 2 < len(tokens) and tokens[i + 2][1] == VAN  # 3/4 van 24
             tekst = "/" if fractie else waarde
@@ -338,14 +384,15 @@ def lees_regel(tekst):
             regel.leesbaar = False
             regel.melding = "Er ontbreekt iets rond het =-teken."
         return regel
+    tijd = any(x[0] == "tijdstip" for x in tokens)
     try:
         waarden = []
         for d in delen:
-            lz = _Lezer(d)
+            lz = _Lezer(d, tijd)
             w = lz.expr()
-            if lz.i != len(d) and _grootheid(d) is None:
+            if lz.i != len(d) and _grootheid(d, tijd) is None:
                 raise _Fout("rest")
-            waarden.append((w, lz, _grootheid(d)))
+            waarden.append((w, lz, _grootheid(d, tijd)))
     except (_Fout, ZeroDivisionError):
         regel.leesbaar = False
         regel.melding = "Dit kan ik niet lezen. Kijk je getallen en tekens na."
@@ -365,6 +412,8 @@ def lees_regel(tekst):
                                           links_tekst=links_tekst, links=gl))
             continue
         echt = wl
+        if tijd and echt is not None and ll.klok:  # een tijdstip: over middernacht telt rond
+            echt = echt % 1440
         if gegeven.rest is not None:  # 25 : 4 = 6 rest 1
             ok = (ll.ops == [DEEL] and len(ll.operanden) == 2 and gegeven.getal.denominator == 1
                   and gegeven.rest.denominator == 1 and 0 <= gegeven.rest < ll.operanden[1]
@@ -388,6 +437,8 @@ def lees_regel(tekst):
     fout = next((s for s in regel.schakels if not s.juist), None)
     if fout:
         regel.melding = rekenfout_tekst(fout)
+        if tijd or re.search(r"\d[.:]\d{2}", t):
+            regel.melding += " Een uur heeft 60 minuten, geen 100."
     return regel
 
 

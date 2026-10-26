@@ -34,13 +34,17 @@ HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -
          "duur": "Typ uren en minuten, bv. 2 u 15 min (of 2u15).",
          "klok": "Typ een tijdstip, bv. 11.15 u (of 11:15).",
          "woord": "Typ scherp, recht, stomp, gestrekt of vol en druk Enter.",
-         "plek": "Eerst de letter (of x), dan het getal (of y): bv. C4 of (3, −2)."}
+         "plek": "Eerst de letter (of x), dan het getal (of y): bv. C4 of (3, −2).",
+         "klokwoord": "Typ in woorden, bv. kwart over drie of vijf voor half vier."}
 ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 3/4).",
               "vergelijk": "Typ <, > of =.",
               "duur": "Typ uren en minuten, bv. 2 u 15 min. Minuten: hoogstens 59.",
               "klok": "Typ een tijdstip, bv. 11.15 u. Minuten: hoogstens 59.",
               "woord": "Typ scherp, recht, stomp, gestrekt of vol.",
-              "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel)."}
+              "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel).",
+              "klokwoord": "Typ bv. kwart over drie, half vier of vijf voor half vier."}
+VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
+LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
 INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen invoer-object
 
 
@@ -127,7 +131,10 @@ class Oefenaar:
             self.start(o, data["vorm"], data["niveau"])
 
     def spiekbrief(self, kr, o):
-        regels = o.spiekbrief() or [(o.naam, "accent"), ("", ""), (o.omschrijving, "")]
+        regels = []
+        for x in (o if isinstance(o, (list, tuple)) else [o]):  # een domein kan meer spiekbrieven hebben
+            regels += ([("", "")] if regels else []) + (x.spiekbrief() or [(x.naam, "accent"), ("", ""),
+                                                                            (x.omschrijving, "")])
         self.s.lezer(kr, regels, [("Esc", "terug", ("terug",))],
                      {k: None for k in (ESC, ord("q"), *ENTER, ("terug",))})
 
@@ -182,7 +189,7 @@ class Oefenaar:
             vy, vx = y, x + len(v.tekst) + 2  # waar het antwoordvak staat
             if eigen:
                 pass
-            elif lijnen or obj or vx + 14 + len(v.eenheid) <= 62:  # past naast de vraag (links van het maatje)
+            elif lijnen or obj or vx + VAK.get(v.invoer, 12) + 2 + len(v.eenheid) <= 62:  # past naast de vraag (links van het maatje)
                 s.put(y, x, v.tekst + "  ", "bold")
             else:  # lange vraag: over meer regels, het antwoordvak eronder
                 regels = textwrap.wrap(v.tekst, 54)
@@ -191,7 +198,7 @@ class Oefenaar:
                 vy, vx = y - 1 + len(regels), x
             if not lijnen and not obj:
                 rol = "veld" if goed is None else ("goedvak" if goed else "foutvak")
-                s.tekstvak(vy, vx, buf, 12, rol)
+                s.tekstvak(vy, vx, buf, VAK.get(v.invoer, 12), rol)
                 if v.eenheid:
                     s.put(vy, vx + 15, v.eenheid, "bold")
             fb, fx, breed = y + 3, x, 70  # waar de feedback begint (rij, kolom) en hoe breed ze mag zijn
@@ -205,7 +212,7 @@ class Oefenaar:
                 obj.teken(s, 8, goed, tip)
                 if getattr(obj, "naast", None):  # hoog invoer-object: de feedback komt ernaast
                     fb, fx = obj.naast
-                    breed, hint_y = 78 - fx, 9 + obj.hoogte() + 1
+                    breed, hint_y = 78 - fx, min(9 + obj.hoogte() + 1, s.maat()[0] - 2)
                 else:
                     fb = 8 + obj.hoogte(goed is not None) + 1
                 melding = obj.melding
@@ -222,12 +229,14 @@ class Oefenaar:
                     M.teken_getallenlijn(s, 9, model, goed_bij=v.antwoord if goed is False else None)
                     fb = 14
                 else:
-                    h, b = M.teken_model(s, 9, model)  # rij 9: onder het maatje
+                    h, b = M.teken_model(s, 9, model, uitslag=goed, tekst=v.tekst)  # rij 9: onder het maatje
                     if h > 7:  # hoog model: de feedback komt ernaast
                         fb, fx = 10, 8 + b + 3
                         breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
+            if s.klokvenster is not None and s.klokvenster.toont():  # het klokvenster staat rechts: tekst links
+                breed = min(breed, LINKS - fx)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
                 if eigen:  # de melding mag over 3 regels (dan valt de hint weg)
@@ -306,7 +315,7 @@ class Oefenaar:
                 buf = fmt(lijnen[-1].streepjes()[cursor])
                 getal = o.lees_vraag(v, buf)
             elif k not in ENTER:
-                buf = s.bewerk(buf, k, 12)
+                buf = s.bewerk(buf, k, VAK.get(v.invoer, 12))
                 melding = ""
                 continue
             else:

@@ -21,6 +21,8 @@ def maak_parser():
     p.add_argument("--geen-kleur", action="store_true", help="geen kleuren gebruiken")
     p.add_argument("--ascii", action="store_true", help="alleen eenvoudige tekens (voor oude terminals)")
     p.add_argument("--geen-muis", action="store_true", help="muis uitzetten (tekst selecteren werkt dan gewoon)")
+    p.add_argument("--zonder-klokvenster", action="store_true",
+                   help="de wijzerklok in de terminal tekenen, niet in een eigen venster")
     p.add_argument("--ouder", action="store_true", help="meteen naar het ouderdeel (rapporten, kinderen)")
     p.add_argument("--wachtwoord-vergeten", action="store_true",
                    help="het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard)")
@@ -141,6 +143,8 @@ def main(argv=None):
         voorrang["ascii"] = True
     if args.geen_muis:
         voorrang["muis"] = False
+    if args.zonder_klokvenster:
+        voorrang["klokvenster"] = False
 
     from .kern import slot
     al_open = slot.bezet()
@@ -176,6 +180,8 @@ def main(argv=None):
         foutlog.schrijf("buiten het menu", e)
         mislukt = e
     app = houder.get("app")
+    if app:
+        app.zet_klokvenster(False)
     groet = "Tot de volgende keer!"
     if app and app.kind:
         groet = f"Tot de volgende keer, {app.kind.naam}!"

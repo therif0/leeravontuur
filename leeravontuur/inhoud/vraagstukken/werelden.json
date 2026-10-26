@@ -1,5 +1,5 @@
 {
- "uitleg": "Werelden voor de verhaalmachine (kern/wiskunde/vraagstukken.py). Een woord is 'enkelvoud|meervoud|lidwoord'. '@naam' = een naam uit 'namen'. Elk soort item hoort bij een rekenstructuur: groep (×, :, rest, eerlijk verdelen), tel (samen, verschil), koop (wisselgeld, twee soorten), kg (prijs per kg), duur (korting, sparen), recept, deel (breuk van), tuin (omtrek), rit (snelheid), kaart (schaal), vloer (tegels), lint (in stukken). Bereiken zijn [min, max]; prijzen in euro.",
+ "uitleg": "Werelden voor de verhaalmachine (kern/wiskunde/vraagstukken.py). Een woord is 'enkelvoud|meervoud|lidwoord'. '@naam' = een naam uit 'namen'. Elk soort item hoort bij een rekenstructuur: groep (×, :, rest, eerlijk verdelen), tel (samen, verschil), koop (wisselgeld, twee soorten), kg (prijs per kg), duur (korting, sparen), recept, deel (breuk van), tuin (omtrek), rit (snelheid), kaart (schaal), vloer (tegels), lint (in stukken), agenda (tijdstippen en tijdsduur). Bereiken zijn [min, max]; prijzen in euro.",
  "namen": [
   "Lotte",
   "Bram",
@@ -904,6 +904,33 @@
       25000
      ]
     }
+   ],
+   "agenda": [
+    {
+     "wat": "de bus",
+     "start": "vertrekt",
+     "einde": "komt aan",
+     "start_v": "vertrekt de bus",
+     "einde_v": "komt de bus aan",
+     "zin_duur": "De busrit duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de busrit?",
+     "antw_duur": "De busrit duurt {?}.",
+     "van": [
+      7,
+      10
+     ],
+     "duur": [
+      35,
+      150
+     ],
+     "stuk2": "Daarna wandelt de klas nog {d2} naar het kasteel.",
+     "d2": [
+      15,
+      45
+     ],
+     "vraag2": "Hoe laat komt de klas aan bij het kasteel?",
+     "antw2": "De klas komt om {?} u aan bij het kasteel."
+    }
    ]
   },
   {
@@ -1257,6 +1284,26 @@
      "uren": [
       1,
       2
+     ]
+    }
+   ],
+   "agenda": [
+    {
+     "wat": "de training",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint de training",
+     "einde_v": "eindigt de training",
+     "zin_duur": "De training duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de training?",
+     "antw_duur": "De training duurt {?}.",
+     "van": [
+      16,
+      19
+     ],
+     "duur": [
+      60,
+      105
      ]
     }
    ]
@@ -1933,6 +1980,33 @@
       50000,
       100000
      ]
+    }
+   ],
+   "agenda": [
+    {
+     "wat": "de fietstocht",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint de fietstocht",
+     "einde_v": "eindigt de fietstocht",
+     "zin_duur": "De fietstocht duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de fietstocht?",
+     "antw_duur": "De fietstocht duurt {?}.",
+     "van": [
+      9,
+      14
+     ],
+     "duur": [
+      60,
+      240
+     ],
+     "stuk2": "Daarna rust de familie nog {d2} uit op een terras.",
+     "d2": [
+      20,
+      50
+     ],
+     "vraag2": "Hoe laat vertrekt de familie van het terras?",
+     "antw2": "De familie vertrekt om {?} u van het terras."
     }
    ]
   },
@@ -2685,6 +2759,26 @@
       35
      ]
     }
+   ],
+   "agenda": [
+    {
+     "wat": "het toneel",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint het toneel",
+     "einde_v": "eindigt het toneel",
+     "zin_duur": "Het toneel duurt {d}.",
+     "vraag_duur": "Hoe lang duurt het toneel?",
+     "antw_duur": "Het toneel duurt {?}.",
+     "van": [
+      13,
+      19
+     ],
+     "duur": [
+      45,
+      120
+     ]
+    }
    ]
   },
   {
@@ -2960,6 +3054,26 @@
      "prijs": [
       20,
       50
+     ]
+    }
+   ],
+   "agenda": [
+    {
+     "wat": "de zwemles",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint de zwemles",
+     "einde_v": "eindigt de zwemles",
+     "zin_duur": "De zwemles duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de zwemles?",
+     "antw_duur": "De zwemles duurt {?}.",
+     "van": [
+      13,
+      17
+     ],
+     "duur": [
+      30,
+      75
      ]
     }
    ]
@@ -3276,6 +3390,199 @@
      "vraag_niet": "Hoeveel kinderen maken *geen* slinger?",
      "antwoord": "{?} kinderen maken een slinger.",
      "antwoord_niet": "{?} kinderen maken geen slinger."
+    }
+   ]
+  },
+  {
+   "id": "bioscoop",
+   "naam": "de bioscoop",
+   "intro": [
+    "Het is woensdagnamiddag: filmtijd!",
+    "In de bioscoop is het donker."
+   ],
+   "weetjes": [
+    {
+     "zin": "De zaal heeft {x} stoelen.",
+     "x": [
+      80,
+      300
+     ],
+     "naam": "het aantal stoelen"
+    },
+    {
+     "zin": "Er zitten {x} mensen in de zaal.",
+     "x": [
+      20,
+      150
+     ],
+     "naam": "het aantal mensen in de zaal"
+    }
+   ],
+   "agenda": [
+    {
+     "wat": "de film",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint de film",
+     "einde_v": "eindigt de film",
+     "zin_duur": "De film duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de film?",
+     "antw_duur": "De film duurt {?}.",
+     "van": [
+      13,
+      21
+     ],
+     "duur": [
+      80,
+      170
+     ]
+    },
+    {
+     "wat": "de tekenfilm",
+     "start": "begint",
+     "einde": "eindigt",
+     "start_v": "begint de tekenfilm",
+     "einde_v": "eindigt de tekenfilm",
+     "zin_duur": "De tekenfilm duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de tekenfilm?",
+     "antw_duur": "De tekenfilm duurt {?}.",
+     "van": [
+      13,
+      18
+     ],
+     "duur": [
+      75,
+      110
+     ]
+    }
+   ],
+   "koop": [
+    {
+     "wie": [
+      "@naam"
+     ],
+     "waar": "in de bioscoop",
+     "ding": "pot popcorn|potten popcorn|de",
+     "prijs": [
+      3,
+      7
+     ]
+    },
+    {
+     "wie": [
+      "@naam"
+     ],
+     "waar": "in de bioscoop",
+     "ding": "ticket|tickets|het",
+     "prijs": [
+      7,
+      13
+     ]
+    },
+    {
+     "wie": [
+      "@naam"
+     ],
+     "waar": "in de bioscoop",
+     "ding": "frisdrank|frisdranken|de",
+     "prijs": [
+      2,
+      4
+     ]
+    }
+   ]
+  },
+  {
+   "id": "trein",
+   "naam": "de trein",
+   "intro": [
+    "In het station is het druk.",
+    "De familie neemt de trein."
+   ],
+   "weetjes": [
+    {
+     "zin": "De trein heeft {x} wagons.",
+     "x": [
+      4,
+      12
+     ],
+     "naam": "het aantal wagons"
+    },
+    {
+     "zin": "Het perron is {x} lang.",
+     "x": [
+      150,
+      400
+     ],
+     "eenheid": "m",
+     "naam": "de lengte van het perron"
+    }
+   ],
+   "agenda": [
+    {
+     "wat": "de trein",
+     "start": "vertrekt",
+     "einde": "komt aan",
+     "start_v": "vertrekt de trein",
+     "einde_v": "komt de trein aan",
+     "zin_duur": "De treinrit duurt {d}.",
+     "vraag_duur": "Hoe lang duurt de treinrit?",
+     "antw_duur": "De treinrit duurt {?}.",
+     "van": [
+      6,
+      20
+     ],
+     "duur": [
+      25,
+      180
+     ],
+     "stuk2": "Daarna neemt de familie nog {d2} de tram.",
+     "d2": [
+      10,
+      35
+     ],
+     "vraag2": "Hoe laat komt de familie aan?",
+     "antw2": "De familie komt om {?} u aan."
+    }
+   ],
+   "rit": [
+    {
+     "wie": [
+      "de trein"
+     ],
+     "werkt": "rijdt",
+     "snelheid": [
+      80,
+      160
+     ],
+     "uren": [
+      1,
+      3
+     ]
+    }
+   ],
+   "koop": [
+    {
+     "wie": [
+      "@naam"
+     ],
+     "waar": "aan het loket",
+     "ding": "treinticket|treintickets|het",
+     "prijs": [
+      4,
+      25
+     ]
+    },
+    {
+     "wie": [
+      "@naam"
+     ],
+     "waar": "in het stationswinkeltje",
+     "ding": "broodje|broodjes|het",
+     "prijs": [
+      2.5,
+      5
+     ]
     }
    ]
   }

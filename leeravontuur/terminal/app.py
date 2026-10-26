@@ -16,12 +16,14 @@ from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import grootheden as TG
 from ..kern.wiskunde import hoofdrekenen as H
+from ..kern.wiskunde import klok as KL
 from ..kern.wiskunde import meetkunde as MK
 from ..kern.wiskunde import procenten as PR
 from ..kern.wiskunde import vraagstukken as VS
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
+from .venster import Klokvenster
 
 HOOFD = "Leeravontuur"
 
@@ -36,6 +38,7 @@ class App:
         self.basis = opslag.instellingen_van(laatste.id) if laatste else Instellingen()
         self.inst = replace(self.basis, **self.voorrang)
         self.s = Scherm(win, self.inst, kleuren)
+        self.zet_klokvenster()
 
     # ---- het actieve kind ------------------------------------------------------
 
@@ -45,8 +48,26 @@ class App:
         self.inst = replace(self.basis, **self.voorrang)
         self.s.inst = self.inst
         self.s.pas_toe()
+        self.zet_klokvenster()
         self.opslag.zet_algemeen("laatste_kind", kind.id)
         self.ververs_status()
+
+    def zet_klokvenster(self, aan=None):
+        """Het klokvenster (terminal/venster.py) volgens de instelling: aan, of uit (en het proces stoppen).
+        Niet met LEERAVONTUUR_KLOKVENSTER=0 (bv. de schermafdrukken); bij de tests (NepScherm) zet de test het zelf."""
+        if getattr(self.s.win, "nep", False) and aan is None:
+            return
+        if aan is None:
+            aan = self.inst.klokvenster and os.environ.get("LEERAVONTUUR_KLOKVENSTER", "1") != "0"
+        if aan and self.s.klokvenster is None:
+            try:
+                plek = json.loads(self.opslag.algemeen("klokvenster_plek") or "null")
+            except ValueError:
+                plek = None
+            self.s.klokvenster = Klokvenster(plek, lambda p: self.opslag.zet_algemeen("klokvenster_plek", json.dumps(p)))
+        elif not aan and self.s.klokvenster is not None:
+            self.s.klokvenster.stop()
+            self.s.klokvenster = None
 
     def herlaad_kind(self):
         """Na wijzigingen in het ouderdeel: het actieve kind opnieuw laden (of loslaten als het gewist is)."""
@@ -345,14 +366,14 @@ class App:
                     raise
 
     def domeinen(self):
-        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp)."""
+        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp(en))."""
         return [("Eenheden", "lengte, massa, inhoud, oppervlakte, volume", None, None),
                 ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
                 ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
                 ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
                 ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
                 ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
-                ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
+                ("Tijd, geld en snelheid", "de klok, uren en minuten, wisselgeld, km/u", TG.ALLE + [KL.KLOK], [TG.TIJD, KL.KLOK]),
                 ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER),
                 ("Vraagstukken", "oplossen in 4 stappen, Speurneus, schatten", VS.ALLE, VS.VRAAGSTUKKEN)]
 
@@ -405,6 +426,7 @@ class App:
                 ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
                 ("Avatar", "aan" if inst.avatar else "uit"),
                 ("Animaties", "aan" if inst.animaties else "uit"),
+                ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)"),
             ]
             if s.te_klein():
                 continue
@@ -424,9 +446,10 @@ class App:
             s.put(y, 34, "  5  ", "goedvak")
             s.put(y, 40, "! 6  ", "foutvak")
             s.put(y, 46, " actief ", "cursor")
-            s.put(y + 1, 4, "Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,", "dim")
-            s.put(y + 2, 4, "--ascii, --geen-muis   (zie python3 oefeningen.py --help)", "dim")
-            s.put(y + 3, 4, melding, "info")
+            if melding:
+                s.put(y + 1, 4, melding, "info")
+            else:
+                s.put(y + 1, 4, "Ook bij het starten: --kleurenblind, --contrast, --ascii … (zie --help)", "dim")
             k = s.toets()
             melding = ""
             if isinstance(k, tuple):
@@ -465,5 +488,8 @@ class App:
                     inst.avatar = not inst.avatar
                 elif sel == 7:
                     inst.animaties = not inst.animaties
+                elif sel == 8:
+                    inst.klokvenster = not inst.klokvenster
+                    self.zet_klokvenster()
                 s.pas_toe()
                 self.bewaar()

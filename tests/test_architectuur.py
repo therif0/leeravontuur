@@ -16,6 +16,18 @@ class TestArchitectuur(unittest.TestCase):
                 self.assertNotRegex(pad.read_text(encoding="utf-8"), r"^\s*(import|from)\s+curses",
                                     "de kern mag curses niet gebruiken")
 
+    def test_tkinter_alleen_in_een_eigen_venster(self):
+        """tkinter draait in een eigen proces (venster/); de terminal start het alleen, de kern kent het niet."""
+        for pad in PAKKET.rglob("*.py"):
+            tekst = pad.read_text(encoding="utf-8")
+            with self.subTest(pad.name):
+                if pad.parent.name != "venster":
+                    self.assertNotRegex(tekst, r"^\s*(import|from)\s+tkinter", "tkinter alleen in venster/")
+                else:
+                    self.assertNotRegex(tekst, r"^\s*(import|from)\s+(curses|\.\.terminal)", "venster/ zonder curses")
+                if pad.parent.name == "kern":
+                    self.assertNotRegex(tekst, r"^\s*from\s+\.\.venster", "de kern kent de vensters niet")
+
     def test_kleuren_alleen_in_thema(self):
         for pad in (PAKKET / "terminal").rglob("*.py"):
             if pad.name == "thema.py":

@@ -47,6 +47,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     (*"10 % = 8, dus 20 % = 16"*), en vanaf het 6de **korting en btw** (in het 1ste middelbaar ook stijging en daling)
   - herkent denkfouten: het percentage als antwoord, alleen de korting berekend, de korting opgeteld …
 - **Tijd, geld en snelheid:**
+  - **de klok**: een echte wijzerklok in een eigen venster (of in de terminal) lezen en de wijzers zetten, tijden in woorden ("vijf voor half vier"), 24 uur,
+    later en vroeger; herkent o.a. "half vier gelezen als 4.30"
   - tijd: u, min en s omrekenen, *"135 min = ? u ? min"* (typ `2 u 15 min`), tijdsduur en aankomstuur
     (typ `11.15`); herkent *"je rekende met 100 in plaats van 60"*
   - geld: euro en cent, wisselgeld, wat je samen betaalt
@@ -68,6 +70,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - herkent denkfouten: een andere bewerking, gestopt na een tussenstap, niet omgezet, een overbodig gegeven …
   - **Speurneus**: zoek de fout in het klad van een ander kind, en zeg waarom
   - **schatten en controleren**: ongeveer hoeveel? Kan dat antwoord kloppen?
+  - ook met tijd: hoe lang duurt de film, hoe laat komt de trein aan? Het klad kent kloktijden (`9.45 u + 35 min`)
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.
@@ -138,6 +141,10 @@ py oefeningen.py
 `requirements.txt` installeert op Windows één klein pakket (`windows-curses`). Op Linux en macOS installeert het niets.
 
 Het venster moet minstens **80×24** tekens groot zijn.
+
+De wijzerklok (bij **De klok**) verschijnt in een eigen venster met tkinter, dat bij Python hoort. Op Linux moet je
+dat soms apart installeren: `sudo apt install python3-tk` (Ubuntu, Debian) of `sudo dnf install python3-tkinter`
+(Fedora); op macOS met Homebrew: `brew install python-tk`. Zonder tkinter tekent de terminal de klok zelf.
 
 ### Bijwerken
 ```bash

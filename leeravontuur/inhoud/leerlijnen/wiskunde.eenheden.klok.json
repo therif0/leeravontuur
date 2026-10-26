@@ -1,0 +1,23 @@
+{
+ "vaardigheid": "wiskunde.eenheden.klok",
+ "omschrijving": "de wijzerklok lezen en zetten, tijden in woorden, 24 uur, later en vroeger",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "stap": "int",
+  "max_duur": "int",
+  "middernacht": "bool"
+ },
+ "leerlijn": {
+  "3": {"soorten": ["lezen", "woorden_naar", "naar_woorden", "zetten", "later"], "stap": 5, "max_duur": 60,
+        "middernacht": false},
+  "4": {"soorten": ["lezen", "woorden_naar", "naar_woorden", "zetten", "24uur", "later", "vroeger"], "stap": 1,
+        "max_duur": 120, "middernacht": false},
+  "5": {"soorten": ["lezen", "woorden_naar", "naar_woorden", "zetten", "24uur", "later", "vroeger"], "stap": 1,
+        "max_duur": 180, "middernacht": false},
+  "6": {"soorten": ["lezen", "woorden_naar", "naar_woorden", "zetten", "24uur", "later", "vroeger"], "stap": 1,
+        "max_duur": 240, "middernacht": true},
+  "m1": {"soorten": ["lezen", "naar_woorden", "zetten", "24uur", "later", "vroeger"], "stap": 1, "max_duur": 300,
+         "middernacht": true}
+ }
+}
