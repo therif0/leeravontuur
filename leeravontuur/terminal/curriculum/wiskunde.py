@@ -27,6 +27,7 @@ def oefenaar(id_, label, kern, domein, spiek, snel=None):
 
 
 EENHEDEN_SPIEK = Spiekbrief("Eenheden omzetten", M.spiek_eenheden)
+GROEPEN = {E.OMZETTEN.id: "Maten"}  # de zeven maten zijn in de databank één vaardigheid
 VANAF = {E.OPPERVLAKTE: "  (5de lj)", E.VOLUME: "  (6de lj)"}
 
 

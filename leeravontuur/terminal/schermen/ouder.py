@@ -6,6 +6,7 @@ from datetime import date
 from ...kern import feedback, foutlog, klok, leerjaren, rapporten, wachtwoord
 from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
+from .. import curriculum
 from ..scherm import ENTER, ESC, TerugNaar, Vergrendeld
 
 HOOFD = "Leeravontuur"
@@ -229,7 +230,7 @@ class Ouderdeel:
                    ord("k"): "kalender", ord("K"): "kalender", ("kalender",): "kalender",
                    ESC: None, ("terug",): None}
         while True:
-            keuze = self.s.lezer(kr + ["Rapport"], rapporten.regels(r), knoppen, toetsen)
+            keuze = self.s.lezer(kr + ["Rapport"], rapporten.regels(r, curriculum.indeling()), knoppen, toetsen)
             if keuze is None:
                 return
             if keuze == "export":
@@ -239,7 +240,7 @@ class Ouderdeel:
 
     def exporteer(self, r):
         try:
-            csv_pad, txt_pad = rapporten.exporteer(r, documenten_map())
+            csv_pad, txt_pad = rapporten.exporteer(r, documenten_map(), curriculum.indeling())
         except OSError as e:
             self.melding("Exporteren", [f"✘ Exporteren lukte niet: {e}"])
             return
@@ -426,7 +427,7 @@ class Ouderdeel:
     def exporteer_alles(self, kind):
         try:
             r = rapporten.maak_rapport(self.o, kind, rapporten.Periode(date(2000, 1, 1), klok.nu().date(), "alles"))
-            csv_pad, _ = rapporten.exporteer(r, documenten_map())
+            csv_pad, _ = rapporten.exporteer(r, documenten_map(), curriculum.indeling())
             json_pad = rapporten.exporteer_alles(self.o, kind, documenten_map())
         except OSError as e:
             return f"Exporteren lukte niet: {e}"

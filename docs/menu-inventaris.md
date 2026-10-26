@@ -15,7 +15,7 @@ Toetsen in de nieuwe onderwerpenlijst: **Enter** reeks van 10 · **V** vrij oefe
 - [x] Ouders (wachtwoord); startargument `--ouder` gaat er rechtstreeks heen
 
 ## Ouders
-- [ ] Rapporten: kind → periode (of zelf kiezen) → rapport; E exporteren, K kalender (← → maanden).
+- [x] Rapporten: kind → periode (of zelf kiezen) → rapport; E exporteren, K kalender (← → maanden).
       Wordt gegroepeerd per Vak › Domein › Onderwerp; de maten samen onder "Maten".
 - [x] Kinderen › kind › Naam
 - [x] Kinderen › kind › Leerjaar

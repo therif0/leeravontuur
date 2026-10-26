@@ -50,11 +50,12 @@ class Vak:
 
 
 def _vakken():
-    from .wiskunde import WISKUNDE
-    return (WISKUNDE,)
+    from .wiskunde import GROEPEN, WISKUNDE
+    return (WISKUNDE,), dict(GROEPEN)
 
 
-VAKKEN = _vakken()  # volgorde = volgorde in het hoofdmenu
+VAKKEN, GROEPEN = _vakken()  # VAKKEN: volgorde = volgorde in het hoofdmenu
+# GROEPEN: bewaarde id die bij meer onderwerpen hoort -> één naam in de rapporten (de zeven maten: "Maten")
 
 
 def domeinen():
@@ -81,3 +82,15 @@ def vak_van(domein):
 def van_opslag(opslag_id):
     """De onderwerpen die bij een bewaarde id horen (de zeven maten delen er één)."""
     return [o for o in onderwerpen() if opslag_id in o.opslag]
+
+
+def indeling():
+    """Voor de rapporten (gewone data, de kern kent het menu niet): {bewaarde id: (vak, domein, onderwerp)}, in de
+    volgorde van het leerplan. Snelrekenen.<soort> hoort bij zijn onderwerp (Tafels, Optellen en aftrekken, Gemengd)."""
+    uit = {}
+    for v in VAKKEN:
+        for d in v.domeinen:
+            for o in d.onderwerpen:
+                for i in o.opslag:
+                    uit.setdefault(i, (v.label, d.label, GROEPEN.get(i, o.label)))
+    return uit
