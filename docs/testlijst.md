@@ -8,21 +8,33 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] "Wie ben jij?" toont je kind(eren). Kies je kind: het hoofdmenu zegt "Hallo …!".
 - [ ] Rechts staat de avatar met het aantal punten.
 
-## 2. Eén oefening per domein (telkens: **Leren & oefenen → Wiskunde → …**, *Vrij oefenen*, *Normaal*)
+## 2. De menu's
+- [ ] Het hoofdmenu: ▶ Verder · Herhalen (n) · Wiskunde · Spiekbrieven · Mijn avatar · Zeg het ons · Wissel van
+  kind · Stoppen.
+- [ ] **Wiskunde** toont 8 domeinen. Breuken en procenten heeft 10 onderwerpen: toets **0** kiest het tiende.
+- [ ] Loop met ↑↓ door de onderwerpen van Hoofdrekenen: onderaan staan alleen de toetsen van het gemarkeerde
+  onderwerp (bij Tafels: `[Enter] reeks  [V] vrij  [S] spiekbrief  [T] 60 s  [Z] 20 sommen  [Esc] terug`).
+- [ ] V, S, T en Z werken ook als kleine letter; een letter die er niet bij hoort, doet niets; een klik op een
+  knop onderaan doet hetzelfde als de toets. Na de oefening sta je terug op hetzelfde onderwerp.
+- [ ] Een klik op de broodkruimel bovenaan (bv. "Wiskunde") midden in een oefening brengt je naar dat menu.
+- [ ] **Spiekbrieven › Wiskunde › Meten:** Eenheden omzetten en Oppervlakte en formules (zonder hoeken of schaal).
+- [ ] **▶ Verder** start de vorige oefening (of eerst de herhaalvragen).
+
+## 3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)
 - [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
   `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. `?` drie keer: de aanpak, het
   begin van het klad, hulp bij je klad. Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het
   antwoord en "Zo kan het:".
 - [ ] **Hoofdrekenen → Slim × en : (splitsen):** het klad staat meteen open. Typ meteen een antwoord (Tab, Enter):
   "Laat in je klad zien hoe je splitst". Met `70 : 7 = 10` en `21 : 7 = 3` in het klad mag je antwoorden.
-- [ ] **Eenheden:** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").
+- [ ] **Meten → Lengte (m):** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").
 - [ ] **Hoofdrekenen → Tafels:** een juist antwoord geeft ✔, punten en een blije avatar.
 - [ ] **Getallen → Getallenlijn:** bij "Duid … aan" beweegt de pijl met ← →, `+` zoomt in, een klik zet de pijl.
-- [ ] **Cijferen → Cijferend optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje.
+- [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje.
 - [ ] **Cijferen → Staartdeling:** de deling groeit stap voor stap mee.
-- [ ] **Breuken → Breuken herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
-- [ ] **Procenten → Het honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
-- [ ] **Eenheden → Tabel-oefening → Oppervlakte:** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
+- [ ] **Breuken en procenten → Herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
+- [ ] **Breuken en procenten → Honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
+- [ ] **Meten → Oppervlakte (m²), toets H (tabel-oefening):** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
 - [ ] **Tijd, geld en snelheid → Tijd:** bij "… min = ? u ? min" typ je bv. `2 u 15 min`; bij "Hoe laat kom je
   aan?" typ je bv. `11.15`.
 - [ ] **Tijd, geld en snelheid → De klok:** het **klokvenster** verschijnt naast de terminal of rechtsboven, nooit
@@ -35,7 +47,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   terminal op volledig scherm: druk `F2` en de klok staat in de terminal (nog eens `F2` = terug).
 - [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens
   `4.25`: je krijgt uitleg over "half".
-- [ ] **Meetkunde → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.
+- [ ] **Meten → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.
 - [ ] **Meetkunde → Schatkaart:** bij "Zet een kruisje op …" verplaats je het kruisje met de pijltjes of een klik.
 - [ ] **Vraagstukken:** duid met ← → en spatie de getallen aan, kies met ↓ wat er gevraagd wordt, ga met Tab naar
   het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk `?`: de belangrijke woorden lichten op.
@@ -45,29 +57,36 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   (✔), en eens `9.50 + 20 = 9.70` (✘: een uur heeft 60 minuten).
 - [ ] **Vraagstukken → Schatten en controleren:** kies a, b of c; na het nakijken staat ✔ bij het goede antwoord.
 
-## 3. Reeks, herhalen en punten
-- [ ] **Reeks van 10** (eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.
+## 4. Reeks, herhalen en punten
+- [ ] **Reeks van 10** (Enter op eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.
 - [ ] Met `F` krijg je dezelfde foute vragen opnieuw, met `G` gelijkaardige.
 - [ ] De volgende dag staat bij **Herhalen** een getal tussen haakjes (de vragen die fout waren).
-- [ ] **Snelrekenen → 60 seconden:** de klok loopt, op het einde een overzicht.
+- [ ] **Hoofdrekenen → Tafels, toets T (60 seconden):** de klok loopt, op het einde een overzicht met je records.
+- [ ] Zet bij de ouder de timer uit (Ouders › Kinderen › Timer zichtbaar): nergens nog `[T]`, en Enter bij
+  Hoofdrekenen › Gemengd start 20 sommen. Zet hem daarna terug.
 
-## 4. Avatar en winkel
+## 5. Avatar en winkel
 - [ ] **Mijn avatar → Winkel:** iets kopen stelt een rekenvraag ("hoeveel punten hou je over?").
 - [ ] Een fout antwoord geeft "Ben je zeker?" en een mini-lesje; het item komt later (een pakje).
+- [ ] **Mijn avatar → L (Schermkleuren):** elk thema werkt meteen en blijft na het herstarten.
 
-## 5. Ouderdeel
+## 6. Ouderdeel
 - [ ] Start met `python3 oefeningen.py --ouder` (of kies "Ouders" bij "Wie ben jij?"). Het vraagt je wachtwoord.
-- [ ] **Rapporten:** kies je kind en "Vandaag": je ziet wat er geoefend werd, met de denkfouten.
+- [ ] **Rapporten:** kies je kind en "Vandaag": je ziet wat er geoefend werd per vak › domein, met de denkfouten.
+  Snelrekenen staat apart onder zijn onderwerp (ook in de status). Exporteren (E): de CSV heeft achteraan vak
+  en domein.
 - [ ] **Kinderen:** het leerjaar en de timer (zichtbaar of niet) zijn aan te passen.
+- [ ] **Kinderen › kind › Weergave:** eenvoudige tekens, muis, typrichting, avatar, animaties en het
+  klokvenster veranderen meteen, alleen voor dat kind.
 - [ ] **Opmerkingen:** wat via "Zeg het ons" geschreven werd, staat hier.
 
-## 6. Speciale standen
+## 7. Speciale standen
 - [ ] `python3 oefeningen.py --kleurenblind`: juist en fout zijn nog altijd duidelijk (✔ ✘ en andere kleuren).
 - [ ] `python3 oefeningen.py --ascii`: alles is leesbaar met gewone tekens.
 - [ ] De muis: klikken op een menukeuze, een knop onderaan of de broodkruimel bovenaan werkt.
 - [ ] Het venster kleiner maken dan 80×24 geeft een melding; weer groter maken werkt gewoon verder.
 
-## 7. Stoppen en terugkomen
+## 8. Stoppen en terugkomen
 - [ ] **Esc** gaat overal een stap terug; in het hoofdmenu stopt het programma met "Tot de volgende keer".
 - [ ] Opnieuw starten: "Vandaag: x/y juist" bovenaan klopt nog.
 - [ ] Het programma twee keer openen geeft een waarschuwing.

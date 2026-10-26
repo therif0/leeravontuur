@@ -161,8 +161,9 @@ dan de toets.
 ## Moet mee veranderen
 - [x] tests die met cijfers door de menu's lopen (`test_schermen`, de aap in `test_stabiliteit`, `test_avatar`,
       de onderwerptests)
-- [ ] `docs/tools/scenarios.py` en alle schermafdrukken
-- [ ] de handleiding (`opties.md` en `snelrekenen.md` gaan op in de nieuwe plekken), README, testlijst, CLAUDE.md
+- [x] README, testlijst, CLAUDE.md (A6, 0.20.0)
+- [ ] → **handleidingproject** (beslissing van de vader): `docs/tools/scenarios.py` en alle schermafdrukken, de
+      handleiding (`opties.md` en `snelrekenen.md` gaan op in de nieuwe plekken)
 
 ## Bewijs (controle vóór A6)
 
