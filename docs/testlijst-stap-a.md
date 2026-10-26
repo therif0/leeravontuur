@@ -89,7 +89,8 @@ Ga naar Wiskunde › Hoofdrekenen en loop met ↑↓ door de onderwerpen.
 
 ## 6. Spiekbrieven (hoofdmenu)
 
-- [ ] Spiekbrieven › Wiskunde › een domein › de spiekbrieven van dat domein (Meten: Eenheden omzetten en Meetkunde).
+- [ ] Spiekbrieven › Wiskunde › een domein › de spiekbrieven van dat domein. Meten: Eenheden omzetten en
+      Oppervlakte en formules (zonder hoeken, schatkaart of schaal). Meetkunde: hoeken, coördinaten en schaal.
 
 ## 7. Verder en Herhalen (met zijn echte, gekopieerde gegevens)
 
