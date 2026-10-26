@@ -847,7 +847,7 @@ Kleine fasen, zodat Imrane snel nieuwe dingen krijgt en jij tussendoor kunt bijs
 | 15 | **Meer eenheden** | inhoud, oppervlakte (2 vakjes/kolom), dm³ ↔ l, tijd, geld, snelheid |
 | 16a | **Vraagstukken met kladblad** (0.16.0) | 4 stappen met Gegeven/Gevraagd/Oplossing/Antwoord, kladparser, verhaalmachine (13 structuren × 16 werelden), foute paden automatisch, getrapte tips, tweede kans |
 | 16b | **Vraagstukken 2** (0.17.0) | 19 structuren × 20 werelden (+ gemiddelde, snelheid, tegels, schaal, lint, regel van drie), Speurneus (zoek de fout), Schatten & controleren |
-| 16c | **De klok + tijd in vraagstukken** (0.18.0) | wijzerklok lezen en zetten, tijden in Vlaamse woorden, 24 uur, later/vroeger; kloktijden in het klad; vraagstukken met tijdsduur, aankomst- en vertrekuur (20 structuren × 22 werelden) |
+| 16c | **De klok + tijd in vraagstukken** (0.18.0) | wijzerklok in een eigen venster (tkinter, eigen proces; terugval in de terminal) lezen en zetten, tijden in Vlaamse woorden, 24 uur, later/vroeger; kloktijden in het klad; vraagstukken met tijdsduur, aankomst- en vertrekuur (20 structuren × 22 werelden) |
 | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
 | 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |
 | 19 | **Dictee (afdrukken)** | afdrukbaar ouder- en kindblad, woordpakket van de week, overtypen + diagnose achteraf, flitsdictee |

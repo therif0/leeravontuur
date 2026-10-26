@@ -21,17 +21,18 @@
 <text x="305" y="291" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
 <text x="8" y="327" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Animaties                 </text>
 <text x="305" y="327" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
-<rect x="314" y="350" width="45" height="18" fill="#0dbc79"/>
-<rect x="368" y="350" width="45" height="18" fill="#cd3131"/>
-<rect x="422" y="350" width="72" height="18" fill="#e5e510"/>
-<text x="44" y="363" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Voorbeeld:</text>
-<text x="143" y="363" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ juist</text>
-<text x="233" y="363" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ fout</text>
-<text x="314" y="363" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000">  5  </text>
-<text x="368" y="363" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">! 6  </text>
-<text x="422" y="363" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> actief </text>
-<text x="44" y="381" textLength="630" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Bij het starten kan het ook: --kleurenblind, --contrast, --geen-kleur,</text>
-<text x="44" y="399" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">--ascii, --geen-muis   (zie python3 oefeningen.py --help)</text>
+<text x="8" y="363" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">       Klok in een eigen venster </text>
+<text x="305" y="363" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">aan</text>
+<rect x="314" y="386" width="45" height="18" fill="#0dbc79"/>
+<rect x="368" y="386" width="45" height="18" fill="#cd3131"/>
+<rect x="422" y="386" width="72" height="18" fill="#e5e510"/>
+<text x="44" y="399" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Voorbeeld:</text>
+<text x="143" y="399" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ juist</text>
+<text x="233" y="399" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ fout</text>
+<text x="314" y="399" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000">  5  </text>
+<text x="368" y="399" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">! 6  </text>
+<text x="422" y="399" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> actief </text>
+<text x="44" y="417" textLength="639" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Ook bij het starten: --kleurenblind, --contrast, --ascii … (zie --help)</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="36" height="18" fill="#000000"/>
 <rect x="53" y="422" width="81" height="18" fill="#11a8cd"/>

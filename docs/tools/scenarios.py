@@ -540,6 +540,23 @@ def _(d):
     d.foto("klok-woorden-fout", "Half vier gelezen als half vijf: uitleg over 'half'")
 
 
+@scenario("klokvenster")
+def _(d):
+    """Het klokvenster (tkinter) kan tmux niet fotograferen: het beeld komt uit dezelfde vormen (venster/klokbeeld.py)."""
+    from schermafdrukken import BEELDEN
+    from leeravontuur.venster.klokbeeld import naar_svg, vormen
+    beelden = {
+        "klokvenster-lezen": (vormen(3 * 60 + 25), "Hoe laat is het op de klok?", []),
+        "klokvenster-zetten": (vormen(9 * 60 + 35, juist=7 * 60 + 40, uitslag="fout"),
+                               "Zet de klok op tien over half acht.",
+                               [("✘ De groene wijzers tonen hoe het moest.", "fout")]),
+    }
+    for naam, (lijst, vraag, onder) in beelden.items():
+        svg = naar_svg(lijst, boven=[(vraag, "cijfer")], onder=onder, titel=naam)
+        (BEELDEN / f"{naam}.svg").write_text(svg, encoding="utf-8")
+        print("  ", naam)
+
+
 @scenario("klok-ascii", argumenten=["--ascii"])
 def _(d):
     oefen(d, 7, 4)

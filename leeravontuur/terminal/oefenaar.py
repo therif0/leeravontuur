@@ -228,7 +228,7 @@ class Oefenaar:
                     M.teken_getallenlijn(s, 9, model, goed_bij=v.antwoord if goed is False else None)
                     fb = 14
                 else:
-                    h, b = M.teken_model(s, 9, model)  # rij 9: onder het maatje
+                    h, b = M.teken_model(s, 9, model, uitslag=goed, tekst=v.tekst)  # rij 9: onder het maatje
                     if h > 7:  # hoog model: de feedback komt ernaast
                         fb, fx = 10, 8 + b + 3
                         breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)

@@ -219,7 +219,7 @@
 <rect x="206" y="368" width="9" height="9" fill="#585858"/>
 <rect x="215" y="368" width="9" height="9" fill="#585858"/>
 <text x="188" y="399" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">6</text>
-<text x="62" y="417" textLength="648" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">←→ 1 min · ↑↓ 5 min · + − 1 uur · klik = de lange wijzer · Enter = klaar</text>
+<text x="62" y="417" textLength="639" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wijzer · Enter</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="54" height="18" fill="#000000"/>
 <rect x="71" y="422" width="90" height="18" fill="#11a8cd"/>

@@ -236,19 +236,23 @@ class KlokInvoer:
         self.t = int(v.model.minuten) % 720
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
-        self.hint = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik = de lange wijzer · Enter = klaar"
+        self.hint = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wijzer · Enter"
         self.naast = (10, self.X0 + 25 + 4)
+        self.h = 13
 
     def hoogte(self, nagekeken=False):
-        return 13
+        return self.h
 
     def knoppen(self):
         return [("←→↑↓", "draaien", None), ("Enter", "zo staat hij goed", 10), ("?", "tip", ord("?")),
                 ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
-        M.teken_klok(s, y + 1, Wijzerklok(self.t), self.X0,
-                     (lambda dx, dy: ("wijzer", dx, dy)) if uitslag is None else None)
+        h, _ = M.teken_klok(s, y + 1, Wijzerklok(self.t), self.X0,
+                            (lambda dx, dy: ("wijzer", dx, dy)) if uitslag is None else None, uitslag=uitslag,
+                            juist=self.v.antwoord if uitslag is False else None, tekst=self.v.tekst)
+        venster = h < 13  # de klok staat in het klokvenster: de feedback komt dan gewoon eronder
+        self.h, self.naast = (h + 1, None) if venster else (13, (10, self.X0 + 25 + 4))
 
     def toets(self, k):
         if isinstance(k, tuple):

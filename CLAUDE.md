@@ -8,6 +8,11 @@ Nederlands (Vlaams), met komma als decimaalteken.
 - `leeravontuur/kern/` = alle logica: vragen maken, nakijken, diagnose, uitleg, leerlijnen, instellingen.
   **De kern importeert nooit curses** en weet niets van kleuren. Later moet er een GUI bovenop kunnen.
   Teksten die de kern teruggeeft hebben een *rol* ("accent", "dim", "goed" …), geen kleur.
+- `leeravontuur/venster/` = vensters met tkinter, elk in een **eigen proces** (nu het klokvenster): `klokbeeld.py`
+  maakt de klok als vormen (data; ook het SVG-beeld voor de handleiding), `klokvenster.py` tekent ze. De terminal
+  start het via `terminal/venster.Klokvenster` en praat met JSON-regels; toetsen en klikken in het venster komen in
+  `Scherm.toets` binnen alsof ze in de terminal gebeurden. Lukt het niet (geen tkinter of beeldscherm), dan tekent de
+  terminal de klok. Tests gebruiken `NepKlokvenster`; `LEERAVONTUUR_KLOKVENSTER=0` zet het uit (schermafdrukken).
 - `leeravontuur/terminal/` = alleen weergave en invoer (curses).
   - Kleuren uitsluitend via rollen uit `terminal/thema.py`. Geen `color_pair`/`COLOR_` elders
     (een test bewaakt dit). Juist/fout krijgt altijd ook een symbool (✔ ✘ !), want er is een
@@ -58,8 +63,8 @@ Nederlands (Vlaams), met komma als decimaalteken.
   `terminal/modellen.py` (getallenlijn) en `terminal/rooster.py` (invoer-objecten voor rooster en staartdeling).
   Hulp per vakje komt uit `Onderwerp.kolom_hulp`, diagnose uit alle rijen uit `Onderwerp.diagnose_rijen`.
   Verder: `"duur"` (typ `2 u 15 min`) en `"klok"` (typ `11.15`), beide in `kern/wiskunde/grootheden.py`;
-  de klok (`kern/wiskunde/klok.py`): model `Wijzerklok` (pixels in `terminal/modellen.teken_klok`, in ASCII `#` = uur
-  en `*` = minuten), `"wijzers"` (zet de wijzers: `KlokInvoer` in `terminal/balk.py`) en `"klokwoord"` (typ
+  de klok (`kern/wiskunde/klok.py`): model `Wijzerklok` (in het klokvenster, of pixels in
+  `terminal/modellen.teken_klok`, in ASCII `#` = uur en `*` = minuten), `"wijzers"` (zet de wijzers: `KlokInvoer` in `terminal/balk.py`) en `"klokwoord"` (typ
   "vijf voor half vier": `klok.woorden`/`lees_woorden`); tijden zijn minuten na middernacht, een wijzerklok kijkt
   modulo 720 na;
   `"woord"` (een soort hoek typen) en `"coord"` (een kruisje op de schatkaart, `terminal/balk.py`); de meetkunde-modellen

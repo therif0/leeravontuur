@@ -120,8 +120,9 @@ def teken_groepjes(s, y, g, x0=8, breedte=68):
     return yy - y + 1, rechts - x0
 
 
-def teken_model(s, y, model, x0=8):
-    """Tekent een model uit kern/modellen.py. Geeft (hoogte, breedte)."""
+def teken_model(s, y, model, x0=8, uitslag=None, tekst=""):
+    """Tekent een model uit kern/modellen.py. Geeft (hoogte, breedte). uitslag (True/False/None, na het nakijken)
+    en tekst (de vraag) gebruikt alleen de klok, voor het klokvenster."""
     if isinstance(model, Breukbalk):
         rechts = teken_balk(s, y, model.noemer, model.gearceerd, x0, model.label)
         return 2, rechts - x0 + 2 + len(model.label)
@@ -147,7 +148,7 @@ def teken_model(s, y, model, x0=8):
     if isinstance(model, Hoek):
         return teken_hoek(s, y, model.graden, x0)
     if isinstance(model, Wijzerklok):
-        return teken_klok(s, y, model, x0)
+        return teken_klok(s, y, model, x0, uitslag=uitslag, tekst=tekst)
     return 0, 0
 
 
@@ -428,9 +429,29 @@ def teken_pixels(s, y, x0, p):
     return (len(p) + 1) // 2
 
 
-def teken_klok(s, y, klok, x0=8, actie=None):
-    """Een ronde wijzerklok met 12, 3, 6 en 9 erbuiten. Geeft (hoogte, breedte) = (13, 25).
-    Met actie(dx, dy) is elk vakje van de wijzerplaat klikbaar (dx, dy in pixels vanaf het midden)."""
+VENSTER_TEKST = "De klok staat in het klokvenster."
+VENSTER_HULP = "Niet te zien? Druk F2 of klik hier."
+
+
+def teken_klok(s, y, klok, x0=8, actie=None, uitslag=None, juist=None, tekst=""):
+    """Een ronde wijzerklok. Staat er een klokvenster open (terminal/venster.py), dan komt de klok daar en
+    tekent de terminal alleen een verwijzing: geeft dan (2, breedte). Anders een klok met 12, 3, 6 en 9
+    erbuiten: (13, 25). Met actie(dx, dy) is elk vakje van de wijzerplaat klikbaar (dx, dy in pixels vanaf het
+    midden). uitslag (True/False/None) en juist (zo moest het) zijn voor het venster, tekst = de vraag."""
+    venster = getattr(s, "klokvenster", None)
+    if venster is not None:
+        onder, rol = "", ""
+        if uitslag is True:
+            onder, rol = "✔ Juist!", "goed"
+        elif uitslag is False:
+            onder, rol = ("✘ De groene wijzers tonen hoe het moest." if juist is not None else
+                          "✘ Niet juist. De uitleg staat in het andere venster."), "fout"
+        if venster.toon(klok.minuten, tekst, klikbaar=actie is not None, juist=juist,
+                        uitslag={True: "goed", False: "fout"}.get(uitslag), onder=onder, onder_rol=rol):
+            s.put(y, x0, "◷ " + VENSTER_TEKST, "accent")
+            s.put(y + 1, x0 + 2, VENSTER_HULP, "dim")
+            s.zones.voeg(y, x0, 2, len(VENSTER_HULP) + 2, ("klokvenster",))
+            return 2, len(VENSTER_HULP) + 2
     r = KLOK_R
     p = klok_pixels(klok)
     xk = x0 + 2  # de wijzerplaat (met links plaats voor de 9)

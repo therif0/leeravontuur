@@ -102,6 +102,25 @@ SPIEKBRIEF = [
 ]
 
 
+def klok12(t):
+    """Een tijd op de wijzerklok: 12 uur in plaats van 0 uur (0.55 → 12.55 u)."""
+    u, m = divmod(int(t) % 720, 60)
+    return f"{uur12(u)}.{m:02d} u"
+
+
+def lange_wijzer(m):
+    """Hoe je de minuten afleest: per 5 tellen, en dan de streepjes erbij."""
+    cijfer, rest = m // 5 or 12, m % 5
+    if m == 0:
+        return "De lange wijzer staat op de 12: een vol uur."
+    if rest == 0:
+        return f"De lange wijzer staat op de {cijfer}: {cijfer} × 5 = {m} minuten."
+    streepjes = f"{rest} streepje{'s' if rest > 1 else ''}"
+    if m < 5:
+        return f"De lange wijzer staat {streepjes} na de 12: {m} minuten."
+    return f"De lange wijzer staat {streepjes} na de {cijfer}: {cijfer} × 5 = {m - rest}, en nog {rest} = {m} minuten."
+
+
 class Klok(Onderwerp):
     id = "wiskunde.eenheden.klok"
     naam = "De klok"
@@ -133,24 +152,24 @@ class Klok(Onderwerp):
         if soort == "lezen":
             d["t"] = t
             return Vraag(self.id, f"{self.id}:lezen:{t}", "Hoe laat is het op de klok?", D(t), data=d,
-                         invoer="klok", model=Wijzerklok(t), verwacht_tekst=klok_tekst(t))
+                         invoer="klok", model=Wijzerklok(t), verwacht_tekst=klok12(t))
         vijf = uur % 12 * 60 + rng.randrange(0, 60, max(5, stap))
         if soort == "woorden_naar":
             d["t"] = vijf
             return Vraag(self.id, f"{self.id}:woorden_naar:{vijf}", f"Hoe schrijf je '{woorden(vijf)}' in cijfers?",
-                         D(vijf), data=d, invoer="klok", verwacht_tekst=klok_tekst(vijf))
+                         D(vijf), data=d, invoer="klok", verwacht_tekst=klok12(vijf))
         if soort == "naar_woorden":
             d["t"] = vijf
-            return Vraag(self.id, f"{self.id}:naar_woorden:{vijf}", f"Hoe zeg je {klok_tekst(vijf)} in woorden?",
+            return Vraag(self.id, f"{self.id}:naar_woorden:{vijf}", f"Hoe zeg je {klok12(vijf)} in woorden?",
                          D(vijf), data=d, invoer="klokwoord", model=Wijzerklok(vijf), verwacht_tekst=woorden(vijf))
         if soort == "zetten":
             doel = vijf if rng.random() < 0.6 else t
             d["t"] = doel
             vraag = (f"Zet de klok op {woorden(doel)}." if doel % 5 == 0 and rng.random() < 0.6
-                     else f"Zet de klok op {klok_tekst(doel)}.")
+                     else f"Zet de klok op {klok12(doel)}.")
             start = rng.randrange(0, 720, 5)
             return Vraag(self.id, f"{self.id}:zetten:{doel}", vraag, D(doel), data={**d, "start": start},
-                         invoer="wijzers", model=Wijzerklok(start), verwacht_tekst=klok_tekst(doel))
+                         invoer="wijzers", model=Wijzerklok(start), verwacht_tekst=klok12(doel))
         if soort == "24uur":
             t24 = rng.randrange(13 * 60, 24 * 60, stap)
             d["t"] = t24
@@ -201,12 +220,12 @@ class Klok(Onderwerp):
             volgend = GETALLEN[uur12(u + 1)]
             if s == "woorden_naar" and 20 <= m <= 40 and g == (t + 60) % 720:  # "vijf voor half vier" → 4.25
                 if m == 30:
-                    return "klok_half", f"Half {volgend} is een half uur vóór {volgend}: {klok_tekst(t)}."
+                    return "klok_half", f"Half {volgend} is een half uur vóór {volgend}: {klok12(t)}."
                 return "klok_half", f"'... half {volgend}' gaat over het halfuur vóór {volgend} uur, dus nog " \
                                     f"{uur12(u)} uur en iets."
             if s == "naar_woorden" and 20 <= m <= 40 and g == (t - 60) % 720:  # 3.25 → "vijf voor half drie"
                 return "klok_half", f"Vanaf {uur12(u)}.20 tel je vanaf half {volgend} (een half uur vóór {volgend}): " \
-                                    f"{klok_tekst(t)} = {woorden(t)}."
+                                    f"{klok12(t)} = {woorden(t)}."
             if m >= 30 and g == (t + 60) % 720:
                 if s in ("naar_woorden", "woorden_naar"):
                     return "klok_half", f"'... half {volgend}' gaat over het halfuur vóór {volgend} uur, dus nog " \
@@ -236,11 +255,10 @@ class Klok(Onderwerp):
         t = int(v.antwoord)
         if s in ("lezen", "zetten"):
             u, m = divmod(t % 720, 60)
-            return [f"De korte wijzer staat bij {uur12(u)} (of net erna): {uur12(u)} uur.",
-                    f"De lange wijzer staat bij {m // 5 if m % 5 == 0 else round(m / 5, 1)}: dat is {m} minuten.",
-                    f"Het is {klok_tekst(t)}" + (f" ({woorden(t)})." if t % 5 == 0 else ".")]
+            return [f"De korte wijzer staat bij {uur12(u)} (of net erna): {uur12(u)} uur.", lange_wijzer(m),
+                    f"Het is {klok12(t)}" + (f" ({woorden(t)})." if t % 5 == 0 else ".")]
         if s in ("naar_woorden", "woorden_naar"):
-            return [f"{klok_tekst(t)} = {woorden(t)}.", "Let op: half vier = een half uur vóór vier = 3.30."]
+            return [f"{klok12(t)} = {woorden(t)}.", "Let op: half vier = een half uur vóór vier = 3.30."]
         if s == "24uur":
             return [f"Is het {dagdeel(t)}? Dan tel je 12 bij het uur: {uur12(t // 60)} + 12 = {t // 60}.",
                     f"Het is {klok_tekst(t)}."]

@@ -65,14 +65,30 @@ kloktijden: hoe laat is het 35 minuten later, of 25 minuten vroeger?
 | In 24 uur? | `15.25` | hier telt alleen de 24-uursnotatie |
 | Zet de klok op … | ←→ = 1 minuut, ↑↓ = 5 minuten, `+` `−` = een uur | of klik waar de lange wijzer moet staan; Enter |
 
-Op de wijzerklok is de **korte, dikke** wijzer het uur en de **lange** wijzer de minuten. In ASCII-modus is de
-uurwijzer `#` en de minutenwijzer `*`.
+Op de wijzerklok is de **korte, dikke** (blauwe) wijzer het uur en de **lange** (oranje) wijzer de minuten.
 
-![De wijzerklok lezen](../beelden/klok-lezen.svg)
+### Het klokvenster
 
-Bij "zet de klok" draait de uurwijzer vanzelf mee, zoals bij een echte klok:
+De klok verschijnt in een **eigen venster**, rechtsboven op het scherm: een echte leerklok met alle cijfers en
+klein de minuten erbuiten (op 1 = 05, op 2 = 10 …). In de terminal staat dan "De klok staat in het klokvenster".
 
-![De wijzers zetten](../beelden/klok-zetten.svg)
+![Het klokvenster](../beelden/klokvenster-lezen.svg)
+
+- **Typen** mag in de terminal of in het klokvenster: wat je in het klokvenster typt, gaat naar het programma.
+- **Wijzers zetten:** klik of sleep de lange wijzer in het klokvenster, of gebruik de pijltjes. De uurwijzer
+  draait mee, zoals bij een echte klok. Was het fout, dan tonen groene, gestreepte wijzers hoe het moest:
+
+  ![Wijzers zetten: zo moest het](../beelden/klokvenster-zetten.svg)
+
+- Is het venster weg (achter een ander venster)? Druk **F2** of klik op de tekst in de terminal.
+- Sluit het kind het venster, dan tekent de terminal de klok tot de volgende vraag zelf.
+- Geen venster mogelijk (Linux zonder `python3-tk`, via ssh), of Opties → **Klok in een eigen venster** → uit, of
+  gestart met `--zonder-klokvenster`: dan tekent de terminal de klok. In ASCII-modus is de uurwijzer `#` en de
+  minutenwijzer `*`:
+
+![De wijzerklok in de terminal](../beelden/klok-lezen.svg)
+
+![De wijzers zetten in de terminal](../beelden/klok-zetten.svg)
 
 Wie "half vier" leest als 4.30, krijgt uitleg: in het Vlaams is half vier een half uur **vóór** vier.
 

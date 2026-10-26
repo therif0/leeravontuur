@@ -3,9 +3,13 @@
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
 ## 0.18.0 — de klok
-- Nieuw onderwerp **De klok** (Tijd, geld en snelheid → 4), met een getekende **wijzerklok**:
-  - lees de klok (typ `3.25`) of **zet de wijzers** zelf: pijltjes, `+` en `−` voor een uur, of klik waar de lange
-    wijzer moet staan; de uurwijzer draait mee, zoals bij een echte klok;
+- Nieuw onderwerp **De klok** (Tijd, geld en snelheid → 4), met een echte **wijzerklok in een eigen venster**
+  (alle cijfers, de minuten klein erbuiten, een korte blauwe uurwijzer en een lange oranje minutenwijzer):
+  - lees de klok (typ `3.25`, in de terminal of in het klokvenster) of **zet de wijzers** zelf: klik of sleep de
+    lange wijzer in het klokvenster, of gebruik de pijltjes, `+` en `−` voor een uur; de uurwijzer draait mee, zoals
+    bij een echte klok. Was het fout, dan tonen groene wijzers hoe het moest;
+  - kan er geen venster (Linux zonder `python3-tk`, via ssh), dan tekent de terminal de klok; ook met Opties →
+    Klok in een eigen venster → uit, of `--zonder-klokvenster`. `F2` haalt het venster naar voren;
   - tijden **in woorden**, zoals we ze in Vlaanderen zeggen: "kwart over drie", "vijf voor half vier",
     "tien over half vier". Half vier is 3.30!;
   - de **24 uur** (3.15 's middags = 15.15 u) en **later of vroeger** ("Hoe laat is het 35 minuten later?"), in het

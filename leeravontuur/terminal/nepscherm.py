@@ -9,6 +9,8 @@ Tekent een scherm heel vaak zonder op een toets te wachten, dan hangt het: dat g
 
 import curses
 
+from .venster import Klokvenster
+
 
 class ToetsenOp(Exception):
     """Alle opgegeven toetsen zijn gebruikt."""
@@ -99,3 +101,29 @@ class NepScherm:
             if x >= 0:
                 return y, x
         return None
+
+
+class NepKlokvenster(Klokvenster):
+    """Een klokvenster zonder proces, voor schermtests: bewaart wat het venster kreeg, en geeft `berichten`
+    (bv. {"klik": [0, -50]} of {"toets": "Enter"}) door zodra het venster te zien is, zoals een echt kind."""
+
+    def __init__(self, berichten=()):
+        super().__init__()
+        self.wacht = list(berichten)
+        self.gekregen = []
+
+    def _start(self):
+        self.proc = True
+        return True
+
+    def _stuur(self, **bericht):
+        self.gekregen.append(bericht)
+        return True
+
+    def stop(self):
+        self.proc = None
+
+    def volgende(self):
+        if self.zichtbaar and self.wacht and self.uit.empty():
+            self.uit.put(self.wacht.pop(0))
+        return super().volgende()

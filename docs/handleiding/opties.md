@@ -17,6 +17,7 @@ Kies een optie met `↑` `↓` en druk Enter (of klik erop) om ze te wijzigen. `
 | **Typrichting in tabellen** | → naar rechts, ← naar links | In welke richting de cursor gaat in de eenhedentabel (ook met `r` tijdens de oefening). |
 | **Avatar** | aan, uit | De pixel-avatar in het hoofdmenu en als oefenmaatje. Uit = een klein tekstgezichtje. |
 | **Animaties** | aan, uit | De avatar springt even bij een juist antwoord. |
+| **Klok in een eigen venster** | aan, uit | Bij [De klok](wiskunde/tijd-geld-snelheid.md#het-klokvenster) staat een echte wijzerklok in een apart venster. Uit (of als het niet kan) = de klok in de terminal. |
 
 ## De thema's naast elkaar
 

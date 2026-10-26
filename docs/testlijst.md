@@ -19,9 +19,12 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Eenheden → Tabel-oefening → Oppervlakte:** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
 - [ ] **Tijd, geld en snelheid → Tijd:** bij "… min = ? u ? min" typ je bv. `2 u 15 min`; bij "Hoe laat kom je
   aan?" typ je bv. `11.15`.
-- [ ] **Tijd, geld en snelheid → De klok:** de klok ziet eruit als een klok (korte dikke uurwijzer, lange
-  minutenwijzer). Bij "Zet de klok op …" draait de uurwijzer mee met ←→, ↑↓ of `+`/`−`; een klik zet de lange wijzer.
-  Typ bij "vijf voor half vier = ?" eens `4.25`: je krijgt uitleg over "half".
+- [ ] **Tijd, geld en snelheid → De klok:** rechtsboven verschijnt het **klokvenster** met een echte klok. Typen kan
+  in de terminal én in het klokvenster. Bij "Zet de klok op …" sleep je de lange wijzer in het klokvenster (of ←→,
+  ↑↓, `+`/`−`): de uurwijzer draait mee; fout = groene wijzers tonen hoe het moest. Terug naar het menu: het
+  venster verdwijnt. Sluit het venster eens: de terminal tekent de klok. `F2` haalt het terug.
+- [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens
+  `4.25`: je krijgt uitleg over "half".
 - [ ] **Meetkunde → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.
 - [ ] **Meetkunde → Schatkaart:** bij "Zet een kruisje op …" verplaats je het kruisje met de pijltjes of een klik.
 - [ ] **Vraagstukken:** duid met ← → en spatie de getallen aan, kies met ↓ wat er gevraagd wordt, ga met Tab naar

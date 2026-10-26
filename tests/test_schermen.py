@@ -8,7 +8,7 @@ import unittest
 from leeravontuur.kern.instellingen import Instellingen
 from leeravontuur.kern.opslag import Opslag
 from leeravontuur.terminal.app import App
-from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
+from leeravontuur.terminal.nepscherm import NepKlokvenster, NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 
 ESC = "\x1b"
@@ -55,10 +55,12 @@ class Basis(unittest.TestCase):
                 o.zet_algemeen("laatste_kind", kind.id)
         return o
 
-    def speel(self, toetsen, opslag=None, voorrang=None, **scherm_opties):
-        """Speelt de toetsen af. Geeft (nepscherm, app). Stopt netjes als de toetsen op zijn."""
+    def speel(self, toetsen, opslag=None, voorrang=None, klokvenster=None, **scherm_opties):
+        """Speelt de toetsen af. Geeft (nepscherm, app). Stopt netjes als de toetsen op zijn.
+        klokvenster: een NepKlokvenster (anders tekent de terminal de klok, zoals zonder beeldscherm)."""
         scherm = NepScherm(toetsen, **scherm_opties)
         app = App(scherm, opslag or self.opslag(("Test", "5")), voorrang, kleuren=False)
+        app.s.klokvenster = klokvenster
         try:
             app.start()
         except ToetsenOp:
@@ -334,6 +336,53 @@ class TestKlok(Basis):
         self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
         beeld = next(b for b in scherm.beelden if "Zet de klok" in b).split("\n")
         self.assertIn("[Enter]", beeld[-1])  # de hint staat niet over de knoppen
+
+
+class TestKlokvenster(TestKlok):
+    """De klok in een eigen venster (zonder echt proces): de terminal verwijst ernaar, klikken en toetsen uit het
+    venster komen in de oefening, en zonder klok in beeld verdwijnt het venster."""
+
+    def test_lezen_in_het_venster(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        kv = NepKlokvenster([{"toets": "3"}, {"toets": "."}, {"toets": "2"}, {"toets": "5"}, {"toets": "Enter"}])
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ("wacht",), ("wacht",),
+                                  ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC], opslag=o, klokvenster=kv)
+        self.assertTrue(self.ergens(scherm, "De klok staat in het klokvenster"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["gegeven"], rij["juist"]), ("3.25", 1))
+        getoond = [b for b in kv.gekregen if b.get("doe") == "toon"]
+        self.assertEqual(getoond[0]["minuten"], 205)
+        self.assertEqual(getoond[0]["tekst"], "Hoe laat is het op de klok?")
+        self.assertEqual(getoond[-1]["uitslag"], "goed")
+        self.assertEqual(kv.gekregen[-1], {"doe": "verberg"})  # terug in het menu: het venster weg
+
+    def test_wijzers_zetten_met_een_klik_in_het_venster(self):
+        v = self.vaste_vraag("zetten", 7 * 60)
+        o = self.opslag(("Test", "5"))
+        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}])  # de lange wijzer recht naar boven
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
+                                 opslag=o, klokvenster=kv)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertTrue(rij["gegeven"].endswith(".00 u") or rij["gegeven"].endswith(".00"), rij["gegeven"])
+        toon = [b for b in kv.gekregen if b.get("doe") == "toon"]
+        self.assertTrue(toon[0]["klikbaar"])
+        if not rij["juist"]:  # het uur stond anders: dan tonen groene wijzers hoe het moest
+            self.assertEqual(toon[-1]["juist"], int(v.antwoord) % 720)
+
+    def test_venster_gesloten_dan_klok_in_de_terminal(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        kv = NepKlokvenster([{"dicht": True}])
+        scherm, _ = self.speel([*self.START, ("wacht",), ("wacht",), ESC, ESC, ESC, ESC], klokvenster=kv)
+        laatste = next(b for b in reversed(scherm.beelden) if "Hoe laat is het" in b)
+        self.assertNotIn("klokvenster", laatste)
+        self.assertIn("12", laatste)  # de wijzerplaat in de terminal
+
+    def test_f2_haalt_het_venster_terug(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        kv = NepKlokvenster()
+        self.speel([*self.START, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
+        self.assertTrue(any(b.get("naar_voren") for b in kv.gekregen[1:]))
 
 
 class TestTypen(Basis):
