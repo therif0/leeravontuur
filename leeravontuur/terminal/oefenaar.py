@@ -52,6 +52,7 @@ INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen in
 GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur"}
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
+KLAD_HINT = "Een rekenregel, bv. 70 : 7 = 10, en Enter. Lege regel + Enter (of Tab) = naar je antwoord."
 
 
 def vraagtekst(v):
@@ -256,10 +257,11 @@ class Oefenaar:
                 breed = min(breed, LINKS - fx)
             if kb and goed is None:  # het klad: onder het antwoord, of naast een hoog model
                 kx, kw = (fx, min(KLAD_BREED, 78 - fx)) if hoog else (x, min(KLAD_BREED, breed))
-                ky = fb if hoog else max(vy + 2, fb)
+                ky = fb + 1 if hoog else max(vy + 2, fb)
                 kh = max(2, min(KLAD_HOOG, s.maat()[0] - 2 - ky - 4))
-                s.put(ky, kx - 5 if kx >= 5 else 0, "Klad", "accent" if focus == KLAD else "dim")
-                s.zones.voeg(ky, max(0, kx - 5), 1, 4, ("focus", KLAD))
+                label = "▸ Klad" if focus == KLAD else "Klad (Tab)"
+                s.put(ky - 1, kx, label, "accent" if focus == KLAD else "dim")
+                s.zones.voeg(ky - 1, kx, 1, len(label), ("focus", KLAD))
                 plek = kb.teken(s, ky, kx, kw, kh, focus == KLAD, ("focus", KLAD))
                 fb = ky + kh + 1
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
@@ -278,8 +280,9 @@ class Oefenaar:
                     van = fb + (2 if len(melding) > breed else 1) if obj or melding else fb
                     for i, stuk in enumerate(textwrap.wrap(tekst, min(breed, 70 if lijnen or obj else 54))[:2 if obj else 3]):
                         s.put(van + i, fx, stuk, "accent")
-                s.put(hint_y or min(fb + 3, s.maat()[0] - 2), x,
-                      obj.hint if obj else HINTS.get(v.invoer, HINTS["getal"]), "dim")
+                hint = (obj.hint if obj else KLAD_HINT if kb and focus == KLAD else
+                        HINTS.get(v.invoer, HINTS["getal"]))
+                s.put(hint_y or min(fb + 3, s.maat()[0] - 2), x, hint, "dim")
                 if obj and obj.cursor_pos:
                     s.cursor(True, *obj.cursor_pos)
                 elif lijnen or obj:

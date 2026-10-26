@@ -1,11 +1,14 @@
-"""Hoofdrekenen: tafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren.
+"""Hoofdrekenen: tafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren, slim × en : (splitsen).
 
 Elke vraag krijgt een strategie mee die de uitleg stap voor stap toont (compenseren, splitsen, verdubbelen …).
 """
 
 from decimal import Decimal
+from fractions import Fraction
 
 from ..getal import decimalen, fmt
+from ..klad import DEEL, MAAL, MIN, PLUS, fout_pad, stap
+from ..modellen import Oplossing
 from ..onderwerp import Onderwerp, Vraag
 
 D = Decimal
@@ -370,6 +373,157 @@ class DubbelHelft(Onderwerp):
         return SPIEKBRIEF
 
 
+# ---- slim × en : (splitsen) ----------------------------------------------------------------
+
+class Splitsen(Onderwerp):
+    """91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13. Het klad is verplicht: het gaat om de aanpak, niet alleen de uitkomst."""
+    id = "wiskunde.hoofdrekenen.splitsen"
+    naam = "Slim × en : (splitsen)"
+    omschrijving = "× en : met splitsen in handige stukken, en compenseren (99 × 6)"
+    denkfouten = {"split_deel_vergeten": "bij splitsen een stuk vergeten",
+                  "split_niet_gedeeld": "bij splitsen een stuk niet gedeeld of vermenigvuldigd",
+                  "compenseren_richting": "bij compenseren de verkeerde kant op verbeterd",
+                  "compenseren_te_weinig": "bij compenseren maar 1 keer verbeterd in plaats van × het getal"}
+    klad = "verplicht"
+    vast = ("soort",)
+
+    def maak_met(self, p, rng, data=None):
+        soort = data["soort"] if data and data.get("soort") in p["soorten"] else rng.choice(p["soorten"])
+        if soort == "deel_splitsen":
+            for _ in range(50):
+                d = rng.randint(3, p["deler_max"])
+                q_max = min(99, p["deeltal_max"] // d)
+                if q_max >= 11:
+                    break
+            q = rng.choice([x for x in range(11, q_max + 1) if x % 10]) if q_max >= 11 else 13
+            a, f, op, antwoord = D(d * q), D(d), ":", D(q)
+            delen = [D(d * (q // 10) * 10), D(d * (q % 10))]  # een tafel met een 0, en de rest
+        elif soort == "maal_compenseren":
+            n = rng.choice(p["compenseer"])
+            f = D(rng.randint(3, 9))
+            a, op, antwoord = D(n), "×", D(n) * f
+            delen = [D(n + 1), D(1)]  # 99 = 100 − 1
+        else:
+            soort = "maal_splitsen"
+            f = D(rng.randint(3, 9))
+            if p["komma"] and rng.random() < 0.4:
+                a = D(rng.choice([x for x in range(11, 100) if x % 10])) / 10   # 2,4
+            else:
+                a = D(rng.choice([x for x in range(11, max(12, p["groot"]) + 1) if x % 10]))
+            op, antwoord = "×", a * f
+            delen = _splits(a)
+        d_ = {"soort": soort, "a": str(a), "f": str(f), "op": op, "delen": [str(x) for x in delen], "onderwerp": soort}
+        return Vraag(self.id, f"{self.id}:{soort}:{fmt(a)}{op}{fmt(f)}", f"{fmt(a)} {op} {fmt(f)} =", antwoord,
+                     data=d_)
+
+    def kies_onderwerp(self, gewichten, p, rng):
+        w = [gewichten.get(s, 1.0) for s in p["soorten"]]
+        return {"soort": rng.choices(p["soorten"], weights=w, k=1)[0]}
+
+    def onderwerp_van_sleutel(self, sleutel):
+        delen = sleutel.split(":")
+        return delen[1] if len(delen) >= 3 and delen[0] == self.id else None
+
+    @staticmethod
+    def _getallen(v):
+        d = v.data
+        return d["soort"], D(d["a"]), D(d["f"]), [D(x) for x in d["delen"]]
+
+    def oplossing(self, v):
+        soort, a, f, delen = self._getallen(v)
+        if soort == "deel_splitsen":
+            q = [x / f for x in delen]
+            reken = (f"{fmt(a)} : {fmt(f)} = {fmt(delen[0])} : {fmt(f)} + {fmt(delen[1])} : {fmt(f)} = "
+                     f"{fmt(q[0])} + {fmt(q[1])} = {fmt(sum(q))}")
+            waarom = (f"{fmt(delen[0])} : {fmt(f)} = {fmt(q[0])}, want {fmt(f)} × {fmt(q[0])} = {fmt(delen[0])}. "
+                      f"En {fmt(delen[1])} : {fmt(f)} = {fmt(q[1])}.")
+            paden = [fout_pad("split_niet_gedeeld", f"Je deelde {fmt(delen[1])} niet door {fmt(f)}.",
+                              f"{fmt(delen[0])} : {fmt(f)} + {fmt(delen[1])} = {fmt(q[0] + delen[1])}")]
+        elif soort == "maal_compenseren":
+            rond, c = delen
+            reken = (f"{fmt(a)} × {fmt(f)} = {fmt(rond)} × {fmt(f)} − {fmt(c)} × {fmt(f)} = "
+                     f"{fmt(rond * f)} − {fmt(c * f)} = {fmt(a * f)}")
+            waarom = f"{fmt(a)} is {fmt(c)} minder dan {fmt(rond)}: reken {fmt(rond)} × {fmt(f)}, en neem er {fmt(c)} × {fmt(f)} af."
+            paden = [fout_pad("compenseren_richting", "Je telde erbij, maar je moet er iets af: het getal was kleiner dan "
+                              f"{fmt(rond)}.", f"{fmt(rond)} × {fmt(f)} + {fmt(c * f)} = {fmt(rond * f + c * f)}")]
+        else:
+            delen_x = [x * f for x in delen]
+            reken = (f"{fmt(a)} × {fmt(f)} = " + " + ".join(f"{fmt(x)} × {fmt(f)}" for x in delen) + " = "
+                     + " + ".join(fmt(x) for x in delen_x) + f" = {fmt(a * f)}")
+            waarom = "Elk stuk × " + fmt(f) + ": " + ", ".join(f"{fmt(x)} × {fmt(f)} = {fmt(x * f)}" for x in delen) + "."
+            paden = [fout_pad("split_niet_gedeeld", f"Je vermenigvuldigde {fmt(delen[-1])} niet met {fmt(f)}.",
+                              f"{fmt(delen_x[0])} + {fmt(delen[-1])} = {fmt(delen_x[0] + delen[-1])}")] if len(delen) == 2 else []
+        return Oplossing([stap(reken, hint=self.tip(v), waarom=waarom)], paden)
+
+    def tip(self, v):
+        soort, a, f, delen = self._getallen(v)
+        if soort == "deel_splitsen":
+            return f"Splits {fmt(a)} in een getal uit de tafel van {fmt(f)} met een 0 erachter, en de rest. Deel dan elk stuk door {fmt(f)}."
+        if soort == "maal_compenseren":
+            return f"{fmt(a)} is bijna {fmt(delen[0])}. Reken eerst {fmt(delen[0])} × {fmt(f)}, en verbeter dan."
+        if a != a.to_integral_value():
+            return f"Splits {fmt(a)} in een heel getal en de rest achter de komma, en vermenigvuldig elk stuk met {fmt(f)}."
+        return (f"Splits {fmt(a)} in {'honderdtallen, ' if a >= 100 else ''}tientallen en eenheden, en vermenigvuldig "
+                f"elk stuk met {fmt(f)}.")
+
+    def uitleg(self, v):
+        opl = self.oplossing(v)
+        return [opl.stappen[0].reken, opl.stappen[0].waarom]
+
+    def klad_klaar(self, v, regels):
+        """Is er een splitsing (of compensatie) te zien? Elke splitsing telt (49 + 42 net zo goed als 70 + 21); een
+        rekenfout erin mag: dan kijkt het nakijken (met een tweede kans) het antwoord gewoon na."""
+        soort, a, f, delen = self._getallen(v)
+        op = DEEL if soort == "deel_splitsen" else MAAL
+        F, stukken = Fraction(f), 0
+        for r in regels:
+            if not r or not r.leesbaar:
+                continue
+            for s in r.schakels:
+                if F not in s.operanden:
+                    continue
+                if s.ops.count(op) >= 2:
+                    return True, ""
+                if soort == "maal_compenseren" and op in s.ops and (MIN in s.ops or PLUS in s.ops):
+                    return True, ""
+                if s.ops == [op] and Fraction(a) not in s.operanden:
+                    stukken += 1
+        if stukken >= (1 if soort == "maal_compenseren" else 2):
+            return True, ""
+        if soort == "maal_compenseren":
+            return False, f"Laat in je klad zien hoe je compenseert: begin met {fmt(delen[0])} × {fmt(f)}."
+        return False, f"Laat in je klad zien hoe je splitst: in welke stukken verdeel je {fmt(a)}? (Tab = klad)"
+
+    def diagnose(self, v, getal):
+        if getal is None or getal == v.antwoord:
+            return None
+        soort, a, f, delen = self._getallen(v)
+        if soort == "deel_splitsen":
+            q = [x / f for x in delen]
+            if getal in q:
+                return ("split_deel_vergeten", f"Je deelde maar één stuk. {fmt(delen[0])} : {fmt(f)} en "
+                                               f"{fmt(delen[1])} : {fmt(f)}: tel ze allebei op.")
+            if getal in (q[0] + delen[1], q[1] + delen[0]):
+                return "split_niet_gedeeld", f"Je deelde niet elk stuk door {fmt(f)}."
+        elif soort == "maal_compenseren":
+            rond, c = delen
+            if getal == rond * f + c * f:
+                return "compenseren_richting", f"{fmt(a)} is kleiner dan {fmt(rond)}: je moet er iets af doen, niet bij."
+            if getal == rond * f - c:
+                return ("compenseren_te_weinig", f"Je nam er maar {fmt(c)} af, maar je rekende {fmt(f)} keer te veel: "
+                                                 f"neem er {fmt(c)} × {fmt(f)} af.")
+        else:
+            x = [d * f for d in delen]
+            if len(delen) >= 2 and getal in (x[0], sum(x[:-1])):
+                return "split_deel_vergeten", "Je vergat een stuk: vermenigvuldig elk stuk en tel ze allemaal op."
+            if len(delen) >= 2 and getal == sum(x[:-1]) + delen[-1]:
+                return "split_niet_gedeeld", f"Je vermenigvuldigde {fmt(delen[-1])} niet met {fmt(f)}."
+        return None
+
+    def spiekbrief(self):
+        return SPIEKBRIEF
+
+
 SPIEKBRIEF = [
     ("Slimme trucjes voor hoofdrekenen", "accent"),
     ("", ""),
@@ -379,6 +533,9 @@ SPIEKBRIEF = [
     ("", ""),
     ("SPLITSEN", "accent"),
     ("  347 + 285 = 347 + 200 + 80 + 5 = 632", ""),
+    ("  14 × 7 = 10 × 7 + 4 × 7 = 70 + 28 = 98", ""),
+    ("  91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13   (70: de tafel van 7 met een 0)", ""),
+    ("  99 × 6 = 100 × 6 − 1 × 6 = 600 − 6 = 594   (compenseren)", ""),
     ("", ""),
     ("TAFELS", "accent"),
     ("  × 9  = × 10 en dan één keer eraf:  9 × 7 = 70 − 7 = 63", ""),
@@ -405,4 +562,5 @@ TAFELS = Tafels()
 PLUSMIN = PlusMin()
 MAALDEEL10 = MaalDeel10()
 DUBBELHELFT = DubbelHelft()
-ALLE = [TAFELS, PLUSMIN, MAALDEEL10, DUBBELHELFT]
+SPLITSEN = Splitsen()
+ALLE = [TAFELS, PLUSMIN, MAALDEEL10, DUBBELHELFT, SPLITSEN]

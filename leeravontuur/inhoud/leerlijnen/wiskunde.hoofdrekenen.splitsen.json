@@ -1,0 +1,55 @@
+{
+ "vaardigheid": "wiskunde.hoofdrekenen.splitsen",
+ "omschrijving": "Slim × en : (splitsen)",
+ "doelen": [],
+ "parameters": {
+  "soorten": "lijst",
+  "groot": "int",
+  "deler_max": "int",
+  "deeltal_max": "int",
+  "compenseer": "lijst",
+  "komma": "bool"
+ },
+ "leerlijn": {
+  "3": {
+   "soorten": ["maal_splitsen", "deel_splitsen"],
+   "groot": 50,
+   "deler_max": 5,
+   "deeltal_max": 100,
+   "compenseer": [9, 19],
+   "komma": false
+  },
+  "4": {
+   "soorten": ["maal_splitsen", "deel_splitsen", "maal_compenseren"],
+   "groot": 99,
+   "deler_max": 9,
+   "deeltal_max": 200,
+   "compenseer": [9, 19, 29],
+   "komma": false
+  },
+  "5": {
+   "soorten": ["maal_splitsen", "deel_splitsen", "maal_compenseren"],
+   "groot": 999,
+   "deler_max": 9,
+   "deeltal_max": 1000,
+   "compenseer": [19, 29, 49, 99, 199],
+   "komma": false
+  },
+  "6": {
+   "soorten": ["maal_splitsen", "deel_splitsen", "maal_compenseren"],
+   "groot": 999,
+   "deler_max": 9,
+   "deeltal_max": 1000,
+   "compenseer": [49, 99, 199, 999],
+   "komma": true
+  },
+  "m1": {
+   "soorten": ["maal_splitsen", "deel_splitsen", "maal_compenseren"],
+   "groot": 999,
+   "deler_max": 9,
+   "deeltal_max": 1000,
+   "compenseer": [99, 199, 999],
+   "komma": true
+  }
+ }
+}
