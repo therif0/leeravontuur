@@ -318,9 +318,11 @@ class TestKlok(Basis):
     def test_half_vier_is_geen_half_vijf(self):
         v = self.vaste_vraag("woorden_naar", 3 * 60 + 30)
         o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([*self.START, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        scherm, app = self.speel([*self.START, *"4.30", OK, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Half vier is een half uur"))  # het hulpje bij de tweede kans
         rij = o.antwoorden(app.kind.id)[-1]
-        self.assertEqual((rij["juist"], rij["diagnose"]), (0, "klok_half"), v.tekst)
+        self.assertEqual((rij["juist"], rij["diagnose"], rij["gegeven"]), (0, "klok_half", "4.30"), v.tekst)
+        self.assertIn('"eerste_fout": "4.30"', rij["extra"])
 
     def test_in_woorden(self):
         self.vaste_vraag("naar_woorden", 3 * 60 + 25)
@@ -361,8 +363,9 @@ class TestKlokvenster(TestKlok):
     def test_wijzers_zetten_met_een_klik_in_het_venster(self):
         v = self.vaste_vraag("zetten", 7 * 60)
         o = self.opslag(("Test", "5"))
-        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}])  # de lange wijzer recht naar boven
-        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
+        # de lange wijzer recht naar boven, Enter (fout? dan een tweede kans: nog eens Enter)
+        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}, {"toets": "Enter"}])
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
                                  opslag=o, klokvenster=kv)
         rij = o.antwoorden(app.kind.id)[-1]
         self.assertTrue(rij["gegeven"].endswith(".00 u") or rij["gegeven"].endswith(".00"), rij["gegeven"])
@@ -395,7 +398,7 @@ class TestKlokvenster(TestKlok):
     def test_tekst_blijft_links_van_het_venster(self):
         self.vaste_vraag("later", 8 * 60 + 50)
         kv = NepKlokvenster()
-        scherm, _ = self.speel([*self.START, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
+        scherm, _ = self.speel([*self.START, *"1.00", OK, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
         nagekeken = next(b for b in scherm.beelden if "Niet juist" in b)
         beeld = nagekeken.split("\n")
         for regel in beeld[11:23]:  # onder het oefenmaatje: de feedback en de uitleg
