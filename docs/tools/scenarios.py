@@ -742,14 +742,16 @@ def _(d):
         d.toets(*OPNIEUW)
     else:
         raise RuntimeError("geen vraagstuk met een aankomstuur gevonden")
-    b, du = lees_klok(tijden[0]), lees_duur(duren[0])
-    d.toets("Tab", ("tekst", "+"), "Enter")
+    b, du = lees_klok(tijden[0]), int(lees_duur(duren[0]))
+    terug = re.search(r"Hoe laat (begint|vertrek|moet)", t) is not None  # terugtellen
+    op, teken = (-1, "-") if terug else (1, "+")
     u, m = divmod(int(b), 60)
-    honderd = f"{u}.{m + int(du)}" if m + du < 100 else f"{u + 1}.{m + int(du) - 100:02d}"
-    d.toets(("tekst", f"{klok_tekst(b).replace(' u', '')} + {int(du)} = {honderd}"), "Enter")
+    honderd = u * 100 + m + op * du  # alsof een uur 100 minuten heeft
+    d.toets("Tab", ("tekst", teken), "Enter")
+    d.toets(("tekst", f"{u}.{m:02d} {teken} {du} = {honderd // 100}.{honderd % 100:02d}"), "Enter")
     d.foto("vraagstukken-tijd-fout", "Gerekend alsof een uur 100 minuten heeft: de hint in het klad")
-    d.toets(("tekst", f"{klok_tekst(b)} + {duur_tekst(du)} = {klok_tekst(b + du)}"), "Enter")
-    d.foto("vraagstukken-tijd", "Kloktijden in het klad: tijdstip + tijdsduur = tijdstip")
+    d.toets(("tekst", f"{klok_tekst(b)} {teken} {duur_tekst(du)} = {klok_tekst(b + op * du)}"), "Enter")
+    d.foto("vraagstukken-tijd", "Kloktijden in het klad: een tijdstip ± een tijdsduur = een tijdstip")
 
 
 @scenario("vraagstukken-speurneus")

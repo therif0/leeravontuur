@@ -395,14 +395,15 @@ def klok_pixels(klok, r=KLOK_R):
         p[round(r - (r - 1.4) * math.cos(a))][round(r + (r - 1.4) * math.sin(a))] = "lijn"
     if klok.wijzers:
         uur_hoek, min_hoek = klok.hoeken()
-        for rol, hoek, lengte, dik in (("vulling", min_hoek, r - 2, False), ("rand", uur_hoek, r * 0.55, True)):
+        # eerst de uurwijzer, dan de minutenwijzer erbovenop (zoals bij een echte klok)
+        for rol, hoek, lengte, dik in (("rand", uur_hoek, r * 0.55, True), ("vulling", min_hoek, r - 2, False)):
             a = math.radians(hoek)
             stap = 0.0
             while stap <= lengte:
                 x, y = r + stap * math.sin(a), r - stap * math.cos(a)
                 plekken = [(round(x), round(y))]
-                if dik:
-                    plekken += [(round(x + 0.5), round(y)), (round(x), round(y + 0.5))]
+                if dik:  # aan beide kanten een pixel erbij, loodrecht op de wijzer
+                    plekken += [(round(x + k * math.cos(a)), round(y + k * math.sin(a))) for k in (-0.8, 0.8)]
                 for px, py in plekken:
                     if 0 <= px < n and 0 <= py < n:
                         p[py][px] = rol
