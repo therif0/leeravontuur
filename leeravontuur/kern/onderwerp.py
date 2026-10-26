@@ -18,6 +18,14 @@ from .vaardigheden import DENKFOUTEN, Vaardigheid, registreer
 ONDERWERPEN = {}  # vaardigheid-id -> Onderwerp
 
 
+def begin_van(reken):
+    """Het begin van een klad-regel, zonder de uitkomst: '91 : 7 = 70 : 7 + 21 : 7 = …' of '24 : 4 = …'."""
+    delen = [d.strip() for d in reken.split("=")]
+    if len(delen) < 2:
+        return ""
+    return " = ".join(delen[:2 if len(delen) >= 3 else 1]) + " = …"
+
+
 @dataclass
 class Vraag:
     vaardigheid: str
@@ -56,6 +64,7 @@ class Onderwerp:
     naam = ""
     omschrijving = ""
     denkfouten = {}
+    klad = None  # de vaste werkwijze: None (niets te rekenen), "ja" (klad mag) of "verplicht" (klad moet)
 
     def __init__(self):
         self.vaardigheid = registreer(Vaardigheid(self.id, self.naam, self.omschrijving))
@@ -76,6 +85,36 @@ class Onderwerp:
 
     def diagnose(self, v, getal):
         return None
+
+    def oplossing(self, v):
+        """De oplossing in klad-regels (kern.modellen.Oplossing, met kern.klad.stap en fout_pad), of None.
+        Elk onderwerp met klad geeft er een: ze is de uitwerking na het nakijken ("Zo kan het:") en de maat voor het
+        klad van het kind."""
+        return None
+
+    def klad_voor(self, v):
+        """Klad bij deze vraag: None, "ja" of "verplicht" (een vraag kan het overschrijven met data["klad"])."""
+        k = v.data.get("klad", self.klad) if isinstance(v.data, dict) else self.klad
+        return k if k in ("ja", "verplicht") else None
+
+    def klad_klaar(self, v, regels):
+        """Bij klad "verplicht": staat er genoeg in het klad (KladRegel's) om het antwoord na te kijken?
+        Geeft (ok, wat er nog moet)."""
+        return True, ""
+
+    def tips(self, v):
+        """De getrapte tips: ? geeft telkens de volgende. Eerst de aanpak, dan het begin van het klad; de terminal
+        voegt er hulp bij de eerste foute klad-regel aan toe. Nooit het antwoord."""
+        uit = []
+        t = self.tip(v)
+        if t:
+            uit.append(t)
+        opl = self.oplossing(v) if self.klad_voor(v) else None
+        if opl and opl.stappen:
+            b = begin_van(opl.stappen[0].reken)
+            if b:
+                uit.append(f"Begin je klad zo: {b}")
+        return uit
 
     def nakijken(self, v, getal):
         """Is het (gelezen) antwoord juist? Een GetypteBreuk telt op zijn waarde, tenzij de vraag de

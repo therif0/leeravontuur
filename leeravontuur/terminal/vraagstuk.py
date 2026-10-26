@@ -12,8 +12,8 @@ import curses
 import textwrap
 
 from ..kern import verhaal as V
-from ..kern.klad import lees_regel
 from ..kern.wiskunde import vraagstukken as VS
+from .kladblad import LEEG_ENTER, Kladblad
 from .scherm import BACKSPACE, ENTER, ESC, teken_van
 
 TAB = 9
@@ -23,7 +23,6 @@ LEES, PLAN, REKEN, CONTROLE = range(4)
 OPWOORD = {"+": "optellen", "−": "aftrekken", "×": "vermenigvuldigen", ":": "delen", "omzet": "omzetten",
            "pct": "het procent berekenen", "heel": "delen", "rest": "delen (de rest)", "boven": "delen"}
 PLAN_TOETS = {"+": "+", "-": "−", "−": "−", "x": "×", "X": "×", "*": "×", ":": ":", "/": ":", "o": "omzetten"}
-KLAD_TEKENS = set("0123456789,.+-−*xX×:/()=%€ ") | set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ²³")
 ANTW_TEKENS = set("0123456789,.€ -:umin")  # ook 11.20 en 1 u 35 min
 MAX_KLAD = 8
 NAAST_MAATJE, MAATJE_ONDER = 58, 9   # tot rij 9 staat rechts het maatje: daar is een regel hoogstens 58 breed
@@ -45,13 +44,26 @@ class VraagstukInvoer:
         self.fase, self.onder = LEES, False   # onder = in stap 1 op de rij 'Gevraagd'
         self.cur, self.aangeduid = 0, []
         self.optie, self.gevraagd, self.gevraagd_eerst = 0, None, None
-        self.plan, self.klad, self.buf, self.antw = [], [], "", ""
+        self.kb = Kladblad()                  # stap 3: hetzelfde klad als in elke rekenoefening
+        self.plan, self.antw = [], ""
         self.tips, self.tiptekst = 0, ""
         self.eerste = None                    # het eerste (foute) directe antwoord
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
         self.uitleg_na = []
         self.hint = ""
+
+    @property
+    def klad(self):
+        return self.kb.regels
+
+    @property
+    def buf(self):
+        return self.kb.buf
+
+    @buf.setter
+    def buf(self, tekst):
+        self.kb.buf = tekst
 
     # ---- vorm ----------------------------------------------------------------------------------------
     def verhaal_h(self):
@@ -172,21 +184,9 @@ class VraagstukInvoer:
         # 3 Reken: het klad
         self.kop(s, r + 3, REKEN)
         kh = self.klad_h()
-        zicht = self.klad[-(kh - 1):] if len(self.klad) >= kh else self.klad
-        eerste_nr = len(self.klad) - len(zicht)
-        for i, (tekst, regel) in enumerate(zicht):
-            yy = r + 3 + i
-            s.put(yy, KOP, (regel.netjes or tekst)[:50], "")
-            teken, rol = {True: ("✔", "goed"), False: ("✘", "fout")}.get(regel.juist, ("·", "dim"))
-            s.put(yy, KOP + 52, teken, rol)
-            s.zones.voeg(yy, KOP, 1, 54, ("klad", eerste_nr + i))
-        yy = r + 3 + len(zicht)
-        if self.fase == REKEN:
-            s.put(yy, KOP, self.buf + " " * (50 - len(self.buf)), "veld")
-            self.cursor_pos = (yy, KOP + len(self.buf))
-        elif not self.klad:
-            s.put(yy, KOP, "typ hier je rekenregels: 3 x 4 = 12" if self.fase != REKEN else "", "dim")
-            s.zones.voeg(yy, KOP, 1, 50, ("fase", REKEN))
+        plek = self.kb.teken(s, r + 3, KOP, 54, kh, self.fase == REKEN, ("fase", REKEN))
+        if plek:
+            self.cursor_pos = plek
         # 4 Controle: de antwoordzin
         yc = r + 3 + kh
         self.kop(s, yc, CONTROLE)
@@ -306,8 +306,7 @@ class VraagstukInvoer:
                 self.plan.append(k[1])
         elif soort == "klad":
             self.ga(REKEN)
-            if not self.buf and 0 <= k[1] < len(self.klad):
-                self.buf = self.klad.pop(k[1])[0]
+            self.kb.haal_terug(k[1])
         return None
 
     def toets_lees(self, k, ch):
@@ -386,29 +385,11 @@ class VraagstukInvoer:
         return None
 
     def toets_reken(self, k, ch):
-        if k in BACKSPACE:
-            if self.buf:
-                self.buf = self.buf[:-1]
-            elif self.klad:
-                self.buf = self.klad.pop()[0]
-            return None
-        if k in ENTER:
-            if not self.buf.strip():
-                self.ga(CONTROLE)
-                return None
-            regel = lees_regel(self.buf)
-            self.klad.append((self.buf, regel))
-            self.buf = ""
-            if regel.juist:
-                self.melding, self.melding_rol = "✔ Deze regel klopt." + (f" {regel.melding}" if regel.melding
-                                                                          else ""), "goed"
-            elif regel.juist is False:
-                self.melding, self.melding_rol = f"✘ {regel.melding}", "fout"
-            else:
-                self.melding, self.melding_rol = f"! {regel.melding or 'Schrijf een bewerking met = en de uitkomst.'}", "accent"
-            return None
-        if ch and ch in KLAD_TEKENS and len(self.buf) < 48:
-            self.buf += ch
+        self.kb.melding = ""
+        if self.kb.toets(k, ch, 54) == LEEG_ENTER:
+            self.ga(CONTROLE)
+        elif self.kb.melding:
+            self.melding, self.melding_rol = self.kb.melding, self.kb.melding_rol
         return None
 
     def toets_antwoord(self, k, ch):

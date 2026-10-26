@@ -313,6 +313,14 @@ class Rekenstap:
 
 
 @dataclass
+class Oplossing:
+    """Hoe een oefening opgelost kan worden, in klad-regels: de stappen (Rekenstap, met `reken` = de regel zoals het
+    kind ze typt) en de bekende foute paden (code, tekst, uitkomst, waarden, handtekeningen). Zie kern/klad.py."""
+    stappen: list
+    paden: list = field(default_factory=list)
+
+
+@dataclass
 class Verhaal:
     """Een vraagstuk als data: zinnen (lijsten van Stukken; de laatste is de vraag), gegevens en de oplossing."""
     zinnen: list

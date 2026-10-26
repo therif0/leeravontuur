@@ -471,3 +471,81 @@ def rekenfout_tekst(s):
 
 def lees_klad(regels):
     return [lees_regel(r) for r in regels]
+
+
+# ---- het klad tegenover een oplossing --------------------------------------------------------------------
+
+def stap(reken, hint="", waarom="", naam=""):
+    """Een stap van een oplossing, geschreven zoals in het klad: stap("91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13").
+    De uitkomst is het laatste getal. (Dat de regel klopt, bewaakt tests/test_werkwijze.py.)"""
+    from .modellen import Rekenstap
+    r = lees_regel(reken)
+    uitkomst = r.uitkomst if r.uitkomst is not None else Fraction(0)
+    op = handtekening(r.schakels[0])[0] if r.schakels else None
+    return Rekenstap(op or "", [], reken, uitkomst, naam, hint, waarom, reken=netjes(reken))
+
+
+def fout_pad(code, tekst, *regels):
+    """Een bekend fout pad, geschreven als klad-regels die op zich kloppen: fout_pad("deel_vergeten", "…",
+    "70 : 7 + 21 = 31"). Een kind dat zo rekent, krijgt in het klad de tekst te zien."""
+    gelezen = [lees_regel(r) for r in regels]
+    sigs = [handtekening(s) for r in gelezen for s in r.schakels if s.juist]
+    uitkomst = gelezen[-1].uitkomst if gelezen and gelezen[-1].uitkomst is not None else None
+    return code, tekst, uitkomst, {}, sigs
+
+
+def netjes(tekst):
+    """Een klad-regel zoals het programma ze toont (× : −)."""
+    r = lees_regel(tekst)
+    return r.netjes or tekst
+
+def handtekening(s):
+    """Wat een schakel uitrekent, om met een fout pad te vergelijken: (bewerking, operanden, uitkomst)."""
+    op = ({VAN: "pct"}.get(s.ops[0], s.ops[0]) if len(s.ops) == 1 else None) if s.ops else None
+    return op, sorted(s.operanden), s.gegeven.getal
+
+
+def analyseer(stappen, paden, regels, overbodig=frozenset(), rekenfout="rekenfout"):
+    """Kijkt het klad na tegenover de stappen van de oplossing en de bekende foute paden.
+
+    stappen = Rekenstap's (id, uitkomst), paden = (code, tekst, uitkomst, waarden, handtekeningen), regels = teksten
+    of KladRegel's, overbodig = getallen die er niet toe doen (een overbodig gegeven).
+    Geeft {'status': [per regel 'goed'/'ok'/'reken'/'denk'/None], 'eerste': (regelnr, code, tekst) of None,
+           'gedekt': ids van stappen die erin staan, 'compleet': staat de uitkomst in het klad?}.
+    Een andere juiste weg is geen fout: een juiste regel is 'ok', ook als ze geen stap van de oplossing is."""
+    juiste = {Fraction(st.uitkomst): st.id for st in stappen}
+    overbodig = {Fraction(x) for x in overbodig}
+    status, gedekt, eerste = [], set(), None
+    for nr, tekst in enumerate(regels, 1):
+        r = lees_regel(tekst) if isinstance(tekst, str) else tekst
+        st = None
+        if r.juist is False:
+            st = "reken"
+            if eerste is None:
+                eerste = (nr, rekenfout, f"Regel {nr}: {r.melding}")
+        elif r.juist:
+            st = "ok"
+            for s in r.schakels:
+                waarden = [s.gegeven.getal] + ([s.gegeven.rest] if s.gegeven.rest is not None else [])
+                if any(w in juiste for w in waarden):
+                    gedekt.update(juiste[w] for w in waarden if w in juiste)
+                    st = "goed"
+                    continue
+                sig = handtekening(s)
+                pad = next((p for p in paden if sig in p[4]), None)
+                if pad is None and overbodig & set(s.operanden):
+                    pad = next((p for p in paden if p[0].endswith("overbodig")), None)
+                if pad is None:
+                    pad = next((p for p in paden if s.gegeven.getal == p[2] and not p[0].endswith("komma")
+                                and len(s.ops) > 1), None)
+                if pad:
+                    st = "denk"
+                    if eerste is None:
+                        eerste = (nr, pad[0], f"Regel {nr}: {pad[1]}")
+                    break
+        status.append(st)
+    compleet = False
+    if stappen:
+        eind = Fraction(stappen[-1].uitkomst)
+        compleet = stappen[-1].id in gedekt or eind in juiste and juiste[eind] in gedekt
+    return {"status": status, "eerste": eerste, "gedekt": gedekt, "compleet": compleet}
