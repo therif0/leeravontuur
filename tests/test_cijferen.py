@@ -12,9 +12,11 @@ from leeravontuur.kern.wiskunde import cijferen as C
 from leeravontuur.terminal.rooster import RoosterInvoer
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 D = Decimal
 TAB, RECHTS = "\t", curses.KEY_RIGHT
@@ -148,8 +150,8 @@ def maal_vraag():
 
 
 def naar(onderwerp):
-    """Wiskunde → Cijferen → onderwerp → Vrij oefenen → Normaal."""
-    return [OK, OK, hm("Leren & oefenen"), "1", "4", str(onderwerp), "1", OK]
+    """Wiskunde › domein › het onderwerp met dit nummer in C.ALLE › V (vrij oefenen) › Normaal."""
+    return naar_onderwerp(C.ALLE[onderwerp - 1])
 
 
 STOP = [ESC] * 7
@@ -227,7 +229,7 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "7 × 7 = 49, dat is meer dan 45"))
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "4", ESC, ESC, ESC])
+        scherm, _ = self.speel([*naar_spiekbrief("Cijferen"), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "STAARTDELING"))
 
 

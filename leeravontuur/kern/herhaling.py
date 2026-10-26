@@ -57,13 +57,22 @@ def status(antwoorden):
     return BEZIG
 
 
-def overzicht(opslag, kind_id, vaardigheden):
-    """[(vaardigheid, status, aantal, laatst geoefend (date of None), juist-% van de laatste 20)]."""
-    uit = []
-    for v in vaardigheden:
-        rijen = opslag.recente_antwoorden(kind_id, v.id, 200)
-        laatst = date.fromisoformat(rijen[0]["dag"]) if rijen else None
-        laatste20 = rijen[:20]
-        pct = round(100 * sum(a["juist"] for a in laatste20) / len(laatste20)) if laatste20 else 0
-        uit.append((v, status(rijen), len(rijen), laatst, pct))
-    return uit
+def _beheersing(rijen):
+    """(status, aantal, laatst geoefend (date of None), juist-% van de laatste 20) uit de nieuwste antwoorden."""
+    laatst = date.fromisoformat(rijen[0]["dag"]) if rijen else None
+    laatste20 = rijen[:20]
+    pct = round(100 * sum(a["juist"] for a in laatste20) / len(laatste20)) if laatste20 else 0
+    return status(rijen), len(rijen), laatst, pct
+
+
+def overzicht(opslag, kind_id, vaardigheden, zonder_modi=()):
+    """[(vaardigheid, status, aantal, laatst geoefend (date of None), juist-% van de laatste 20)];
+    zonder_modi: die antwoorden tellen niet mee (bv. snelrekenen, dat apart staat)."""
+    return [(v, *_beheersing(opslag.recente_antwoorden(kind_id, v.id, 200, zonder_modi))) for v in vaardigheden]
+
+
+def overzicht_sessies(opslag, kind_id, ids):
+    """Hetzelfde per sessie-vaardigheid (bv. snelrekenen.tafels): [(id, status, aantal, laatst, pct)], alleen wat
+    al geoefend werd."""
+    rijen = {i: opslag.recente_antwoorden_van_sessies(kind_id, i, 200) for i in ids}
+    return [(i, *_beheersing(r)) for i, r in rijen.items() if r]

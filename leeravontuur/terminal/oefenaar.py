@@ -21,13 +21,10 @@ from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
 from .kladblad import LEEG_ENTER, Kladblad
-from .scherm import ENTER, ESC, TerugNaar, teken_van
+from .scherm import ENTER, ESC, teken_van
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
-VORMEN = [("Vrij oefenen", "vrij", "zoveel vragen als je wil, met tip en uitleg"),
-          ("Reeks van 10", "reeks", "10 vragen, daarna je score en uitleg"),
-          ("Spiekbrief", None, "slimme trucjes om terug te kijken")]
 HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -5",
          "janee": "Typ ja of nee en druk Enter.",
          "lijn": "Pijl ▼ op het juiste streepje en Enter. Ligt het ertussen? Zoom in met +",
@@ -73,43 +70,7 @@ class Oefenaar:
         self.laatste_d = None
         self.herkansing = False  # het laatste antwoord was pas juist na een tweede kans (telt als fout om te herhalen)
 
-    # ---- menu's -------------------------------------------------------------------
-
-    def menu(self):
-        mijn_niveau = len(self.kruimel) - 1
-        while True:
-            try:
-                if len(self.onderwerpen) == 1:
-                    o = self.onderwerpen[0]
-                else:
-                    k = self.s.menu(self.kruimel, f"{self.domein}: wat wil je oefenen?",
-                                    [(o.naam, o.omschrijving[:44]) for o in self.onderwerpen])
-                    if k is None:
-                        return
-                    o = self.onderwerpen[k]
-                self.onderwerp_menu(o)
-                if len(self.onderwerpen) == 1:
-                    return
-            except TerugNaar as t:
-                if t.niveau < mijn_niveau:
-                    raise
-
-    def onderwerp_menu(self, o):
-        kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else [])
-        while True:
-            k = self.s.menu(kr, "Hoe wil je oefenen?", [(n, u) for n, _, u in VORMEN])
-            if k is None:
-                return
-            naam, vorm, _ = VORMEN[k]
-            if vorm is None:
-                self.spiekbrief(kr + ["Spiekbrief"], o)
-                continue
-            niveau = self.kies_niveau(kr + [naam], o)
-            if niveau is None:
-                continue
-            self.app.onthoud_oefening({"onderwerp": "oefenaar", "vaardigheid": o.id, "vorm": vorm,
-                                       "niveau": niveau, "domein": self.domein})
-            self.start(o, vorm, niveau)
+    # ---- niveau en start ------------------------------------------------------------
 
     def kies_niveau(self, kr, o):
         eigen = self.app.inst.leerjaar
@@ -131,11 +92,6 @@ class Oefenaar:
             self.vrij_oefenen(o, jaar, soort)
         else:
             self.reeks(o, jaar, soort)
-
-    def hervat(self, data):
-        o = next((x for x in self.onderwerpen if x.id == data["vaardigheid"]), None)
-        if o:
-            self.start(o, data["vorm"], data["niveau"])
 
     def spiekbrief(self, kr, o):
         regels = []

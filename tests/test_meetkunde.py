@@ -10,9 +10,11 @@ from leeravontuur.kern.wiskunde import meetkunde as MK
 from leeravontuur.terminal import modellen as TM
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 D = Decimal
 
@@ -104,7 +106,7 @@ class TestGeneratoren(unittest.TestCase):
             self.assertNotIn(MK.FORMULES.maak("5").data["soort"], ("cirkel_opp", "balk_volume"))
 
     def test_spiekbrief_past(self):
-        for t, _ in MK.SPIEKBRIEF:
+        for t, _ in MK.SPIEKBRIEF_OPPERVLAKTE + MK.SPIEKBRIEF_MEETKUNDE:
             self.assertLessEqual(len(t), 78, t)
 
 
@@ -165,8 +167,8 @@ def kruis_vraag():
 
 
 def naar(onderwerp):
-    """Wiskunde → Meetkunde → onderwerp → Vrij oefenen → Normaal."""
-    return [OK, OK, hm("Leren & oefenen"), "1", "8", str(onderwerp), "1", OK]
+    """Wiskunde › domein › het onderwerp met dit nummer in MK.ALLE › V (vrij oefenen) › Normaal."""
+    return naar_onderwerp(MK.ALLE[onderwerp - 1])
 
 
 STOP = [ESC] * 7
@@ -206,8 +208,13 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "━━━"))  # na het nakijken: de omtrek aangeduid
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "8", ESC, ESC, ESC])
+        """Meten: oppervlakte en formules; Meetkunde: hoeken, coördinaten en schaal."""
+        scherm, _ = self.speel([*naar_spiekbrief("Meetkunde"), ESC, ESC, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "HOEKEN"))
+        self.assertFalse(self.ergens(scherm, "FORMULES"))
+        scherm, _ = self.speel([*naar_spiekbrief("Meten", 2), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "FORMULES"))
+        self.assertFalse(self.ergens(scherm, "HOEKEN"))
 
 
 if __name__ == "__main__":

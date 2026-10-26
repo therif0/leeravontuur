@@ -6,8 +6,6 @@ from ...kern import snelrekenen as SR
 from .. import maatje
 from ..scherm import BACKSPACE, ENTER, ESC, NIETS, teken_van
 
-HOOFD = "Leeravontuur"
-
 
 class Snelrekenen:
     klok = staticmethod(time.monotonic)  # tests kunnen dit vervangen
@@ -16,25 +14,6 @@ class Snelrekenen:
         self.app = app
         self.s = app.s
         self.o = app.opslag
-
-    def menu(self):
-        kr = [HOOFD, "Snelrekenen"]
-        zichtbaar = self.app.inst.timer_zichtbaar
-        while True:
-            k = self.s.menu(kr, "Wat wil je snel rekenen?", [(naam, "") for naam, _ in SR.SOORTEN.values()])
-            if k is None:
-                return
-            soort = list(SR.SOORTEN)[k]
-            modi = ["snel60", "snel20"] if zichtbaar else ["snel20"]
-            if len(modi) > 1:
-                m = self.s.menu(kr + [SR.SOORTEN[soort][0]], "Hoe?",
-                                [("60 seconden", "zoveel mogelijk juist"), ("20 sommen", "zo snel mogelijk")])
-                if m is None:
-                    continue
-                modus = modi[m]
-            else:
-                modus = "snel20"
-            self.ronde(kr + [SR.SOORTEN[soort][0], SR.MODI[modus]], soort, modus)
 
     def ronde(self, kr, soort, modus):
         s = self.s

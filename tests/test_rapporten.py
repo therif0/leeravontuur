@@ -6,6 +6,7 @@ from pathlib import Path
 
 from leeravontuur.kern import klok, rapporten, wachtwoord
 from leeravontuur.kern.opslag import Opslag
+from leeravontuur.terminal import curriculum
 
 CET = timezone(timedelta(hours=1))
 
@@ -115,6 +116,148 @@ class TestRapport(unittest.TestCase):
         self.assertEqual(self.o.kinderen(), [])
         self.assertEqual(self.o.antwoorden(self.kind.id), [])
         self.assertIsNone(self.o.algemeen("laatste_kind"))
+
+
+class TestIndeling(unittest.TestCase):
+    """Het rapport per vak › domein › onderwerp (uit het leerplan); snelrekenen apart onder zijn onderwerp."""
+    T, PM, DH, E = ("wiskunde.hoofdrekenen.tafels", "wiskunde.hoofdrekenen.plusmin", "wiskunde.hoofdrekenen.dubbelhelft",
+                    "wiskunde.eenheden.omzetten")
+
+    def setUp(self):
+        self.o = Opslag()
+        self.kind = self.o.nieuw_kind("Imrane", "5")
+        klok.zet(datetime(2026, 10, 20, 15, 0, tzinfo=CET))
+        # (sessie: modus, vaardigheid) -> antwoorden (vaardigheid van de vraag, juist)
+        for modus, sessie, antwoorden in [
+                ("reeks", self.T, [(self.T, 1), (self.T, 1), (self.T, 0)]),
+                ("snel60", "snelrekenen.tafels", [(self.T, 1)] * 4),
+                ("snel20", "snelrekenen.gemengd", [(self.T, 1), (self.PM, 0), (self.DH, 1)]),
+                ("vrij", self.PM, [(self.PM, 1), (self.PM, 0)]),
+                ("reeks", self.E, [(self.E, 1), (self.E, 0)])]:
+            s = self.o.start_sessie(self.kind.id, modus, sessie, "5")
+            for i, (v, juist) in enumerate(antwoorden):
+                self.o.bewaar_antwoord(s, self.kind.id, v, "5", modus, f"{sessie}{i}", f"vraag {i}", "1", juist,
+                                       None if juist else "fout_x", 2000, verwacht="2")
+        klok.zet(None)
+        self.r = rapporten.maak_rapport(self.o, self.kind, rapporten.Periode(date(2026, 10, 1), date(2026, 10, 31), "m"))
+
+    def deel(self, regels, kop):
+        """De regels van één deel (tot de volgende kop: een regel die niet inspringt)."""
+        tekst = [t for t, _ in regels]
+        i = tekst.index(kop)
+        j = next((k for k in range(i + 1, len(tekst)) if tekst[k] and not tekst[k].startswith(" ")), len(tekst))
+        return tekst[i:j]
+
+    def test_zelfde_cijfers(self):
+        plat, ingedeeld = rapporten.regels(self.r), rapporten.regels(self.r, curriculum.indeling())
+        voor = [t for t, _ in plat][:[t for t, _ in plat].index("PER ONDERWERP")]
+        self.assertEqual(voor, [t for t, _ in ingedeeld][:len(voor)])  # samenvatting en per dag
+        self.assertIn("  Vragen: 14    Juist: 10 (71 %)", voor)
+        for kop in ("MEEST GEMAAKTE DENKFOUTEN", "LAATSTE FOUTEN"):
+            self.assertEqual(self.deel(plat, kop), self.deel(ingedeeld, kop))
+        # per onderwerp samen = alle antwoorden; vroeger per vaardigheid van de vraag, nu per bron
+        self.assertEqual(sum(pv["aantal"] for pv in self.r.per_vaardigheid.values()), 14)
+        self.assertEqual({b: pv["aantal"] for b, pv in self.r.per_vaardigheid.items()},
+                         {self.T: 3, "snelrekenen.tafels": 4, "snelrekenen.gemengd": 3, self.PM: 2, self.E: 2})
+
+    def test_snelrekenen_apart_onder_zijn_onderwerp(self):
+        tekst = self.deel(rapporten.regels(self.r, curriculum.indeling()), "PER ONDERWERP")
+        self.assertEqual(tekst[1], "  Wiskunde › Hoofdrekenen")
+        i = tekst.index("    Tafels: 3 vragen, 67 % juist, gemiddeld 2 s")
+        self.assertEqual(tekst[i + 1], "      reeks van 10 3")
+        self.assertEqual(tekst[i + 2], "    Tafels, snelrekenen: 4 sommen, 100 % juist, gemiddeld 2 s")
+        self.assertEqual(tekst[i + 3], "      60 seconden 4")
+        self.assertIn("    Gemengd, snelrekenen: 3 sommen, 67 % juist, gemiddeld 2 s", tekst)
+        self.assertIn("    Optellen en aftrekken: 2 vragen, 50 % juist, gemiddeld 2 s", tekst)
+        self.assertFalse(any("Verdubbelen" in t for t in tekst))  # zijn som hoort bij Gemengd
+        self.assertLess(tekst.index("  Wiskunde › Hoofdrekenen"), tekst.index("  Wiskunde › Meten"))
+        self.assertIn("    Maten: 2 vragen, 50 % juist, gemiddeld 2 s", tekst)
+        status = self.deel(rapporten.regels(self.r, curriculum.indeling()), "STATUS PER VAARDIGHEID (alle tijd)")
+        self.assertIn("  Wiskunde › Getallen", status)
+        self.assertTrue(any(t.startswith("    Tafels: ") for t in status))
+
+    def test_per_onderwerp_past_in_de_lezer(self):
+        """PER ONDERWERP: elke regel past in de lezer (72 tekens), ook met de langste namen en grote getallen."""
+        from collections import Counter
+        r = rapporten.Rapport(self.kind, self.r.periode, [], aantal=999, juist=999, tijd_ms=999 * 99000,
+                              per_dag={"2026-10-20": [999, 999]})
+        for bron in curriculum.indeling():
+            modi = Counter({"snel60": 500, "snel20": 499} if bron.startswith("snelrekenen.") else
+                           {"reeks": 500, "vrij": 300, "tabel": 199})
+            r.per_vaardigheid[bron] = {"aantal": 999, "juist": 999, "tijd_ms": 999 * 99000, "modi": modi}
+        regels = [t for t, _ in rapporten.regels(r, curriculum.indeling())]
+        for tekst in regels:
+            self.assertLessEqual(len(tekst), 72, tekst)
+        self.assertIn("    Optellen en aftrekken, snelrekenen: 999 sommen, 100 % juist", regels)
+        self.assertEqual(sum("gemiddeld 99 s" in t for t in regels), len(r.per_vaardigheid))  # nooit weggevallen
+
+    def test_status_snelrekenen_apart(self):
+        """De gewone status telt alleen de gewone oefeningen; snelrekenen heeft een eigen regel onder zijn onderwerp."""
+        status = {v.id: (st, n, pct) for v, st, n, _, pct in self.r.status}
+        self.assertEqual(status[self.T], ("bezig", 3, 67))   # vroeger 8: de 4 + 1 snelsommen telden mee
+        self.assertEqual(status[self.PM], ("bezig", 2, 50))  # zonder de som uit Gemengd
+        self.assertEqual(status[self.DH], ("nog niet gezien", 0, 0))  # zijn enige som was in Gemengd
+        self.assertEqual({i: (st, n, pct) for i, st, n, _, pct in self.r.snelstatus},
+                         {"snelrekenen.tafels": ("bezig", 4, 100), "snelrekenen.gemengd": ("bezig", 3, 67)})
+        tekst = self.deel(rapporten.regels(self.r, curriculum.indeling()), "STATUS PER VAARDIGHEID (alle tijd)")
+        i = tekst.index("    Tafels: bezig")
+        self.assertEqual(tekst[i + 1:i + 4], ["      3 vragen · laatst 20/10/2026 · laatste 20: 67 % juist",
+                                              "    Tafels, snelrekenen: bezig",
+                                              "      4 sommen · laatst 20/10/2026 · laatste 20: 100 % juist"])
+        self.assertIn("    Gemengd, snelrekenen: bezig", tekst)
+        self.assertFalse(any("Plus en min, snelrekenen" in t or "Optellen en aftrekken, snelrekenen" in t
+                             for t in tekst))  # nog geen snelronde plus en min: geen regel
+        plat = self.deel(rapporten.regels(self.r), "STATUS PER VAARDIGHEID (alle tijd)")
+        self.assertIn("  Snelrekenen: Tafels: bezig · 4 sommen · laatst 20/10/2026 · laatste 20: 100 % juist", plat)
+
+    def test_status_een_snelle_ronde_verandert_de_gewone_status_niet(self):
+        klok.zet(datetime(2026, 10, 21, 15, 0, tzinfo=CET))
+        s = self.o.start_sessie(self.kind.id, "snel60", "snelrekenen.tafels", "5")
+        for i in range(30):  # een gehaaste ronde: veel fout
+            self.o.bewaar_antwoord(s, self.kind.id, self.T, "5", "snel60", f"haast{i}", "vraag", "1", i % 2,
+                                   None, 1000, verwacht="2")
+        klok.zet(None)
+        r = rapporten.maak_rapport(self.o, self.kind, self.r.periode)
+        self.assertEqual([rij[1:] for rij in r.status], [rij[1:] for rij in self.r.status])
+        self.assertEqual({i: (n, pct) for i, _, n, _, pct in r.snelstatus}["snelrekenen.tafels"], (34, 50))
+
+    def test_status_zonder_snelrekenen_geen_extra_regel(self):
+        o = Opslag()
+        kind = o.nieuw_kind("Amira", "5")
+        s = o.start_sessie(kind.id, "reeks", self.T, "5")
+        o.bewaar_antwoord(s, kind.id, self.T, "5", "reeks", "t1", "vraag", "1", 1, None, 2000, verwacht="1")
+        r = rapporten.maak_rapport(o, kind, self.r.periode)
+        self.assertEqual(r.snelstatus, [])
+        self.assertFalse(any("snelrekenen" in t.lower() for t, _ in rapporten.regels(r, curriculum.indeling())))
+
+    def test_status_past_in_de_lezer(self):
+        """STATUS: elke regel past in de lezer (72 tekens), ook met de langste namen en veel antwoorden."""
+        dag = date(2026, 10, 20)
+        r = rapporten.Rapport(self.kind, self.r.periode, [])
+        from leeravontuur.kern import vaardigheden
+        r.status = [(v, "nog niet gezien" if i % 3 == 0 else "beheerst", 200, dag, 100)
+                    for i, v in enumerate(vaardigheden.REGISTER.values())]
+        r.snelstatus = [(f"snelrekenen.{s}", "beheerst", 200, dag, 100) for s in ("tafels", "plusmin", "gemengd")]
+        regels = [t for t, _ in rapporten.regels(r, curriculum.indeling())]
+        for tekst in regels:
+            self.assertLessEqual(len(tekst), 72, tekst)
+        self.assertEqual(sum("200 sommen" in t for t in regels), 3)
+
+    def test_export_zelfde_kolommen_plus_vak_en_domein(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            csv_pad, txt_pad = rapporten.exporteer(self.r, tmp, curriculum.indeling())
+            with open(csv_pad, encoding="utf-8-sig", newline="") as f:
+                rijen = list(csv.reader(f, delimiter=";"))
+            self.assertIn("Wiskunde › Hoofdrekenen", txt_pad.read_text(encoding="utf-8"))
+        self.assertEqual(rijen[0], ["tijdstip", "onderwerp", "leerjaar", "manier", "vraag", "antwoord",
+                                    "juist antwoord", "juist", "denkfout", "tijd (s)", "tip gebruikt", "vak", "domein"])
+        # een som uit snelrekenen Gemengd (plus en min): de oude kolommen zoals vroeger, dan vak en domein
+        rij = next(r for r in rijen[1:] if r[3] == "snel20" and r[1] == "Optellen en aftrekken")
+        self.assertEqual(rij[2:], ["5de leerjaar", "snel20", "vraag 1", "1", "2", "nee", "fout_x", "2,0", "nee",
+                                   "Wiskunde", "Hoofdrekenen"])
+        rij = next(r for r in rijen[1:] if r[1] == "Eenheden omzetten")
+        self.assertEqual(rij[-2:], ["Wiskunde", "Meten"])
+        self.assertEqual(len(rijen), 1 + 14)
 
 
 if __name__ == "__main__":

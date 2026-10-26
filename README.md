@@ -6,7 +6,11 @@ Leeravontuur is een leerprogramma in de terminal voor kinderen in Vlaanderen. He
 is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit tot rekenen, taal en Frans
 (zie [het plan](docs/plan.md)).
 
-**Wat er nu in zit (versie 0.15, bèta):**
+**Wat er nu in zit (versie 0.20, bèta):**
+- **Zo vind je alles:** Wiskunde › een domein (Getallen, Hoofdrekenen, Cijferen, Breuken en procenten, Meten,
+  Tijd, geld en snelheid, Meetkunde, Vraagstukken) › een onderwerp. Bij elk onderwerp: **Enter** = een reeks van
+  10, **V** = vrij oefenen, **S** = spiekbrief, en waar het kan **T** = 60 seconden, **Z** = 20 sommen en
+  **H** = tabel-oefening. Onderaan staat welke toetsen er zijn; je kunt er ook op klikken.
 - **Eenheden omzetten:** lengte (km … mm), massa (t … mg), inhoud (hl … ml), oppervlakte (km² … mm², ha, a,
   ca; vanaf het 5de leerjaar) en volume (m³, dm³, cm³ en de liter; vanaf het 6de), of alles **door elkaar**
   - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
@@ -75,12 +79,12 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - **Speurneus**: zoek de fout in het klad van een ander kind, en zeg waarom
   - **schatten en controleren**: ongeveer hoeveel? Kan dat antwoord kloppen?
   - ook met tijd: hoe lang duurt de film, hoe laat komt de trein aan? Het klad kent kloktijden (`9.45 u + 35 min`)
-- **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
+- **Snelrekenen** (Hoofdrekenen › Tafels, Optellen en aftrekken of Gemengd, met T of Z): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
-  - Het leerjaar stel je in bij **Opties**. Volgend schooljaar schuift alles mee.
+  - Het leerjaar stelt de ouder in (Ouders › Kinderen). Volgend schooljaar schuift alles mee.
 - **Herhalen en slim kiezen:**
   - na elke reeks (en na vrij oefenen): **fouten opnieuw** (dezelfde vragen) of **gelijkaardige vragen** (nieuwe getallen)
   - een **herhaalbak**: wat fout ging, komt de volgende dagen terug met nieuwe getallen (na 1, 3 en 7 dagen);
@@ -104,13 +108,16 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Een account per kind:** bij de start kies je wie er oefent ("Wie ben jij?"). Elk kind heeft eigen
   instellingen, en elk antwoord wordt bewaard (ook "vandaag al … vragen geoefend" blijft na een herstart).
 - **Ouderdeel** (achter een wachtwoord; via "Wie ben jij?" → Ouders, of `--ouder`):
-  - **rapporten** per dag, week, maand, schooljaar of zelf gekozen periode: score, tijd, per dag, per onderwerp,
-    meest gemaakte denkfouten en de laatste fouten met het juiste antwoord
+  - **rapporten** per dag, week, maand, schooljaar of zelf gekozen periode: score, tijd, per dag, per vak › domein ›
+    onderwerp (snelrekenen apart), meest gemaakte denkfouten en de laatste fouten met het juiste antwoord
   - een **kalender** met de dagen waarop geoefend werd
-  - **export** naar CSV (Excel/LibreOffice) en TXT, in de map Documenten/Leeravontuur
-  - **kinderen beheren:** naam, leerjaar, timer zichtbaar of niet, pincode, alle gegevens exporteren, alles wissen
+  - **export** naar CSV (Excel/LibreOffice, met vak en domein) en TXT, in de map Documenten/Leeravontuur
+  - **kinderen beheren:** naam, leerjaar, weergave, timer zichtbaar of niet, pincode, alle gegevens exporteren,
+    alles wissen
   - het ouderdeel sluit vanzelf na 10 minuten zonder toets
-- **Opties (voor het kind):** naam, kleuren (ook voor **kleurenblindheid**), hoog contrast, eenvoudige tekens, muis en typrichting.
+- **Instellingen:** het kind kiest zelf de **schermkleuren** (Mijn avatar › Schermkleuren: ook voor
+  **kleurenblindheid**, hoog contrast of zonder kleur). De ouder zet per kind de **weergave** (Ouders › Kinderen ›
+  Weergave): eenvoudige tekens, muis, typrichting, avatar, animaties en het klokvenster.
 
 ## Installeren en starten
 
@@ -178,7 +185,8 @@ elke optie, wat er per leerjaar aan bod komt, de herkende denkfouten, het ouderd
 | `--fouten` | de laatste onverwachte fouten tonen (uit `fouten.log`, om door te sturen als er iets misloopt) |
 | `--test` | de automatische tests uitvoeren |
 
-Alles kan ook in het menu **Opties**; dat wordt bewaard.
+De kleuren kan het kind ook kiezen in Mijn avatar › Schermkleuren, de rest zet de ouder per kind in Ouders ›
+Kinderen › Weergave; dat wordt bewaard. Een startargument geldt alleen zolang het programma loopt.
 
 ## Ouderwachtwoord vergeten?
 ```bash

@@ -8,9 +8,9 @@ from leeravontuur.kern.opslag import Opslag
 from leeravontuur.kern.wiskunde import eenheden as E
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, hm, naar
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, hm, naar
 
 CET = timezone(timedelta(hours=1))
 DAG = datetime(2026, 10, 24, 15, 0, tzinfo=CET)
@@ -96,7 +96,7 @@ class TestSchermen(Basis):
     def test_fouten_opnieuw_na_reeks(self):
         o = self.opslag(("Test", "5"))
         reeks = ["1", OK, OK] * 10  # waarschijnlijk (bijna) alles fout
-        scherm, app = self.speel([OK, OK, "2", "1", "1", "2", "2", OK, *reeks, "f", *(["1", OK, OK] * 10),
+        scherm, app = self.speel([*naar("wiskunde.meten.lengte", "Enter"), *reeks, "f", *(["1", OK, OK] * 10),
                                   ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         rijen = o.antwoorden(app.kind.id)
         fout_in_reeks = sum(1 for r in rijen if r["modus"] == "reeks" and not r["juist"])
@@ -123,7 +123,7 @@ class TestSchermen(Basis):
 
     def test_verder_hervat_vorige_oefening(self):
         o = self.opslag(("Test", "5"))
-        self.speel([OK, OK, "2", "1", "1", "2", "2", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.speel([*naar("wiskunde.meten.lengte", "Enter"), ESC, ESC, ESC, ESC, ESC], opslag=o)
         scherm, _ = self.speel([OK, OK, "1", ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "eenheden · reeks van 10 · lengte"))
         self.assertTrue(self.ergens(scherm, "Vraag 1 van 10"))

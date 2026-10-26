@@ -11,9 +11,11 @@ from leeravontuur.kern.wiskunde import getallen as G
 from leeravontuur.terminal import modellen as M
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 D = Decimal
 LINKS, RECHTS = curses.KEY_LEFT, curses.KEY_RIGHT
@@ -155,7 +157,7 @@ def aanduid_vraag():
 
 
 # Wiskunde (1) → Getallen (3) → Getallenlijn (4) → Vrij oefenen (1) → Normaal (Enter)
-NAAR_LIJN = [OK, OK, hm("Leren & oefenen"), "1", "3", "4", "1", OK]
+NAAR_LIJN = naar_onderwerp(G.GETALLENLIJN)
 
 
 class TestSchermen(Basis):
@@ -196,7 +198,7 @@ class TestSchermen(Basis):
                         data={"soort": "deelbaar", "deler": 9, "n": n, "onderwerp": "deelbaar door 9"})
                   for n in (2853, 2854, 18)]
         with mock.patch.object(G.DEELBAARHEID, "maak", side_effect=vragen):
-            scherm, app = self.speel([OK, OK, hm("Leren & oefenen"), "1", "3", "3", "1", OK, *"misschien", OK,
+            scherm, app = self.speel([*naar_onderwerp(G.DEELBAARHEID), *"misschien", OK,
                                       *"\b" * 9, *"ja", OK, OK, *"ja", OK, OK, ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Typ ja of nee."))
         rijen = o.antwoorden(app.kind.id)
@@ -205,7 +207,7 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "Juist is: nee") or self.ergens(scherm, "juiste antwoord is nee"))
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "3", ESC, ESC, ESC])
+        scherm, _ = self.speel([*naar_spiekbrief("Getallen"), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "DEELBAAR DOOR"))
 
 

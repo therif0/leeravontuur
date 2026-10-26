@@ -12,9 +12,11 @@ from leeravontuur.kern.onderwerp import Vraag
 from leeravontuur.kern.wiskunde import procenten as P
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 D = Decimal
 F = Fraction
@@ -112,8 +114,8 @@ def kleur_vraag():
 
 
 def naar(onderwerp):
-    """Wiskunde → Procenten → onderwerp → Vrij oefenen → Normaal."""
-    return [OK, OK, hm("Leren & oefenen"), "1", "6", str(onderwerp), "1", OK]
+    """Wiskunde › domein › het onderwerp met dit nummer in P.ALLE › V (vrij oefenen) › Normaal."""
+    return naar_onderwerp(P.ALLE[onderwerp - 1])
 
 
 STOP = [ESC] * 7
@@ -151,7 +153,7 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "100 %"))
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "6", ESC, ESC, ESC])
+        scherm, _ = self.speel([*naar_spiekbrief("Breuken en procenten", 2), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "PROCENT = PER HONDERD"))
 
 

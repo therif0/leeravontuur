@@ -5,6 +5,22 @@ Voor kinderen in Vlaanderen (nu een kind in het 5de leerjaar). Alle teksten in h
 Nederlands (Vlaams), met komma als decimaalteken.
 
 ## Architectuur (niet doorbreken)
+**In één oogopslag** (elke laag kent alleen de lagen eronder):
+```
+terminal/curriculum/  leerplan: Vak › Domein › Onderwerp = de menu's (wijst naar kern-ids en schermen)
+terminal/             weergave en invoer (curses): schermen, Oefenaar, navigatie, thema, tekens
+venster/              tkinter-vensters, elk in een eigen proces (klokvenster)
+kern/                 alle logica en opslag: onderwerpen, nakijken, diagnose, klad, punten, rapporten (geen curses)
+inhoud/               data: leerlijnen per vaardigheid, vraagstukwerelden, avatar (JSON)
+```
+Gouden regels:
+1. Logica in de kern, nooit in een scherm; de kern kent geen curses, kleuren of menu's.
+2. Wat het kind ziet, komt uit data of de registry (leerlijnen, `curriculum/`), niet uit losse code per scherm.
+3. Eén codepad: toets en klik doen hetzelfde; elke oefening gebruikt dezelfde werkwijze (lees, klad, antwoord).
+4. Bewaarde gegevens zijn heilig: alleen via `kern/opslag.py`, antwoorden alleen toevoegen, ids nooit hernoemen,
+   schema alleen via een nieuwe migratie.
+5. Een kind ziet nooit een crash of verloren werk; elke nieuwe regel krijgt een test die haar bewaakt.
+
 - `leeravontuur/kern/` = alle logica: vragen maken, nakijken, diagnose, uitleg, leerlijnen, instellingen.
   **De kern importeert nooit curses** en weet niets van kleuren. Later moet er een GUI bovenop kunnen.
   Teksten die de kern teruggeeft hebben een *rol* ("accent", "dim", "goed" …), geen kleur.
@@ -65,7 +81,8 @@ Nederlands (Vlaams), met komma als decimaalteken.
   De terminal vraagt de oplossing altijd via `oplossing_of_niets` (een fout komt in het logboek, nooit bij het kind).
   Het klad-nakijken tegenover een oplossing is `kern/klad.analyseer` (ook voor vraagstukken).
 - **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
-  onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py`. Het scherm is dan
+  onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
+  (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan
   automatisch `terminal/oefenaar.py` (vrij, reeks, rapport, fouten opnieuw, herhaalbak, punten, maatje).
   Eenheden heeft (nog) een eigen scherm vanwege de tabel. Die tabel is data (`TABELLEN` in `kern/wiskunde/eenheden.py`):
   een eenheid kan meer vakjes hebben (oppervlakte 2, volume 3) en aliassen (ha, l …) via `ALIASSEN`.
@@ -103,6 +120,28 @@ Nederlands (Vlaams), met komma als decimaalteken.
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in
   `terminal/schermen/ouder.py` zet `Scherm.slot` (vergrendelen na inactiviteit).
 
+## Menu's (Vak › Domein › Onderwerp)
+- Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =
+  volgorde in het menu; `wiskunde.py`, later `taal.py` en `frans.py`). Een `Onderwerp` heeft `modi` (reeks, vrij,
+  60s, 20sommen, tabel: starters uit `curriculum/modi.py`), een `spiek` (`Spiekbrief`, of `None`) en `opslag`: de
+  vaardigheid-ids waaronder de antwoorden bewaard worden. **Bewaarde ids nooit hernoemen** (een test bewaakt
+  de lijst); de zeven maten delen `wiskunde.eenheden.omzetten` (`GROEPEN`: "Maten" in het rapport).
+- Een nieuw vak = een bestand in `curriculum/` en een plaats in `VAKKEN`; het verschijnt dan vanzelf in het
+  hoofdmenu, de Spiekbrieven, het rapport (per vak › domein) en de CSV (kolommen vak en domein). Elke vaardigheid
+  uit de kern moet in het leerplan staan, anders wordt `tests/test_menu_architecture.py` rood.
+- Navigatie in `terminal/navigatie.py`: hoofdmenu › vak › domein › onderwerp, met toetsen per onderwerp via
+  `Scherm.menu(..., toetsen=...)`: **Enter** (of het cijfer, of een klik) = reeks, anders 60 s, anders 20 sommen;
+  **V** vrij, **S** spiekbrief, **T** 60 s (alleen als de timer zichtbaar is), **Z** 20 sommen, **H** tabel-oefening;
+  ook als kleine letter; een letter die niet geldt, doet niets. De voetregel toont alleen de toetsen van het
+  gemarkeerde onderwerp en is klikbaar. Na een oefening of spiekbrief sta je terug op hetzelfde onderwerp.
+- Hoogstens **10 items per menu** (cijfertoetsen 1–9 en 0; test). Het hoofdmenu heeft er nu 8: met Taal en Frans
+  zit het vol, dus vóór er iets bijkomt (Examens, Avontuur) eerst met de vader een oplossing kiezen.
+- Spiekbrieven met dezelfde titel binnen een domein worden één keer getoond, dus dezelfde titel = dezelfde
+  spiekbrief (test).
+- Instellingen: het kind kiest in Mijn avatar › **Schermkleuren** (L); de rest staat per kind bij de ouder
+  (Ouders › Kinderen › kind › **Weergave**). Er is geen menu Opties meer.
+- Over de indeling van de menu's beslist de vader: eerst een voorstel, dan bouwen.
+
 ## Platformen
 Windows, macOS en Linux. Alleen de standaardbibliotheek; op Windows `windows-curses` (requirements.txt).
 Python 3.10+.
@@ -113,16 +152,39 @@ Python 3.10+.
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
   `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.
 
+## Werkwijze met Claude (zo werken we samen)
+- **De vader beslist** over alles wat het kind of de ouder ziet: menu's, namen, volgorde, teksten, rapport, export.
+  Claude doet een voorstel met een aanbeveling en bouwt pas na zijn akkoord. Noem hem "de vader", geen namen.
+- **Een grote verandering** (een verbouwing, een nieuw vak): eerst een **inventaris** van wat er nu is (afvinkbaar,
+  zodat niets vergeten wordt), dan een **plan in fasen**. Elke fase: eigen commit(s), tests groen, en dan **stoppen**:
+  melden wat er veranderde, afwijkingen van het plan, de testoutput en wat de volgende fase doet. Pas verder na
+  zijn akkoord.
+- **Bewijs vóór "klaar":** de volledige suite (ook de lange aapjestest bij grote wijzigingen), schermen echt
+  bekeken in tmux 80×24, en bij een verbouwing een vergelijking met de vorige versie op echte gegevens (een kopie).
+  Wat niet nagekeken is, wordt niet "klaar" genoemd.
+- Een fout of iets vreemds gezien buiten de opdracht: melden en voorstellen, niet zelf de opdracht uitbreiden.
+  Een kleine fout die het kind zou merken: melden, en na akkoord meteen in dezelfde branch.
+- Testen door de vader gebeurt op een kopie van de gegevens (`LEERAVONTUUR_DATA`), met een testlijst.
+- **Claude voegt nooit samen**, maakt geen tags of releases en verwijdert geen branches: dat doet de vader.
+  De geschiedenis van `main` wordt nooit herschreven.
+- Taal: in het programma en in de documenten van de repo Vlaams-Nederlands; Claude antwoordt de vader in het
+  Engels (hij schrijft Nederlands of Engels).
+
 ## Werkwijze (uitbrengen)
 - `main` = de versie die het kind gebruikt. Er wordt nooit rechtstreeks op `main` gewerkt.
 - Elke fase of verbetering op een eigen branch vanaf `main` (bv. `fase-13-werkwoorden`), met een pull request
   naar `main`. Samenvoegen pas als de CI groen is én de vader akkoord geeft (merge-commit, geen squash).
 - Elke versie: `VERSIE` in `leeravontuur/__init__.py`, een stukje in `CHANGELOG.md` (in gewone taal), README
   bijwerken, na het samenvoegen een tag `vX.Y.Z` en een GitHub-release met de tekst uit de changelog.
-- De handleiding (`docs/handleiding/`) volgt mee: nieuwe onderwerpen, opties en startargumenten erin beschrijven,
-  daarna `python3 docs/tools/handleiding.py` (tabellen per leerjaar, denkfouten, spiekbrieven, argumenten) en de
-  schermafdrukken opnieuw maken met `python3 docs/tools/schermafdrukken.py [naam…]` (tmux nodig; de beelden staan
-  in `docs/tools/scenarios.py`). `tests/test_handleiding.py` wordt rood als iets ontbreekt.
+- De handleiding (`docs/handleiding/`) wordt niet meer per versie herschreven: dat gebeurt in één
+  **handleidingproject** (een volledige test van alle functies + de handleiding voor kind, ouder en coach), als de
+  vader het vraagt. Tot dan:
+  - een nieuw onderwerp gaat in `NOG_TE_BESCHRIJVEN` in `tests/test_handleiding.py` (de to-do van dat project);
+  - een nieuw startargument komt wel meteen in `startargumenten.md`;
+  - de automatische stukken blijven bij: `python3 docs/tools/handleiding.py` (tabellen per leerjaar, denkfouten,
+    spiekbrieven, argumenten); `tests/test_handleiding.py` wordt rood als iets ontbreekt.
+  - De schermafdrukken (`python3 docs/tools/schermafdrukken.py [naam…]`, tmux nodig; de beelden staan in
+    `docs/tools/scenarios.py`) tonen nog de menu's van 0.19 en worden in het handleidingproject opnieuw gemaakt.
 - Na een nieuwe versie doorloopt de vader `docs/testlijst.md`; opmerkingen van het kind staan in `feedback.txt`
   (ouderdeel → Opmerkingen).
 

@@ -306,15 +306,27 @@ class Scherm:
         except curses.error:
             pass
 
-    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None):
-        """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug."""
+    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None):
+        """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug.
+
+        toetsen (de aanroeper bepaalt ze per keuze): [[("Enter", uitleg), ("v", uitleg), …], …], de eerste is
+        altijd Enter. Dan is de terugwaarde (index, toets): "Enter" bij Enter, een cijfer of een klik op de keuze,
+        anders de kleine letter (ook met Shift). Een letter die niet bij de gemarkeerde keuze hoort, doet niets.
+        De voetregel toont de toetsen van de gemarkeerde keuze; elke knop is klikbaar."""
         sel = start
         breed = max(len(o[0]) for o in opties)
         knoppen = [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("Esc", "terug", ESC)]
+
+        def gekozen(i, toets="Enter"):
+            return i if toetsen is None else (i, toets)
+
         while True:
             if self.te_klein():
                 continue
             self.cursor(False)
+            if toetsen is not None:
+                knoppen = [("Enter", uitleg, 10) if t == "Enter" else (t.upper(), uitleg, ord(t))
+                           for t, uitleg in toetsen[sel]] + [("Esc", "terug", ESC)]
             self.nieuw(kruimel, knoppen)
             h, w = self.win.getmaxyx()
             self.put(3, 4, vraag, "bold")
@@ -335,7 +347,7 @@ class Scherm:
             k = self.toets()
             if isinstance(k, tuple):
                 if k[0] == "kies":
-                    return k[1]
+                    return gekozen(k[1])
                 if k[0] == "scroll":
                     sel = (sel + k[1]) % len(opties)
                 continue
@@ -344,13 +356,15 @@ class Scherm:
             elif k in (curses.KEY_DOWN, ord("j"), 9):
                 sel = (sel + 1) % len(opties)
             elif ord("1") <= k < ord("1") + min(len(opties), 9):
-                return k - ord("1")
+                return gekozen(k - ord("1"))
             elif k == ord("0") and len(opties) >= 10:
-                return 9
+                return gekozen(9)
             elif k in ENTER:
-                return sel
+                return gekozen(sel)
             elif k in (ESC, ord("q")):
                 return None
+            elif toetsen is not None and (teken_van(k) or "").lower() in {t for t, _ in toetsen[sel][1:]}:
+                return gekozen(sel, teken_van(k).lower())
 
     def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen"):
         """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}."""

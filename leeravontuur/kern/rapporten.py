@@ -13,11 +13,15 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from . import catalogus, herhaling, klok, leerjaren, vaardigheden
+from . import snelrekenen as SR
 
 DAGEN = ["ma", "di", "wo", "do", "vr", "za", "zo"]
 MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september",
            "oktober", "november", "december"]
-MODI = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}
+MODI = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}  # ook zo in de CSV (vast)
+MODI_RAPPORT = {**MODI, "snel60": "60 seconden", "snel20": "20 sommen"}
+SNEL = ("snel60", "snel20")
+LEZER = 72  # zoveel tekens toont de lezer per regel (80 breed); langer wordt afgebroken
 
 
 @dataclass
@@ -76,13 +80,15 @@ class Rapport:
     kind: object
     periode: Periode
     antwoorden: list
+    bronnen: list = field(default_factory=list)       # per antwoord: de vaardigheid, of snelrekenen.<soort>
     aantal: int = 0
     juist: int = 0
     tijd_ms: int = 0
     per_dag: dict = field(default_factory=dict)          # "JJJJ-MM-DD" -> [aantal, juist]
-    per_vaardigheid: dict = field(default_factory=dict)  # id -> {"aantal", "juist", "tijd_ms", "modi": Counter}
+    per_vaardigheid: dict = field(default_factory=dict)  # bron -> {"aantal", "juist", "tijd_ms", "modi": Counter}
     denkfouten: Counter = field(default_factory=Counter)
-    status: list = field(default_factory=list)        # [(vaardigheid, status, aantal, laatst, pct)]
+    status: list = field(default_factory=list)        # [(vaardigheid, status, aantal, laatst, pct)], zonder snelrekenen
+    snelstatus: list = field(default_factory=list)    # [(snelrekenen.<soort>, status, aantal, laatst, pct)]
     herhaalbak: int = 0
     herhaal_vandaag: int = 0
 
@@ -94,17 +100,24 @@ class Rapport:
 def maak_rapport(opslag, kind, periode):
     rijen = opslag.antwoorden(kind.id, periode.van.isoformat(), periode.tot.isoformat())
     r = Rapport(kind, periode, rijen)
-    r.status = herhaling.overzicht(opslag, kind.id, list(vaardigheden.REGISTER.values()))
+    # de status telt snelrekenen apart (zoals PER ONDERWERP): een snelle ronde verandert de gewone status niet
+    r.status = herhaling.overzicht(opslag, kind.id, list(vaardigheden.REGISTER.values()), zonder_modi=SNEL)
+    r.snelstatus = herhaling.overzicht_sessies(opslag, kind.id, [SR.vaardigheid(s) for s in SR.SOORTEN])
     r.herhaalbak = len(opslag.herhaalbak(kind.id))
     r.herhaal_vandaag = len(herhaling.aan_de_beurt(opslag, kind.id))
+    # snelrekenen telt apart: een snelrekensom is bewaard met de vaardigheid van de vraag (bv. de tafels), de sessie
+    # met snelrekenen.<soort>; zo staat ook Gemengd bij Gemengd
+    snel = {s["id"]: s["vaardigheid"] for s in opslag.sessies(kind.id) if s["modus"] in SNEL}
     for a in rijen:
+        bron = snel.get(a.get("sessie_id"), a["vaardigheid"]) if a["modus"] in SNEL else a["vaardigheid"]
+        r.bronnen.append(bron)
         r.aantal += 1
         r.juist += a["juist"]
         r.tijd_ms += a["tijd_ms"]
         d = r.per_dag.setdefault(a["dag"], [0, 0])
         d[0] += 1
         d[1] += a["juist"]
-        pv = r.per_vaardigheid.setdefault(a["vaardigheid"], {"aantal": 0, "juist": 0, "tijd_ms": 0,
+        pv = r.per_vaardigheid.setdefault(bron, {"aantal": 0, "juist": 0, "tijd_ms": 0,
                                                               "modi": Counter()})
         pv["aantal"] += 1
         pv["juist"] += a["juist"]
@@ -152,13 +165,62 @@ def _duur(ms):
     return f"{minuten // 60} u {minuten % 60:02d} min"
 
 
-def regels(r):
-    """Het rapport als regels (tekst, rol), voor op het scherm en in het tekstbestand."""
+def naam(bron):
+    """De naam van een vaardigheid, of "Snelrekenen: Tafels" voor snelrekenen.tafels."""
+    if bron.startswith("snelrekenen.") and bron.split(".", 1)[1] in SR.SOORTEN:
+        return f"Snelrekenen: {SR.SOORTEN[bron.split('.', 1)[1]][0]}"
+    return catalogus.naam(bron)
+
+
+def _onderwerp_regels(label, pv, inspring, woord="vragen", kort=False):
+    """kort: elke regel past in de lezer (72 tekens): de gemiddelde tijd komt waar plaats is (zoals vroeger
+    achteraan de eerste regel, anders achter de manieren, anders op een eigen regel)."""
+    n = pv["aantal"]
+    gemiddeld = f"gemiddeld {round(pv['tijd_ms'] / n / 1000)} s"
+    kop = f"{inspring}{label}: {n} {woord}, {round(100 * pv['juist'] / n)} % juist"
+    modi = f"{inspring}  " + " · ".join(f"{MODI_RAPPORT.get(m, m)} {k}" for m, k in pv["modi"].most_common())
+    if not kort or len(kop) + len(gemiddeld) + 2 <= LEZER:
+        uit = [(f"{kop}, {gemiddeld}", "bold"), (modi, "dim")]
+    elif len(modi) + len(gemiddeld) + 3 <= LEZER:
+        uit = [(kop, "bold"), (f"{modi} · {gemiddeld}", "dim")]
+    else:
+        uit = [(kop, "bold"), (modi, "dim"), (f"{inspring}  {gemiddeld}", "dim")]
+    if pv.get("vraagstuk"):
+        vs = pv["vraagstuk"]
+        uit.append((f"{inspring}  gemiddeld {_getal(vs['tips'] / vs['aantal'])} tips per vraagstuk · juist zonder "
+                    f"tip: {vs['zonder_tip']} · meteen juist: {vs['meteen']} · met klad: {vs['klad']} "
+                    f"(helemaal juist: {vs['klad_ok']})", "dim"))
+    return uit
+
+
+def _rang(indeling):
+    """Sorteersleutel in de volgorde van het leerplan: (plaats van het onderwerp, snelrekenen na het gewone)."""
+    volgorde = {p: i for i, p in enumerate(dict.fromkeys(indeling.values()))}
+    return lambda bron: (volgorde.get(indeling.get(bron), len(volgorde)), bron.startswith("snelrekenen."), bron)
+
+
+def _per_domein(items, indeling, regel):
+    """items = [(bron, …)] gesorteerd; per (vak, domein) een kopregel, daaronder regel(label, item)."""
+    uit, vorig = [], None
+    for item in items:
+        vak, domein, label = indeling.get(item[0], ("", "Overig", naam(item[0])))
+        if (vak, domein) != vorig:
+            uit.append((f"  {vak} › {domein}" if vak else f"  {domein}", "info"))
+            vorig = (vak, domein)
+        uit += regel(label, item)
+    return uit
+
+
+def regels(r, indeling=None):
+    """Het rapport als regels (tekst, rol), voor op het scherm en in het tekstbestand.
+
+    indeling (uit het leerplan): {bewaarde id: (vak, domein, onderwerp)} in de volgorde van het leerplan. Dan staat
+    PER ONDERWERP (en de status) per vak en domein; snelrekenen staat apart onder zijn onderwerp. Zonder: een lijst."""
     uit = [(f"Rapport van {r.kind.naam} · {leerjaren.NAMEN[r.kind.leerjaar]}", "accent"),
            (f"Periode: {r.periode.tekst}", "dim"), ("", "")]
     if not r.aantal:
         uit.append(("In deze periode werd er nog niet geoefend.", ""))
-        uit += _status_regels(r)
+        uit += _status_regels(r, indeling)
         return uit
     dagen = len(r.per_dag)
     uit += [("SAMENVATTING", "accent"),
@@ -173,22 +235,22 @@ def regels(r):
         uit.append((f"  {DAGEN[d.weekday()]} {d.strftime('%d/%m')}  {_balk(j, n)}  "
                     f"{n:3d} {'vraag ' if n == 1 else 'vragen'}  {round(100 * j / n):3d} % juist", ""))
     uit += [("", ""), ("PER ONDERWERP", "accent")]
-    for vid, pv in sorted(r.per_vaardigheid.items(), key=lambda x: -x[1]["aantal"]):
-        n = pv["aantal"]
-        uit.append((f"  {catalogus.naam(vid)}: {n} vragen, {round(100 * pv['juist'] / n)} % juist, "
-                    f"gemiddeld {round(pv['tijd_ms'] / n / 1000)} s", "bold"))
-        modi = " · ".join(f"{MODI.get(m, m)} {k}" for m, k in pv["modi"].most_common())
-        uit.append((f"    {modi}", "dim"))
-        if pv.get("vraagstuk"):
-            vs = pv["vraagstuk"]
-            uit.append((f"    gemiddeld {_getal(vs['tips'] / vs['aantal'])} tips per vraagstuk · juist zonder tip: "
-                        f"{vs['zonder_tip']} · meteen juist: {vs['meteen']} · met klad: {vs['klad']} "
-                        f"(helemaal juist: {vs['klad_ok']})", "dim"))
+    if indeling is None:
+        for bron, pv in sorted(r.per_vaardigheid.items(), key=lambda x: -x[1]["aantal"]):
+            uit += _onderwerp_regels(naam(bron), pv, "  ")
+    else:
+        def regel(label, item):
+            bron, pv = item
+            if bron.startswith("snelrekenen."):
+                return _onderwerp_regels(f"{label}, snelrekenen", pv, "    ", "sommen", kort=True)
+            return _onderwerp_regels(label, pv, "    ", kort=True)
+        rang = _rang(indeling)
+        uit += _per_domein(sorted(r.per_vaardigheid.items(), key=lambda x: rang(x[0])), indeling, regel)
     if r.denkfouten:
         uit += [("", ""), ("MEEST GEMAAKTE DENKFOUTEN", "accent")]
         for code, k in r.denkfouten.most_common(5):
             uit.append((f"  {k}× {catalogus.denkfout(code)}", ""))
-    uit += _status_regels(r)
+    uit += _status_regels(r, indeling)
     fouten = [a for a in r.antwoorden if not a["juist"]][-10:]
     if fouten:
         uit += [("", ""), ("LAATSTE FOUTEN", "accent")]
@@ -199,15 +261,35 @@ def regels(r):
     return uit
 
 
-def _status_regels(r):
-    """Status per vaardigheid (los van de periode) en de herhaalbak."""
+def _status_regels(r, indeling=None):
+    """Status per vaardigheid (los van de periode) en de herhaalbak; met een indeling per vak en domein.
+    Snelrekenen heeft een eigen regel (onder zijn onderwerp); met een indeling past elke regel in de lezer."""
     if not r.status:
         return []
     uit = [("", ""), ("STATUS PER VAARDIGHEID (alle tijd)", "accent")]
-    for v, st, n, laatst, pct in r.status:
+    items = ([(v.id, (v.naam, st, n, laatst, pct)) for v, st, n, laatst, pct in r.status] +
+             [(i, (naam(i), st, n, laatst, pct)) for i, st, n, laatst, pct in r.snelstatus])
+
+    def regel(label, item):
+        bron, (_, st, n, laatst, pct) = item
+        snel = bron.startswith("snelrekenen.")
+        if snel and indeling is not None:
+            label = f"{label}, snelrekenen"
         rol = "goed" if st == herhaling.BEHEERST else "dim" if st == herhaling.NIET_GEZIEN else ""
-        extra = "" if not n else f" · {n} vragen · laatst {datum(laatst)} · laatste 20: {pct} % juist"
-        uit.append((f"  {v.naam}: {st}{extra}", rol))
+        if not n:
+            return [(f"{inspring}{label}: {st}", rol)]
+        cijfers = f"{n} {'sommen' if snel else 'vragen'} · laatst {datum(laatst)} · laatste 20: {pct} % juist"
+        if indeling is None or len(f"{inspring}{label}: {st} · {cijfers}") <= LEZER:
+            return [(f"{inspring}{label}: {st} · {cijfers}", rol)]
+        return [(f"{inspring}{label}: {st}", rol), (f"{inspring}  {cijfers}", "dim")]
+
+    if indeling is None:
+        inspring = "  "
+        for item in items:
+            uit += regel(item[1][0], item)
+    else:
+        inspring, rang = "    ", _rang(indeling)
+        uit += _per_domein(sorted(items, key=lambda x: rang(x[0])), indeling, regel)
     uit.append((f"  Herhaalbak: {r.herhaalbak} {'onderwerp' if r.herhaalbak == 1 else 'onderwerpen'}"
                 f" ({r.herhaal_vandaag} vandaag aan de beurt)", "info"))
     return uit
@@ -245,8 +327,9 @@ def bestandsnaam(r):
     return f"Leeravontuur - {naam} - {r.periode.van.isoformat()} tot {r.periode.tot.isoformat()}"
 
 
-def exporteer(r, map_):
-    """Schrijft een CSV (alle antwoorden) en een TXT (het rapport). Geeft de twee paden terug."""
+def exporteer(r, map_, indeling=None):
+    """Schrijft een CSV (alle antwoorden) en een TXT (het rapport). Geeft de twee paden terug.
+    De kolommen vak en domein komen achteraan (uit de indeling; snelrekenen via zijn sessie)."""
     map_ = Path(map_)
     map_.mkdir(parents=True, exist_ok=True)
     basis = bestandsnaam(r)
@@ -254,14 +337,15 @@ def exporteer(r, map_):
     with open(csv_pad, "w", newline="", encoding="utf-8-sig") as f:  # met BOM: Excel leest dan UTF-8
         w = csv.writer(f, delimiter=";")
         w.writerow(["tijdstip", "onderwerp", "leerjaar", "manier", "vraag", "antwoord", "juist antwoord",
-                    "juist", "denkfout", "tijd (s)", "tip gebruikt"])
-        for a in r.antwoorden:
+                    "juist", "denkfout", "tijd (s)", "tip gebruikt", "vak", "domein"])
+        for a, bron in zip(r.antwoorden, r.bronnen):
+            vak, domein, _ = (indeling or {}).get(bron, ("", "", ""))
             w.writerow([a["tijdstip"].replace("T", " ")[:16], catalogus.naam(a["vaardigheid"]),
                         leerjaren.NAMEN.get(a["leerjaar"], a["leerjaar"]), MODI.get(a["modus"], a["modus"]),
                         a["vraag"], a["gegeven"], a.get("verwacht") or "", "ja" if a["juist"] else "nee",
                         catalogus.denkfout(a["diagnose"]) if a["diagnose"] else "",
-                        f"{a['tijd_ms'] / 1000:.1f}".replace(".", ","), "ja" if a["hulp"] else "nee"])
-    txt_pad.write_text("\n".join(t for t, _ in regels(r)) + "\n", encoding="utf-8")
+                        f"{a['tijd_ms'] / 1000:.1f}".replace(".", ","), "ja" if a["hulp"] else "nee", vak, domein])
+    txt_pad.write_text("\n".join(t for t, _ in regels(r, indeling)) + "\n", encoding="utf-8")
     return csv_pad, txt_pad
 
 

@@ -1,4 +1,4 @@
-"""De terminal-app: startscherm, hoofdmenu, menu's per vak en domein, en opties."""
+"""De terminal-app: startscherm en hoofdmenu (de vakken komen uit het leerplan: terminal/curriculum)."""
 
 import curses
 import json
@@ -7,19 +7,13 @@ import time
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-from ..kern import feedback, foutlog, herhaling, instellingen, klok, leerjaren
+from ..kern import feedback, foutlog, herhaling, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
-from ..kern.wiskunde import breuken as BR
-from ..kern.wiskunde import cijferen as C
-from ..kern.wiskunde import getallen as G
-from ..kern.wiskunde import grootheden as TG
-from ..kern.wiskunde import hoofdrekenen as H
-from ..kern.wiskunde import klok as KL
-from ..kern.wiskunde import meetkunde as MK
-from ..kern.wiskunde import procenten as PR
-from ..kern.wiskunde import vraagstukken as VS
+from ..kern.wiskunde.eenheden import OMZETTEN
+from . import curriculum as CU
+from . import navigatie
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
@@ -98,7 +92,7 @@ class App:
             if getattr(self.inst, veld) == waarde:
                 setattr(te_bewaren, veld, getattr(self.basis, veld))
             else:
-                del self.voorrang[veld]  # zelf aangepast in Opties: vanaf nu gewoon bewaren
+                del self.voorrang[veld]  # zelf aangepast (bv. Schermkleuren): vanaf nu gewoon bewaren
         self.opslag.bewaar_instellingen(self.kind.id, te_bewaren)
         self.basis = te_bewaren
         self.kind = self.opslag.kind(self.kind.id) or self.kind
@@ -201,24 +195,22 @@ class App:
                 if self.opslag.probleem:
                     info.append(self.opslag.probleem)
                 te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
-                k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?", [
-                    ("▶ Verder", self.voorstel()[0][:32]),
-                    ("Leren & oefenen", "wiskunde (taal, Frans volgen)"),
-                    ("Snelrekenen", "tegen de klok, met records"),
-                    (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets"),
-                    ("Mijn avatar", "winkel, kast en punten"),
-                    ("Spiekbrieven", "uitleg om terug te kijken"),
-                    ("Opties", "kleuren, muis, avatar …"),
-                    ("Wissel van kind", "iemand anders wil oefenen"),
-                    ("Zeg het ons", "wat vind je leuk of moeilijk?"),
-                    ("Stoppen", "")], info=info,
-                    onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
-                if k is None or k == 9:
+                keuzes = [("▶ Verder", self.voorstel()[0][:32], lambda: self.voorstel()[1]()),
+                          (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets",
+                           self.herhalen),
+                          *[(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN],
+                          ("Spiekbrieven", "uitleg om terug te kijken", lambda: navigatie.spiekbrieven(
+                              self, [HOOFD, "Spiekbrieven"])),
+                          ("Mijn avatar", "winkel, kast, punten en schermkleuren", self.mijn_avatar),
+                          ("Zeg het ons", "wat vind je leuk of moeilijk?", self.zeg_het_ons),
+                          ("Wissel van kind", "iemand anders wil oefenen", self.wissel_van_kind),
+                          ("Stoppen", "", None)]
+                k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?",
+                                [(label, uitleg) for label, uitleg, _ in keuzes], info=info,
+                                onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
+                if k is None or keuzes[k][2] is None:
                     return
-                actie = [lambda: self.voorstel()[1](), self.leren, self.snelrekenen, self.herhalen,
-                         self.mijn_avatar, self.spiekbrieven, self.opties, self.wissel_van_kind,
-                         self.zeg_het_ons][k]
-                actie()
+                keuzes[k][2]()
             except TerugNaar:
                 continue
             except (SystemExit, KeyboardInterrupt, Vergrendeld):
@@ -271,43 +263,50 @@ class App:
         AV.teken(self.s, 4, x, self.avatar_config(), "blij")
         self.s.put(4 + AV.HOOGTE + 1, x, f"★ {self.opslag.punten_saldo(self.kind.id)} punten", "accent")
 
-    def snelrekenen(self):
-        from .schermen.snelrekenen import Snelrekenen
-        Snelrekenen(self).menu()
-
     def mijn_avatar(self):
         from .schermen.winkel import AvatarSchermen
         AvatarSchermen(self).hub()
 
     def voorstel(self):
-        """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders leren."""
+        """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders kiezen."""
         n = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
         if n:
             return f"eerst je {n} herhaalvragen", self.herhalen
         try:
             return self._vorige_voorstel()
-        except (KeyError, IndexError, TypeError, ValueError, AttributeError):  # oude of vreemde gegevens
-            return "kies iets om te leren", self.leren
+        except (KeyError, IndexError, TypeError, ValueError, AttributeError, StopIteration):  # oude of vreemde gegevens
+            return self.kiezen()
+
+    def kiezen(self):
+        """Geen vorige oefening: het eerste vak openen."""
+        return "kies iets om te leren", lambda: navigatie.vak(self, CU.VAKKEN[0], [HOOFD])
+
+    def kruimel_van(self, opslag_id):
+        """Hoofdmenu › Vak › Domein › Onderwerp van een bewaarde id (via het leerplan), en het domein."""
+        o = CU.van_opslag(opslag_id)[0]
+        d = CU.domein_van(o)
+        return [HOOFD, CU.vak_van(d).label, d.label, o.label], d
 
     def _vorige_voorstel(self):
+        """De vorige oefening (ook een die nog door een oudere versie bewaard is: het leerplan vindt ze via opslag)."""
         vorige = self.laatste_oefening()
         if not isinstance(vorige, dict):
-            return "kies iets om te leren", self.leren
+            return self.kiezen()
         if vorige.get("onderwerp") == "oefenaar" and not 0 <= vorige["niveau"] < len(leerjaren.NIVEAUS):
-            return "kies iets om te leren", self.leren
+            return self.kiezen()
         if vorige.get("onderwerp") == "oefenaar":
             from ..kern import catalogus
             o = catalogus.ONDERWERPEN.get(vorige["vaardigheid"])
             if o:
                 vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10"}[vorige["vorm"]]
-                kr = [HOOFD, "Leren", "Wiskunde", vorige["domein"]]
+                kr, d = self.kruimel_van(o.id)
                 return (f"{o.naam.lower()} · {vorm}",
-                        lambda: Oefenaar(self, kr, [o], vorige["domein"]).start(o, vorige["vorm"], vorige["niveau"]))
-        if vorige and vorige.get("onderwerp") == "eenheden":
+                        lambda: Oefenaar(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
+        if vorige.get("onderwerp") == "eenheden":
             vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
-            kr = [HOOFD, "Leren", "Wiskunde", "Eenheden"]
+            kr = self.kruimel_van(OMZETTEN.id)[0][:-1]
             return f"eenheden · {vorm} · {vorige['soort'].lower()}", lambda: Eenheden(self, kr).hervat(vorige)
-        return "kies iets om te leren", self.leren
+        return self.kiezen()
 
     def herhalen(self):
         kr = [HOOFD, "Herhalen"]
@@ -352,144 +351,3 @@ class App:
         if morgen:
             regels.append((f"✘ {morgen} {'vraag komt' if morgen == 1 else 'vragen komen'} morgen terug.", "fout"))
         self.s.lezer(kr + ["Klaar"], regels, [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
-
-    def leren(self):
-        kr = [HOOFD, "Leren"]
-        while True:
-            try:
-                k = self.s.menu(kr, "Welk vak?", [("Wiskunde", "rekenen, eenheden, breuken, meetkunde …")])
-                if k is None:
-                    return
-                self.wiskunde(kr + ["Wiskunde"])
-            except TerugNaar as t:
-                if t.niveau < 1:
-                    raise
-
-    def domeinen(self):
-        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp(en))."""
-        return [("Eenheden", "lengte, massa, inhoud, oppervlakte, volume", None, None),
-                ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
-                ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
-                ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
-                ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
-                ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
-                ("Tijd, geld en snelheid", "de klok, uren en minuten, wisselgeld, km/u", TG.ALLE + [KL.KLOK], [TG.TIJD, KL.KLOK]),
-                ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER),
-                ("Vraagstukken", "oplossen in 4 stappen, Speurneus, schatten", VS.ALLE, VS.VRAAGSTUKKEN)]
-
-    def wiskunde(self, kr):
-        domeinen = self.domeinen()
-        while True:
-            try:
-                k = self.s.menu(kr, "Welk onderwerp?", [(naam, uitleg) for naam, uitleg, *_ in domeinen])
-                if k is None:
-                    return
-                naam, _, onderwerpen, _ = domeinen[k]
-                if onderwerpen is None:
-                    Eenheden(self, kr + [naam]).menu()
-                else:
-                    Oefenaar(self, kr + [naam], onderwerpen, naam).menu()
-            except TerugNaar as t:
-                if t.niveau < len(kr) - 1:
-                    raise
-
-    def spiekbrieven(self):
-        kr = [HOOFD, "Spiekbrieven"]
-        domeinen = self.domeinen()
-        while True:
-            try:
-                k = self.s.menu(kr, "Welke spiekbrief?", [(naam, uitleg) for naam, uitleg, *_ in domeinen])
-                if k is None:
-                    return
-                naam, _, onderwerpen, spiek = domeinen[k]
-                if onderwerpen is None:
-                    Eenheden(self, kr).spiekbrief(kr + [naam])
-                else:
-                    Oefenaar(self, kr, onderwerpen, naam).spiekbrief(kr + [naam], spiek)
-            except TerugNaar as t:
-                if t.niveau < 1:
-                    raise
-
-    def opties(self):
-        s, inst = self.s, self.inst
-        kr = [HOOFD, "Opties"]
-        themas = list(instellingen.THEMAS)
-        sel, melding = 0, ""
-        knoppen = [("↑↓", "kiezen", None), ("Enter", "wijzigen", 10), ("Esc", "klaar", ESC)]
-        while True:
-            items = [
-                ("Naam", inst.naam or "(nog geen naam)"),
-                ("Leerjaar", leerjaren.NAMEN[inst.leerjaar] + "  (wijzigen: ouders)"),
-                ("Kleuren", instellingen.THEMAS[inst.thema]),
-                ("Eenvoudige tekens", {None: "automatisch", True: "aan (ASCII)", False: "uit"}[inst.ascii]),
-                ("Muis", "aan" if inst.muis else "uit"),
-                ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
-                ("Avatar", "aan" if inst.avatar else "uit"),
-                ("Animaties", "aan" if inst.animaties else "uit"),
-                ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)"),
-            ]
-            if s.te_klein():
-                continue
-            s.cursor(False)
-            s.nieuw(kr, knoppen)
-            h, w = s.maat()
-            s.put(1, 4, "Kies een optie en druk Enter (of klik) om ze te wijzigen.", "bold")
-            for i, (label, waarde) in enumerate(items):
-                y = 3 + 2 * i
-                s.put(y, 6, f" {label:<24} ", "cursor" if i == sel else "")
-                s.put(y, 33, waarde, "accent")
-                s.zones.voeg(y, 4, 1, w - 6, ("kies", i))
-            y = 3 + 2 * len(items)
-            s.put(y, 4, "Voorbeeld:", "dim")
-            s.put(y, 15, "✔ juist", "goed")
-            s.put(y, 25, "✘ fout", "fout")
-            s.put(y, 34, "  5  ", "goedvak")
-            s.put(y, 40, "! 6  ", "foutvak")
-            s.put(y, 46, " actief ", "cursor")
-            if melding:
-                s.put(y + 1, 4, melding, "info")
-            else:
-                s.put(y + 1, 4, "Ook bij het starten: --kleurenblind, --contrast, --ascii … (zie --help)", "dim")
-            k = s.toets()
-            melding = ""
-            if isinstance(k, tuple):
-                if k[0] == "kies":
-                    sel = k[1]
-                    k = 10
-                elif k[0] == "scroll":
-                    sel = (sel + k[1]) % len(items)
-                    continue
-                else:
-                    continue
-            if k in (curses.KEY_UP, ord("k")):
-                sel = (sel - 1) % len(items)
-            elif k in (curses.KEY_DOWN, ord("j"), 9):
-                sel = (sel + 1) % len(items)
-            elif k in (ESC, ord("q")):
-                self.bewaar()
-                return
-            elif k in ENTER or k in (curses.KEY_RIGHT, ord(" ")):
-                if sel == 0:
-                    naam = s.invoer(kr + ["Naam"], "Hoe heet je?", inst.naam)
-                    if naam:
-                        inst.naam = naam
-                elif sel == 1:
-                    melding = "Het leerjaar kan een ouder wijzigen: Wissel van kind → Ouders → Kinderen."
-                    continue
-                elif sel == 2:
-                    inst.thema = themas[(themas.index(inst.thema) + 1) % len(themas)]
-                elif sel == 3:
-                    inst.ascii = {None: True, True: False, False: None}[inst.ascii]
-                elif sel == 4:
-                    inst.muis = not inst.muis
-                elif sel == 5:
-                    inst.typrichting = -inst.typrichting
-                elif sel == 6:
-                    inst.avatar = not inst.avatar
-                elif sel == 7:
-                    inst.animaties = not inst.animaties
-                elif sel == 8:
-                    inst.klokvenster = not inst.klokvenster
-                    self.zet_klokvenster()
-                s.pas_toe()
-                self.bewaar()

@@ -2,6 +2,31 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.20.0 — nieuwe menu's
+- **Alles zit nu op één manier in de menu's:** Wiskunde › een domein › een onderwerp. Zo is er straks plaats
+  voor Taal en Frans. Wiskunde heeft 8 domeinen: Getallen, Hoofdrekenen, Cijferen, Breuken en procenten, Meten,
+  Tijd, geld en snelheid, Meetkunde en Vraagstukken.
+- **Bij elk onderwerp kies je met één toets wat je wil doen:** Enter = een reeks van 10, **V** = vrij oefenen,
+  **S** = spiekbrief, en waar het kan **T** = 60 seconden, **Z** = 20 sommen en **H** = tabel-oefening. Een kleine
+  letter werkt ook. Onderaan staan alleen de toetsen van het onderwerp waar je op staat, en je kunt erop klikken.
+  Na een oefening sta je terug op hetzelfde onderwerp.
+- **Snelrekenen zit nu in Hoofdrekenen:** bij Tafels en bij Optellen en aftrekken met T (60 seconden) of Z
+  (20 sommen), en het nieuwe onderwerp **Gemengd**. De records van vroeger blijven. Staat de timer uit, dan is er
+  geen T en start Enter bij Gemengd 20 sommen.
+- **Meten:** eerst kies je de maat (Lengte, Massa, Inhoud, Oppervlakte, Volume, Maten gemengd, Maten zelf kiezen),
+  dan de toets. Oppervlakte en omtrek en Formules staan nu ook bij Meten, met hun eigen spiekbrief
+  **Oppervlakte en formules**. De spiekbrief Meetkunde gaat nu over hoeken, de schatkaart en schaal.
+- **Het hoofdmenu is korter:** ▶ Verder, Herhalen, Wiskunde, Spiekbrieven, Mijn avatar, Zeg het ons, Wissel van
+  kind, Stoppen. "Leren & oefenen", "Snelrekenen" en "Opties" zijn weg.
+- **Opties is verhuisd:** de kleuren kiest het kind in **Mijn avatar › Schermkleuren** (toets L). Eenvoudige
+  tekens, muis, typrichting, avatar, animaties en het klokvenster zet de ouder per kind in
+  **Ouders › Kinderen › Weergave**.
+- **Rapport voor de ouder:** per vak en domein, met de namen uit het menu (de maten samen onder "Maten").
+  Snelrekenen staat apart onder zijn onderwerp ("Tafels, snelrekenen: … sommen"), ook in de status: een snelle
+  ronde verandert de gewone status niet meer. De CSV-export heeft achteraan twee kolommen erbij: vak en domein.
+- ▶ Verder en Herhalen werken zoals vroeger, ook met wat je in een vorige versie oefende.
+- De handleiding toont nog de menu's van 0.19. Ze wordt later in één keer herschreven.
+
 ## 0.19.0 — één vaste werkwijze, met klad
 - **Elke oefening werkt nu op dezelfde manier**, zodat je het maar één keer moet leren:
   1. lees de vraag;
