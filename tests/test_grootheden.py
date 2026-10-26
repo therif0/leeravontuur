@@ -9,9 +9,11 @@ from leeravontuur.kern.onderwerp import Vraag
 from leeravontuur.kern.wiskunde import grootheden as T
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 D = Decimal
 
@@ -104,8 +106,8 @@ def gemengd():
 
 
 def naar(onderwerp):
-    """Wiskunde → Tijd, geld en snelheid → onderwerp → Vrij oefenen → Normaal."""
-    return [OK, OK, hm("Leren & oefenen"), "1", "7", str(onderwerp), "1", OK]
+    """Wiskunde › domein › het onderwerp met dit nummer in T.ALLE › V (vrij oefenen) › Normaal."""
+    return naar_onderwerp(T.ALLE[onderwerp - 1])
 
 
 STOP = [ESC] * 7
@@ -123,7 +125,7 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "Minuten: hoogstens 59"))  # '135' alleen is geen antwoord
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "7", ESC, ESC, ESC])
+        scherm, _ = self.speel([*naar_spiekbrief("Tijd, geld en snelheid", 2), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Een uur heeft 60 minuten"))
 
 

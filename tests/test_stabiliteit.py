@@ -29,9 +29,9 @@ from leeravontuur.terminal.nepscherm import HangtFout, NepScherm, ToetsenOp
 from leeravontuur.terminal.scherm import Scherm, teken_van
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, hm, naar, naar_spiekbrief
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, hm, naar, naar_spiekbrief
 
 VREEMD = ["", " ", "abc", "-5", "0", "999999999", "1/2", "1 1/2", "3/0", "ja", "nee", "<", "=", "12,5", "€ 3",
           "35 %", "−0,001", "x/y", "9" * 30]
@@ -185,7 +185,7 @@ class TestVangnet(Basis):
         from leeravontuur.terminal.oefenaar import Oefenaar
         o = self.opslag(("Test", "5"))
         with mock.patch.object(Oefenaar, "spiekbrief", side_effect=RuntimeError("expres")):
-            scherm, app = self.speel([OK, OK, hm("Spiekbrieven"), "2", OK, ESC], opslag=o)
+            scherm, app = self.speel([*naar_spiekbrief("Hoofdrekenen"), OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Oei, er ging iets mis."))
         self.assertIn("RuntimeError: expres", foutlog.meldingen()[-1])
         self.assertIn("Spiekbrieven", foutlog.meldingen()[-1])  # waar het gebeurde
@@ -195,14 +195,16 @@ class TestVangnet(Basis):
     def test_sessie_wordt_gesloten(self):
         from leeravontuur.terminal.oefenaar import Oefenaar
         o = self.opslag(("Test", "5"))
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
         with mock.patch.object(Oefenaar, "stel_vraag", side_effect=RuntimeError("expres")):
-            self.speel([OK, OK, hm("Leren & oefenen"), "1", "2", "1", "1", OK, OK, ESC, ESC, ESC], opslag=o)
+            self.speel([*naar(H.TAFELS), OK, ESC, ESC, ESC], opslag=o)
         sessies = o.sessies(o.kinderen()[0].id)
         self.assertEqual(len(sessies), 1)
         self.assertIsNotNone(sessies[0]["einde"])
 
     def test_drie_keer_snel_dan_toch_stoppen(self):
-        with mock.patch.object(App, "spiekbrieven", side_effect=RuntimeError("expres")):
+        from leeravontuur.terminal import navigatie
+        with mock.patch.object(navigatie, "spiekbrieven", side_effect=RuntimeError("expres")):
             with self.assertRaises(RuntimeError):
                 self.speel([OK, OK, *[hm("Spiekbrieven"), OK] * 3, ESC])
 
@@ -213,7 +215,7 @@ class TestAapjes(Basis):
     SEEDS = range(int(os.environ.get("LEERAVONTUUR_AAP_SEEDS", "12")))
 
     def gebeurtenissen(self, rng, n):
-        toetsen = list("0123456789") * 3 + list("abcdefghijklmnopqrstuvwxyz") + list(" ?+-,/<>=r") + list(":x*().") + ["\t"] * 2 + \
+        toetsen = list("0123456789") * 3 + list("abcdefghijklmnopqrstuvwxyz") + list("VSTZH") + list(" ?+-,/<>=r") + list(":x*().") + ["\t"] * 2 + \
             [OK] * 8 + [ESC] * 2 + ["\t", "\b", "Ą", "œ", "é"] + \
             [curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_UP, curses.KEY_DOWN] * 4 + \
             [curses.KEY_BACKSPACE, curses.KEY_DC, curses.KEY_HOME, curses.KEY_F1]
@@ -253,41 +255,37 @@ class TestAapjes(Basis):
                     scherm.h, scherm.w = 24, 80  # opnieuw starten, zoals een kind dat het programma weer opent
 
     def test_gerichte_aapjes_in_elke_oefening(self):
-        """Naar elke oefening (elk onderwerp, vrij oefenen en een reeks) en daar willekeurig drukken en klikken."""
+        """Naar elke oefening (elk onderwerp van het leerplan, vrij oefenen en een reeks) en daar willekeurig
+        drukken en klikken."""
+        from leeravontuur.terminal import curriculum as CU
         self.bereikt = 0
-        domeinen = App.domeinen(None)
+        onderwerpen = [o for o in CU.onderwerpen() if {"vrij", "reeks"} <= set(o.modi)]
         rondes = int(os.environ.get("LEERAVONTUUR_AAP_RONDES", "1"))
         with mock.patch.dict(os.environ, {"LEERAVONTUUR_DEBUG": "1"}):
             for ronde in range(rondes):
-                self.gericht(domeinen, random.Random(99 + ronde))
-        aantal = sum(2 * 2 for _, _, o, _ in domeinen for _ in (o or [None]))
-        self.assertGreater(self.bereikt, 0.9 * aantal * rondes, "de aapjes kwamen niet in de oefeningen")
+                self.gericht(onderwerpen, random.Random(99 + ronde))
+        self.assertGreater(self.bereikt, 0.9 * len(onderwerpen) * 2 * 2 * rondes,
+                           "de aapjes kwamen niet in de oefeningen")
 
-    def gericht(self, domeinen, rng):
+    def gericht(self, onderwerpen, rng):
         from leeravontuur.terminal import app as app_mod
-        for d, (naam, _, onderwerpen, _) in enumerate(domeinen, 1):
-            for i in range(1, len(onderwerpen or [None]) + 1):
-                for vorm in ("1", "2"):  # vrij oefenen, reeks
-                    for niveau in (OK, "4"):  # Normaal, Heel moeilijk
-                        stappen = [OK, OK, hm("Leren & oefenen"), "1", str(d)]
-                        if onderwerpen is None:
-                            stappen += [vorm, niveau]  # Eenheden: eigen menu (vorm, dan niveau)
-                        else:
-                            stappen += ([str(i)] if len(onderwerpen) > 1 else []) + [vorm, niveau]
-                        stappen += [e for e in self.gebeurtenissen(rng, 160) if e != ESC] + [ESC] * 8
-                        opslag = self.opslag(("Aap", "5"))
-                        scherm = NepScherm(stappen)
-                        try:
-                            app_mod.App(scherm, opslag, kleuren=False).start()
-                        except (ToetsenOp, SystemExit):
-                            pass
-                        except HangtFout as e:
-                            self.fail(f"{naam} {i} {vorm}: het programma hangt ({e})\n{scherm.tekst()}")
-                        except Exception as e:  # noqa: BLE001
-                            raise AssertionError(f"{naam} {i} {vorm}: {type(e).__name__}: {e}\n"
-                                                 f"{scherm.tekst()}") from e
-                        self.bereikt += any("Vrij oefenen:" in bl or "Vraag 1 van" in bl for bl in scherm.beelden)
-
+        for o in onderwerpen:
+            for toets in ("v", "Enter"):  # vrij oefenen, reeks
+                for niveau in (OK, "4"):  # Normaal, Heel moeilijk
+                    stappen = naar(o.id, toets, niveau=niveau)
+                    stappen += [e for e in self.gebeurtenissen(rng, 160) if e != ESC] + [ESC] * 8
+                    opslag = self.opslag(("Aap", "5"))
+                    scherm = NepScherm(stappen)
+                    try:
+                        app_mod.App(scherm, opslag, kleuren=False).start()
+                    except (ToetsenOp, SystemExit):
+                        pass
+                    except HangtFout as e:
+                        self.fail(f"{o.id} {toets}: het programma hangt ({e})\n{scherm.tekst()}")
+                    except Exception as e:  # noqa: BLE001
+                        raise AssertionError(f"{o.id} {toets}: {type(e).__name__}: {e}\n"
+                                             f"{scherm.tekst()}") from e
+                    self.bereikt += any("Vrij oefenen:" in bl or "Vraag 1 van" in bl for bl in scherm.beelden)
 
 if __name__ == "__main__":
     unittest.main()

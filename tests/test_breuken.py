@@ -13,9 +13,11 @@ from leeravontuur.kern.wiskunde import breuken as B
 from leeravontuur.terminal import modellen as M
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import naar as naar_onderwerp
 
 F = Fraction
 D = Decimal
@@ -158,8 +160,8 @@ def toon_vraag():
 
 
 def naar(onderwerp):
-    """Wiskunde → Breuken → onderwerp → Vrij oefenen → Normaal."""
-    return [OK, OK, hm("Leren & oefenen"), "1", "5", str(onderwerp), "1", OK]
+    """Wiskunde › domein › het onderwerp met dit nummer in B.ALLE › V (vrij oefenen) › Normaal."""
+    return naar_onderwerp(B.ALLE[onderwerp - 1])
 
 
 STOP = [ESC] * 7
@@ -221,7 +223,7 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "10/15 en 3/5 = 9/15"))
 
     def test_spiekbrief(self):
-        scherm, _ = self.speel([OK, OK, hm("Spiekbrieven"), "5", ESC, ESC, ESC])
+        scherm, _ = self.speel([*naar_spiekbrief("Breuken en procenten", 1), ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "DE BREUKBALK"))
 
 

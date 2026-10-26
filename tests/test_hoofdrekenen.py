@@ -13,9 +13,9 @@ from leeravontuur.kern.wiskunde import hoofdrekenen as H
 from leeravontuur.terminal.schermen.snelrekenen import Snelrekenen
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, hm, naar
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, hm, naar
 
 
 def reken(tekst):
@@ -111,7 +111,7 @@ class TestSchermen(Basis):
         for i in range(1, 11):
             antwoorden += [*str(7 * i), OK, OK] if i != 6 else [*"41", OK, *"41", OK, OK]  # fout: tweede kans
         with mock.patch.object(H.TAFELS, "maak", side_effect=vragen):
-            scherm, app = self.speel([OK, OK, hm("Leren & oefenen"), "1", "2", "1", "2", OK, *antwoorden,
+            scherm, app = self.speel([*naar(H.TAFELS, "Enter"), *antwoorden,
                                       ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         rijen = o.antwoorden(app.kind.id)
         self.assertEqual(len(rijen), 10)
@@ -125,7 +125,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         vast = Vraag(H.TAFELS.id, f"{H.TAFELS.id}:t2:2x3", "2 × 3 =", Decimal(6), data={})
         with mock.patch.object(SR, "vraag", return_value=(H.TAFELS, vast)):
-            scherm, app = self.speel([OK, OK, hm("Snelrekenen"), "1", "2", *(["6", OK] * 20), OK, ESC, ESC, ESC],
+            scherm, app = self.speel([*naar(H.TAFELS, "z", niveau=None), *(["6", OK] * 20), OK, ESC, ESC, ESC],
                                      opslag=o)
         self.assertTrue(self.ergens(scherm, "Juist: 20 van 20"))
         self.assertTrue(self.ergens(scherm, "eerste snelrekenronde van vandaag"))
@@ -137,15 +137,20 @@ class TestSchermen(Basis):
         vast = Vraag(H.TAFELS.id, f"{H.TAFELS.id}:t2:2x3", "2 × 3 =", Decimal(6), data={})
         with mock.patch.object(Snelrekenen, "klok", side_effect=lambda: next(tikken)), \
                 mock.patch.object(SR, "vraag", return_value=(H.TAFELS, vast)):
-            scherm, app = self.speel([OK, OK, hm("Snelrekenen"), "1", "1", ("wacht",), "6", OK, ("wacht",),
+            scherm, app = self.speel([*naar(H.TAFELS, "t", niveau=None), ("wacht",), "6", OK, ("wacht",),
                                       *[("wacht",)] * 12, OK, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Nog "))
         self.assertTrue(self.ergens(scherm, "Juist: 1 van 1"))
 
     def test_zonder_timer_alleen_20_sommen(self):
         o = self.opslag(("Test", "5", {"timer_zichtbaar": False}))
-        scherm, _ = self.speel([OK, OK, hm("Snelrekenen"), "1", ESC, ESC, ESC], opslag=o)
+        # op Tafels doet T niets en staat er geen [T] 60 s; Gemengd start met Enter 20 sommen
+        scherm, _ = self.speel([*naar(H.TAFELS, "t", niveau=None), ESC, ESC, ESC], opslag=o)
+        self.assertFalse(self.ergens(scherm, "[T]"))
         self.assertFalse(self.ergens(scherm, "60 seconden"))
+        scherm, _ = self.speel([*naar("wiskunde.hoofdrekenen.gemengd", "Enter", niveau=None), ESC, ESC, ESC],
+                               opslag=o)
+        self.assertTrue(self.ergens(scherm, "[Enter] 20 sommen"))
         self.assertTrue(self.ergens(scherm, "Som 1 van 20"))
 
     def test_herhalen_tafel(self):

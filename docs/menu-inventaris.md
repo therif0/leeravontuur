@@ -30,16 +30,16 @@ Toetsen in de nieuwe onderwerpenlijst: **Enter** reeks van 10 · **V** vrij oefe
 - [ ] Sluiten; vergrendelen na 10 minuten zonder toets
 
 ## Hoofdmenu
-- [ ] ▶ Verder → ▶ Verder (1ste)
-- [ ] Leren & oefenen › Welk vak? › Wiskunde → Wiskunde (rechtstreeks, als vak)
-- [ ] Snelrekenen → in Hoofdrekenen (zie onder)
-- [ ] Herhalen (n) → Herhalen (n) (2de)
-- [ ] Mijn avatar → Mijn avatar
-- [ ] Spiekbrieven → Spiekbrieven (uit de registry)
+- [x] ▶ Verder → ▶ Verder (1ste)
+- [x] Leren & oefenen › Welk vak? › Wiskunde → Wiskunde (rechtstreeks, als vak)
+- [x] Snelrekenen → in Hoofdrekenen (zie onder)
+- [x] Herhalen (n) → Herhalen (n) (2de)
+- [x] Mijn avatar → Mijn avatar
+- [x] Spiekbrieven → Spiekbrieven (uit de registry)
 - [ ] Opties → weg: alles verhuist (zie onder)
-- [ ] Wissel van kind → Wissel van kind
-- [ ] Zeg het ons → Zeg het ons
-- [ ] Stoppen → Stoppen
+- [x] Wissel van kind → Wissel van kind
+- [x] Zeg het ons → Zeg het ons
+- [x] Stoppen → Stoppen
 
 Wiskunde krijgt 8 domeinen: Getallen · Hoofdrekenen · Cijferen · Breuken en procenten · Meten ·
 Tijd, geld en snelheid · Meetkunde · Vraagstukken (elk hoogstens 10 onderwerpen: de cijfertoetsen 1–9 en 0).
@@ -51,83 +51,83 @@ Nu: domein → onderwerp → Vrij oefenen / Reeks van 10 / Spiekbrief → Hoe mo
 Na: Wiskunde → domein → onderwerp + toets → Hoe moeilijk?
 
 ### Getallen
-- [ ] Plaatswaarde → Getallen › Plaatswaarde (Enter V S)
-- [ ] Afronden → Getallen › Afronden (Enter V S)
-- [ ] Deelbaarheid → Getallen › Deelbaarheid (Enter V S)
-- [ ] Getallenlijn → Getallen › Getallenlijn (Enter V S)
+- [x] Plaatswaarde → Getallen › Plaatswaarde (Enter V S)
+- [x] Afronden → Getallen › Afronden (Enter V S)
+- [x] Deelbaarheid → Getallen › Deelbaarheid (Enter V S)
+- [x] Getallenlijn → Getallen › Getallenlijn (Enter V S)
 
 ### Hoofdrekenen
-- [ ] Maal- en deeltafels + Snelrekenen › Tafels → Hoofdrekenen › Tafels (Enter V S T Z)
-- [ ] Optellen en aftrekken + Snelrekenen › Plus en min → Hoofdrekenen › Optellen en aftrekken (Enter V S T Z)
-- [ ] × en : met 10, 100, 1000 → Hoofdrekenen (Enter V S)
-- [ ] Verdubbelen en halveren → Hoofdrekenen (Enter V S)
-- [ ] Slim × en : (splitsen) → Hoofdrekenen (Enter V S)
-- [ ] Snelrekenen › Gemengd → Hoofdrekenen › Gemengd (Enter = 60 seconden, T, Z; zonder zichtbare timer
+- [x] Maal- en deeltafels + Snelrekenen › Tafels → Hoofdrekenen › Tafels (Enter V S T Z)
+- [x] Optellen en aftrekken + Snelrekenen › Plus en min → Hoofdrekenen › Optellen en aftrekken (Enter V S T Z)
+- [x] × en : met 10, 100, 1000 → Hoofdrekenen (Enter V S)
+- [x] Verdubbelen en halveren → Hoofdrekenen (Enter V S)
+- [x] Slim × en : (splitsen) → Hoofdrekenen (Enter V S)
+- [x] Snelrekenen › Gemengd → Hoofdrekenen › Gemengd (Enter = 60 seconden, T, Z; zonder zichtbare timer
       alleen 20 sommen)
-- [ ] Snelrekenen: records, dagbonus en het verloop blijven
+- [x] Snelrekenen: records, dagbonus en het verloop blijven
 
 ### Cijferen
-- [ ] Cijferend optellen → Cijferen › Optellen (Enter V S)
-- [ ] Cijferend aftrekken → Cijferen › Aftrekken (Enter V S)
-- [ ] Cijferend vermenigvuldigen → Cijferen › Vermenigvuldigen (Enter V S)
-- [ ] Staartdeling → Cijferen › Staartdeling (Enter V S)
+- [x] Cijferend optellen → Cijferen › Optellen (Enter V S)
+- [x] Cijferend aftrekken → Cijferen › Aftrekken (Enter V S)
+- [x] Cijferend vermenigvuldigen → Cijferen › Vermenigvuldigen (Enter V S)
+- [x] Staartdeling → Cijferen › Staartdeling (Enter V S)
 
 ### Breuken en Procenten → Breuken en procenten
-- [ ] Breuken herkennen → Herkennen (Enter V S)
-- [ ] Breuken vergelijken → Vergelijken (Enter V S)
-- [ ] Gelijkwaardig en vereenvoudigen → Vereenvoudigen (Enter V S)
-- [ ] Breuk van een getal (Enter V S)
-- [ ] Optellen en aftrekken (Enter V S)
-- [ ] Breuk en kommagetal (Enter V S)
-- [ ] Het honderdveld → Honderdveld (Enter V S)
-- [ ] Procent, breuk en kommagetal (Enter V S)
-- [ ] Procent van een getal (Enter V S)
-- [ ] Korting en btw (Enter V S)
+- [x] Breuken herkennen → Herkennen (Enter V S)
+- [x] Breuken vergelijken → Vergelijken (Enter V S)
+- [x] Gelijkwaardig en vereenvoudigen → Vereenvoudigen (Enter V S)
+- [x] Breuk van een getal (Enter V S)
+- [x] Optellen en aftrekken (Enter V S)
+- [x] Breuk en kommagetal (Enter V S)
+- [x] Het honderdveld → Honderdveld (Enter V S)
+- [x] Procent, breuk en kommagetal (Enter V S)
+- [x] Procent van een getal (Enter V S)
+- [x] Korting en btw (Enter V S)
 
 ### Eenheden (+ 2 uit Meetkunde) → Meten (9 onderwerpen)
 Eenheden kiest nu eerst de vorm (Vrij / Reeks / Tabel-oefening / Spiekbrief) en dan de maat. Na stap A eerst de maat,
 dan de toets.
-- [ ] Eenheden › Lengte → Meten › Lengte (m) (Enter V S H)
-- [ ] Eenheden › Massa → Meten › Massa (g) (Enter V S H)
-- [ ] Eenheden › Inhoud → Meten › Inhoud (l) (Enter V S H)
-- [ ] Eenheden › Oppervlakte (vanaf 5de) → Meten › Oppervlakte (m²) (Enter V S H)
-- [ ] Eenheden › Volume (vanaf 6de) → Meten › Volume (m³) (Enter V S H)
-- [ ] Eenheden › Door elkaar → Meten › Maten gemengd (Enter V S H)
-- [ ] Eenheden › Zelf kiezen → Meten › Maten zelf kiezen (Enter V S H; de eenheden aanduiden blijft een stap)
-- [ ] Eenheden › Spiekbrief → S op elk van de zeven maten
-- [ ] Oppervlakte en omtrek (Meetkunde) → Meten › Oppervlakte en omtrek (Enter V S)
-- [ ] Formules (Meetkunde) → Meten › Formules (Enter V S)
+- [x] Eenheden › Lengte → Meten › Lengte (m) (Enter V S H)
+- [x] Eenheden › Massa → Meten › Massa (g) (Enter V S H)
+- [x] Eenheden › Inhoud → Meten › Inhoud (l) (Enter V S H)
+- [x] Eenheden › Oppervlakte (vanaf 5de) → Meten › Oppervlakte (m²) (Enter V S H)
+- [x] Eenheden › Volume (vanaf 6de) → Meten › Volume (m³) (Enter V S H)
+- [x] Eenheden › Door elkaar → Meten › Maten gemengd (Enter V S H)
+- [x] Eenheden › Zelf kiezen → Meten › Maten zelf kiezen (Enter V S H; de eenheden aanduiden blijft een stap)
+- [x] Eenheden › Spiekbrief → S op elk van de zeven maten
+- [x] Oppervlakte en omtrek (Meetkunde) → Meten › Oppervlakte en omtrek (Enter V S)
+- [x] Formules (Meetkunde) → Meten › Formules (Enter V S)
 
 ### Tijd, geld en snelheid (blijft een eigen domein, na Meten)
-- [ ] De klok (Enter V S)
-- [ ] Tijd (Enter V S)
-- [ ] Geld (Enter V S)
-- [ ] Snelheid (Enter V S)
+- [x] De klok (Enter V S)
+- [x] Tijd (Enter V S)
+- [x] Geld (Enter V S)
+- [x] Snelheid (Enter V S)
 
 ### Meetkunde
-- [ ] Schatkaart (Enter V S)
-- [ ] Hoeken (Enter V S)
-- [ ] Schaal (Enter V S)
+- [x] Schatkaart (Enter V S)
+- [x] Hoeken (Enter V S)
+- [x] Schaal (Enter V S)
 
 ### Vraagstukken
-- [ ] Vraagstukken oplossen → Oplossen (Enter V S)
-- [ ] Speurneus: zoek de fout → Speurneus (Enter V S)
-- [ ] Schatten en controleren (Enter V S)
+- [x] Vraagstukken oplossen → Oplossen (Enter V S)
+- [x] Speurneus: zoek de fout → Speurneus (Enter V S)
+- [x] Schatten en controleren (Enter V S)
 
 ### Rond een oefening (blijft)
-- [ ] Hoe moeilijk? (Makkelijk / Normaal / Moeilijk / Heel moeilijk), zoals nu
-- [ ] na een reeks: het rapport, fouten opnieuw (dezelfde of gelijkaardige vragen)
-- [ ] Eenheden: tabel-oefening en fouten opnieuw
-- [ ] na de oefening terug in dezelfde onderwerpenlijst, op hetzelfde onderwerp
+- [x] Hoe moeilijk? (Makkelijk / Normaal / Moeilijk / Heel moeilijk), zoals nu
+- [x] na een reeks: het rapport, fouten opnieuw (dezelfde of gelijkaardige vragen)
+- [x] Eenheden: tabel-oefening en fouten opnieuw
+- [x] na de oefening terug in dezelfde onderwerpenlijst, op hetzelfde onderwerp
 
 ## Spiekbrieven (hoofdmenu)
-- [ ] Nu: domein → de spiekbrief van dat domein. Na: Wiskunde → domein → de spiekbrieven van dat domein.
-- [ ] Elke spiekbrief van nu is nog bereikbaar (hier én met S op het onderwerp).
+- [x] Nu: domein → de spiekbrief van dat domein. Na: Wiskunde → domein → de spiekbrieven van dat domein.
+- [x] Elke spiekbrief van nu is nog bereikbaar (hier én met S op het onderwerp).
 
 ## Verder en Herhalen
-- [ ] Verder stelt eerst herhalen voor, anders de vorige oefening (ook een vorige eenheden-oefening), anders kiezen.
-- [ ] Verder werkt ook met een `laatste_oefening` die nog door 0.19.0 bewaard is.
-- [ ] Herhalen: eenheden en de andere onderwerpen na elkaar, zoals nu; alleen de broodkruimel verandert.
+- [x] Verder stelt eerst herhalen voor, anders de vorige oefening (ook een vorige eenheden-oefening), anders kiezen.
+- [x] Verder werkt ook met een `laatste_oefening` die nog door 0.19.0 bewaard is.
+- [x] Herhalen: eenheden en de andere onderwerpen na elkaar, zoals nu; alleen de broodkruimel verandert.
 
 ## Mijn avatar
 - [ ] W winkel: laag → item → kopen → meteen aantrekken
@@ -148,18 +148,18 @@ dan de toets.
 - [ ] startargumenten (`--kleurenblind`, `--ascii`, `--geen-muis`, `--zonder-klokvenster` …) blijven voorrang hebben
 
 ## Toetsen die overal blijven
-- [ ] cijfers 1–9 en 0 kiezen in een menu; ↑↓ (ook j k, Tab) en Enter; Esc of q = terug
-- [ ] klikken, het muiswiel, een klik op de broodkruimel
-- [ ] F2 klok in de terminal, `?` tip, Tab klad
+- [x] cijfers 1–9 en 0 kiezen in een menu; ↑↓ (ook j k, Tab) en Enter; Esc of q = terug
+- [x] klikken, het muiswiel, een klik op de broodkruimel
+- [x] F2 klok in de terminal, `?` tip, Tab klad
 
 ## Bewaard (niets aan veranderen)
-- [ ] de 36 vaardigheid-ids in sessies, antwoorden en de herhaalbak (eenheden: één id voor alle maten)
-- [ ] snelrekenen: `snelrekenen.tafels`, `.plusmin`, `.gemengd` met `snel60` / `snel20` (records)
-- [ ] `laatste_oefening` per kind (voor Verder)
-- [ ] de instellingen per kind en de plek van het klokvenster
+- [x] de 36 vaardigheid-ids in sessies, antwoorden en de herhaalbak (eenheden: één id voor alle maten)
+- [x] snelrekenen: `snelrekenen.tafels`, `.plusmin`, `.gemengd` met `snel60` / `snel20` (records)
+- [x] `laatste_oefening` per kind (voor Verder)
+- [x] de instellingen per kind en de plek van het klokvenster
 
 ## Moet mee veranderen
-- [ ] tests die met cijfers door de menu's lopen (`test_schermen`, de aap in `test_stabiliteit`, `test_avatar`,
+- [x] tests die met cijfers door de menu's lopen (`test_schermen`, de aap in `test_stabiliteit`, `test_avatar`,
       de onderwerptests)
 - [ ] `docs/tools/scenarios.py` en alle schermafdrukken
 - [ ] de handleiding (`opties.md` en `snelrekenen.md` gaan op in de nieuwe plekken), README, testlijst, CLAUDE.md

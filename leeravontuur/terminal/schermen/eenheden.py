@@ -13,10 +13,8 @@ from ...kern.wiskunde import eenheden as E
 from ..scherm import BACKSPACE, ENTER, ESC
 
 REEKS = 10
-VORMEN = {"Vrij oefenen": "vrij", "Reeks van 10": "reeks", "Tabel-oefening": "tabel"}
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
 TABEL_X, TABEL_Y = 12, 7
-VANAF = {"oppervlakte": "  (5de lj)", "volume": "  (6de lj)"}
 
 
 class Eenheden:
@@ -28,19 +26,6 @@ class Eenheden:
         self.verdiend = 0             # punten in de laatste reeks
 
     # ---- keuzes --------------------------------------------------------
-
-    def kies_oefening(self, vorm):
-        kr = self.kruimel + [vorm]
-        while True:
-            opties = [(E.NAMEN[c], "  ".join(E.EENHEDEN[c]) + VANAF.get(c, "")) for c in E.SOORTEN]
-            k = self.s.menu(kr, "Welke eenheden wil je oefenen?", opties + [
-                ("Door elkaar", "alles wat bij je leerjaar hoort"),
-                ("Zelf kiezen", "duid zelf de eenheden aan")])
-            if k is None:
-                return
-            maat = "zelf" if k == len(E.SOORTEN) + 1 else "alles" if k == len(E.SOORTEN) else E.SOORTEN[k]
-            if self.oefen(VORMEN[vorm], maat, kr):
-                return
 
     def oefen(self, vorm, maat, kr):
         """Eén eenheden-oefening: vorm 'vrij', 'reeks' of 'tabel'; maat = een soort (E.SOORTEN), 'alles' of 'zelf'.
@@ -664,26 +649,3 @@ class Eenheden:
         toetsen = {k: None for k in (ESC, ord("q"), *ENTER)}
         toetsen[("terug",)] = None
         self.s.lezer(kr, E.spiekbrief(), [("Esc", "terug", ("terug",))], toetsen)
-
-    # ---- het menu van dit domein ----------------------------------------
-
-    def menu(self):
-        """Kiezen tussen de oefenvormen. Niveau in de broodkruimel = len(self.kruimel) - 1."""
-        from ..scherm import TerugNaar
-        mijn_niveau = len(self.kruimel) - 1
-        vormen = [("Vrij oefenen", "zoveel vragen als je wil, met tip en uitleg"),
-                  ("Reeks van 10", "10 vragen, daarna je score en uitleg"),
-                  ("Tabel-oefening", "vul de eenhedentabel in met Tab, ook met de muis"),
-                  ("Spiekbrief", "hoe werkt omzetten?")]
-        while True:
-            try:
-                k = self.s.menu(self.kruimel, "Hoe wil je oefenen?", vormen)
-                if k is None:
-                    return
-                if k == 3:
-                    self.spiekbrief(self.kruimel + ["Spiekbrief"])
-                    continue
-                self.kies_oefening(vormen[k][0])
-            except TerugNaar as t:
-                if t.niveau < mijn_niveau:
-                    raise

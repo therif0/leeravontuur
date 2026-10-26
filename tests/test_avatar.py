@@ -11,9 +11,9 @@ from leeravontuur.kern.sessie import Sessie
 from leeravontuur.kern.wiskunde import eenheden as E
 
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, OK, Basis, hm, naar
 except ImportError:
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, OK, Basis, hm, naar
 
 KLEUR = re.compile(r"#[0-9a-f]{6}")
 
@@ -99,7 +99,7 @@ class TestSchermen(Basis):
         for i in range(1, 11):
             antwoorden += [*str(i * 100), OK, OK]
         with mock.patch.object(E, "maak_vraag", side_effect=vragen):
-            scherm, app = self.speel([OK, OK, hm("Leren & oefenen"), "1", "1", "2", "2", OK, *antwoorden,
+            scherm, app = self.speel([*naar("wiskunde.meten.lengte", "Enter"), *antwoorden,
                                       ESC, ESC, ESC, ESC, ESC], opslag=o)
         # 10 x 10 + 2 x 10 (5 en 10 op rij) + 20 (geen fout)
         self.assertEqual(o.punten_saldo(app.kind.id), 140)

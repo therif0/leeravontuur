@@ -7,11 +7,11 @@ from functools import partial
 
 from ...kern import catalogus
 from ...kern import snelrekenen as SR
-from ..oefenaar import VORMEN, Oefenaar
+from ..oefenaar import Oefenaar
 from ..schermen.eenheden import Eenheden
 from ..schermen.snelrekenen import Snelrekenen
 
-_VORM_NAAM = {vorm: naam for naam, vorm, _ in VORMEN if vorm}
+_VORM_NAAM = {"vrij": "Vrij oefenen", "reeks": "Reeks van 10"}
 _EENHEDEN_VORM = {"vrij": "Vrij oefenen", "reeks": "Reeks van 10", "tabel": "Tabel-oefening"}
 
 

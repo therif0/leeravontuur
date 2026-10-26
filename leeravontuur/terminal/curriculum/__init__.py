@@ -8,9 +8,12 @@ Een modus en een spiekbrief zijn functies f(app, kruimel) die een bestaand scher
 from dataclasses import dataclass, field
 from typing import Callable
 
-# modus -> wat er op de knop staat; de volgorde is die van de voetregel
-MODI = {"reeks": "reeks van 10", "vrij": "vrij oefenen", "60s": "60 seconden", "20sommen": "20 sommen",
-        "tabel": "tabel-oefening"}
+# modus -> wat er op de knop in de voetregel staat
+MODI = {"reeks": "reeks", "vrij": "vrij", "60s": "60 s", "20sommen": "20 sommen", "tabel": "tabel-oefening"}
+# de toets van elke modus op het gemarkeerde onderwerp; Enter start de eerste van ENTER die het onderwerp heeft
+TOETS = {"vrij": "v", "60s": "t", "20sommen": "z", "tabel": "h"}
+SPIEK_TOETS = "s"
+ENTER = ("reeks", "60s", "20sommen")
 MAX_PER_MENU = 10  # de cijfertoetsen 1–9 en 0 kiezen hoogstens 10 keuzes
 
 
@@ -69,6 +72,10 @@ def zoek(id_):
 
 def domein_van(onderwerp):
     return next(d for d in domeinen() if onderwerp in d.onderwerpen)
+
+
+def vak_van(domein):
+    return next(v for v in VAKKEN if domein in v.domeinen)
 
 
 def van_opslag(opslag_id):

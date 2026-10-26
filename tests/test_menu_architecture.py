@@ -1,9 +1,13 @@
 """Bewaakt de vaste menustructuur: het leerplan (terminal/curriculum) is de enige bron van de menu's.
 Deze tests nooit afzwakken of overslaan om een wijziging te laten slagen; vraag het eerst aan de vader."""
 
+import ast
 import os
+import re
 import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from leeravontuur.kern import vaardigheden
 from leeravontuur.kern.instellingen import Instellingen
@@ -11,6 +15,13 @@ from leeravontuur.kern.opslag import Opslag
 from leeravontuur.terminal import curriculum as CU
 from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
+
+PAKKET = Path(__file__).resolve().parent.parent / "leeravontuur"
+OK = "\n"
+# het hoofdmenu: vaste keuzes, vaste volgorde (de vakken uit het leerplan op de derde plaats)
+HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Opties",
+             "Zeg het ons", "Wissel van kind", "Stoppen"]
+MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
 BEWAARD = {
@@ -131,6 +142,75 @@ class TestModiStarten(unittest.TestCase):
                 with self.subTest(o.id):
                     beeld = self.start(o.spiek.toon, [])[-1]
                     self.assertGreater(len([r for r in beeld.splitlines() if r.strip()]), 5)
+
+
+class TestNavigatie(TestModiStarten):
+    def speel(self, toetsen):
+        self.opslag.zet_algemeen("laatste_kind", self.kind.id)
+        scherm = NepScherm(toetsen)
+        app = App(scherm, self.opslag, None, kleuren=False)
+        app.s.klokvenster = None
+        with mock.patch.dict(os.environ, {"LEERAVONTUUR_DEBUG": "1"}):  # geen vangnet: stoppen waar de toetsen op zijn
+            try:
+                app.start()
+            except ToetsenOp:
+                pass
+        self.app = app
+        return scherm.beelden
+
+    def test_hoofdmenu_vaste_volgorde(self):
+        beeld = next(b for b in self.speel([OK, OK]) if "Wat wil je doen?" in b)
+        keuzes = [m.group(1) for r in beeld.splitlines() if (m := re.match(r"^\s+\d\. (.+?)(?: \(\d+\))?(?:  |$)", r))]
+        self.assertEqual(keuzes, HOOFDMENU)
+
+    def test_elk_onderwerp_in_drie_keuzes(self):
+        """Hoofdmenu → Vak → Domein → Onderwerp: drie keuzes (met cijfers), dan start de oefening (Enter)."""
+        for vi, vak in enumerate(CU.VAKKEN):
+            for di, d in enumerate(vak.domeinen):
+                for oi, o in enumerate(d.onderwerpen):
+                    with self.subTest(o.id):
+                        keuzes = [str(HOOFDMENU.index(vak.label) + 1), str(di + 1), str((oi + 1) % 10)]
+                        beeld = self.speel([OK, OK, *keuzes])[-1]
+                        self.assertIn(o.label, self.app.s.kruimel)  # de volledige broodkruimel
+                        self.assertTrue(any(t in beeld for t in ("Hoe moeilijk?", "Duid minstens", "Som 1 van",
+                                                                   "Nog ")), beeld)
+
+    def test_terug_op_hetzelfde_onderwerp(self):
+        """Na een spiekbrief (of oefening) staat dezelfde keuze nog gemarkeerd: de voetregel is die van dat onderwerp."""
+        import curses
+        hr = next(d for d in CU.domeinen() if d.id == "wiskunde.hoofdrekenen")
+        i = next(i for i, o in enumerate(hr.onderwerpen) if "60s" not in o.modi)  # een onderwerp zonder T
+        beelden = self.speel([OK, OK, str(HOOFDMENU.index("Wiskunde") + 1), str(CU.VAKKEN[0].domeinen.index(hr) + 1),
+                              *[curses.KEY_DOWN] * i, "s", "\x1b"])
+        self.assertNotIn("[T]", beelden[-1].splitlines()[-1])
+        self.assertIn("wat wil je oefenen?", beelden[-1])
+
+    def test_verder_met_een_oefening_van_versie_019(self):
+        """Een vorige oefening zoals 0.19.0 ze bewaarde (met het oude domein 'Procenten') start via het leerplan."""
+        import json
+        self.opslag.zet_algemeen(f"laatste_oefening:{self.kind.id}", json.dumps(
+            {"onderwerp": "oefenaar", "vaardigheid": "wiskunde.procenten.van", "vorm": "vrij", "niveau": 1,
+             "domein": "Procenten"}))
+        beelden = self.speel([OK, OK, "1"])
+        self.assertTrue(any("▶ Verder          procent van een getal" in b for b in beelden))
+        self.assertIn("Breuken en procenten", self.app.s.kruimel)
+        self.assertIn("Procent van een getal", self.app.s.kruimel)
+
+    def test_gedeelde_spiekbrief_een_keer(self):
+        meten = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.meten")
+        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Spiekbrieven") + 1), "1", str(meten)])[-1]
+        self.assertEqual(beeld.count("Eenheden omzetten"), 1)
+        self.assertIn("2. Meetkunde", beeld)
+        self.assertNotIn("3. ", beeld)
+
+    def test_geen_namen_in_de_menumodules(self):
+        """Namen van vakken, domeinen en onderwerpen staan alleen in het leerplan (terminal/curriculum)."""
+        namen = {v.label for v in CU.VAKKEN} | {d.label for d in CU.domeinen()} | {o.label for o in CU.onderwerpen()}
+        for pad in MENUMODULES:
+            with self.subTest(pad):
+                boom = ast.parse((PAKKET / pad).read_text(encoding="utf-8"))
+                teksten = {n.value for n in ast.walk(boom) if isinstance(n, ast.Constant) and isinstance(n.value, str)}
+                self.assertEqual(teksten & namen, set())
 
 
 if __name__ == "__main__":

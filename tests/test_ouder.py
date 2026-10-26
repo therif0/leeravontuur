@@ -9,9 +9,9 @@ from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen import ouder
 try:
-    from .test_schermen import ESC, OK, Basis, hm
+    from .test_schermen import ESC, HOOFDMENU, OK, Basis, hm, naar
 except ImportError:  # ook zo te starten: python -m unittest discover -s tests
-    from test_schermen import ESC, OK, Basis, hm
+    from test_schermen import ESC, HOOFDMENU, OK, Basis, hm, naar
 
 WW = "geheim1"
 
@@ -79,7 +79,7 @@ class TestRapportenScherm(OuderBasis):
     def test_rapport_export_en_kalender(self):
         o = self.met_wachtwoord(("Test", "5"))
         # eerst als kind 3 vragen vrij oefenen
-        self.speel([OK, OK, "2", "1", "1", "1", "1", OK, "1", OK, OK, "1", OK, OK, "1", OK, OK, ESC, ESC, ESC, ESC,
+        self.speel([*naar("wiskunde.meten.massa"), "1", OK, OK, "1", OK, OK, "1", OK, OK, ESC, ESC, ESC, ESC,
                     ESC, ESC], opslag=o)
         toetsen = [OK, "3", *WW, OK, "1", "1", "1", "e", OK, "k", ESC, ESC, ESC, ESC, ESC, ESC]
         scherm, _ = self.speel(toetsen, opslag=o)
@@ -131,7 +131,7 @@ class TestKinderenBeheren(OuderBasis):
 class TestTimer(OuderBasis):
     def vrije_vraag(self, zichtbaar):
         o = self.opslag(("Test", "5", {"timer_zichtbaar": zichtbaar}))
-        scherm, _ = self.speel([OK, OK, "2", "1", "1", "1", "1", OK, "1", OK, ESC, ESC, ESC, ESC, ESC, ESC],
+        scherm, _ = self.speel([*naar("wiskunde.meten.massa"), "1", OK, ESC, ESC, ESC, ESC, ESC, ESC],
                                opslag=o)
         return any(" s)" in b for b in scherm.beelden)
 
@@ -156,10 +156,10 @@ class TestZegHetOns(OuderBasis):
         self.assertTrue(self.ergens(scherm, "Opmerkingen (1)"))
         self.assertTrue(self.ergens(scherm, "7/8 vs. 5/6"))
 
-    def test_leeg_bewaart_niets_en_stoppen_met_0(self):
+    def test_leeg_bewaart_niets_en_stoppen_met_een_cijfer(self):
         from leeravontuur.kern import feedback
         o = self.opslag(("Test", "5"))
         scherm, app = self.speel([OK, OK, hm("Zeg het ons"), OK, hm("Stoppen"), "x"], opslag=o)
         self.assertEqual(feedback.lees(), [])
-        self.assertEqual(hm("Stoppen"), "0")
-        self.assertEqual(scherm.toetsen, ["x"])  # met 0 gestopt: de volgende toets werd niet meer gelezen
+        self.assertEqual(hm("Stoppen"), str(len(HOOFDMENU) % 10))  # de laatste keuze
+        self.assertEqual(scherm.toetsen, ["x"])  # met dat cijfer gestopt: de volgende toets werd niet meer gelezen

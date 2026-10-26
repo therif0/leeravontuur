@@ -23,7 +23,7 @@ def oefenaar(id_, label, kern, domein, spiek, snel=None):
         modi |= {"60s": M.snel(snel, "snel60"), "20sommen": M.snel(snel, "snel20")}
         opslag += (SR.vaardigheid(snel),)
     return Onderwerp(f"wiskunde.{id_}", label, modi, Spiekbrief(spiek, M.spiek_oefenaar(kern.id)), opslag,
-                     kern.omschrijving[:44])
+                     kern.omschrijving)
 
 
 EENHEDEN_SPIEK = Spiekbrief("Eenheden omzetten", M.spiek_eenheden)
@@ -54,7 +54,7 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
         oefenaar("getallen.getallenlijn", "Getallenlijn", G.GETALLENLIJN, GETALLEN, "Getallen"),
         oefenaar("getallen.afronden", "Afronden", G.AFRONDEN, GETALLEN, "Getallen"),
         oefenaar("getallen.deelbaarheid", "Deelbaarheid", G.DEELBAARHEID, GETALLEN, "Getallen"),
-    ), "plaatswaarde, getallenlijn, afronden, deelbaarheid"),
+    ), "plaatswaarde, afronden, deelbaarheid"),
     Domein("wiskunde.hoofdrekenen", HOOFDREKENEN, (
         oefenaar("hoofdrekenen.optellen_aftrekken", "Optellen en aftrekken", H.PLUSMIN, HOOFDREKENEN, "Hoofdrekenen",
                  snel="plusmin"),
@@ -68,7 +68,7 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
                   {"60s": M.snel("gemengd", "snel60"), "20sommen": M.snel("gemengd", "snel20")},
                   None, (SR.vaardigheid("gemengd"),),
                   "snel rekenen: tafels, plus en min, dubbel en helft"),
-    ), "plus en min, dubbel en helft, tafels, × 10, splitsen"),
+    ), "plus en min, tafels, × 10, splitsen, snel"),
     Domein("wiskunde.cijferen", CIJFEREN, (
         oefenaar("cijferen.optellen", "Optellen", C.OPTELLEN, CIJFEREN, "Cijferen"),
         oefenaar("cijferen.aftrekken", "Aftrekken", C.AFTREKKEN, CIJFEREN, "Cijferen"),
@@ -92,7 +92,7 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
         oefenaar("breuken_procenten.procent_van_getal", "Procent van een getal", PR.PROCENT_VAN, BREUKEN_PROCENTEN,
                  "Procenten"),
         oefenaar("breuken_procenten.korting_btw", "Korting en btw", PR.KORTING, BREUKEN_PROCENTEN, "Procenten"),
-    ), "breukbalk, vergelijken, + −, honderdveld, korting"),
+    ), "breuken, procenten, korting en btw"),
     Domein("wiskunde.meten", METEN, (
         eenheid(E.LENGTE, "lengte", "Lengte (m)"),
         eenheid(E.MASSA, "massa", "Massa (g)"),
@@ -103,14 +103,14 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
         maat("maten_zelf_kiezen", "Maten zelf kiezen", "zelf", "duid zelf de eenheden aan"),
         oefenaar("meten.oppervlakte_omtrek", "Oppervlakte en omtrek", MK.ROOSTER, METEN, "Meetkunde"),
         oefenaar("meten.formules", "Formules", MK.FORMULES, METEN, "Meetkunde"),
-    ), "lengte, massa, inhoud, oppervlakte, volume, formules"),
+    ), "lengte, massa, inhoud, oppervlakte, volume"),
     Domein("wiskunde.tijd_geld_snelheid", TIJD_GELD_SNELHEID, (
         oefenaar("tijd_geld_snelheid.klok", "De klok", KL.KLOK, TIJD_GELD_SNELHEID, "De klok"),
         oefenaar("tijd_geld_snelheid.tijd", "Tijd", TG.TIJD, TIJD_GELD_SNELHEID, "Tijd, geld en snelheid"),
         oefenaar("tijd_geld_snelheid.geld", "Geld", TG.GELD, TIJD_GELD_SNELHEID, "Tijd, geld en snelheid"),
         oefenaar("tijd_geld_snelheid.snelheid", "Snelheid", TG.SNELHEID, TIJD_GELD_SNELHEID,
                  "Tijd, geld en snelheid"),
-    ), "de klok, uren en minuten, wisselgeld, km/u"),
+    ), "de klok, uren en minuten, geld, km/u"),
     Domein("wiskunde.meetkunde", MEETKUNDE, (
         oefenaar("meetkunde.schatkaart", "Schatkaart", MK.COORDINATEN, MEETKUNDE, "Meetkunde"),
         oefenaar("meetkunde.hoeken", "Hoeken", MK.HOEKEN, MEETKUNDE, "Meetkunde"),
