@@ -610,6 +610,82 @@ def _(d):
     d.foto("meetkunde-spiekbrief", "De spiekbrief van Meetkunde")
 
 
+# ---- vraagstukken -----------------------------------------------------------------------------------------
+
+def verhaal(d):
+    """De tekst in het kader 'Het verhaal' als één regel."""
+    regels = scherm_tekst(d).split("\n")
+    binnen = [r for r in regels if r.strip().startswith("│")]
+    return " ".join(r.strip().strip("│").strip() for r in binnen)
+
+
+def getal(t):
+    return float(t.replace(",", "."))
+
+
+def bedrag(x):
+    return f"{x:.2f}".replace(".", ",")
+
+
+def wisselgeld_vraag(d):
+    """Vrij oefenen op Normaal tot er een wisselgeld-vraagstuk zonder overbodig gegeven staat: (a, p, b)."""
+    wiskunde(d, 9)
+    d.wacht("Hoe wil je oefenen")
+    d.toets("1")
+    d.wacht("Hoe moeilijk")
+    d.toets("2")
+    for _ in range(300):
+        time.sleep(0.15)
+        t = verhaal(d)
+        m = re.search(r"koopt (\d+) .* € ([\d,]+)\. \w+ betaalt met € (\d+)\. Hoeveel", t)
+        if m and len(re.findall(r"\d+(?:,\d+)?", t)) == 3:
+            return int(m.group(1)), getal(m.group(2)), int(m.group(3))
+        d.toets(*OPNIEUW)
+    raise RuntimeError("geen wisselgeld-vraagstuk gevonden")
+
+
+@scenario("vraagstukken-stappen")
+def _(d):
+    a, p, b = wisselgeld_vraag(d)
+    d.foto("vraagstukken-start", "Een vraagstuk in 4 stappen")
+    d.toets("Space", "Right", "Space", "Right", "Space", "Down")
+    for _ in range(3):
+        if "◂ het wisselgeld ▸" in scherm_tekst(d):
+            break
+        d.toets("Right")
+    d.toets("Space")
+    d.foto("vraagstukken-lezen", "Stap 1: de gegevens aangeduid en gekozen wat er gevraagd wordt")
+    d.toets("Tab", ("tekst", "x-"), "Enter")
+    k = a * p
+    d.toets(("tekst", f"{a} x {bedrag(p)} = {bedrag(k)}"), "Enter")
+    d.toets(("tekst", f"{b} - {bedrag(k)} = {bedrag((b - k) * 10)}"), "Enter")
+    d.foto("vraagstukken-klad", "Stap 2 en 3: het plan en het klad (elke regel wordt nagekeken)")
+    d.toets("?", "?", "?")
+    d.foto("vraagstukken-tips", "Drie keer ? : de sleutelwoorden licht op en de tip zegt welke bewerkingen")
+    for _ in range(1 + len(f"{b} - {bedrag(k)} = {bedrag((b - k) * 10)}")):  # de foute regel terughalen en wissen
+        d.toets("BSpace")
+    d.toets(("tekst", f"{b} - {bedrag(k)} = {bedrag(b - k)}"), "Enter", "Enter")
+    antwoord(d, bedrag(b - k))
+    d.foto("vraagstukken-uitwerking", "Nagekeken: de uitgewerkte oplossing (Gegeven, Gevraagd, Oplossing, Antwoord)")
+
+
+@scenario("vraagstukken-tweede-kans")
+def _(d):
+    a, p, b = wisselgeld_vraag(d)
+    d.toets("a")
+    antwoord(d, bedrag(a * p))
+    d.foto("vraagstukken-tweede-kans", "Meteen geantwoord, maar het is een tussenuitkomst: een hulpje en klad maken")
+
+
+@scenario("vraagstukken-spiekbrief")
+def _(d):
+    wiskunde(d, 9)
+    d.wacht("Hoe wil je oefenen")
+    d.toets("3")
+    d.wacht("4 STAPPEN")
+    d.foto("vraagstukken-spiekbrief", "De spiekbrief van Vraagstukken")
+
+
 # ---- deel 2: de rest van het programma -------------------------------------------------------------------
 
 def tafel_antwoord(d):

@@ -195,6 +195,64 @@ class TestMuis(Basis):
         self.assertTrue(self.ergens(scherm, "VOORBEELD"))
 
 
+class TestVraagstuk(Basis):
+    """Leren › Wiskunde › Vraagstukken › Vrij oefenen, met een vast vraagstuk."""
+
+    def setUp(self):
+        super().setUp()
+        import random
+        from unittest import mock
+        from leeravontuur.kern.wiskunde import vraagstukken as VS
+        o = VS.VRAAGSTUKKEN
+        self.v = o.maak_met(o.parameters("5"), random.Random(8), {"structuur": "wisselgeld", "variant": "meer"})
+        patch = mock.patch.object(o, "maak", return_value=self.v)
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def start(self):
+        return [OK, OK, "2", "1", "9", "1", "2"]
+
+    def antwoord(self, x):
+        return list(str(x).replace(".", ","))
+
+    def test_meteen_juist(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.start(), "a", *self.antwoord(self.v.antwoord), OK, ESC, ESC, ESC, ESC, ESC],
+                                 opslag=o)
+        self.assertTrue(self.ergens(scherm, "Het verhaal"))
+        self.assertTrue(self.ergens(scherm, "Oplossing:"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["juist"], rij["vaardigheid"]), (1, "wiskunde.vraagstukken.oplossen"))
+        self.assertIn('"tips": 0', rij["extra"])
+        self.assertEqual(o.punten_saldo(app.kind.id), 25)  # 2 × 10 + 5 zonder tip
+
+    def test_tweede_kans_en_tips(self):
+        o = self.opslag(("Test", "5"))
+        fout = self.v.model.stappen[0].uitkomst  # de tussenuitkomst
+        toetsen = [*self.start(), "?", "?", "a", *self.antwoord(fout), OK]
+        scherm, _ = self.speel(toetsen + [ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "nog niet klaar"))
+        self.assertTrue(self.ergens(scherm, "Tip 2: gevraagd is het wisselgeld"))
+        toetsen += [9, 9, 9, *self.antwoord(self.v.antwoord), OK]
+        scherm, app = self.speel(toetsen + [ESC, ESC, ESC, ESC, ESC], opslag=o)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual(rij["juist"], 1)
+        self.assertIn('"tips": 2', rij["extra"])
+        self.assertEqual(rij["hulp"], 1)
+        self.assertEqual(o.punten_saldo(app.kind.id), 5)  # (2 × 10) : 2 − 2 × 3 = 4 → minstens 5
+        self.assertEqual(len(o.herhaalbak(app.kind.id)), 1)  # pas na een tweede kans: herhalen
+
+    def test_aanduiden_met_de_muis_en_ascii(self):
+        scherm, _ = self.speel([*self.start()], voorrang={"ascii": True})
+        beeld = next(b for b in scherm.beelden if "Het verhaal" in b).split("\n")
+        y = next(i for i, regel in enumerate(beeld) if "koopt" in regel)
+        x = beeld[y].index("koopt") + len("koopt ")
+        scherm, _ = self.speel([*self.start(), ("klik", y, x), ESC, ESC, ESC, ESC], voorrang={"ascii": True})
+        self.assertTrue(self.ergens(scherm, "het aantal"))
+        for beeld in scherm.beelden:
+            self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
+
+
 class TestTypen(Basis):
     def test_accenten_typen(self):
         scherm, app = self.speel([OK, *"Zoë", OK, OK, ESC], opslag=self.opslag())

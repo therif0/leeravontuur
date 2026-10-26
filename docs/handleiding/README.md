@@ -28,6 +28,8 @@ De schermafdrukken zijn echte beelden van het programma (80 × 24 tekens), met h
 6. [Procenten](wiskunde/procenten.md): het honderdveld, procent van een getal, korting en btw
 7. [Tijd, geld en snelheid](wiskunde/tijd-geld-snelheid.md): uren en minuten, wisselgeld, km/u
 8. [Meetkunde](wiskunde/meetkunde.md): oppervlakte en omtrek, formules, hoeken, de schatkaart, schaal
+9. [Vraagstukken](wiskunde/vraagstukken.md): verhaaltjes in 4 stappen (lezen, plannen, rekenen in het klad,
+   controleren), met tips en een tweede kans
 
 **Deel 2: de rest van het programma**
 - [Snelrekenen](snelrekenen.md)

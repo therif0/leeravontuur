@@ -59,6 +59,13 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - **schatkaart**: lees de coördinaat af (`C4`) of zet een kruisje met de pijltjes of de muis; in het 1ste
     middelbaar een assenstelsel met negatieve getallen
   - **schaal** (6de): 1 : 1000, van de kaart naar het echt en terug
+- **Vraagstukken:**
+  - verhaaltjes in **4 stappen**: lees (gegevens aanduiden, kiezen wat er gevraagd wordt), plan, reken in het
+    **klad** (typ `0,75 x 3,20 = 2,40`; elke regel wordt nagekeken) en controleer (kan het kloppen?)
+  - meteen antwoorden mag; fout = één tweede kans met een hulpje; tips met `?`, nooit het antwoord
+  - een verhaalmachine mengt rekenstructuren met werelden (bakker, metselaar, boer …): duizenden verhalen,
+    soms met een overbodig gegeven of een omgekeerde vraag
+  - herkent denkfouten: een andere bewerking, gestopt na een tussenstap, niet omgezet, een overbodig gegeven …
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

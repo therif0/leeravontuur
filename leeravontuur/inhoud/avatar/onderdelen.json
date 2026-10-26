@@ -550,6 +550,7 @@
     ".YY..",
     ".M..."
    ]
-  }
+  },
+  "kladblok": {"naam": "Kladblok", "anker": "mond", "dy": -1, "dx": 5, "pixels": ["Z.Z.Z", "NNNNN", "NBBNN", "NNNNN", "NBBBN", "NNNNN"]}
  }
 }

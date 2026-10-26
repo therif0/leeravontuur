@@ -65,6 +65,24 @@ class TestRapport(unittest.TestCase):
         self.assertIn("Eenheden omzetten: 5 vragen", tekst)
         self.assertIn("(juist: 100 cm)", tekst)
 
+    def test_vraagstukken(self):
+        s = self.o.start_sessie(self.kind.id, "vrij", "wiskunde.vraagstukken.oplossen", "5")
+        klok.zet(datetime(2026, 10, 21, 15, 0, tzinfo=CET))
+        for juist, extra, d in [(True, {"vraagstuk": 1, "tips": 0, "eerste_fout": None, "klad": [], "klad_ok": False}, None),
+                                (True, {"vraagstuk": 1, "tips": 2, "eerste_fout": "24", "klad": ["3 x 8 = 24"],
+                                        "klad_ok": True}, None),
+                                (False, {"vraagstuk": 1, "tips": 1, "eerste_fout": "5", "klad": ["750 x 3 = 2250"],
+                                         "klad_ok": False, "klad_fout": "vs_omzetten"}, "vs_tussenstap")]:
+            self.o.bewaar_antwoord(s, self.kind.id, "wiskunde.vraagstukken.oplossen", "5", "vrij", "v", "verhaal",
+                                   "1", juist, d, 30000, bool(extra["tips"]), extra, "€ 2")
+        klok.zet(None)
+        r = rapporten.maak_rapport(self.o, self.kind, rapporten.Periode(date(2026, 10, 21), date(2026, 10, 21), "x"))
+        tekst = "\n".join(t for t, _ in rapporten.regels(r))
+        self.assertIn("gemiddeld 1 tips per vraagstuk · juist zonder tip: 1 · meteen juist: 1 · met klad: 2 "
+                      "(helemaal juist: 1)", tekst)
+        self.assertIn("1× niet (goed) omgezet naar de juiste eenheid", tekst)
+        self.assertIn("1× gestopt na een tussenstap", tekst)
+
     def test_leeg(self):
         r = rapporten.maak_rapport(self.o, self.kind, rapporten.Periode(date(2026, 1, 1), date(2026, 1, 2), "x"))
         self.assertTrue(any("nog niet geoefend" in t for t, _ in rapporten.regels(r)))

@@ -18,6 +18,7 @@ from ..kern.wiskunde import grootheden as TG
 from ..kern.wiskunde import hoofdrekenen as H
 from ..kern.wiskunde import meetkunde as MK
 from ..kern.wiskunde import procenten as PR
+from ..kern.wiskunde import vraagstukken as VS
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
@@ -352,7 +353,8 @@ class App:
                 ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
                 ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
                 ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
-                ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER)]
+                ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER),
+                ("Vraagstukken", "lezen, plannen, rekenen in je klad en controleren", VS.ALLE, VS.VRAAGSTUKKEN)]
 
     def wiskunde(self, kr):
         domeinen = self.domeinen()

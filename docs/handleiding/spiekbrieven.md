@@ -18,6 +18,7 @@ Scrollen met `↑` `↓` of het scrollwiel, terug met `Esc`.
 | Procenten | procent = per honderd, handige procenten, korting en btw | [Procenten](wiskunde/procenten.md#spiekbrief) |
 | Tijd, geld en snelheid | 60 minuten in een uur, wisselgeld, afstand = snelheid × tijd | [Tijd, geld en snelheid](wiskunde/tijd-geld-snelheid.md#spiekbrief) |
 | Meetkunde | formules, soorten hoeken, coördinaten, schaal | [Meetkunde](wiskunde/meetkunde.md#spiekbrief) |
+| Vraagstukken | de 4 stappen, sleutelwoorden, het klad, kan dat kloppen? | [Vraagstukken](wiskunde/vraagstukken.md#spiekbrief) |
 
 De volledige tekst van elke spiekbrief staat onderaan de pagina van het domein.
 
