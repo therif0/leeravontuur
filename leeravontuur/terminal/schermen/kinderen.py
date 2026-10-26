@@ -1,12 +1,23 @@
 """Schermen om een kind te kiezen of een nieuw kind aan te maken."""
 
 from ...kern import leerjaren, wachtwoord
+from ..scherm import TerugNaar
 
 KRUIMEL = ["Leeravontuur", "Wie ben jij?"]
 
 
 def kies_kind(app):
-    """Geeft het gekozen Kind, of None als er niets gekozen werd (Esc)."""
+    """Geeft het gekozen Kind, of None als er niets gekozen werd (Esc). Een klik op de broodkruimel ("Wie ben
+    jij?") brengt terug naar de keuze; op "Leeravontuur" terug naar het hoofdmenu (of, bij het starten, hier)."""
+    while True:
+        try:
+            return _kies_kind(app)
+        except TerugNaar as t:
+            if t.niveau == 0 and app.kind is not None:
+                return None  # terug naar het hoofdmenu
+
+
+def _kies_kind(app):
     s, opslag = app.s, app.opslag
     while True:
         kinderen = opslag.kinderen()

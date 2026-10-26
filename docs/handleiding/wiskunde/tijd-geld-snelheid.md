@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Tijd, geld en snelheid** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Grootheden die niet met de eenhedentabel werken. Tijd rekent met **60**, niet met 100: daar gaat het vaak mis, en
 daar zoekt het programma naar.
 

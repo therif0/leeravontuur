@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Breuken** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Breuken met de **breukbalk**: een balk in gelijke stukken (de noemer), waarvan je er een aantal arceert (de
 teller). Verder: gelijkwaardige breuken en vereenvoudigen, vergelijken, optellen en aftrekken, een breuk van een
 getal, × en : met breuken, en breuk ↔ kommagetal.

@@ -16,7 +16,7 @@
    "groot": 50,
    "deler_max": 5,
    "deeltal_max": 100,
-   "compenseer": [9, 19],
+   "compenseer": [],
    "komma": false
   },
   "4": {

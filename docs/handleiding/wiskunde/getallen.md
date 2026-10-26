@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Getallen** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Inzicht in getallen: wat elk cijfer waard is, afronden, deelbaarheid en de **getallenlijn** (aflezen, aanduiden
 met inzoomen, sprongen en een thermometer).
 

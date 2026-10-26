@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Procenten** · [← terug naar de inhoud](../README.md) · vanaf het 5de leerjaar
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Procent = per honderd. Het kind leert het met het **honderdveld** (10 × 10 vakjes), zet procenten om naar breuken
 en kommagetallen, rekent een procent van een getal uit met de **procentstrook** en (vanaf het 6de) korting en btw.
 Een `%` achter je antwoord mag, een `€` voor een bedrag ook.

@@ -551,6 +551,12 @@ INVOER_OBJECTEN = {"rooster", "staart", "vraagstuk", "speur", "keuze", "balk", "
 
 
 class TestTypen(Basis):
+    def test_broodkruimel_bij_een_nieuw_kind(self):
+        """Een klik op "Wie ben jij?" terwijl je je naam typt: terug naar de keuze, nooit een fout."""
+        scherm, app = self.speel([OK, ("klik", 0, 16), ("klik", 0, 2), *"Zoë", OK, OK, ESC], opslag=self.opslag())
+        self.assertTrue(self.ergens(scherm, "Hallo! Hoe heet je?"))
+        self.assertEqual(app.kind.naam, "Zoë")
+
     def test_accenten_typen(self):
         scherm, app = self.speel([OK, *"Zoë", OK, OK, ESC], opslag=self.opslag())
         self.assertEqual(app.kind.naam, "Zoë")
