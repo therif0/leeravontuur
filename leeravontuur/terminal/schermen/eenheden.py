@@ -64,7 +64,7 @@ class Eenheden:
             jaar = leerjaren.leerjaar_voor_niveau(eigen, i)
             opties.append((naam, leerjaren.NAMEN[jaar]))
         return self.s.menu(kr, "Hoe moeilijk?", opties, start=1,
-                           info=[f"Jouw leerjaar: {leerjaren.NAMEN[eigen]} (aan te passen bij Opties)"])
+                           info=[f"Jouw leerjaar: {leerjaren.NAMEN[eigen]} (aan te passen door je ouders)"])
 
     def kies_zelf(self, kr):
         s = self.s

@@ -17,8 +17,8 @@ ESC = "\x1b"
 OK = "\n"
 
 # keuzes in het hoofdmenu (als toets)
-HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Opties",
-             "Zeg het ons", "Wissel van kind", "Stoppen"]
+HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Zeg het ons",
+             "Wissel van kind", "Stoppen"]
 
 
 def hm(keuze):
@@ -45,6 +45,15 @@ def naar(o, toets="v", niveau=OK, start=(OK, OK)):
     i = d.onderwerpen.index(m)
     keuze = [str((i + 1) % 10)] if toets == "Enter" else [*[curses.KEY_DOWN] * i, toets]
     return [*start, hm(v.label), str(v.domeinen.index(d) + 1), *keuze, *([niveau] if niveau else [])]
+
+
+def plek(scherm, tekst):
+    """(rij, kolom) van tekst in het laatste beeld waarin hij staat (ook als het scherm daarna nog veranderde)."""
+    for beeld in reversed(scherm.beelden):
+        for y, regel in enumerate(beeld.splitlines()):
+            if tekst in regel:
+                return y, regel.index(tekst)
+    raise AssertionError(f"{tekst!r} niet op het scherm")
 
 
 def naar_spiekbrief(domein, nr=1):
@@ -131,15 +140,15 @@ class TestStart(Basis):
         for beeld in scherm.beelden:
             self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
 
-    def test_startargument_wordt_niet_bewaard(self):
+    def test_schermkleuren_kiezen_bewaart_ze(self):
+        """Gestart met --contrast; in Mijn avatar › Schermkleuren zelf iets kiezen: dat wordt wel bewaard."""
         o = self.opslag(("Test", "5"))
-        # gestart met --contrast; in Opties de muis uitzetten (rij 3 + 2*4 = 11)
-        scherm, app = self.speel([OK, OK, hm("Opties"), ("klik", 11, 10), ESC, ESC], opslag=o,
+        scherm, app = self.speel([OK, OK, hm("Mijn avatar"), "L", "2", ESC, ESC], opslag=o,
                                  voorrang={"thema": "contrast"})
-        bewaard = o.instellingen_van(app.kind.id)
-        self.assertEqual(bewaard.thema, "standaard")
-        self.assertFalse(bewaard.muis)
-        self.assertEqual(app.inst.thema, "contrast")
+        self.assertTrue(self.ergens(scherm, "Welke kleuren wil je op het scherm?"))
+        self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
+        self.assertEqual(app.inst.thema, "rood-groen")
+        self.assertNotIn("thema", app.voorrang)
 
 
 class TestReeks(Basis):
@@ -191,20 +200,24 @@ class TestMuis(Basis):
         scherm, _ = self.speel(toetsen)
         self.assertTrue(self.ergens(scherm, "Aflezen met de komma achter m: 4 m"))
 
-    def test_menu_en_opties_klikken(self):
-        # in Opties staat Kleuren op rij 3 + 2*2 = 7
+    def test_schermkleuren_met_de_muis(self):
+        """Hoofdmenu › Mijn avatar (klik) › klik op de regel [L] schermkleuren › klik op het 2de thema."""
         o = self.opslag(("Test", "5"))
-        toetsen = [OK, OK, ("klik", hm_rij("Opties"), 10), ("klik", 7, 10), ESC, ESC]
+        scherm, _ = self.speel([OK, OK, ("klik", hm_rij("Mijn avatar"), 10)], opslag=o)
+        y, x = plek(scherm, "[L] schermkleuren:")
+        toetsen = [OK, OK, ("klik", hm_rij("Mijn avatar"), 10), ("klik", y, x + 3), ("klik", 7, 10), ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertEqual(app.inst.thema, "rood-groen")
         self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
+        self.assertTrue(self.ergens(scherm, "Leeravontuur › Mijn avatar › Schermkleuren"))
+        self.assertTrue(self.ergens(scherm, "✔ nu"))
 
-    def test_avatar_en_animaties_uitzetten(self):
-        o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([OK, OK, hm("Opties"), ("klik", 15, 10), ("klik", 17, 10), ESC, ESC], opslag=o)
-        inst = o.instellingen_van(app.kind.id)
-        self.assertEqual((inst.avatar, inst.animaties), (False, False))
-        self.assertTrue(self.ergens(scherm, "Animaties"))
+    def test_voetbalk_van_mijn_avatar(self):
+        scherm, _ = self.speel([OK, OK, hm("Mijn avatar")])
+        y, x = plek(scherm, "[L] schermkleuren  ")
+        self.assertEqual(y, 23)  # in de voetregel
+        scherm, _ = self.speel([OK, OK, hm("Mijn avatar"), ("klik", y, x + 1), ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Welke kleuren wil je op het scherm?"))
 
     def test_knop_in_voetbalk(self):
         scherm, _ = self.speel([OK, OK, hm("Wiskunde")])

@@ -1,4 +1,4 @@
-"""De terminal-app: startscherm, hoofdmenu (de vakken komen uit het leerplan: terminal/curriculum), opties."""
+"""De terminal-app: startscherm en hoofdmenu (de vakken komen uit het leerplan: terminal/curriculum)."""
 
 import curses
 import json
@@ -7,7 +7,7 @@ import time
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-from ..kern import feedback, foutlog, herhaling, instellingen, klok, leerjaren
+from ..kern import feedback, foutlog, herhaling, klok, leerjaren
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
@@ -92,7 +92,7 @@ class App:
             if getattr(self.inst, veld) == waarde:
                 setattr(te_bewaren, veld, getattr(self.basis, veld))
             else:
-                del self.voorrang[veld]  # zelf aangepast in Opties: vanaf nu gewoon bewaren
+                del self.voorrang[veld]  # zelf aangepast (bv. Schermkleuren): vanaf nu gewoon bewaren
         self.opslag.bewaar_instellingen(self.kind.id, te_bewaren)
         self.basis = te_bewaren
         self.kind = self.opslag.kind(self.kind.id) or self.kind
@@ -201,8 +201,7 @@ class App:
                           *[(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN],
                           ("Spiekbrieven", "uitleg om terug te kijken", lambda: navigatie.spiekbrieven(
                               self, [HOOFD, "Spiekbrieven"])),
-                          ("Mijn avatar", "winkel, kast en punten", self.mijn_avatar),
-                          ("Opties", "kleuren, muis, avatar …", self.opties),
+                          ("Mijn avatar", "winkel, kast, punten en schermkleuren", self.mijn_avatar),
                           ("Zeg het ons", "wat vind je leuk of moeilijk?", self.zeg_het_ons),
                           ("Wissel van kind", "iemand anders wil oefenen", self.wissel_van_kind),
                           ("Stoppen", "", None)]
@@ -352,87 +351,3 @@ class App:
         if morgen:
             regels.append((f"✘ {morgen} {'vraag komt' if morgen == 1 else 'vragen komen'} morgen terug.", "fout"))
         self.s.lezer(kr + ["Klaar"], regels, [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
-
-    def opties(self):
-        s, inst = self.s, self.inst
-        kr = [HOOFD, "Opties"]
-        themas = list(instellingen.THEMAS)
-        sel, melding = 0, ""
-        knoppen = [("↑↓", "kiezen", None), ("Enter", "wijzigen", 10), ("Esc", "klaar", ESC)]
-        while True:
-            items = [
-                ("Naam", inst.naam or "(nog geen naam)"),
-                ("Leerjaar", leerjaren.NAMEN[inst.leerjaar] + "  (wijzigen: ouders)"),
-                ("Kleuren", instellingen.THEMAS[inst.thema]),
-                ("Eenvoudige tekens", {None: "automatisch", True: "aan (ASCII)", False: "uit"}[inst.ascii]),
-                ("Muis", "aan" if inst.muis else "uit"),
-                ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
-                ("Avatar", "aan" if inst.avatar else "uit"),
-                ("Animaties", "aan" if inst.animaties else "uit"),
-                ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)"),
-            ]
-            if s.te_klein():
-                continue
-            s.cursor(False)
-            s.nieuw(kr, knoppen)
-            h, w = s.maat()
-            s.put(1, 4, "Kies een optie en druk Enter (of klik) om ze te wijzigen.", "bold")
-            for i, (label, waarde) in enumerate(items):
-                y = 3 + 2 * i
-                s.put(y, 6, f" {label:<24} ", "cursor" if i == sel else "")
-                s.put(y, 33, waarde, "accent")
-                s.zones.voeg(y, 4, 1, w - 6, ("kies", i))
-            y = 3 + 2 * len(items)
-            s.put(y, 4, "Voorbeeld:", "dim")
-            s.put(y, 15, "✔ juist", "goed")
-            s.put(y, 25, "✘ fout", "fout")
-            s.put(y, 34, "  5  ", "goedvak")
-            s.put(y, 40, "! 6  ", "foutvak")
-            s.put(y, 46, " actief ", "cursor")
-            if melding:
-                s.put(y + 1, 4, melding, "info")
-            else:
-                s.put(y + 1, 4, "Ook bij het starten: --kleurenblind, --contrast, --ascii … (zie --help)", "dim")
-            k = s.toets()
-            melding = ""
-            if isinstance(k, tuple):
-                if k[0] == "kies":
-                    sel = k[1]
-                    k = 10
-                elif k[0] == "scroll":
-                    sel = (sel + k[1]) % len(items)
-                    continue
-                else:
-                    continue
-            if k in (curses.KEY_UP, ord("k")):
-                sel = (sel - 1) % len(items)
-            elif k in (curses.KEY_DOWN, ord("j"), 9):
-                sel = (sel + 1) % len(items)
-            elif k in (ESC, ord("q")):
-                self.bewaar()
-                return
-            elif k in ENTER or k in (curses.KEY_RIGHT, ord(" ")):
-                if sel == 0:
-                    naam = s.invoer(kr + ["Naam"], "Hoe heet je?", inst.naam)
-                    if naam:
-                        inst.naam = naam
-                elif sel == 1:
-                    melding = "Het leerjaar kan een ouder wijzigen: Wissel van kind → Ouders → Kinderen."
-                    continue
-                elif sel == 2:
-                    inst.thema = themas[(themas.index(inst.thema) + 1) % len(themas)]
-                elif sel == 3:
-                    inst.ascii = {None: True, True: False, False: None}[inst.ascii]
-                elif sel == 4:
-                    inst.muis = not inst.muis
-                elif sel == 5:
-                    inst.typrichting = -inst.typrichting
-                elif sel == 6:
-                    inst.avatar = not inst.avatar
-                elif sel == 7:
-                    inst.animaties = not inst.animaties
-                elif sel == 8:
-                    inst.klokvenster = not inst.klokvenster
-                    self.zet_klokvenster()
-                s.pas_toe()
-                self.bewaar()

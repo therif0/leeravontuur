@@ -19,8 +19,8 @@ from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 PAKKET = Path(__file__).resolve().parent.parent / "leeravontuur"
 OK = "\n"
 # het hoofdmenu: vaste keuzes, vaste volgorde (de vakken uit het leerplan op de derde plaats)
-HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Opties",
-             "Zeg het ons", "Wissel van kind", "Stoppen"]
+HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Zeg het ons",
+             "Wissel van kind", "Stoppen"]
 MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).

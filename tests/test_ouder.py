@@ -103,12 +103,12 @@ class TestKinderenBeheren(OuderBasis):
 
     def test_timer_verbergen(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 8, 10))
+        self.beheer(o, ("klik", 10, 10))
         self.assertFalse(o.instellingen_van(o.kinderen()[0].id).timer_zichtbaar)
 
     def test_pincode_instellen_en_gebruiken(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 10, 10), *"1234", OK, *"1234", OK)
+        self.beheer(o, ("klik", 12, 10), *"1234", OK, *"1234", OK)
         self.assertTrue(o.pincode(o.kinderen()[0].id))
         scherm, app = self.speel([OK, OK, *"9999", OK, *"1234", OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Typ je pincode"))
@@ -117,15 +117,58 @@ class TestKinderenBeheren(OuderBasis):
 
     def test_wissen_vraagt_de_naam(self):
         o = self.met_wachtwoord(("Test", "5"), ("Ander", "4"))
-        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*6 = 16
-        self.speel([OK, "4", *WW, OK, "2", "1", ("klik", 16, 10), *"Fout", OK, OK, ("klik", 16, 10),
+        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*7 = 18
+        self.speel([OK, "4", *WW, OK, "2", "1", ("klik", 18, 10), *"Fout", OK, OK, ("klik", 18, 10),
                     *"Ander", OK, OK, ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual([k.naam for k in o.kinderen()], ["Test"])
 
     def test_export_alles(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 14, 10), OK)
+        self.beheer(o, ("klik", 16, 10), OK)
         self.assertEqual(sorted(p.suffix for p in Path(self.docs.name).iterdir()), [".csv", ".json", ".txt"])
+
+
+class TestWeergave(OuderBasis):
+    """Ouders › Kinderen › kind › Weergave (rij 4 + 2*2 = 8): de instellingen die vroeger in Opties stonden.
+    In de lijst: Eenvoudige tekens rij 4, Muis 6, Typrichting 8, Avatar 10, Animaties 12, Klokvenster 14."""
+
+    def weergave(self, o, *klikken, start=(OK, "3"), voorrang=None):
+        toetsen = [*start, *WW, OK, "2", "1", ("klik", 8, 10), *[("klik", y, 10) for y in klikken],
+                   ESC, ESC, ESC, ESC, ESC, ESC]
+        return self.speel(toetsen, opslag=o, voorrang=voorrang)
+
+    def test_avatar_en_animaties_uitzetten(self):
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, _ = self.weergave(o, 10, 12)
+        inst = o.instellingen_van(o.kinderen()[0].id)
+        self.assertEqual((inst.avatar, inst.animaties), (False, False))
+        self.assertTrue(self.ergens(scherm, "Weergave voor Test"))
+        self.assertTrue(self.ergens(scherm, "Klok in een eigen venster"))
+
+    def test_alleen_voor_dat_kind(self):
+        o = self.met_wachtwoord(("Ander", "4"), ("Test", "5"))
+        self.weergave(o, 6, 8, 14, start=(OK, "4"))  # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders
+        ander, test = (o.instellingen_van(k.id) for k in o.kinderen())
+        self.assertEqual((ander.muis, ander.typrichting, ander.klokvenster), (False, -1, False))
+        self.assertEqual((test.muis, test.typrichting, test.klokvenster), (True, 1, True))
+
+    def test_startargument_wordt_niet_bewaard(self):
+        """Gestart met --contrast; in Weergave de muis uitzetten: de muis wordt bewaard, het contrast niet."""
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, app = self.weergave(o, 6, voorrang={"thema": "contrast"})
+        bewaard = o.instellingen_van(o.kinderen()[0].id)
+        self.assertEqual(bewaard.thema, "standaard")
+        self.assertFalse(bewaard.muis)
+        self.assertEqual(app.inst.thema, "contrast")
+
+    def test_ascii_startargument_blijft_voorgaan(self):
+        """Met --ascii gestart, het actieve kind krijgt in Weergave 'Eenvoudige tekens uit': het scherm blijft ASCII."""
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, app = self.weergave(o, 4, 4, start=(OK, OK, hm("Wissel van kind"), "3"), voorrang={"ascii": True})
+        self.assertIs(o.instellingen_van(app.kind.id).ascii, False)
+        self.assertTrue(app.inst.ascii)
+        for beeld in scherm.beelden:
+            self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
 
 
 class TestTimer(OuderBasis):

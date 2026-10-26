@@ -325,6 +325,7 @@ class Ouderdeel:
             heeft_pin = bool(self.o.pincode(kind.id))
             items = [("Naam", kind.naam),
                      ("Leerjaar", leerjaren.NAMEN[kind.leerjaar]),
+                     ("Weergave", "tekens, muis, avatar, klokvenster …"),
                      ("Timer zichtbaar voor het kind", "ja" if inst.timer_zichtbaar else "nee (alleen in rapport)"),
                      ("Pincode bij het starten", "ja" if heeft_pin else "nee"),
                      ("Winkel: 2x een foute som", STRAFFEN[inst.winkel_straf]),
@@ -352,20 +353,54 @@ class Ouderdeel:
                     inst.leerjaar = leerjaren.LEERJAREN[k]
                     self.o.bewaar_instellingen(kind.id, inst)
             elif sel == 2:
+                self.weergave(kr + [kind.naam], kind)
+            elif sel == 3:
                 inst.timer_zichtbaar = not inst.timer_zichtbaar
                 self.o.bewaar_instellingen(kind.id, inst)
-            elif sel == 3:
-                melding = self.pincode(kr + [kind.naam], kind, heeft_pin)
             elif sel == 4:
+                melding = self.pincode(kr + [kind.naam], kind, heeft_pin)
+            elif sel == 5:
                 straffen = list(STRAFFEN)
                 inst.winkel_straf = straffen[(straffen.index(inst.winkel_straf) + 1) % len(straffen)]
                 self.o.bewaar_instellingen(kind.id, inst)
                 melding = "Wat er gebeurt als je kind 2 keer een foute som maakt bij het kopen."
-            elif sel == 5:
-                melding = self.exporteer_alles(kind)
             elif sel == 6:
+                melding = self.exporteer_alles(kind)
+            elif sel == 7:
                 if self.wissen(kr + [kind.naam], kind):
                     return
+            self.app.herlaad_kind()
+
+    def weergave(self, kr, kind):
+        """Hoe het programma eruitziet voor dit kind (vroeger Opties bij het kind). Elke keuze wordt meteen bewaard
+        en geldt meteen als dit kind het actieve is; een startargument (--ascii …) gaat voor zolang het programma loopt."""
+        kr = kr + ["Weergave"]
+        sel = 0
+        melding = "Een startargument (bv. --ascii) gaat voor zolang het programma loopt."
+        while True:
+            inst = self.o.instellingen_van(kind.id)
+            items = [("Eenvoudige tekens", {None: "automatisch", True: "aan (ASCII)", False: "uit"}[inst.ascii]),
+                     ("Muis", "aan" if inst.muis else "uit"),
+                     ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
+                     ("Avatar", "aan" if inst.avatar else "uit"),
+                     ("Animaties", "aan" if inst.animaties else "uit"),
+                     ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)")]
+            sel = self.lijst(kr, f"Weergave voor {kind.naam}", items, sel, melding)
+            if sel is None:
+                return
+            if sel == 0:
+                inst.ascii = {None: True, True: False, False: None}[inst.ascii]
+            elif sel == 1:
+                inst.muis = not inst.muis
+            elif sel == 2:
+                inst.typrichting = -inst.typrichting
+            elif sel == 3:
+                inst.avatar = not inst.avatar
+            elif sel == 4:
+                inst.animaties = not inst.animaties
+            elif sel == 5:
+                inst.klokvenster = not inst.klokvenster
+            self.o.bewaar_instellingen(kind.id, inst)
             self.app.herlaad_kind()
 
     def pincode(self, kr, kind, heeft_pin):

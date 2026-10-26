@@ -5,6 +5,7 @@ import textwrap
 
 from ...kern import avatar as A
 from ...kern import winkel as W
+from ...kern import instellingen
 from ...kern.instellingen import STRAFFEN
 from .. import avatar as AV
 from ..scherm import BACKSPACE, ENTER, ESC
@@ -39,8 +40,8 @@ class AvatarSchermen:
         kr = [HOOFD, "Mijn avatar"]
         gezichten = list(A.onderdelen()["uitdrukkingen"])
         i = gezichten.index("blij")
-        knoppen = [("W", "winkel", ord("w")), ("K", "kast", ord("k")), ("←→", "gezichtje", None),
-                   ("Esc", "terug", ESC)]
+        knoppen = [("W", "winkel", ord("w")), ("K", "kast", ord("k")), ("L", "schermkleuren", ord("l")),
+                   ("←→", "gezichtje", None), ("Esc", "terug", ESC)]
         while True:
             if s.te_klein():
                 continue
@@ -64,6 +65,8 @@ class AvatarSchermen:
             s.zones.voeg(max(y, 14), x, 1, 36, ord("w"))
             s.put(max(y, 14) + 1, x, "[K] naar je kast: trek iets anders aan", "")
             s.zones.voeg(max(y, 14) + 1, x, 1, 38, ord("k"))
+            s.put(max(y, 14) + 2, x, "[L] schermkleuren: kies andere kleuren", "")
+            s.zones.voeg(max(y, 14) + 2, x, 1, 38, ord("l"))
             k = s.toets()
             if k in (ESC, ord("q")):
                 return
@@ -75,6 +78,36 @@ class AvatarSchermen:
                 self.winkel()
             elif k in (ord("k"), ord("K")):
                 self.kast()
+            elif k in (ord("l"), ord("L")):
+                self.schermkleuren()
+
+    def schermkleuren(self):
+        """De kleuren van het hele scherm (de thema's, ook kleurenblind en hoog contrast). Een keuze geldt meteen,
+        zodat het kind het ziet; Esc = klaar. Bewaard per kind, zoals vroeger bij Opties."""
+        s, app = self.s, self.app
+        kr = [HOOFD, "Mijn avatar", "Schermkleuren"]
+        themas = list(instellingen.THEMAS)
+
+        def voorbeeld():
+            h, _ = s.maat()
+            y = h - 4
+            s.put(y, 4, "Voorbeeld:", "dim")
+            s.put(y, 15, "✔ juist", "goed")
+            s.put(y, 25, "✘ fout", "fout")
+            s.put(y, 34, "  5  ", "goedvak")
+            s.put(y, 40, "! 6  ", "foutvak")
+            s.put(y, 46, " actief ", "cursor")
+
+        while True:
+            nu = themas.index(app.inst.thema)
+            k = s.menu(kr, "Welke kleuren wil je op het scherm?",
+                       [(naam, "✔ nu" if i == nu else "") for i, naam in enumerate(instellingen.THEMAS.values())],
+                       start=nu, extra=voorbeeld)
+            if k is None:
+                return
+            app.inst.thema = themas[k]
+            s.pas_toe()
+            app.bewaar()
 
     # ---- de winkel --------------------------------------------------------------------
 

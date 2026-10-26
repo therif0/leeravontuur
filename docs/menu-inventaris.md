@@ -9,25 +9,25 @@ Toetsen in de nieuwe onderwerpenlijst: **Enter** reeks van 10 · **V** vrij oefe
 (waar die er nu is).
 
 ## Wie ben jij? (blijft)
-- [ ] een kind kiezen → Hoofdmenu
-- [ ] + Nieuw kind (naam, leerjaar)
-- [ ] pincode bij het starten (als die aan staat)
-- [ ] Ouders (wachtwoord); startargument `--ouder` gaat er rechtstreeks heen
+- [x] een kind kiezen → Hoofdmenu
+- [x] + Nieuw kind (naam, leerjaar)
+- [x] pincode bij het starten (als die aan staat)
+- [x] Ouders (wachtwoord); startargument `--ouder` gaat er rechtstreeks heen
 
 ## Ouders
 - [ ] Rapporten: kind → periode (of zelf kiezen) → rapport; E exporteren, K kalender (← → maanden).
       Wordt gegroepeerd per Vak › Domein › Onderwerp; de maten samen onder "Maten".
-- [ ] Kinderen › kind › Naam
-- [ ] Kinderen › kind › Leerjaar
-- [ ] Kinderen › kind › Timer zichtbaar voor het kind
-- [ ] Kinderen › kind › Pincode bij het starten (nieuw / weghalen)
-- [ ] Kinderen › kind › Winkel: 2x een foute som
-- [ ] Kinderen › kind › Gegevens exporteren
-- [ ] Kinderen › kind › Alles van dit kind wissen
-- [ ] Punten: logboek, B bonus geven
-- [ ] Wachtwoord wijzigen
-- [ ] Opmerkingen
-- [ ] Sluiten; vergrendelen na 10 minuten zonder toets
+- [x] Kinderen › kind › Naam
+- [x] Kinderen › kind › Leerjaar
+- [x] Kinderen › kind › Timer zichtbaar voor het kind
+- [x] Kinderen › kind › Pincode bij het starten (nieuw / weghalen)
+- [x] Kinderen › kind › Winkel: 2x een foute som
+- [x] Kinderen › kind › Gegevens exporteren
+- [x] Kinderen › kind › Alles van dit kind wissen
+- [x] Punten: logboek, B bonus geven
+- [x] Wachtwoord wijzigen
+- [x] Opmerkingen
+- [x] Sluiten; vergrendelen na 10 minuten zonder toets
 
 ## Hoofdmenu
 - [x] ▶ Verder → ▶ Verder (1ste)
@@ -36,7 +36,7 @@ Toetsen in de nieuwe onderwerpenlijst: **Enter** reeks van 10 · **V** vrij oefe
 - [x] Herhalen (n) → Herhalen (n) (2de)
 - [x] Mijn avatar → Mijn avatar
 - [x] Spiekbrieven → Spiekbrieven (uit de registry)
-- [ ] Opties → weg: alles verhuist (zie onder)
+- [x] Opties → weg: alles verhuist (zie onder)
 - [x] Wissel van kind → Wissel van kind
 - [x] Zeg het ons → Zeg het ons
 - [x] Stoppen → Stoppen
@@ -130,22 +130,22 @@ dan de toets.
 - [x] Herhalen: eenheden en de andere onderwerpen na elkaar, zoals nu; alleen de broodkruimel verandert.
 
 ## Mijn avatar
-- [ ] W winkel: laag → item → kopen → meteen aantrekken
-- [ ] K kast: ←→ wisselen, B bewaren, C combinaties (aantrekken, weggooien)
-- [ ] ←→ gezichtje
-- [ ] **nieuw hier:** L kleuren (uit Opties)
+- [x] W winkel: laag → item → kopen → meteen aantrekken
+- [x] K kast: ←→ wisselen, B bewaren, C combinaties (aantrekken, weggooien)
+- [x] ←→ gezichtje
+- [x] **nieuw hier:** L Schermkleuren (uit Opties)
 
 ## Opties (verdwijnt aan de kant van het kind)
-- [ ] Naam → staat al in Ouders › Kinderen › kind
-- [ ] Leerjaar (nu alleen tonen) → staat al in Ouders › Kinderen › kind
-- [ ] Kleuren (standaard, kleurenblind rood-groen, blauw-geel, hoog contrast, geen kleur) → Mijn avatar › L kleuren
-- [ ] Eenvoudige tekens → Ouders › Kinderen › kind › Weergave
-- [ ] Muis → Ouders › Kinderen › kind › Weergave
-- [ ] Typrichting in tabellen → Ouders › Kinderen › kind › Weergave
-- [ ] Avatar → Ouders › Kinderen › kind › Weergave
-- [ ] Animaties → Ouders › Kinderen › kind › Weergave
-- [ ] Klok in een eigen venster → Ouders › Kinderen › kind › Weergave
-- [ ] startargumenten (`--kleurenblind`, `--ascii`, `--geen-muis`, `--zonder-klokvenster` …) blijven voorrang hebben
+- [x] Naam → staat al in Ouders › Kinderen › kind
+- [x] Leerjaar (nu alleen tonen) → staat al in Ouders › Kinderen › kind
+- [x] Kleuren (standaard, kleurenblind rood-groen, blauw-geel, hoog contrast, geen kleur) → Mijn avatar › L Schermkleuren
+- [x] Eenvoudige tekens → Ouders › Kinderen › kind › Weergave
+- [x] Muis → Ouders › Kinderen › kind › Weergave
+- [x] Typrichting in tabellen → Ouders › Kinderen › kind › Weergave
+- [x] Avatar → Ouders › Kinderen › kind › Weergave
+- [x] Animaties → Ouders › Kinderen › kind › Weergave
+- [x] Klok in een eigen venster → Ouders › Kinderen › kind › Weergave
+- [x] startargumenten (`--kleurenblind`, `--ascii`, `--geen-muis`, `--zonder-klokvenster` …) blijven voorrang hebben
 
 ## Toetsen die overal blijven
 - [x] cijfers 1–9 en 0 kiezen in een menu; ↑↓ (ook j k, Tab) en Enter; Esc of q = terug
