@@ -388,7 +388,7 @@ class Oefenaar:
                 continue
             goed = o.nakijken(v, getal) and not (obj and obj.fouten)
             d = (obj and (obj.diagnose or o.diagnose_rijen(v, obj.rijen()))) or o.diagnose(v, getal)
-            opl = o.oplossing(v) if kb else None
+            opl = o.oplossing_of_niets(v) if kb else None
             if kb and kb.regels and opl:
                 analyse = analyseer(opl.stappen, opl.paden, kb.gelezen)
                 klad_ok = analyse["eerste"] is None and analyse["compleet"]
@@ -439,7 +439,7 @@ class Oefenaar:
             return f"Tip {nr}: {tips[nr - 1]}"
         if kb is None:
             return f"Tip {len(tips)}: {tips[-1]}" if tips else "Tip: lees de vraag nog eens rustig."
-        opl = o.oplossing(v)
+        opl = o.oplossing_of_niets(v)
         if not kb.regels:
             return f"Tip {nr}: schrijf je eerste stap in het klad (Tab)."
         a = analyseer(opl.stappen, opl.paden, kb.gelezen) if opl else None
@@ -450,7 +450,7 @@ class Oefenaar:
     @staticmethod
     def uitwerking(o, v):
         """Na het nakijken: "Zo kan het:" met de oplossing in klad-regels, en daaronder het waarom."""
-        opl = o.oplossing(v) if o.klad_voor(v) else None
+        opl = o.oplossing_of_niets(v) if o.klad_voor(v) else None
         if not opl or not opl.stappen:
             return o.uitleg(v)
         regels = [("Zo kan het:", "bold")] + [("  " + st.reken, "") for st in opl.stappen]

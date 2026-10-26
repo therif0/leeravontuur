@@ -7,6 +7,7 @@ from decimal import Decimal
 from fractions import Fraction
 
 from ..getal import GetypteBreuk, fmt, lees_getal
+from ..klad import oplossing_van
 from ..modellen import Honderdveld, Procentstrook
 from ..onderwerp import Onderwerp, Vraag
 
@@ -42,6 +43,26 @@ SPIEKBRIEF = [
 STRATEGIE = {50: "50 % is de helft", 25: "25 % is een vierde (: 4)", 10: "10 % is een tiende (: 10)",
              20: "20 % is een vijfde (: 5)", 75: "75 % is drie vierden", 1: "1 % is een honderdste (: 100)",
              100: "100 % is alles"}
+
+
+def deel_regels(p, totaal):
+    """p % van totaal als klad-regels, met dezelfde handige strategie als deel_uitleg."""
+    deel, t = D(totaal) * D(p) / 100, D(totaal)
+    if p == 50:
+        return [f"{fmt(t)} : 2 = {fmt(deel)}"]
+    if p == 25:
+        return [f"{fmt(t)} : 4 = {fmt(deel)}"]
+    if p == 75:
+        return [f"{fmt(t)} : 4 = {fmt(t / 4)}", f"3 × {fmt(t / 4)} = {fmt(deel)}"]
+    if p == 10:
+        return [f"{fmt(t)} : 10 = {fmt(deel)}"]
+    if p == 1:
+        return [f"{fmt(t)} : 100 = {fmt(deel)}"]
+    if p == 5:
+        return [f"{fmt(t)} : 10 = {fmt(t / 10)}", f"{fmt(t / 10)} : 2 = {fmt(deel)}"]
+    if p % 10 == 0:
+        return [f"{fmt(t)} : 10 = {fmt(t / 10)}", f"{p // 10} × {fmt(t / 10)} = {fmt(deel)}"]
+    return [f"{fmt(t)} : 100 = {fmt(t / 100)}", f"{p} × {fmt(t / 100)} = {fmt(deel)}"]
 
 
 def deel_uitleg(p, totaal):
@@ -228,6 +249,15 @@ class ProcentVan(_Procenten):
                     f"{f.numerator}/{f.denominator} = {pct}/100 = {pct} %."]
         return [deel_uitleg(pct, totaal)]
 
+    klad = "ja"
+
+    def oplossing(self, v):
+        pct, totaal = v.data["pct"], v.data["totaal"]
+        if v.data["soort"] == "welk_procent":
+            deel = D(totaal) * pct / 100
+            return oplossing_van(f"{fmt(deel)} : {totaal} = {fmt(D(pct) / 100)}", f"{fmt(D(pct) / 100)} × 100 = {pct}")
+        return oplossing_van(*deel_regels(pct, totaal))
+
     def tip(self, v):
         if v.data["soort"] == "welk_procent":
             return "Schrijf het als breuk (deel/geheel) en maak de noemer 100."
@@ -309,6 +339,20 @@ class Korting(_Procenten):
         verschil = abs(D(d["nieuw"]) - d["oud"])
         return [f"Het verschil is € {geld(verschil)}. Vergelijk met de oude prijs: {geld(verschil)}/{d['oud']}.",
                 f"{geld(verschil)}/{d['oud']} = {d['pct']}/100 = {d['pct']} %."]
+
+    klad = "ja"
+
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s in ("korting", "btw"):
+            deel = D(d["prijs"]) * d["pct"] / 100
+            return oplossing_van(*deel_regels(d["pct"], d["prijs"]),
+                                 f"{d['prijs']} {'−' if s == 'korting' else '+'} {fmt(deel)} = {fmt(v.antwoord)}")
+        nieuw, oud = D(d["nieuw"]), D(d["oud"])
+        verschil = abs(nieuw - oud)
+        return oplossing_van(f"{fmt(max(nieuw, oud))} − {fmt(min(nieuw, oud))} = {fmt(verschil)}",
+                             f"{fmt(verschil)} : {fmt(oud)} = {fmt(D(d['pct']) / 100)}",
+                             f"{fmt(D(d['pct']) / 100)} × 100 = {d['pct']}")
 
     def tip(self, v):
         s = v.data["soort"]

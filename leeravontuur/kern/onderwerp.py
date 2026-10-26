@@ -92,6 +92,15 @@ class Onderwerp:
         klad van het kind."""
         return None
 
+    def oplossing_of_niets(self, v):
+        """oplossing(v), maar nooit een fout: lukt het niet, dan staat het in het foutenlogboek en is er geen
+        uitwerking (de oefening gaat gewoon verder)."""
+        try:
+            return self.oplossing(v)
+        except Exception as e:  # het kind mag hier nooit iets van merken
+            foutlog.schrijf(f"oplossing van {self.id}: {v.sleutel}", e)
+            return None
+
     def klad_voor(self, v):
         """Klad bij deze vraag: None, "ja" of "verplicht" (een vraag kan het overschrijven met data["klad"])."""
         k = v.data.get("klad", self.klad) if isinstance(v.data, dict) else self.klad
@@ -109,7 +118,7 @@ class Onderwerp:
         t = self.tip(v)
         if t:
             uit.append(t)
-        opl = self.oplossing(v) if self.klad_voor(v) else None
+        opl = self.oplossing_of_niets(v) if self.klad_voor(v) else None
         if opl and opl.stappen:
             b = begin_van(opl.stappen[0].reken)
             if b:

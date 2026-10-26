@@ -7,6 +7,7 @@ Een wijzerklok toont maar 12 uur: daar telt 3.15 even goed als 15.15.
 import re
 from decimal import Decimal
 
+from ..klad import oplossing_van
 from ..modellen import Wijzerklok
 from ..onderwerp import Onderwerp, Vraag
 from .grootheden import duur_tekst, klok_tekst, lees_klok
@@ -190,6 +191,29 @@ class Klok(Onderwerp):
                      invoer="klok", model=Wijzerklok(begin), verwacht_tekst=klok_tekst(eind))
 
     # ---- lezen en nakijken ---------------------------------------------------------------------------
+    klad = "ja"  # maar alleen bij later, vroeger en 24 uur (klad_voor)
+
+    def klad_voor(self, v):
+        """Rekenen met de klok krijgt een klad; de klok lezen, zetten of in woorden niet."""
+        return "ja" if v.data.get("soort") in ("later", "vroeger", "24uur") else None
+
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s == "24uur":
+            return oplossing_van(f"{klok12(d['t'] - 720)} + 12 u = {klok_tekst(d['t'])}")
+        b, du, eind = d["begin"], d["duur"], int(v.antwoord)
+        if s == "later":
+            tot = (60 - b % 60) % 60  # eerst tot het volle uur
+            if 0 < tot < du:
+                return oplossing_van(f"{klok_tekst(b)} + {tot} min = {klok_tekst((b + tot) % 1440)}",
+                                     f"{klok_tekst((b + tot) % 1440)} + {du - tot} min = {klok_tekst(eind)}")
+            return oplossing_van(f"{klok_tekst(b)} + {du} min = {klok_tekst(eind)}")
+        terug = b % 60  # eerst terug tot het volle uur
+        if 0 < terug < du:
+            return oplossing_van(f"{klok_tekst(b)} − {terug} min = {klok_tekst(b - terug)}",
+                                 f"{klok_tekst(b - terug)} − {du - terug} min = {klok_tekst(eind)}")
+        return oplossing_van(f"{klok_tekst(b)} − {du} min = {klok_tekst(eind)}")
+
     def lees_vraag(self, v, tekst):
         if v.invoer == "klokwoord":
             return lees_woorden(tekst)

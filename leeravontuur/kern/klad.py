@@ -107,6 +107,11 @@ def _tokens(tekst):
                 uit.append(("tijdstip", int(k.group(1)) * 60 + int(k.group(2) or k.group(3)), k.group(0)))
                 i += len(k.group(0))
                 continue
+            b = re.match(r"\d+/\d+(?![\d.,/])", t[i:])  # een breuk zonder spaties: 3/4 is één getal
+            if b:
+                uit.append(("getal", b.group(0), b.group(0)))
+                i += len(b.group(0))
+                continue
             m = re.match(r"\d{1,3}(?: \d{3})+(?![\d.,])|\d+(?:[.,]\d+)*", t[i:])  # ook 300 000
             uit.append(("getal", m.group(0).replace(" ", ""), m.group(0)))
             i += len(m.group(0))
@@ -147,6 +152,9 @@ def _tokens(tekst):
 
 
 def _getal(tekst):
+    if "/" in tekst:  # 3/4 (een breuk als één getal, zodat 3/4 : 2/5 klopt)
+        teller, noemer = tekst.split("/")
+        return Fraction(int(teller), int(noemer)) if int(noemer) else None
     g = lees_getal(tekst)
     return None if g is None else Fraction(g)
 
@@ -423,8 +431,10 @@ def lees_regel(tekst):
         juist = echt is not None and echt == gegeven.getal
         afgerond = False
         if not juist and echt is not None and lr.ops == [] and gr is not None:
-            getal_tekst = next(x[1] for x in delen[len(regel.schakels) + 1] if x[0] == "getal")
-            afgerond = juist = _afronding_ok(echt, getal_tekst, gegeven.getal)
+            # afgerond? (rechts staat een getal; bij een tijdstip, bv. "= 8.50 u", is er niets af te ronden)
+            getal_tekst = next((x[1] for x in delen[len(regel.schakels) + 1] if x[0] == "getal"), None)
+            if getal_tekst is not None:
+                afgerond = juist = _afronding_ok(echt, getal_tekst, gegeven.getal)
         ketting = False
         if not juist and lr.ops and lr.operanden and echt == lr.operanden[0]:
             # 3 x 4 = 12 + 3: links klopt met het begin van rechts, het kind rekende gewoon verder
@@ -483,6 +493,13 @@ def stap(reken, hint="", waarom="", naam=""):
     uitkomst = r.uitkomst if r.uitkomst is not None else Fraction(0)
     op = handtekening(r.schakels[0])[0] if r.schakels else None
     return Rekenstap(op or "", [], reken, uitkomst, naam, hint, waarom, reken=netjes(reken))
+
+
+def oplossing_van(*regels, paden=()):
+    """Een oplossing (kern.modellen.Oplossing) uit klad-regels, één stap per regel: oplossing_van("24 : 4 = 6",
+    "3 × 6 = 18"). Lege regels tellen niet."""
+    from .modellen import Oplossing
+    return Oplossing([stap(r) for r in regels if r], list(paden))
 
 
 def fout_pad(code, tekst, *regels):

@@ -8,6 +8,7 @@ import re
 from decimal import Decimal
 
 from ..getal import fmt, lees_getal
+from ..klad import oplossing_van
 from ..onderwerp import Onderwerp, Vraag
 from .procenten import geld
 
@@ -55,6 +56,7 @@ def lees_klok(tekst):
 
 class _Grootheid(Onderwerp):
     vast = ("soort",)
+    klad = "ja"
 
     def onderwerp_van_sleutel(self, sleutel):
         delen = sleutel.split(":")
@@ -151,6 +153,29 @@ class Tijd(_Grootheid):
             return [f"Van {klok_tekst(b)} tot {klok_tekst(b + du)} is {du} min ({duur_tekst(du)})."]
         return [f"{klok_tekst(b)} + {duur_tekst(du)}: tel eerst de uren, dan de minuten.",
                 f"Je komt aan om {klok_tekst(b + du)}. Na 59 minuten komt er een uur bij."]
+
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s == "omrekenen":
+            f, n = OMREKENEN[d["i"]][3], d["n"]
+            return oplossing_van(f"{n} × {f} = {n * f}" if d["richting"] == "naar_klein" else f"{n * f} : {f} = {n}")
+        if s == "gemengd_naar":
+            return oplossing_van(f"{d['u']} × 60 = {d['u'] * 60}", f"{d['u'] * 60} + {d['m']} = {d['u'] * 60 + d['m']}")
+        if s == "naar_gemengd":
+            u, m = divmod(int(v.antwoord), 60)
+            return oplossing_van(f"{int(v.antwoord)} : 60 = {u} rest {m}", f"{u} × 60 + {m} = {int(v.antwoord)}")
+        b, du = d["begin"], d["duur"]
+        tot = (60 - b % 60) % 60  # tel in stapjes tot het volle uur
+        if s == "duur":
+            if 0 < tot < du:
+                return oplossing_van(f"{klok_tekst(b)} + {tot} min = {klok_tekst(b + tot)}",
+                                     f"{klok_tekst(b + tot)} + {du - tot} min = {klok_tekst(b + du)}",
+                                     f"{tot} + {du - tot} = {du}")
+            return oplossing_van(f"{klok_tekst(b + du)} − {klok_tekst(b)} = {du} min")
+        if 0 < tot < du:
+            return oplossing_van(f"{klok_tekst(b)} + {tot} min = {klok_tekst(b + tot)}",
+                                 f"{klok_tekst(b + tot)} + {du - tot} min = {klok_tekst(b + du)}")
+        return oplossing_van(f"{klok_tekst(b)} + {du} min = {klok_tekst(b + du)}")
 
     def tip(self, v):
         if v.data["soort"] == "omrekenen":
@@ -251,6 +276,18 @@ class Geld(_Grootheid):
         return [f"{d['na']} × € {geld(pa)} = € {geld(d['na'] * pa)} en {d['nb']} × € {geld(pb)} = € {geld(d['nb'] * pb)}.",
                 f"Samen: € {geld(v.antwoord)}."]
 
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s == "euro_naar_cent":
+            return oplossing_van(f"{fmt(D(d['cent']) / 100)} × 100 = {d['cent']}")
+        if s == "cent_naar_euro":
+            return oplossing_van(f"{d['cent']} : 100 = {fmt(D(d['cent']) / 100)}")
+        if s == "wisselgeld":
+            return oplossing_van(f"{d['briefje']} − {fmt(D(d['prijs']))} = {fmt(v.antwoord)}")
+        pa, pb = D(d["pa"]), D(d["pb"])
+        return oplossing_van(f"{d['na']} × {fmt(pa)} = {fmt(d['na'] * pa)}", f"{d['nb']} × {fmt(pb)} = {fmt(d['nb'] * pb)}",
+                             f"{fmt(d['na'] * pa)} + {fmt(d['nb'] * pb)} = {fmt(v.antwoord)}")
+
     def tip(self, v):
         if v.data["soort"] == "wisselgeld":
             return "Wisselgeld = wat je betaalt − de prijs. Of tel aan tot het briefje."
@@ -326,6 +363,19 @@ class Snelheid(_Grootheid):
         if s == "tijd":
             return ["tijd = afstand : snelheid", f"{km} : {d['v']} = {uren} u = {d['min']} min."]
         return ["snelheid = afstand : tijd", f"{omzetten}{km} : {uren} = {d['v']} km/u."]
+
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s == "omzetten":
+            kmu = fmt(D(d["kmu"]))
+            return oplossing_van(f"{kmu} : 3,6 = {d['ms']}" if d["richting"] == "naar_ms" else f"{d['ms']} × 3,6 = {kmu}")
+        uren, km = fmt(D(d["min"]) / 60), fmt(D(d["km"]))
+        omzetten = f"{d['min']} : 60 = {uren}" if d["min"] % 60 else ""
+        if s == "afstand":
+            return oplossing_van(omzetten, f"{d['v']} × {uren} = {km}")
+        if s == "tijd":
+            return oplossing_van(f"{km} : {d['v']} = {uren}", f"{uren} × 60 = {d['min']}")
+        return oplossing_van(omzetten, f"{km} : {uren} = {d['v']}")
 
     def tip(self, v):
         if v.data["soort"] == "omzetten":

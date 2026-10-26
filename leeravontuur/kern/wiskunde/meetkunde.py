@@ -7,6 +7,7 @@ import re
 from decimal import Decimal
 
 from ..getal import fmt, lees_getal
+from ..klad import oplossing_van
 from ..modellen import KOLOMLETTERS, Figuur, Hoek, Kaart, fmt_geheel
 from ..onderwerp import Onderwerp, Vraag
 
@@ -202,6 +203,27 @@ class Formules(_Meetkunde):
             "cirkel_opp": lambda: PI * g["r"] * g["r"], "balk_volume": lambda: g["l"] * g["b"] * g["h"],
             "kubus_volume": lambda: g["z"] ** 3,
         }[soort]()
+
+    klad = "ja"
+
+    def oplossing(self, v):
+        d, s, a = v.data, v.data["soort"], fmt(v.antwoord)
+        f = {k: fmt(D(w)) for k, w in d.items() if k in ("l", "b", "h", "z", "B", "r")}
+        regel = {
+            "rechthoek_opp": f"{f.get('l')} × {f.get('b')} = {a}",
+            "rechthoek_omtrek": f"2 × ({f.get('l')} + {f.get('b')}) = {a}",
+            "vierkant_opp": f"{f.get('z')} × {f.get('z')} = {a}",
+            "vierkant_omtrek": f"4 × {f.get('z')} = {a}",
+            "driehoek_opp": f"{f.get('b')} × {f.get('h')} : 2 = {a}",
+            "parallellogram_opp": f"{f.get('b')} × {f.get('h')} = {a}",
+            "trapezium_opp": f"({f.get('B')} + {f.get('b')}) × {f.get('h')} : 2 = {a}",
+            "cirkel_omtrek": f"2 × 3,14 × {f.get('r')} = {a}",
+            "cirkel_opp": f"3,14 × {f.get('r')} × {f.get('r')} = {a}",
+            "balk_volume": f"{f.get('l')} × {f.get('b')} × {f.get('h')} = {a}",
+            "kubus_volume": f"{f.get('z')} × {f.get('z')} × {f.get('z')} = {a}",
+        }[s]
+        straal = f"{fmt(2 * D(d['r']))} : 2 = {f['r']}" if s.startswith("cirkel") and d.get("diameter") else ""
+        return oplossing_van(straal, regel)
 
     def lees(self, tekst):
         return lees_getal(tekst)
@@ -465,6 +487,19 @@ class Schaal(_Meetkunde):
         return Vraag(self.id, f"{self.id}:schaal_zoeken:{schaal}:{cm}",
                      f"Op een kaart is {cm} cm in het echt {fmt(echt)} {eenheid}. Wat is de schaal? (typ bv. 1:500)",
                      D(schaal), data=d, verwacht_tekst=schaal_tekst(schaal))
+
+    klad = "ja"
+
+    def oplossing(self, v):
+        d = v.data
+        n, cm, e = d["schaal"], d["cm"], d["eenheid"]
+        echt_cm = cm * n
+        echt = fmt(D(echt_cm) / d["per"])
+        if d["soort"] == "naar_echt":
+            return oplossing_van(f"{cm} × {n} = {echt_cm}", f"{echt_cm} cm = {echt} {e}")
+        if d["soort"] == "naar_kaart":
+            return oplossing_van(f"{echt} {e} = {echt_cm} cm", f"{echt_cm} : {n} = {cm}")
+        return oplossing_van(f"{echt} {e} = {echt_cm} cm", f"{echt_cm} : {cm} = {n}")
 
     def lees(self, tekst):
         t = (tekst or "").replace(" ", "")

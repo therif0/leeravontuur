@@ -7,7 +7,7 @@ from decimal import Decimal
 from fractions import Fraction
 
 from ..getal import decimalen, fmt
-from ..klad import DEEL, MAAL, MIN, PLUS, fout_pad, stap
+from ..klad import DEEL, MAAL, MIN, PLUS, fout_pad, oplossing_van, stap
 from ..modellen import Oplossing
 from ..onderwerp import Onderwerp, Vraag
 
@@ -32,6 +32,15 @@ class Tafels(Onderwerp):
                   "buurtafel": "één stap ernaast in de tafel",
                   "deel_omgekeerd": "vermenigvuldigd in plaats van gedeeld"}
     vast = ("tafel",)
+    klad = "ja"  # alleen bij uitbreiden (7 × 80): een tafel uit het hoofd kent geen klad
+
+    def klad_voor(self, v):
+        d = v.data
+        return "ja" if d.get("veelvoud") and not d.get("delen") and d.get("a", 0) > 0 and d.get("b", 0) > 0 else None
+
+    def oplossing(self, v):
+        t, m = v.data["a"], v.data["b"]
+        return oplossing_van(f"{t} × {m // 10} = {t * m // 10}", f"{t * m // 10} × 10 = {t * m}")
 
     def maak_met(self, p, rng, data=None):
         tafel = data["tafel"] if data and "tafel" in data else rng.choice(p["tafels"])
@@ -126,6 +135,23 @@ class PlusMin(Onderwerp):
                   "onthouden": "een tiental of honderdtal vergeten (onthouden)",
                   "verkeerde_bewerking": "opgeteld en afgetrokken door elkaar"}
     vast = ("op", "strategie")
+    klad = "ja"
+
+    def oplossing(self, v):
+        d = v.data
+        a, b, op = D(d["a"]), D(d["b"]), d["op"]
+        if d["strategie"] == "compenseren" and "rond" in d:
+            rond, verschil = D(d["rond"]) / d["schaal"], D(d["verschil"]) / d["schaal"]
+            tussen = a + rond if op == "+" else a - rond
+            terug = "−" if op == "+" else "+"
+            return oplossing_van(f"{fmt(a)} {op} {fmt(rond)} = {fmt(tussen)}",
+                                 f"{fmt(tussen)} {terug} {fmt(verschil)} = {fmt(v.antwoord)}")
+        x, regels = a, []
+        for deel in _splits(b):
+            nieuw = x + deel if op == "+" else x - deel
+            regels.append(f"{fmt(x)} {op} {fmt(deel)} = {fmt(nieuw)}")
+            x = nieuw
+        return oplossing_van(*regels)
 
     def maak_met(self, p, rng, data=None):
         schaal = 10 ** p["decimalen"]
@@ -324,6 +350,25 @@ class DubbelHelft(Onderwerp):
     omschrijving = "het dubbel en de helft uit het hoofd"
     denkfouten = {"helft_dubbel": "het dubbel en de helft verwisseld", "dubbel_onthouden": "een tiental vergeten"}
     vast = ("soort",)
+    klad = "ja"
+
+    def oplossing(self, v):
+        g = D(v.data["getal"])
+        if v.data["soort"] == "dubbel":
+            delen = _splits(g)
+            if len(delen) == 1:
+                return oplossing_van(f"2 × {fmt(g)} = {fmt(2 * g)}")
+            return oplossing_van(f"2 × {fmt(g)} = " + " + ".join(f"2 × {fmt(x)}" for x in delen) + " = "
+                                 + " + ".join(fmt(2 * x) for x in delen) + f" = {fmt(2 * g)}")
+        tientallen = int(g) // 10 * 10
+        if (tientallen // 10) % 2 and tientallen:
+            tientallen -= 10
+        rest = g - tientallen
+        if not tientallen or not rest:
+            return oplossing_van(f"{fmt(g)} : 2 = {fmt(g / 2)}")
+        t = D(tientallen)
+        return oplossing_van(f"{fmt(g)} : 2 = {fmt(t)} : 2 + {fmt(rest)} : 2 = {fmt(t / 2)} + {fmt(rest / 2)} = "
+                             f"{fmt(g / 2)}")
 
     def maak_met(self, p, rng, data=None):
         soort = data["soort"] if data and "soort" in data else rng.choice(["dubbel", "helft"])
