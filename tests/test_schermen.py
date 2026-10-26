@@ -594,6 +594,65 @@ class TestTypen(Basis):
         self.assertTrue(self.ergens(scherm, "te klein"))
 
 
+PAD = {"/": 458, "Enter": 459, "Ctrl+Enter": 460, "Alt+Enter": 461, ".": 462, "*": 463, "-": 464, "+": 465}
+
+
+class TestNumeriekKlavier(Basis):
+    """Het numeriek klavier op Windows (#11): PDCurses geeft eigen codes voor / * - + . en Enter."""
+    vast, plusmin = TestWerkwijze.vast, TestWerkwijze.plusmin
+
+    def setUp(self):
+        super().setUp()
+        from unittest import mock
+        from leeravontuur.terminal import scherm
+        patch = mock.patch.object(scherm, "KLAVIER", scherm.KLAVIER_PDCURSES)  # zoals op Windows
+        patch.start()
+        self.addCleanup(patch.stop)
+
+    def toetsen(self, codes):
+        s = Scherm(NepScherm(codes), Instellingen(), kleuren=False)
+        return [s.toets() for _ in codes]
+
+    def test_tekens_en_enter(self):
+        from leeravontuur.terminal.scherm import ENTER, teken_van
+        uit = self.toetsen([PAD[t] for t in "/*-+."])
+        self.assertEqual([teken_van(k) for k in uit], list("/*-+."))
+        for k in self.toetsen([PAD["Enter"], PAD["Ctrl+Enter"], PAD["Alt+Enter"]]):
+            self.assertIn(k, ENTER)
+
+    def test_menu_en_klad_met_het_numeriek_klavier(self):
+        """Enter van het klavier kiest in de menu's; + en - komen in het klad; Enter kijkt het antwoord na."""
+        o = self.opslag(("Test", "5"))
+        toetsen = [*self.plusmin()]
+        toetsen[:2] = [PAD["Enter"], PAD["Enter"]]  # startscherm en "Wie ben jij?"
+        toetsen += [TAB, *"47 ", PAD["+"], *" 100 = 147", PAD["Enter"], *"147 ", PAD["-"], *" 1 = 146",
+                    PAD["Enter"], TAB, *"146", PAD["Enter"]]
+        scherm, app = self.speel(toetsen + [ESC] * 5, opslag=o)
+        self.assertTrue(self.ergens(scherm, "147 − 1 = 146"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual(rij["juist"], 1)
+        self.assertIn('"klad_ok": true', rij["extra"])
+
+    def test_elders_ongewijzigd(self):
+        """Op Linux en macOS (ncurses) blijven die codes wat ze zijn."""
+        from unittest import mock
+        from leeravontuur.terminal import scherm
+        with mock.patch.object(scherm, "KLAVIER", {}):
+            self.assertEqual(self.toetsen([463, 459]), [463, 459])
+
+    def test_linux_op_naam(self):
+        """ncurses: het klavier in toepassingsmodus geeft extra toetsen (code boven KEY_MAX) met een naam."""
+        from unittest import mock
+        from leeravontuur.terminal import scherm
+        from leeravontuur.terminal.scherm import teken_van
+        namen = {583: b"kpADD", 585: b"kpDIV", 587: b"kpMUL", 588: b"kpSUB", 586: b"kpDOT", 600: b"kRIT5"}
+        with mock.patch.object(scherm, "KLAVIER", {}), \
+                mock.patch.object(scherm.curses, "keyname", side_effect=lambda k: namen[k]):
+            uit = self.toetsen([583, 585, 587, 588, 586, 600])
+        self.assertEqual([teken_van(k) for k in uit[:5]], list("+/*-."))
+        self.assertEqual(uit[5], 600)  # een andere extra toets (Ctrl+pijl) blijft wat hij is
+
+
 class TestMenuToetsen(unittest.TestCase):
     """Het menu met lettertoetsen per keuze (de onderwerpenlijst): de aanroeper bepaalt de toetsen."""
 

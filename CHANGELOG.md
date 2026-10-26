@@ -2,6 +2,10 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.20.1 — het numeriek klavier
+- De toetsen **/ * - +** en de kleine **Enter** van het numeriek klavier werken nu overal: in de menu's, in het
+  antwoord en in het klad. Op Windows deden ze niets; op Linux kwamen / * - + niet aan in sommige terminals.
+
 ## 0.20.0 — nieuwe menu's
 - **Alles zit nu op één manier in de menu's:** Wiskunde › een domein › een onderwerp. Zo is er straks plaats
   voor Taal en Frans. Wiskunde heeft 8 domeinen: Getallen, Hoofdrekenen, Cijferen, Breuken en procenten, Meten,
