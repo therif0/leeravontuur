@@ -141,7 +141,7 @@ class VraagstukInvoer:
         s.put(r, KOP, "Gegeven:", "dim")
         x = KOP + 9
         if not self.aangeduid:
-            s.put(r, x, "duid aan wat je nodig hebt (←→ en spatie, of klik)", "dim")
+            s.put(r, x, "duid aan wat nodig is (←→ en spatie, klik)", "dim")
         for gid in self.aangeduid:
             g = m.gegevens[gid]
             stuk = f"{g.tekst} {'✔' if g.nodig else '(niet nodig)'}"

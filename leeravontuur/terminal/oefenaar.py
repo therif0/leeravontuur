@@ -52,7 +52,7 @@ INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen in
 GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur"}
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
-KLAD_HINT = "Een rekenregel, bv. 70 : 7 = 10, en Enter. Lege regel + Enter (of Tab) = naar je antwoord."
+KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
 
 
 def vraagtekst(v):

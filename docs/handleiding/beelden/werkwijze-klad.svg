@@ -143,7 +143,7 @@
 <text x="8" y="201" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">      4756 − 1 = 4755                                     </text>
 <text x="530" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔</text>
 <text x="62" y="309" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ Deze regel klopt.</text>
-<text x="62" y="363" textLength="666" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Een rekenregel, bv. 70 : 7 = 10, en Enter. Lege regel + Enter (of Tab) = n</text>
+<text x="62" y="363" textLength="603" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="45" height="18" fill="#000000"/>
 <rect x="62" y="422" width="171" height="18" fill="#11a8cd"/>

@@ -89,11 +89,9 @@
 <rect x="701" y="98" width="9" height="9" fill="#00d75f"/>
 <rect x="710" y="98" width="9" height="9" fill="#00875f"/>
 <text x="26" y="111" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
-<text x="35" y="111" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> De film eindigt om </text>
-<text x="215" y="111" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">19.45 u</text>
-<text x="278" y="111" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">. De film duurt </text>
-<text x="422" y="111" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">1 u 35 min</text>
-<text x="512" y="111" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">.    </text>
+<text x="35" y="111" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> Er zitten </text>
+<text x="134" y="111" textLength="18" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">53</text>
+<text x="152" y="111" textLength="405" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> mensen in de zaal. De film begint om        </text>
 <text x="557" y="111" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <rect x="593" y="116" width="9" height="18" fill="#262626"/>
 <rect x="602" y="116" width="27" height="18" fill="#00d75f"/>
@@ -116,7 +114,10 @@
 <rect x="692" y="116" width="9" height="9" fill="#262626"/>
 <rect x="701" y="125" width="9" height="9" fill="#ffaf00"/>
 <text x="26" y="129" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
-<text x="35" y="129" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> Hoe laat begint de film?                                 </text>
+<text x="44" y="129" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">20.40 u</text>
+<text x="107" y="129" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">. De film duurt </text>
+<text x="251" y="129" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">1 u 50 min</text>
+<text x="341" y="129" textLength="216" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">. Hoe laat eindigt de   </text>
 <text x="557" y="129" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <rect x="602" y="134" width="18" height="18" fill="#262626"/>
 <rect x="620" y="134" width="54" height="18" fill="#00875f"/>
@@ -139,7 +140,9 @@
 <rect x="692" y="134" width="9" height="9" fill="#ffffff"/>
 <rect x="701" y="134" width="9" height="9" fill="#ffffff"/>
 <rect x="710" y="134" width="9" height="9" fill="#ffaf00"/>
-<text x="26" y="147" textLength="540" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">└──────────────────────────────────────────────────────────┘</text>
+<text x="26" y="147" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
+<text x="35" y="147" textLength="522" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> film?                                                    </text>
+<text x="557" y="147" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <rect x="620" y="152" width="9" height="9" fill="#262626"/>
 <rect x="629" y="152" width="9" height="9" fill="#262626"/>
 <rect x="638" y="152" width="9" height="9" fill="#262626"/>
@@ -148,23 +151,24 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="26" y="165" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold"> 1 Lees</text>
-<text x="143" y="165" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Gegeven:</text>
-<text x="224" y="165" textLength="396" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">duid aan wat je nodig hebt (←→ en spatie, of</text>
-<text x="143" y="183" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Gevraagd:</text>
-<text x="233" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">◂</text>
-<text x="242" y="183" textLength="135" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> het begin-uur </text>
-<text x="377" y="183" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">▸ (1/3)</text>
-<text x="26" y="201" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold"> 2 Plan</text>
-<text x="143" y="201" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">eerst −</text>
-<text x="26" y="219" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">▸3 Reken</text>
-<text x="98" y="219" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     19,45 − 95 = 18,50                                  </text>
-<text x="611" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘</text>
-<text x="8" y="237" textLength="603" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">               19.45 u − 1 u 35 min = 18.10 u                      </text>
-<text x="611" y="237" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔</text>
+<text x="26" y="165" textLength="540" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">└──────────────────────────────────────────────────────────┘</text>
+<text x="26" y="183" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold"> 1 Lees</text>
+<text x="143" y="183" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Gegeven:</text>
+<text x="224" y="183" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">duid aan wat nodig is (←→ en spatie, klik)</text>
+<text x="143" y="201" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Gevraagd:</text>
+<text x="233" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">◂</text>
+<text x="242" y="201" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> hoe lang het duurt </text>
+<text x="422" y="201" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">▸ (1/3)</text>
+<text x="26" y="219" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold"> 2 Plan</text>
+<text x="143" y="219" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">eerst +</text>
+<text x="26" y="237" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">▸3 Reken</text>
+<text x="98" y="237" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">     20,40 + 110 = 21,50                                 </text>
+<text x="611" y="237" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘</text>
+<text x="8" y="255" textLength="603" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">               20.40 u + 1 u 50 min = 22.30 u                      </text>
+<text x="611" y="255" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔</text>
 <text x="26" y="327" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold"> 4 Controle</text>
-<text x="125" y="327" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">  De film begint om </text>
-<text x="413" y="327" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> u.                                </text>
+<text x="125" y="327" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">  De film eindigt om </text>
+<text x="422" y="327" textLength="306" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4"> u.                               </text>
 <text x="44" y="381" textLength="171" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#0dbc79" font-weight="bold">✔ Deze regel klopt.</text>
 <text x="62" y="417" textLength="621" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Eén stap per regel · typ x voor maal, : voor delen · Enter = nakijken</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>

@@ -247,10 +247,15 @@ def _(d):
 def _(d):
     oefen(d, 2, 5)
     d.wacht("Vrij oefenen")
-    d.zoek(r"\d+ : \d+ =", OPNIEUW)
-    m = re.search(r"(\d+) : (\d+) =", scherm_tekst(d))
-    a, f = int(m.group(1)), int(m.group(2))
-    q = a // f
+    vraag = r"(?m)^\s+(\d+) : (\d+) ="  # de vraag zelf, niet het voorbeeld in de hint (70 : 7 = 10)
+    for _ in range(40):
+        d.zoek(vraag, OPNIEUW)
+        m = re.search(vraag, scherm_tekst(d))
+        a, f = int(m.group(1)), int(m.group(2))
+        q = a // f
+        if q > 10 and q % 10:  # een quotiënt dat mooi in tientallen en eenheden splitst
+            break
+        d.toets(*OPNIEUW)
     deel1, deel2 = f * (q // 10) * 10, f * (q % 10)
     d.toets(("tekst", f"{a} = {deel1} + {deel2}"), "Enter", ("tekst", f"{deel1} : {f} = {q // 10 * 10}"), "Enter",
             ("tekst", f"{deel2} : {f} = {q % 10}"), "Enter")
@@ -773,8 +778,8 @@ def _(d):
     for _ in range(300):
         time.sleep(0.15)
         t = verhaal(d)
-        m = re.search(r"van (\d+) m lang en (\d+) m breed\. Voor 1 m² heb je (\d+)", t)
-        if m and len(re.findall(r"\d+", t)) == 4:  # (1 m² telt mee)
+        m = re.search(r"(\d+) m lang en (\d+) m breed\. Voor 1 m² heb je (\d+)", t)  # ("is …" of "van …")
+        if m:
             break
         d.toets(*OPNIEUW)
     else:
