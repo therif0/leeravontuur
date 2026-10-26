@@ -13,6 +13,7 @@
 
 import json
 import math
+import re
 from decimal import Decimal
 from fractions import Fraction
 from pathlib import Path
@@ -20,7 +21,7 @@ from pathlib import Path
 from .. import verhaal as V
 from ..getal import fmt, fmt_groot, lees_getal
 from ..klad import lees_regel
-from ..modellen import Gegeven, Rekenstap, Verhaal
+from ..modellen import Gegeven, Keuze, Rekenstap, Speur, Verhaal
 from ..onderwerp import Onderwerp, Vraag
 from .procenten import geld
 
@@ -151,13 +152,16 @@ class Bouw:
         return d
 
     def reken_tekst(self, st, waarden, d):
+        def getal(x, eenheid=""):
+            return geld(x) if eenheid == "€" else fmt_groot(x) if abs(x) >= 10000 else fmt(x)
+
         def t(i):
             o = st.operanden[i]
             if isinstance(o, str):
                 g = self.ctx[o]
-                return geld(g.waarde) if g.eenheid == "€" else fmt(g.waarde)
-            return fmt(D(o))
-        uit = geld(d) if st.eenheid == "€" else fmt(d)
+                return getal(g.waarde, g.eenheid)
+            return getal(D(o))
+        uit = getal(d, st.eenheid)
         if st.op == "omzet":
             g = self.ctx[st.operanden[0]]
             return f"{g.tekst} = {fmt(d)} {st.eenheid}"
@@ -190,10 +194,10 @@ class Structuur:
 
 
 def _woorden(item, b):
-    for k in ("ding", "houder", "groep", "plek", "rond"):
+    for k in ("ding", "houder", "groep", "plek", "rond", "bedek"):
         if k in item:
             b.ctx[k] = V.woord(item[k])
-    for k in ("werkt", "op", "liggen", "waar", "gerecht"):
+    for k in ("werkt", "op", "liggen", "waar", "gerecht", "knipt", "wat"):
         if k in item:
             b.ctx[k] = item[k]
     if "momenten" in item:
@@ -554,8 +558,169 @@ class Omtrek(Structuur):
             b.kan(2 * l, None, "Rondom is langer dan 2 keer de lengte.")
 
 
+DAGEN = ["op maandag", "op dinsdag", "op woensdag", "op donderdag"]
+
+
+class Gemiddelde(Structuur):
+    id, naam, soort = "gemiddelde", "gemiddelde", "tel"
+
+    def bouw(self, b, variant, item):
+        n = 3 if variant == "drie" else 4
+        b.ctx.update({f"m{i + 1}": d for i, d in enumerate(DAGEN)})
+        lo, hi = item["bereik"]
+        hi = min(hi, b.p["max"] // n)
+        gem = b.getal(lo + (hi - lo) // 4, hi - (hi - lo) // 4)
+        spreiding = max(1, (hi - lo) // 4)
+        afwijking = [b.rng.randint(-spreiding, spreiding) for _ in range(n - 1)]
+        waarden = [gem + a for a in afwijking] + [gem - sum(afwijking)]
+        if min(waarden) < 1 or len(set(waarden)) < n:
+            raise Opnieuw("niet mooi")
+        ids = "abcd"[:n]
+        for i, (gid, w) in enumerate(zip(ids, waarden)):
+            b.geg(gid, w, "het aantal {ding.mv} {m" + str(i + 1) + "}")
+        b.stap("+", list(ids), "s", "alle {ding.mv} samen", "Tel eerst alles samen.",
+               "Alle dagen samen: " + " + ".join("{" + i + "}" for i in ids) + ".")
+        b.stap(":", ["s", n], "g", "het gemiddelde per dag",
+               "Gemiddeld = samen gedeeld door het aantal dagen.",
+               "Samen {s} op " + str(n) + " dagen: {s} : " + str(n) + ".")
+        if mooi(F(sum(waarden)) / (n - 1)) is not None:
+            b.extra.append(("vs_gemiddelde_aantal", F(sum(waarden)) / (n - 1),
+                            "Je deelde door het verkeerde aantal. Tel hoeveel dagen het zijn."))
+        b.kan(min(waarden), max(waarden), "Het gemiddelde ligt tussen het kleinste en het grootste getal.")
+
+
+class Snelheid(Structuur):
+    id, naam, soort = "snelheid", "snelheid, afstand en tijd", "rit"
+
+    def bouw(self, b, variant, item):
+        b.ctx["werkt"] = item["werkt"]
+        v = b.getal(*item["snelheid"])
+        b.geg("v", v, "de snelheid", "km/u", tekst=f"{fmt(v)} km per uur")
+        if variant == "minuten":
+            minuten = b.rng.choice([15, 30, 45, 90, 150])
+            b.geg("t", minuten, "hoe lang {wie} onderweg is", "min")
+            b.stap("omzet", ["t", F(1, 60)], "u", "de tijd in uren",
+                   "De snelheid is per uur: zet de minuten eerst om naar uren (60 min = 1 u).",
+                   "60 min = 1 u, dus {t} = {u} u.", "u")
+            b.stap("×", ["u", "v"], "s", "de afstand", "Elk uur kom je even ver: vermenigvuldig met het aantal uren.",
+                   "{u} uur aan {v}: {u} × {v}.", "km")
+            if minuten < 60:
+                b.kan(0, v, "In minder dan een uur kom je minder ver dan {v}.")
+            else:
+                b.kan(v, None, "In meer dan een uur kom je verder dan {v}.")
+            return
+        uren = b.getal(max(2, item["uren"][0]), max(2, item["uren"][1]))
+        if variant == "afstand":
+            b.geg("t", uren, "hoe lang {wie} onderweg is", "uur")
+            b.stap("×", ["v", "t"], "s", "de afstand", "Elk uur kom je even ver: vermenigvuldig met het aantal uren.",
+                   "{t} lang aan {v}: {v} × {t}.", "km")
+            b.kan(v, None, "In meer dan 1 uur kom je verder dan in 1 uur.")
+        else:
+            b.geg("s", v * uren, "de afstand", "km")
+            b.stap(":", ["s", "v"], "t", "de tijd in uren",
+                   "Hoeveel keer past de afstand van 1 uur in de hele afstand? Deel.",
+                   "{s} aan {v}: {s} : {v}.", "uur")
+            b.kan(0, v * uren, "Het aantal uren is kleiner dan het aantal kilometer.")
+
+
+class Tegels(Structuur):
+    id, naam, soort = "tegels", "oppervlakte (tegels)", "vloer"
+
+    def bouw(self, b, variant, item):
+        l, br = b.getal(*item["lengte"]), b.getal(*item["breedte"])
+        if l == br:
+            raise Opnieuw("vierkant")
+        b.geg("l", l, "de lengte", "m")
+        b.geg("b", br, "de breedte", "m")
+        b.stap("×", ["l", "b"], "a", "de oppervlakte", "Tegels liggen óp de vloer: reken eerst de oppervlakte uit "
+               "(lengte × breedte).", "Een rechthoek van {l} op {b}: {l} × {b}.", "m²")
+        if variant == "prijs":
+            q = b.bedrag(*item["prijs"])
+            b.geg("q", q, "de prijs per m²", "€")
+            b.stap("×", ["a", "q"], "k", "de prijs van de {bedek.mv}", "Elke m² kost evenveel: vermenigvuldig.",
+                   "{a} m² aan {q} per m²: {a} × {q}.", "€")
+            extra = 2 * (l + br) * q
+        else:
+            n = b.getal(*item["per"])
+            b.geg("n", n, "het aantal {bedek.mv} per m²")
+            b.stap("×", ["a", "n"], "t", "het aantal {bedek.mv}", "Voor elke m² evenveel: vermenigvuldig.",
+                   "{a} m² met elk {n} {bedek.mv}: {a} × {n}.")
+            extra = 2 * (l + br) * n
+        b.extra.append(("vs_omtrek", F(extra), "Je rekende met de omtrek (rondom). Tegels liggen óp de vloer: "
+                                              "oppervlakte = lengte × breedte."))
+        b.kan(b.w["l"] * b.w["b"], None, "Je hebt meer nodig dan voor 1 m².")
+
+
+class Schaal(Structuur):
+    id, naam, soort = "schaal", "schaal (kaart en werkelijkheid)", "kaart"
+
+    def bouw(self, b, variant, item):
+        b.ctx["wat"] = item["wat"]
+        k = b.getal(*item["cm"])
+        s = b.rng.choice(item["schalen"])
+        b.geg("k", k, "de lengte op de kaart", "cm")
+        b.geg("s", s, "de schaal", tekst=f"1 : {fmt_groot(s)}")
+        b.stap("×", ["k", "s"], "c", "de echte lengte in cm",
+               "1 cm op de kaart is in het echt zoveel cm als de schaal zegt: vermenigvuldig.",
+               "{k} op de kaart, schaal {s}: {k} × " + fmt_groot(s) + ".", "cm")
+        b.stap("omzet", ["c", F(1, 100000)], "km", "de echte lengte in km",
+               "Zet de cm om naar km (100 000 cm = 1 km).", "100 000 cm = 1 km, dus {c} = {km} km.", "km")
+        b.kan(F(k) / 10, None, "Met deze schaal is elke cm op de kaart minstens 100 m in het echt.")
+
+
+class Lint(Structuur):
+    id, naam, soort = "lint", "in stukken knippen (m en cm)", "lint"
+
+    def bouw(self, b, variant, item):
+        b.ctx["knipt"] = item["knipt"]
+        m = b.getal(*item["meter"])
+        c = b.rng.choice(item["stuk"])
+        if (variant == "stukken") != (m * 100 % c == 0):
+            raise Opnieuw("deelbaar")
+        b.geg("m", m, "de lengte van {de:ding}", "m")
+        b.geg("c", c, "de lengte van één stuk", "cm")
+        b.stap("omzet", ["m", 100], "cm", "de lengte in cm", "De stukken zijn in cm: zet eerst om (1 m = 100 cm).",
+               "1 m = 100 cm, dus {m} = {cm} cm.", "cm")
+        if variant == "stukken":
+            b.stap(":", ["cm", "c"], "n", "het aantal stukken", "Hoeveel keer past één stuk erin? Deel.",
+                   "{cm} cm in stukken van {c}: {cm} : {c}.")
+            b.kan(1, m * 100, "Je kan niet meer stukken knippen dan er cm zijn.")
+        else:
+            b.stap("rest", ["cm", "c"], "r", "wat er overblijft", "Deel: wat overblijft, is de rest.",
+                   "{cm} : {c}: wat overblijft, is de rest.", "cm")
+            b.kan(0, c - 1, "Wat overblijft, is korter dan één stuk.")
+
+
+class PerStuk(Structuur):
+    id, naam, soort = "per_stuk", "de prijs van één (regel van drie)", "koop"
+
+    def bouw(self, b, variant, item):
+        p = b.bedrag(*item["prijs"])
+        a = b.getal(2, min(b.p["factor"], 12))
+        if p == 1:
+            raise Opnieuw("dan is het totaal gelijk aan het aantal")
+        b.geg("a", a, "het aantal {ding.mv} in de reclame")
+        b.geg("t", a * p, "wat ze samen kosten", "€")
+        b.stap(":", ["t", "a"], "p", "de prijs van één {ding.enk}", "Reken eerst uit wat één {ding.enk} kost: deel.",
+               "{a} {ding.mv} kosten {t}: één kost {t} : {a}.", "€")
+        if variant == "drie":
+            c = b.getal(2, min(b.p["factor"], 15))
+            if c == a:
+                raise Opnieuw("hetzelfde")
+            b.geg("c", c, "hoeveel {ding.mv} {wie} wil")
+            b.stap("×", ["p", "c"], "k", "wat {wie} betaalt", "Daarna voor zoveel als {wie} wil: vermenigvuldig.",
+                   "Eén kost {p}, {wie} wil er {c}: {p} × {c}.", "€")
+            if c > a:
+                b.kan(a * p, None, "Meer {ding.mv} kosten meer dan {t}.")
+            else:
+                b.kan(0, a * p, "Minder {ding.mv} kosten minder dan {t}.")
+        else:
+            b.kan(0, a * p, "Eén {ding.enk} kost minder dan alle {a} samen.")
+
+
 STRUCTUREN = {s.id: s for s in [Samen(), Verschil(), Groepen(), Rest(), SamenDelen(), Wisselgeld(), TweeSoorten(),
-                                PerKg(), Korting(), Sparen(), Recept(), BreukVan(), Omtrek()]}
+                                PerKg(), Korting(), Sparen(), Recept(), BreukVan(), Omtrek(), Gemiddelde(),
+                                Snelheid(), Tegels(), Schaal(), Lint(), PerStuk()]}
 
 # ---- foute paden ------------------------------------------------------------------------------------------
 
@@ -573,6 +738,8 @@ DENKFOUTEN = {
     "vs_signaalwoord": "'minder' gelezen als aftrekken (het verhaal zegt iets anders)",
     "vs_rekenfout": "een rekenfout in het klad",
     "vs_kan_niet": "een antwoord dat niet kan kloppen",
+    "vs_gemiddelde_aantal": "gedeeld door het verkeerde aantal",
+    "vs_omtrek": "de omtrek berekend in plaats van de oppervlakte",
     **{f"vs_{NAAM_OP[a]}_ipv_{NAAM_OP[b]}": f"{VOLTOOID[a]} in plaats van {VOLTOOID[b]}"
        for a in VOLTOOID for b in VOLTOOID if a != b},
 }
@@ -582,7 +749,7 @@ def _reken_alles(stappen, waarden, i_wijzig=None, op_nieuw=None, ops_nieuw=None,
     """Alle stappen opnieuw met één wijziging. Geeft {id: waarde} of None als het niet kan.
     Onder '_sig' staat per stap (bewerking, operanden, uitkomst): zo herkent het klad een fout pad."""
     w = dict(waarden)
-    w["_sig"] = []
+    w["_sig"], w["_regels"] = [], []  # _regels: (stap, bewerking, operanden in volgorde, uitkomst) voor de Speurneus
     for i, st in enumerate(stappen):
         ops = [w[o] if isinstance(o, str) else F(o) for o in st.operanden]
         op = st.op
@@ -597,6 +764,7 @@ def _reken_alles(stappen, waarden, i_wijzig=None, op_nieuw=None, ops_nieuw=None,
             return None
         w[st.id] = r
         w["_sig"].append((op, sorted(ops), r))
+        w["_regels"].append((st, op, ops, r))
     return w
 
 
@@ -630,7 +798,7 @@ def foute_paden(b, gevraagd):
                 tekst = f"Het lijkt erop dat je {VOLTOOID[alt]} hebt in plaats van {VOLTOOID[st.op]}. {st.hint}"
                 voeg(f"vs_{NAAM_OP[alt]}_ipv_{NAAM_OP[st.op]}", tekst, w)
         if st.op == "omzet":
-            g = b.g[st.operanden[0]]
+            g = b.ctx[st.operanden[0]]  # een gegeven of de uitkomst van een vorige stap
             tekst = f"Je vergat {g.tekst} eerst om te zetten naar {st.eenheid}. {st.hint}"
             voeg("vs_omzetten", tekst, _reken_alles(st_, basis, i, resultaat=ops[0]))
             voeg("vs_omzetten", tekst, _reken_alles(st_, basis, i, resultaat=ops[0] / ops[1]))
@@ -908,4 +1076,284 @@ class Vraagstukken(Onderwerp):
 
 
 VRAAGSTUKKEN = Vraagstukken()
-ALLE = [VRAAGSTUKKEN]
+
+
+# ---- Speurneus: zoek de fout in het klad van een ander kind ------------------------------------------------
+
+REKENFOUT = "een rekenfout: de uitkomst van die regel klopt niet"
+SPEUR_CODES = {"vs_tussenstap", "vs_stap_vergeten", "vs_omzetten", "vs_overbodig", "vs_procent", "vs_rest",
+               *(c for c in DENKFOUTEN if "_ipv_" in c)}
+REDENEN = [REKENFOUT, DENKFOUTEN["vs_tussenstap"], DENKFOUTEN["vs_overbodig"], DENKFOUTEN["vs_omzetten"],
+           DENKFOUTEN["vs_stap_vergeten"], DENKFOUTEN["vs_plus_ipv_maal"], DENKFOUTEN["vs_min_ipv_deel"],
+           DENKFOUTEN["vs_maal_ipv_deel"], DENKFOUTEN["vs_plus_ipv_min"]]
+
+
+def _eenheden(model):
+    return {**{g.id: g.eenheid for g in model.gegevens.values()}, **{st.id: st.eenheid for st in model.stappen}}
+
+
+def _getal(x, eenheid):
+    x = F(x)
+    d = mooi(x, 3) if mooi(x, 3) is not None else D(round(float(x), 2)).normalize()
+    return geld(d) if eenheid == "€" else fmt_groot(d) if abs(d) >= 10000 else fmt(d)
+
+
+def regel_tekst(model, st, op, ops, r):
+    """Eén stap zoals een kind ze in zijn klad schrijft."""
+    e = _eenheden(model)
+    t = [_getal(x, e.get(o, "") if isinstance(o, str) else "") for o, x in zip(st.operanden, ops)]
+    uit = _getal(r, st.eenheid)
+    if op == "omzet":
+        bron = st.operanden[0]
+        return f"{_getal(ops[0], '')} {e.get(bron, '')} = {uit} {st.eenheid}".replace("  ", " ")
+    if op == "pct":
+        return f"{t[0]} % van {t[1]} = {uit}"
+    if op in ("heel", "boven", "rest"):
+        q = math.floor(ops[0] / ops[1]) if ops[1] else 0
+        rest = ops[0] - ops[1] * q
+        return f"{t[0]} : {t[1]} = {q} rest {_getal(rest, st.eenheid if op == 'rest' else '')}"
+    return f" {op} ".join(t) + f" = {uit}"
+
+
+class Speurneus(Onderwerp):
+    id = "wiskunde.vraagstukken.speurneus"
+    naam = "Speurneus: zoek de fout"
+    omschrijving = "een ander kind loste het op: zit er een fout in, en waarom?"
+    denkfouten = {"vs_speur_regel": "de foute regel niet gevonden", "vs_speur_reden": "de fout gevonden, maar niet waarom",
+                  "vs_speur_niets": "een fout gezien waar er geen was", "vs_speur_gemist": "de fout niet gezien"}
+    vast = ("structuur", "variant")
+
+    def kies_onderwerp(self, gewichten, p, rng):
+        return VRAAGSTUKKEN.kies_onderwerp(gewichten, p, rng)
+
+    def onderwerp_van_sleutel(self, sleutel):
+        delen = sleutel.split(":")
+        return delen[1].split("/")[0] if len(delen) >= 3 and delen[0] == self.id else None
+
+    def maak_met(self, p, rng, data=None):
+        for poging in range(200):
+            v = VRAAGSTUKKEN.maak_met(p, rng, data)
+            m = v.model
+            if len(m.stappen) > 4:
+                data = None
+                continue
+            soort = rng.choices(p["fouten"], weights=[{"alles_juist": 1, "rekenfout": 1.3, "denkfout": 1.7}.get(f, 1)
+                                                      for f in p["fouten"]])[0]
+            uit = getattr(self, "_" + soort)(m, rng, v)
+            if uit is None:
+                continue
+            regels, fout, reden, uitleg, sleutel = uit
+            if fout:
+                andere = [r for r in REDENEN if r != reden]
+                rng.shuffle(andere)
+                redenen = [reden] + andere[:2]
+                rng.shuffle(redenen)
+                juist = redenen.index(reden)
+                antwoord = f"{fout}{'abc'[juist]}"
+                verwacht = f"regel {fout}, reden {'abc'[juist]}"
+            else:  # ook dan 3 redenen: zo verraadt het scherm niet dat er geen fout is
+                redenen, juist, antwoord, verwacht = rng.sample(REDENEN, 3), -1, "0", "alles is juist"
+            wie = _naam(rng, tuple(n for n in NAMEN if n in v.tekst))  # iemand anders dan in het verhaal
+            model = Speur(m, wie, regels, fout, redenen, juist, uitleg)
+            return Vraag(self.id, f"{self.id}:{v.sleutel.split(':', 1)[1]}:{soort}{sleutel}", v.tekst, antwoord, "",
+                         {**v.data, "soort": soort}, invoer="speur", model=model, verwacht_tekst=verwacht)
+        raise RuntimeError("geen speurneus-vraag gevonden")
+
+    @staticmethod
+    def _juiste_regels(m):
+        return [st.reken for st in m.stappen]
+
+    def _alles_juist(self, m, rng, v):
+        return self._juiste_regels(m) + [antwoordzin(m, v.antwoord)], 0, None, "Alles klopt: elke regel en het " \
+            "antwoord.", ""
+
+    def _rekenfout(self, m, rng, v):
+        kandidaten = [i for i, st in enumerate(m.stappen) if st.op in ("+", "−", "×", ":")]
+        if not kandidaten:
+            return None
+        i = rng.choice(kandidaten)
+        st = m.stappen[i]
+        juist = F(st.uitkomst)
+        keuzes = [x for x in (juist * 10, juist / 10, juist + 10, juist - 1, juist + 1) if x > 0 and x != juist
+                  and mooi(x, 2) is not None]
+        fout = rng.choice(keuzes)
+        basis = {k: F(g.waarde) for k, g in m.gegevens.items()}
+        w = _reken_alles(m.stappen, basis, i, resultaat=fout)
+        if w is None:
+            return None
+        ops = [basis[o] if isinstance(o, str) and o in basis else w.get(o) if isinstance(o, str) else F(o)
+               for o in st.operanden]
+        regels = [x.reken for x in m.stappen[:i]] + [regel_tekst(m, st, st.op, ops, fout)]
+        regels += [regel_tekst(m, *r) for r in w["_regels"] if m.stappen.index(r[0]) > i]
+        eind = w[m.stappen[-1].id]
+        if eind < 0 or len(regels) != len(m.stappen):
+            return None
+        regels.append(antwoordzin(m, mooi(eind, 2) or D(round(float(eind), 2))))
+        uitleg = f"Regel {i + 1}: {st.reken.split(' = ')[0]} is {_getal(juist, st.eenheid)}, niet {_getal(fout, st.eenheid)}."
+        return regels, i + 1, REKENFOUT, uitleg, f"/r{i}"
+
+    def _denkfout(self, m, rng, v):
+        paden = [p for p in m.paden if p[0] in SPEUR_CODES and p[2] > 0 and mooi(p[2], 2) is not None]
+        rng.shuffle(paden)
+        juiste = self._juiste_regels(m)
+        for code, tekst, eind, w, _ in paden:
+            if code == "vs_tussenstap":
+                k = next((j for j, st in enumerate(m.stappen) if F(st.uitkomst) == eind), None)
+                if k is None:
+                    continue
+                regels = juiste[:k + 1] + [antwoordzin(m, mooi(eind, 2))]
+                return regels, len(regels), DENKFOUTEN[code], tekst, f"/{code}"
+            if "_regels" not in w:
+                continue
+            regels = [regel_tekst(m, *r) for r in w["_regels"]]
+            fout = next((j for j, r in enumerate(regels) if j >= len(juiste) or r != juiste[j]), None)
+            if fout is None:
+                continue
+            regels.append(antwoordzin(m, mooi(eind, 2)))
+            return regels, fout + 1, DENKFOUTEN[code], f"Regel {fout + 1}: {tekst}", f"/{code}"
+        return None
+
+    def lees(self, tekst):
+        """'2b', 'regel 2, reden b', '0' of 'alles is juist' → '2b' of '0'."""
+        t = (tekst or "").strip().lower()
+        if t in ("0", "alles is juist", "alles juist"):
+            return "0"
+        m = re.fullmatch(r"(?:regel\s*)?(\d+)\s*,?\s*(?:reden\s*)?([abc])", t)
+        return f"{m.group(1)}{m.group(2)}" if m else None
+
+    def lees_vraag(self, v, tekst):
+        return self.lees(tekst)
+
+    def diagnose(self, v, getal):
+        m = v.model
+        if not isinstance(getal, str) or getal == v.antwoord:
+            return None
+        if m.fout == 0:
+            return "vs_speur_niets", "Er zat geen fout in: elke regel en het antwoord klopten."
+        if getal == "0":
+            return "vs_speur_gemist", f"Er zat wel een fout in: in regel {m.fout}."
+        if not getal.startswith(str(m.fout)):
+            return "vs_speur_regel", f"De fout zit in regel {m.fout}."
+        return "vs_speur_reden", f"Goed gevonden: regel {m.fout}! Maar de reden is: {m.redenen[m.reden]}."
+
+    def uitleg(self, v):
+        m = v.model
+        return [m.uitleg] + VRAAGSTUKKEN.uitleg(Vraag(v.vaardigheid, v.sleutel, v.tekst, D(0), model=m.verhaal))[1:-1]
+
+    def tip(self, v):
+        return "Reken elke regel na. Past de bewerking bij het verhaal? Klopt het antwoord?"
+
+    def spiekbrief(self):
+        return SPIEKBRIEF
+
+
+SPEURNEUS = Speurneus()
+
+
+# ---- Schatten en controleren -------------------------------------------------------------------------------
+
+def schat(x):
+    """Afronden op 1 beduidend cijfer: 336 → 300, 7,40 → 7, 0,73 → 0,7."""
+    x = F(x)
+    if x <= 0:
+        return D(0)
+    macht = math.floor(math.log10(float(x)))
+    stap = F(10) ** macht
+    return mooi(round(x / stap) * stap, 6).normalize()
+
+
+class Schatten(Onderwerp):
+    id = "wiskunde.vraagstukken.schatten"
+    naam = "Schatten en controleren"
+    omschrijving = "ongeveer hoeveel? en: kan dat antwoord kloppen?"
+    denkfouten = {"vs_schat_10": "10 keer te groot of te klein geschat",
+                  "vs_kan_ja": "een antwoord dat niet kan kloppen, niet opgemerkt",
+                  "vs_kan_nee": "een antwoord dat kan kloppen, afgewezen"}
+    vast = ("structuur", "variant", "soort")
+
+    def kies_onderwerp(self, gewichten, p, rng):
+        return VRAAGSTUKKEN.kies_onderwerp(gewichten, p, rng)
+
+    def onderwerp_van_sleutel(self, sleutel):
+        delen = sleutel.split(":")
+        return delen[1].split("/")[0] if len(delen) >= 3 and delen[0] == self.id else None
+
+    def maak_met(self, p, rng, data=None):
+        for poging in range(200):
+            v = VRAAGSTUKKEN.maak_met(p, rng, data)
+            soort = (data or {}).get("soort") if (data or {}).get("soort") in p["soorten"] else rng.choice(p["soorten"])
+            uit = (self._ongeveer if soort == "ongeveer" else self._kan)(v, rng)
+            if uit is None:
+                continue
+            vraag, opties, juist, uitleg, sleutel = uit
+            model = Keuze(v.model, vraag, opties, juist, uitleg)
+            return Vraag(self.id, f"{self.id}:{v.sleutel.split(':', 1)[1]}:{soort}{sleutel}", v.tekst, "abc"[juist],
+                         "", {**v.data, "soort": soort}, invoer="keuze", model=model,
+                         verwacht_tekst=f"{'abc'[juist]}: {opties[juist]}")
+        raise RuntimeError("geen schat-vraag gevonden")
+
+    def _ongeveer(self, v, rng):
+        m = v.model
+        x = schat(v.antwoord)
+        if x == 0:
+            return None
+        e = m.eenheid if m.eenheid in ("€", "m", "km", "cm", "g", "kg", "ml", "m²") else ""
+        waarden = [x, schat(x * 10), schat(x / 10)]
+        if len(set(waarden)) < 3:
+            return None
+        rng.shuffle(waarden)
+        opties = [f"ongeveer {tekst_getal(w, e)}" for w in waarden]
+        juist = waarden.index(x)
+        vraag = f"Reken nog niet uit, maar schat: hoeveel is {m.gevraagd} ongeveer?"
+        uitleg = [f"Het juiste antwoord is {v.verwacht}: dat is ongeveer {tekst_getal(x, e)}."]
+        if m.controle:
+            uitleg.append(f"Controle: {m.controle[2]}")
+        return vraag, opties, juist, uitleg, ""
+
+    def _kan(self, v, rng):
+        m = v.model
+        if not m.controle:
+            return None
+        lo, hi, waarom = m.controle
+        a = F(v.antwoord)
+        fout = [w for w in (a * 10, a * 100, a / 10, a / 100) if mooi(w, 2) is not None and w > 0
+                and ((lo is not None and w < lo) or (hi is not None and w > hi))]
+        wie = _naam(rng)
+        if fout and rng.random() < 0.6:
+            w, kan = mooi(rng.choice(fout), 2), False
+        else:
+            w, kan = v.antwoord, True
+        vraag = f"{wie} zegt: \"{antwoordzin(m, w)}\" Kan dat kloppen? (Je hoeft het niet uit te rekenen.)"
+        opties = ["ja, dat kan kloppen", "nee, dat kan niet"]
+        uitleg = [waarom if not kan else f"Ja. {waarom}",
+                  f"Het juiste antwoord is {v.verwacht}."]
+        return vraag, opties, 0 if kan else 1, uitleg, f"/{'ja' if kan else 'nee'}"
+
+    def lees(self, tekst):
+        t = (tekst or "").strip().lower()[:1]
+        return t if t in ("a", "b", "c") else None
+
+    def lees_vraag(self, v, tekst):
+        return self.lees(tekst)
+
+    def diagnose(self, v, getal):
+        if not isinstance(getal, str) or getal == v.antwoord:
+            return None
+        if v.data.get("soort") == "ongeveer":
+            return "vs_schat_10", "Dat is 10 keer te groot of te klein."
+        if v.antwoord == "b":
+            return "vs_kan_ja", "Dat kan niet kloppen."
+        return "vs_kan_nee", "Dat kan wel kloppen."
+
+    def uitleg(self, v):
+        return list(v.model.uitleg)
+
+    def tip(self, v):
+        return "Rond de getallen af en reken ruw: 4 × € 2,95 is ongeveer 4 × € 3."
+
+    def spiekbrief(self):
+        return SPIEKBRIEF
+
+
+SCHATTEN = Schatten()
+ALLE = [VRAAGSTUKKEN, SPEURNEUS, SCHATTEN]

@@ -10,7 +10,7 @@ from fractions import Fraction
 from leeravontuur.kern import punten as P
 from leeravontuur.kern import verhaal as V
 from leeravontuur.kern.wiskunde import vraagstukken as VS
-from leeravontuur.terminal.vraagstuk import VraagstukInvoer
+from leeravontuur.terminal.vraagstuk import KeuzeInvoer, SpeurInvoer, VraagstukInvoer
 
 O = VS.VRAAGSTUKKEN
 JAREN = ["3", "4", "5", "6", "m1"]
@@ -137,6 +137,23 @@ class TestFoutePaden(unittest.TestCase):
                     self.assertEqual(O.diagnose(v, t / o[0].waarde)[0], "vs_overbodig")
                     return
         self.fail("geen voorbeeld met een overbodig gegeven")
+
+    def test_nieuwe_structuren(self):
+        v = maak("5", "tegels", "tegels", 3)
+        g = v.model.gegevens
+        self.assertEqual(O.diagnose(v, 2 * (g["l"].waarde + g["b"].waarde) * g["n"].waarde)[0], "vs_omtrek")
+        v = maak("5", "lint", "stukken", 3)
+        g = v.model.gegevens
+        self.assertEqual(O.diagnose(v, g["m"].waarde / g["c"].waarde)[0], "vs_omzetten")
+        v = maak("6", "schaal", "echt", 3)
+        self.assertEqual(O.diagnose(v, v.model.stappen[0].uitkomst)[0], "vs_omzetten")  # de cm niet omgezet
+        v = maak("5", "gemiddelde", "drie", 3)
+        self.assertEqual(O.diagnose(v, v.model.stappen[0].uitkomst)[0], "vs_tussenstap")
+        v = maak("6", "snelheid", "minuten", 3)
+        g = v.model.gegevens
+        self.assertEqual(O.diagnose(v, g["t"].waarde * g["v"].waarde)[0], "vs_omzetten")
+        v = maak("5", "per_stuk", "drie", 3)
+        self.assertEqual(O.diagnose(v, v.model.stappen[0].uitkomst)[0], "vs_tussenstap")
 
     def test_codes_hebben_een_omschrijving(self):
         for jaar in JAREN:
@@ -265,6 +282,80 @@ class TestInvoer(unittest.TestCase):
     def test_een_getal_typen_gaat_naar_het_klad(self):
         self.obj.toets(ord("3"))
         self.assertEqual((self.obj.fase, self.obj.buf), (2, "3"))
+
+
+class TestSpeurneus(unittest.TestCase):
+    def test_elke_soort_fout(self):
+        soorten = set()
+        for jaar in ["4", "5", "6", "m1"]:
+            for zaad in range(60):
+                v = VS.SPEURNEUS.maak(jaar, rng=random.Random(zaad))
+                m = v.model
+                soorten.add(v.data["soort"])
+                with self.subTest(jaar=jaar, zaad=zaad):
+                    self.assertEqual(len(m.regels), len([r for r in m.regels if r]))
+                    if m.fout:
+                        self.assertTrue(1 <= m.fout <= len(m.regels))
+                        self.assertEqual(len(set(m.redenen)), 3)
+                        self.assertEqual(v.antwoord, f"{m.fout}{'abc'[m.reden]}")
+                        # de foute regel is echt anders dan de juiste oplossing (of het antwoord is fout)
+                        juist = [st.reken for st in m.verhaal.stappen]
+                        self.assertTrue(m.fout > len(juist) or m.regels[m.fout - 1] != juist[m.fout - 1])
+                    else:
+                        self.assertEqual((v.antwoord, len(m.redenen)), ("0", 3))
+                    self.assertIsNone(VS.SPEURNEUS.diagnose(v, v.antwoord))
+        self.assertEqual(soorten, {"alles_juist", "rekenfout", "denkfout"})
+
+    def test_rekenfout_klopt_echt_niet(self):
+        from leeravontuur.kern.klad import lees_regel
+        for zaad in range(80):
+            v = VS.SPEURNEUS.maak("5", rng=random.Random(zaad))
+            if v.data["soort"] == "rekenfout":
+                self.assertIs(lees_regel(v.model.regels[v.model.fout - 1]).juist, False)
+            elif v.data["soort"] == "alles_juist":
+                for regel in v.model.regels[:-1]:
+                    self.assertTrue(lees_regel(regel).juist, regel)
+
+    def test_diagnose(self):
+        v = next(v for v in (VS.SPEURNEUS.maak("5", rng=random.Random(z)) for z in range(50)) if v.model.fout)
+        m = v.model
+        self.assertEqual(VS.SPEURNEUS.diagnose(v, "0")[0], "vs_speur_gemist")
+        andere = 1 if m.fout != 1 else 2
+        self.assertEqual(VS.SPEURNEUS.diagnose(v, f"{andere}a")[0], "vs_speur_regel")
+        fout_reden = "abc"[(m.reden + 1) % 3]
+        self.assertEqual(VS.SPEURNEUS.diagnose(v, f"{m.fout}{fout_reden}")[0], "vs_speur_reden")
+
+    def test_invoer(self):
+        v = next(v for v in (VS.SPEURNEUS.maak("5", rng=random.Random(z)) for z in range(50)) if v.model.fout)
+        obj = SpeurInvoer(v, VS.SPEURNEUS)
+        self.assertIsNone(obj.toets(ord(str(v.model.fout))))
+        uit = obj.toets(ord("abc"[v.model.reden]))
+        self.assertEqual(uit[1], v.antwoord)
+
+
+class TestSchatten(unittest.TestCase):
+    def test_schatten(self):
+        self.assertEqual(VS.schat(Decimal("336")), Decimal("300"))
+        self.assertEqual(VS.schat(Decimal("7.40")), Decimal("7"))
+        self.assertEqual(VS.schat(Decimal("0.73")), Decimal("0.7"))
+        for jaar in ["3", "4", "5", "6", "m1"]:
+            for zaad in range(60):
+                v = VS.SCHATTEN.maak(jaar, rng=random.Random(zaad))
+                m = v.model
+                with self.subTest(jaar=jaar, zaad=zaad):
+                    self.assertEqual(len(set(m.opties)), len(m.opties))
+                    self.assertEqual(v.antwoord, "abc"[m.juist])
+                    if v.data["soort"] == "kan" and m.juist == 1:  # nee: het getoonde antwoord kan echt niet
+                        self.assertIn("Kan dat kloppen", m.vraag)
+
+    def test_invoer(self):
+        v = VS.SCHATTEN.maak("5", rng=random.Random(2))
+        obj = KeuzeInvoer(v, VS.SCHATTEN)
+        obj.toets(ord("?"))
+        self.assertTrue(obj.tip_aan)
+        uit = obj.toets(ord(v.antwoord))
+        self.assertEqual(uit[1], v.antwoord)
+        self.assertEqual(obj.extra, {"tips": 1})
 
 
 if __name__ == "__main__":

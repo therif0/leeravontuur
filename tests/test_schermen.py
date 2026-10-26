@@ -210,7 +210,7 @@ class TestVraagstuk(Basis):
         self.addCleanup(patch.stop)
 
     def start(self):
-        return [OK, OK, "2", "1", "9", "1", "2"]
+        return [OK, OK, "2", "1", "9", "1", "1", "2"]  # Vraagstukken → Vraagstukken oplossen → Vrij → Normaal
 
     def antwoord(self, x):
         return list(str(x).replace(".", ","))
@@ -251,6 +251,34 @@ class TestVraagstuk(Basis):
         self.assertTrue(self.ergens(scherm, "het aantal"))
         for beeld in scherm.beelden:
             self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
+
+
+class TestSpeurneusEnSchatten(Basis):
+    def test_speurneus(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([OK, OK, "2", "1", "9", "2", "1", "2", "0", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "loste het zo op"))
+        self.assertTrue(self.ergens(scherm, "Alles is juist!"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["vaardigheid"], rij["gegeven"]), ("wiskunde.vraagstukken.speurneus", "alles is juist"))
+
+    def test_schatten_met_de_muis(self):
+        import random
+        from unittest import mock
+        from leeravontuur.kern.wiskunde import vraagstukken as VS
+        v = VS.SCHATTEN.maak("5", rng=random.Random(3))
+        patch = mock.patch.object(VS.SCHATTEN, "maak", return_value=v)
+        patch.start()
+        self.addCleanup(patch.stop)
+        o = self.opslag(("Test", "5"))
+        scherm, _ = self.speel([OK, OK, "2", "1", "9", "3", "1", "2"], opslag=o)
+        beeld = next(b for b in reversed(scherm.beelden) if "a) " in b).split("\n")
+        y = next(i for i, regel in enumerate(beeld) if "a) " in regel)
+        scherm, app = self.speel([OK, OK, "2", "1", "9", "3", "1", "2", ("klik", y, 8), ESC, ESC, ESC, ESC, ESC],
+                                 opslag=o)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual(rij["vaardigheid"], "wiskunde.vraagstukken.schatten")
+        self.assertTrue(rij["gegeven"].startswith("a)"))
 
 
 class TestTypen(Basis):

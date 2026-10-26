@@ -102,8 +102,8 @@ def _tokens(tekst):
             i += 1
             continue
         if c.isdigit():
-            m = re.match(r"\d+(?:[.,]\d+)*", t[i:])
-            uit.append(("getal", m.group(0), m.group(0)))
+            m = re.match(r"\d{1,3}(?: \d{3})+(?![\d.,])|\d+(?:[.,]\d+)*", t[i:])  # ook 300 000
+            uit.append(("getal", m.group(0).replace(" ", ""), m.group(0)))
             i += len(m.group(0))
             continue
         if c in "()":

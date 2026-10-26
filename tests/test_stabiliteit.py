@@ -62,8 +62,9 @@ class TestGeneratoren(TempData):
                     v = o.maak(jaar, rng=rng)  # ook in een leerjaar waar het onderwerp niet bestaat
                     self.assertLess(time.monotonic() - begin, 1.0, f"{oid} {jaar} is te traag")
                     self.assertIsInstance(v, Vraag)
-                    if v.invoer == "vraagstuk":  # een verhaal: hoogstens 4 regels in het kader
-                        self.assertLessEqual(len(verhaal.regels(v.model.zinnen, vraagstukken.BREEDTE)),
+                    if v.invoer in ("vraagstuk", "speur", "keuze"):  # een verhaal: hoogstens 4 regels in het kader
+                        model = v.model if v.invoer == "vraagstuk" else v.model.verhaal
+                        self.assertLessEqual(len(verhaal.regels(model.zinnen, vraagstukken.BREEDTE)),
                                              vraagstukken.REGELS, v.tekst)
                     else:
                         self.assertLessEqual(len(v.tekst), 108, v.tekst)  # past op 2 regels

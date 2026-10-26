@@ -26,6 +26,7 @@ PLAN_TOETS = {"+": "+", "-": "−", "−": "−", "x": "×", "X": "×", "*": "×
 KLAD_TEKENS = set("0123456789,.+-−*xX×:/()=%€ ") | set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ²³")
 ANTW_TEKENS = set("0123456789,.€ -")
 MAX_KLAD = 8
+NAAST_MAATJE, MAATJE_ONDER = 58, 9   # tot rij 9 staat rechts het maatje: daar is een regel hoogstens 58 breed
 
 
 class VraagstukInvoer:
@@ -509,3 +510,221 @@ class VraagstukInvoer:
 
 
 INVOER = {"vraagstuk": VraagstukInvoer}
+
+
+# ---- de Speurneus en de keuzevragen (schatten, kan dat kloppen?) ------------------------------------------
+
+def teken_kader(s, y, lijnen, sleutels=False, titel="Het verhaal"):
+    """Het verhaal in een kader (zonder aanduiden). Geeft de hoogte."""
+    breed = VS.BREEDTE + 4
+    s.put(y, X, f"┌ {titel} " + "─" * (breed - 4 - len(titel)) + "┐", "dim")
+    for i, regel in enumerate(lijnen):
+        yy = y + 1 + i
+        s.put(yy, X, "│", "dim")
+        s.put(yy, X + breed - 1, "│", "dim")
+        x = X + 2
+        for woord in regel:
+            for tekst, gid, sleutel in woord:
+                s.put(yy, x, tekst, "bold" if gid else "accent" if sleutel and sleutels else "")
+                x += len(tekst)
+            x += 1
+    s.put(y + len(lijnen) + 1, X, "└" + "─" * (breed - 2) + "┘", "dim")
+    return len(lijnen) + 2
+
+
+class _MetTip:
+    """Een invoer-object dat zelf de tip toont (onderaan) en bewaart of er een tip gebruikt werd."""
+    eigen_tekst = True
+    eigen_tip = True
+    tip_aan = False
+
+    def tip_h(self):
+        return 1 if self.tip_aan else 0
+
+    def teken_tip(self, s, y):
+        if self.tip_aan:
+            s.put(y, X, ("Tip: " + self.o.tip(self.v))[:76], "accent")
+
+    def bewaar(self):
+        self.extra = {"tips": 1} if self.tip_aan else None
+
+
+class SpeurInvoer(_MetTip):
+    """Kies de foute regel (of 'alles is juist'), en dan waarom (a, b of c)."""
+
+    def __init__(self, v, o):
+        self.v, self.o, self.m = v, o, v.model
+        self.lijnen = V.regels(self.m.verhaal.zinnen, VS.BREEDTE)
+        self.n = len(self.m.regels)
+        self.sel, self.regel, self.reden = 1, None, 0   # sel: 1..n, of 0 = alles juist
+        self.melding, self.melding_rol = "", "fout"
+        self.fouten, self.diagnose, self.cursor_pos = 0, None, None
+        self.uitleg_na, self.extra = [], None
+        self.hint = "↑↓ = kies een regel · Enter = hier zit de fout (of kies 'Alles is juist')"
+
+    def hoogte(self, nagekeken=False):
+        return len(self.lijnen) + 2 + 1 + self.n + (1 if self.regel is None and not nagekeken else 0) + \
+            (4 if self.regel and not nagekeken else 0) + (0 if nagekeken else self.tip_h())
+
+    def knoppen(self):
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+
+    def teken(self, s, y, uitslag=None, hulp=False):
+        bezig = uitslag is None
+        r = y + teken_kader(s, y, self.lijnen)
+        s.put(r, X, f"{self.m.wie} loste het zo op. Zit er een fout in?", "bold")
+        for i, tekst in enumerate(self.m.regels, 1):
+            yy = r + i
+            gekozen = self.regel == i or (self.regel is None and bezig and self.sel == i)
+            teken = " "
+            rol = "cursor" if gekozen and bezig else ""
+            if not bezig:
+                if i == self.m.fout:
+                    teken, rol = "✘", "fout"
+                elif self.regel == i:
+                    teken, rol = "?", "accent"
+            s.put(yy, X + 2, f"{i}. {teken} {tekst}"[:NAAST_MAATJE if yy <= MAATJE_ONDER else 76], rol)
+            if bezig and self.regel is None:
+                s.zones.voeg(yy, X, 1, 76, ("regel", i))
+        yy = r + self.n + 1
+        if bezig and self.regel is None:
+            s.put(yy, X + 2, "0.   Alles is juist!", "cursor" if self.sel == 0 else "goed")
+            s.zones.voeg(yy, X, 1, 30, ("regel", 0))
+        elif bezig:
+            s.put(yy, X, f"Wat ging er mis in regel {self.regel}?", "bold")
+            for j, reden in enumerate(self.m.redenen):
+                s.put(yy + 1 + j, X + 2, f"{'abc'[j]}) {reden}"[:76], "cursor" if self.reden == j else "")
+                s.zones.voeg(yy + 1 + j, X, 1, 76, ("reden", j))
+            yy += 3
+        if bezig:
+            self.teken_tip(s, yy + 1)
+
+    def toets(self, k):
+        if k == ord("?"):
+            self.tip_aan = True
+            return None
+        if isinstance(k, tuple):
+            if k[0] == "regel":
+                self.sel = k[1]
+                return self.kies_regel()
+            if k[0] == "reden":
+                self.reden = k[1]
+                return self.klaar()
+            return None
+        ch = teken_van(k)
+        if self.regel is None:
+            if k in (curses.KEY_UP, curses.KEY_DOWN):
+                volgorde = list(range(1, self.n + 1)) + [0]
+                i = volgorde.index(self.sel) + (1 if k == curses.KEY_DOWN else -1)
+                self.sel = volgorde[i % len(volgorde)]
+            elif ch and ch.isdigit() and int(ch) <= self.n:
+                self.sel = int(ch)
+                return self.kies_regel()
+            elif k in ENTER:
+                return self.kies_regel()
+            return None
+        if k in (curses.KEY_UP, curses.KEY_DOWN):
+            self.reden = (self.reden + (1 if k == curses.KEY_DOWN else -1)) % len(self.m.redenen)
+        elif ch and ch.lower() in "abc"[:len(self.m.redenen)]:
+            self.reden = "abc".index(ch.lower())
+            return self.klaar()
+        elif k in ENTER:
+            return self.klaar()
+        elif k in BACKSPACE:
+            self.regel = None  # toch een andere regel
+        return None
+
+    def kies_regel(self):
+        if self.sel == 0:
+            return self.klaar()
+        self.regel = self.sel
+        self.melding, self.melding_rol = "", "fout"
+        self.hint = "↑↓ of a, b, c = kies de reden · Enter = ok · Backspace = een andere regel"
+        return None
+
+    def klaar(self):
+        antwoord = "0" if self.sel == 0 else f"{self.regel}{'abc'[self.reden]}"
+        tekst = "alles is juist" if self.sel == 0 else f"regel {self.regel}, reden {'abc'[self.reden]}"
+        self.uitleg_na = [self.m.uitleg] if self.m.fout else []
+        self.bewaar()
+        return tekst, antwoord
+
+    def hulp(self, o):
+        return o.tip(self.v)
+
+    def rijen(self):
+        return []
+
+
+class KeuzeInvoer(_MetTip):
+    """Een vraag bij een verhaal met 2 of 3 keuzes (a, b, c): typen, ↑↓ en Enter, of klikken."""
+
+    def __init__(self, v, o):
+        self.v, self.o, self.m = v, o, v.model
+        self.lijnen = V.regels(self.m.verhaal.zinnen, VS.BREEDTE)
+        self.vraag = textwrap.wrap(self.m.vraag, NAAST_MAATJE)[:3]
+        self.sel, self.gekozen = 0, None
+        self.melding, self.melding_rol = "", "fout"
+        self.fouten, self.diagnose, self.cursor_pos = 0, None, None
+        self.uitleg_na, self.extra = [], None
+        letters = ", ".join("abc"[:len(self.m.opties)])
+        self.hint = f"{letters} (of ↑↓ en Enter, of klik) = kies"
+
+    def hoogte(self, nagekeken=False):
+        return len(self.lijnen) + 2 + len(self.vraag) + 1 + len(self.m.opties) + (0 if nagekeken else self.tip_h())
+
+    def knoppen(self):
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+
+    def teken(self, s, y, uitslag=None, hulp=False):
+        bezig = uitslag is None
+        r = y + teken_kader(s, y, self.lijnen)
+        for i, regel in enumerate(self.vraag):
+            s.put(r + i, X, regel, "bold")
+        r += len(self.vraag) + 1
+        for j, optie in enumerate(self.m.opties):
+            teken, rol = " ", "cursor" if bezig and self.sel == j else ""
+            if not bezig:
+                if j == self.m.juist:
+                    teken, rol = "✔", "goed"
+                elif j == self.gekozen:
+                    teken, rol = "✘", "fout"
+            s.put(r + j, X + 2, f"{teken} {'abc'[j]}) {optie}", rol)
+            if bezig:
+                s.zones.voeg(r + j, X, 1, 60, ("optie", j))
+        if bezig:
+            self.teken_tip(s, r + len(self.m.opties))
+
+    def toets(self, k):
+        if k == ord("?"):
+            self.tip_aan = True
+            return None
+        if isinstance(k, tuple):
+            if k[0] == "optie":
+                self.sel = k[1]
+                return self.klaar()
+            return None
+        ch = teken_van(k)
+        if k in (curses.KEY_UP, curses.KEY_DOWN):
+            self.sel = (self.sel + (1 if k == curses.KEY_DOWN else -1)) % len(self.m.opties)
+        elif ch and ch.lower() in "abc"[:len(self.m.opties)]:
+            self.sel = "abc".index(ch.lower())
+            return self.klaar()
+        elif k in ENTER:
+            return self.klaar()
+        return None
+
+    def klaar(self):
+        self.gekozen = self.sel
+        self.uitleg_na = list(self.m.uitleg)
+        self.bewaar()
+        return f"{'abc'[self.sel]}) {self.m.opties[self.sel]}", "abc"[self.sel]
+
+    def hulp(self, o):
+        return o.tip(self.v)
+
+    def rijen(self):
+        return []
+
+
+INVOER.update({"speur": SpeurInvoer, "keuze": KeuzeInvoer})

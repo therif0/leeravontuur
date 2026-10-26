@@ -354,7 +354,7 @@ class App:
                 ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
                 ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
                 ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER),
-                ("Vraagstukken", "lezen, plannen, rekenen in je klad en controleren", VS.ALLE, VS.VRAAGSTUKKEN)]
+                ("Vraagstukken", "oplossen in 4 stappen, Speurneus, schatten", VS.ALLE, VS.VRAAGSTUKKEN)]
 
     def wiskunde(self, kr):
         domeinen = self.domeinen()

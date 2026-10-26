@@ -1,0 +1,231 @@
+{
+ "vaardigheid": "wiskunde.vraagstukken.speurneus",
+ "omschrijving": "de fout zoeken in het klad van een ander kind (en zeggen waarom)",
+ "doelen": [],
+ "parameters": {
+  "fouten": "lijst",
+  "structuren": "lijst",
+  "max": "int",
+  "factor": "int",
+  "geld": "tekst",
+  "gram": "int",
+  "procenten": "lijst",
+  "noemers": "lijst",
+  "overbodig": "getal",
+  "intro": "getal"
+ },
+ "leerlijn": {
+  "3": null,
+  "4": {
+   "fouten": [
+    "alles_juist",
+    "rekenfout",
+    "denkfout"
+   ],
+   "structuren": [
+    "samen/samen",
+    "samen/deel",
+    "verschil/meer",
+    "verschil/erbij",
+    "groepen/totaal",
+    "groepen/per",
+    "groepen/aantal",
+    "rest/volle",
+    "rest/over",
+    "rest/nodig",
+    "samen_delen/gewoon",
+    "wisselgeld/een",
+    "wisselgeld/meer",
+    "breuk_van/gewoon",
+    "sparen/gewoon",
+    "recept/gewoon",
+    "lint/stukken",
+    "per_stuk/een"
+   ],
+   "max": 10000,
+   "factor": 12,
+   "geld": "0.5",
+   "gram": 0,
+   "procenten": [],
+   "noemers": [
+    2,
+    3,
+    4,
+    5,
+    10
+   ],
+   "overbodig": 0.25,
+   "intro": 0.3
+  },
+  "5": {
+   "fouten": [
+    "alles_juist",
+    "rekenfout",
+    "denkfout"
+   ],
+   "structuren": [
+    "samen/deel",
+    "verschil/meer",
+    "verschil/erbij",
+    "verschil/minder",
+    "groepen/totaal",
+    "groepen/per",
+    "groepen/aantal",
+    "rest/over",
+    "rest/nodig",
+    "samen_delen/gewoon",
+    "wisselgeld/meer",
+    "twee_soorten/gewoon",
+    "per_kg/gewoon",
+    "korting/gewoon",
+    "korting/alleen",
+    "sparen/gewoon",
+    "recept/gewoon",
+    "breuk_van/gewoon",
+    "breuk_van/niet",
+    "omtrek/gewoon",
+    "gemiddelde/drie",
+    "lint/stukken",
+    "lint/over",
+    "per_stuk/drie",
+    "tegels/tegels",
+    "snelheid/afstand"
+   ],
+   "max": 100000,
+   "factor": 20,
+   "geld": "0.05",
+   "gram": 250,
+   "procenten": [
+    10,
+    20,
+    25,
+    50
+   ],
+   "noemers": [
+    2,
+    3,
+    4,
+    5,
+    8,
+    10
+   ],
+   "overbodig": 0.35,
+   "intro": 0.25
+  },
+  "6": {
+   "fouten": [
+    "alles_juist",
+    "rekenfout",
+    "denkfout"
+   ],
+   "structuren": [
+    "samen/deel",
+    "verschil/erbij",
+    "verschil/minder",
+    "groepen/per",
+    "groepen/aantal",
+    "rest/nodig",
+    "samen_delen/gewoon",
+    "wisselgeld/meer",
+    "twee_soorten/gewoon",
+    "twee_soorten/wissel",
+    "per_kg/gewoon",
+    "per_kg/wissel",
+    "korting/gewoon",
+    "korting/alleen",
+    "sparen/gewoon",
+    "recept/gewoon",
+    "breuk_van/gewoon",
+    "breuk_van/niet",
+    "omtrek/gewoon",
+    "omtrek/prijs",
+    "gemiddelde/vier",
+    "lint/over",
+    "per_stuk/drie",
+    "tegels/tegels",
+    "tegels/prijs",
+    "snelheid/tijd",
+    "snelheid/minuten",
+    "schaal/echt"
+   ],
+   "max": 1000000,
+   "factor": 25,
+   "geld": "0.05",
+   "gram": 50,
+   "procenten": [
+    5,
+    10,
+    15,
+    20,
+    25,
+    30,
+    40,
+    50,
+    75
+   ],
+   "noemers": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    8,
+    10
+   ],
+   "overbodig": 0.45,
+   "intro": 0.2
+  },
+  "m1": {
+   "fouten": [
+    "alles_juist",
+    "rekenfout",
+    "denkfout"
+   ],
+   "structuren": [
+    "verschil/minder",
+    "groepen/aantal",
+    "rest/nodig",
+    "samen_delen/gewoon",
+    "twee_soorten/wissel",
+    "per_kg/wissel",
+    "korting/gewoon",
+    "korting/alleen",
+    "sparen/gewoon",
+    "recept/gewoon",
+    "breuk_van/niet",
+    "omtrek/prijs",
+    "gemiddelde/vier",
+    "tegels/prijs",
+    "snelheid/minuten",
+    "schaal/echt"
+   ],
+   "max": 1000000,
+   "factor": 30,
+   "geld": "0.01",
+   "gram": 50,
+   "procenten": [
+    5,
+    12,
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    60,
+    75
+   ],
+   "noemers": [
+    3,
+    4,
+    5,
+    6,
+    8,
+    10,
+    12
+   ],
+   "overbodig": 0.5,
+   "intro": 0.2
+  }
+ }
+}

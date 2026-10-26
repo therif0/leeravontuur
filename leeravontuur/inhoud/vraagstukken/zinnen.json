@@ -520,6 +520,212 @@
     "antwoord": "{de:rond} kost € {?}.",
     "gevraagd": "de prijs van {de:rond}"
    }
+  },
+  "gemiddelde": {
+   "drie": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}, {m2} {b} en {m3} {c}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} *gemiddeld* per dag?"
+    ],
+    "antwoord": "{wie} {werkt} gemiddeld {?} {ding.mv} per dag.",
+    "gevraagd": "het gemiddelde per dag"
+   },
+   "vier": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m1} {werkt} {wie} {a ding}, {m2} {b}, {m3} {c} en {m4} {d}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} is dat *gemiddeld* per dag?",
+     "Hoeveel {ding.mv} {werkt} {wie} *gemiddeld* per dag?"
+    ],
+    "antwoord": "{wie} {werkt} gemiddeld {?} {ding.mv} per dag.",
+    "gevraagd": "het gemiddelde per dag"
+   }
+  },
+  "snelheid": {
+   "afstand": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{wie} {werkt} {v}."
+     ],
+     [
+      "{wie} is {t} onderweg.",
+      "Dat duurt {t}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel km legt {wie} af?",
+     "Hoe ver geraakt {wie}?"
+    ],
+    "antwoord": "{wie} legt {?} km af.",
+    "gevraagd": "de afstand in km"
+   },
+   "tijd": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{wie} {werkt} {v}."
+     ],
+     [
+      "De rit is {s} lang.",
+      "Het is {s} ver."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel uur is {wie} onderweg?",
+     "Hoe lang duurt de rit?"
+    ],
+    "antwoord": "{wie} is {?} uur onderweg.",
+    "gevraagd": "de tijd in uren"
+   },
+   "minuten": {
+    "schud": true,
+    "zinnen": [
+     [
+      "{wie} {werkt} {v}."
+     ],
+     [
+      "{wie} is {t} onderweg."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel km legt {wie} af?"
+    ],
+    "antwoord": "{wie} legt {?} km af.",
+    "gevraagd": "de afstand in km"
+   }
+  },
+  "tegels": {
+   "tegels": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} legt {een:plek} van {l} lang en {b} breed.",
+      "{een:plek} is {l} lang en {b} breed."
+     ],
+     [
+      "Voor *1 m²* heb je {n bedek} nodig."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {bedek.mv} zijn er nodig?"
+    ],
+    "antwoord": "Er zijn {?} {bedek.mv} nodig.",
+    "gevraagd": "het aantal {bedek.mv}"
+   },
+   "prijs": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} legt {een:plek} van {l} lang en {b} breed."
+     ],
+     [
+      "De {bedek.mv} kosten {q} *per m²*.",
+      "*1 m²* {bedek.mv} kost {q}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel kosten alle {bedek.mv}?"
+    ],
+    "antwoord": "De {bedek.mv} kosten € {?}.",
+    "gevraagd": "de prijs van de {bedek.mv}"
+   }
+  },
+  "schaal": {
+   "echt": {
+    "schud": true,
+    "zinnen": [
+     [
+      "Op de kaart is {wat} {k} lang."
+     ],
+     [
+      "De kaart heeft schaal {s}.",
+      "De schaal van de kaart is {s}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel km is {wat} in het echt?"
+    ],
+    "antwoord": "{wat} is {?} km lang.",
+    "gevraagd": "de echte lengte in km"
+   }
+  },
+  "lint": {
+   "stukken": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {m} {ding.enk}."
+     ],
+     [
+      "{wie} {knipt} {de:ding} in stukken van {c}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel stukken krijgt {wie}?"
+    ],
+    "antwoord": "{wie} krijgt {?} stukken.",
+    "gevraagd": "het aantal stukken"
+   },
+   "over": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{wie} heeft {m} {ding.enk}."
+     ],
+     [
+      "{wie} {knipt} er zoveel mogelijk stukken van {c} van."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel cm blijft er *over*?"
+    ],
+    "antwoord": "Er blijft {?} cm over.",
+    "gevraagd": "wat er overblijft (in cm)"
+   }
+  },
+  "per_stuk": {
+   "een": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{a ding} kosten *samen* {t}.",
+      "In de reclame: {a ding} voor {t}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel kost *één* {ding.enk}?"
+    ],
+    "antwoord": "Eén {ding.enk} kost € {?}.",
+    "gevraagd": "de prijs van één {ding.enk}"
+   },
+   "drie": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{a ding} kosten *samen* {t}.",
+      "In de reclame: {a ding} voor {t}."
+     ],
+     [
+      "{wie} wil er {c} kopen."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel moet {wie} betalen?",
+     "Hoeveel kosten {c} {ding.mv}?"
+    ],
+    "antwoord": "{wie} betaalt € {?}.",
+    "gevraagd": "wat {wie} betaalt"
+   }
   }
  }
 }

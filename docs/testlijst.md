@@ -24,6 +24,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Vraagstukken:** duid met ← → en spatie de getallen aan, kies met ↓ wat er gevraagd wordt, ga met Tab naar
   het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk `?`: de belangrijke woorden lichten op.
 - [ ] **Vraagstukken:** druk `a` en typ meteen een fout antwoord: je krijgt een hulpje en een tweede kans.
+- [ ] **Vraagstukken → Speurneus:** kies met ↑↓ de foute regel (of "Alles is juist!") en dan de reden (a, b of c).
+- [ ] **Vraagstukken → Schatten en controleren:** kies a, b of c; na het nakijken staat ✔ bij het goede antwoord.
 
 ## 3. Reeks, herhalen en punten
 - [ ] **Reeks van 10** (eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.

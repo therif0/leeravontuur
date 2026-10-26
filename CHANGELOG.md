@@ -2,6 +2,20 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.17.0 — vraagstukken 2: Speurneus en schatten
+- **Speurneus** (Vraagstukken → 2): een ander kind loste een vraagstuk op. Zit er een fout in? Kies de regel waar het
+  misloopt (of "Alles is juist!") en dan waarom: een rekenfout, de verkeerde bewerking, gestopt na een tussenstap,
+  niet omgezet, een overbodig gegeven gebruikt …
+- **Schatten en controleren** (Vraagstukken → 3): "ongeveer hoeveel?" (300, 3000 of 30?) en "kan dat kloppen?"
+  bij het antwoord van een ander kind. Zonder uit te rekenen.
+- **Meer soorten vraagstukken:** gemiddelde, snelheid (km per uur, ook met minuten), tegels (oppervlakte), schaal
+  op een kaart, lint in stukken knippen (m en cm) en de regel van drie (6 kosten € 7,20, wat kosten er 10?).
+  Het programma herkent o.a. "met de omtrek gerekend in plaats van de oppervlakte" en "gedeeld door het verkeerde
+  aantal".
+- 4 nieuwe werelden: het pretpark, het zwembad, de kust en de knutselklas (nu 20).
+- In het klad mag je een groot getal ook met een spatie schrijven: `300 000`.
+- Winkel: een vergrootglas.
+
 ## 0.16.0 — vraagstukken
 - Nieuw domein **Vraagstukken**: verhaaltjes oplossen in **4 stappen**, met het schema Gegeven · Gevraagd ·
   Oplossing · Antwoord erin:

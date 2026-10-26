@@ -72,7 +72,9 @@ Nederlands (Vlaams), met komma als decimaalteken.
   `"vraagstuk"` = `terminal/vraagstuk.py` (4 stappen). Haakjes in de Oefenaar voor zo'n invoer-object: `eigen_tekst`
   (tekent zelf de vraag), `eigen_tip` (`?` gaat naar het object), `extra` (bewaard bij het antwoord en gebruikt
   voor de punten) en `uitleg_na`. `tests/test_vraagstukken.py` maakt elke structuur in elk leerjaar en kijkt na
-  dat het verhaal klopt, past (4 × 56 tekens) en mooi uitkomt.
+  dat het verhaal klopt, past (4 × 56 tekens) en mooi uitkomt. De Speurneus (invoer `"speur"`, model `Speur`)
+  maakt van een fout pad (of een rekenfout) het klad van een ander kind; Schatten (invoer `"keuze"`, model
+  `Keuze`) gebruikt de controle-regel van het vraagstuk. Beide bouwen op `VRAAGSTUKKEN.maak_met`.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in

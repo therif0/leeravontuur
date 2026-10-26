@@ -324,3 +324,25 @@ class Verhaal:
     eenheid: str = ""            # van het antwoord ('€', 'm', 'broodjes' …)
     controle: tuple | None = None  # (laagste, hoogste, uitleg): een antwoord daarbuiten kan niet kloppen
     paden: list = field(default_factory=list)  # foute paden: [(code, tekst, waarde, {stap-id: waarde})]
+
+
+@dataclass
+class Speur:
+    """De Speurneus: het klad van een ander kind bij een vraagstuk, met één fout (of geen)."""
+    verhaal: Verhaal
+    wie: str                     # wie het oploste
+    regels: list                 # het klad, regel per regel; de laatste is de antwoordzin
+    fout: int                    # het nummer van de foute regel (vanaf 1), 0 = alles juist
+    redenen: list                # 3 mogelijke redenen
+    reden: int                   # welke reden juist is (−1 als alles juist is)
+    uitleg: str                  # wat er mis is (na het nakijken)
+
+
+@dataclass
+class Keuze:
+    """Een vraag bij een vraagstuk met 2 of 3 keuzes (schatten, kan dat kloppen?)."""
+    verhaal: Verhaal
+    vraag: str
+    opties: list
+    juist: int
+    uitleg: list
