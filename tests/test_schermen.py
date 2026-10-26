@@ -9,6 +9,7 @@ from leeravontuur.kern.instellingen import Instellingen
 from leeravontuur.kern.opslag import Opslag
 from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepKlokvenster, NepScherm, ToetsenOp
+from leeravontuur.terminal.scherm import Scherm
 from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 
 ESC = "\x1b"
@@ -564,6 +565,65 @@ class TestTypen(Basis):
     def test_te_klein_venster(self):
         scherm, _ = self.speel([OK], hoogte=20, breedte=60)
         self.assertTrue(self.ergens(scherm, "te klein"))
+
+
+class TestMenuToetsen(unittest.TestCase):
+    """Het menu met lettertoetsen per keuze (de onderwerpenlijst): de aanroeper bepaalt de toetsen."""
+
+    OPTIES = [("Tafels", ""), ("Gemengd", ""), ("Hoeken", "")]
+    TOETSEN = [[("Enter", "reeks"), ("v", "vrij"), ("s", "spiekbrief"), ("t", "60 s"), ("z", "20 sommen")],
+               [("Enter", "20 sommen"), ("z", "20 sommen")],   # bv. zonder zichtbare timer
+               [("Enter", "reeks"), ("v", "vrij"), ("s", "spiekbrief")]]
+
+    def menu(self, toetsen, met_toetsen=True, **inst):
+        win = NepScherm(toetsen)
+        s = Scherm(win, Instellingen(**inst), kleuren=False)
+        try:
+            return s.menu(["Leeravontuur", "Hoofdrekenen"], "Wat wil je oefenen?", self.OPTIES,
+                          toetsen=self.TOETSEN if met_toetsen else None), win
+        except ToetsenOp:
+            return "op", win
+
+    def test_hoofdletter_en_kleine_letter(self):
+        self.assertEqual(self.menu(["v"])[0], (0, "v"))
+        self.assertEqual(self.menu(["V"])[0], (0, "v"))
+        self.assertEqual(self.menu(["j", "Z"])[0], (1, "z"))
+
+    def test_letter_die_niet_geldt_doet_niets(self):
+        self.assertEqual(self.menu(["j", "v"])[0], "op")      # Gemengd heeft geen V
+        self.assertEqual(self.menu(["h", "x", "\n"])[0], (0, "Enter"))
+
+    def test_enter_cijfer_en_klik_zijn_enter(self):
+        self.assertEqual(self.menu(["\n"])[0], (0, "Enter"))
+        self.assertEqual(self.menu(["3"])[0], (2, "Enter"))
+        self.assertEqual(self.menu([("klik", 7, 10)])[0], (1, "Enter"))
+
+    def test_voetregel_volgt_de_markering_en_is_klikbaar(self):
+        _, win = self.menu(["j"])
+        voet = [b.splitlines()[-1] for b in win.beelden]
+        self.assertIn("[V] vrij", voet[0])
+        self.assertIn("[T] 60 s", voet[0])
+        self.assertNotIn("[V]", voet[1])
+        self.assertIn("[Enter] 20 sommen", voet[1])
+        x = voet[0].index("[V]") + 1
+        self.assertEqual(self.menu([("klik", 23, x)])[0], (0, "v"))
+
+    def test_langste_voetregel_past_met_esc(self):
+        _, win = self.menu([])
+        voet = win.beelden[0].splitlines()[-1]
+        for knop in ("[Enter] reeks", "[V] vrij", "[S] spiekbrief", "[T] 60 s", "[Z] 20 sommen", "[Esc] terug"):
+            self.assertIn(knop, voet)
+        self.assertLessEqual(len(voet.rstrip()), 79)
+
+    def test_eenvoudige_tekens(self):
+        _, win = self.menu([], ascii=True)
+        self.assertTrue(all(ord(c) < 128 for c in win.beelden[0]))
+
+    def test_zonder_toetsen_zoals_vroeger(self):
+        self.assertEqual(self.menu(["2"], met_toetsen=False)[0], 1)
+        self.assertEqual(self.menu(["v"], met_toetsen=False)[0], "op")
+        _, win = self.menu([], met_toetsen=False)
+        self.assertIn("[↑↓] kiezen", win.beelden[0].splitlines()[-1])
 
 
 if __name__ == "__main__":
