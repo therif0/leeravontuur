@@ -145,10 +145,11 @@ class TestModiStarten(unittest.TestCase):
 
 
 class TestNavigatie(TestModiStarten):
-    def speel(self, toetsen):
+    def speel(self, toetsen, voorrang=None):
         self.opslag.zet_algemeen("laatste_kind", self.kind.id)
         scherm = NepScherm(toetsen)
-        app = App(scherm, self.opslag, None, kleuren=False)
+        self.scherm = scherm
+        app = App(scherm, self.opslag, voorrang, kleuren=False)
         app.s.klokvenster = None
         with mock.patch.dict(os.environ, {"LEERAVONTUUR_DEBUG": "1"}):  # geen vangnet: stoppen waar de toetsen op zijn
             try:
@@ -202,6 +203,26 @@ class TestNavigatie(TestModiStarten):
         self.assertEqual(beeld.count("Eenheden omzetten"), 1)
         self.assertIn("2. Meetkunde", beeld)
         self.assertNotIn("3. ", beeld)
+
+    def naar_hoofdrekenen(self):
+        hr = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.hoofdrekenen")
+        return [OK, OK, str(HOOFDMENU.index("Wiskunde") + 1), str(hr)]
+
+    def test_voetregel_klikbaar_in_het_echte_menu(self):
+        """Een klik op "[V] vrij" in de voetregel doet hetzelfde als de toets V."""
+        self.speel(self.naar_hoofdrekenen())
+        y, x = self.scherm.zoek("[V] vrij")
+        beelden = self.speel([*self.naar_hoofdrekenen(), ("klik", y, x + 1)])
+        self.assertIn("Hoe moeilijk?", beelden[-1])
+        self.assertEqual(self.app.s.kruimel[-1], "Vrij oefenen")
+
+    def test_voetregel_in_eenvoudige_tekens(self):
+        """Met --ascii alleen gewone tekens, ook in de labels (×) en de voetregel van het onderwerpenmenu."""
+        beelden = self.speel(self.naar_hoofdrekenen(), voorrang={"ascii": True})
+        self.assertIn("[Enter] reeks  [V] vrij", beelden[-1].splitlines()[-1])
+        self.assertIn("x en : met 10, 100, 1000", beelden[-1])
+        for beeld in beelden:
+            self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
 
     def test_geen_namen_in_de_menumodules(self):
         """Namen van vakken, domeinen en onderwerpen staan alleen in het leerplan (terminal/curriculum)."""
