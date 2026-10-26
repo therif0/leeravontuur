@@ -163,3 +163,52 @@ dan de toets.
       de onderwerptests)
 - [ ] `docs/tools/scenarios.py` en alle schermafdrukken
 - [ ] de handleiding (`opties.md` en `snelrekenen.md` gaan op in de nieuwe plekken), README, testlijst, CLAUDE.md
+
+## Bewijs (controle vóór A6)
+
+Per deel: waarmee elke regel hierboven nagekeken is. "0.19.0-vergelijking" = een databank gevuld met de echte schermen
+van 0.19.0, daarna een kopie geopend met stap A en alles vergeleken met wat 0.19.0 toont. "tmux" = een echte terminal
+van 80×24.
+
+- **Wie ben jij?** `TestStart` (eerste start, tweede start, dubbele naam, wisselen),
+  `test_pincode_instellen_en_gebruiken`, `TestToegang`, `test_broodkruimel_bij_een_nieuw_kind`; tmux: `--ouder`
+  (met `--ascii`, alles ASCII).
+- **Ouders:**
+  - Rapporten: `test_rapport_export_en_kalender`, `TestIndeling` (per vak en domein, snelrekenen apart, export),
+    0.19.0-vergelijking (samenvatting, dagen, denkfouten, fouten, status en de eerste 11 CSV-kolommen gelijk; de
+    JSON-export identiek; totaal 200 = 200 antwoorden).
+  - Kinderen: `TestKinderenBeheren` (leerjaar, timer, pincode, wissen, export).
+  - Punten (bonus) en Wachtwoord wijzigen: los nagespeeld (bonus bewaard, nieuw wachtwoord werkt).
+  - Opmerkingen: `test_opmerking_bewaren_en_lezen`.
+  - Vergrendelen: `test_vergrendelen_na_inactiviteit`.
+- **Hoofdmenu:** `test_hoofdmenu_vaste_volgorde`; tmux (volgorde, geen Opties, klik op Mijn avatar, het wiel).
+- **Wiskunde, alle 43 onderwerpen:**
+  - `test_elk_onderwerp_in_drie_keuzes`, `test_elke_modus`, `test_elke_spiekbrief`;
+  - tmux met elke toets op elk onderwerp, telkens timer aan (237 toetsen), timer uit (231) en `--ascii`
+    `--kleurenblind` (237), zonder fout. Daarbij: de voetregel past, de juiste knoppen, terug op hetzelfde
+    onderwerp, een letter die niet geldt doet niets;
+  - een eenmalige aap van 936 runs (elk onderwerp × elke toets × timer aan/uit × ASCII), zonder fout.
+- **Snelrekenen:** `test_snelrekenen_20_sommen`, `test_snelrekenen_60_seconden_met_klok`,
+  `test_zonder_timer_alleen_20_sommen`. Het eindscherm met de laatste rondes (verloop) en de records los nagespeeld.
+- **Rond een oefening:** `test_reeks_van_tien_wordt_bewaard`, `test_fouten_opnieuw_na_reeks`, `TestMuis`
+  (tabel-oefening), `test_terug_op_hetzelfde_onderwerp`, `test_broodkruimel_uit_elke_soort_oefening`.
+- **Spiekbrieven:** `test_gedeelde_spiekbrief_een_keer`; tmux (elk domein, elke spiekbrief).
+- **Verder en Herhalen:**
+  - `test_verder_met_een_oefening_van_versie_019`, `test_herhalen_en_verder`, `test_verder_hervat_vorige_oefening`;
+  - 0.19.0-vergelijking: dezelfde voorstellen, dezelfde 29 herhaalvragen, en dezelfde oefening start.
+- **Mijn avatar:** `TestWinkelSchermen` (winkel, kast, combinaties), `test_mijn_avatar`, `test_schermkleuren_*`,
+  `test_voetbalk_van_mijn_avatar`; tmux (klik op de L-regel, thema kiezen).
+- **Opties → nieuwe plekken:**
+  - `TestWeergave` (alleen dat kind, startargument niet bewaard, `--ascii` blijft voorgaan);
+  - tmux: muis uit en aan;
+  - onder Xvfb: klokvenster uit stopt het venster meteen;
+  - 0.19.0-vergelijking: de instellingen van beide kinderen zijn ongewijzigd.
+- **Toetsen die overal blijven:**
+  - `TestMenuToetsen`, `test_voetregel_klikbaar_in_het_echte_menu`, `test_voetregel_in_eenvoudige_tekens`,
+    `test_toetsen_botsen_niet`, `test_f2_klok_in_de_terminal_en_terug`, `test_klad_met_tab_en_dan_antwoorden`;
+  - tmux: klik op de voetregel ([H]), de broodkruimel op 3 niveaus, het wiel, een te klein venster en terug;
+  - onder Xvfb: De klok via de nieuwe weg, met het klokvenster en F2.
+- **Bewaard:** `test_niets_bewaard_zonder_onderwerp`, `test_elke_vaardigheid_staat_in_het_menu`; 0.19.0-vergelijking
+  (geen migratie, dezelfde rijen, `laatste_oefening` en instellingen ongewijzigd).
+- **Moet mee veranderen:** de tests zijn aangepast en groen. Scenario's, schermafdrukken en de handleiding volgen
+  in A6.
