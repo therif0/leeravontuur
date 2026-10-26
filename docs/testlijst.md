@@ -9,6 +9,12 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Rechts staat de avatar met het aantal punten.
 
 ## 2. Eén oefening per domein (telkens: **Leren & oefenen → Wiskunde → …**, *Vrij oefenen*, *Normaal*)
+- [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
+  `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. `?` drie keer: de aanpak, het
+  begin van het klad, hulp bij je klad. Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het
+  antwoord en "Zo kan het:".
+- [ ] **Hoofdrekenen → Slim × en : (splitsen):** het klad staat meteen open. Typ meteen een antwoord (Tab, Enter):
+  "Laat in je klad zien hoe je splitst". Met `70 : 7 = 10` en `21 : 7 = 3` in het klad mag je antwoorden.
 - [ ] **Eenheden:** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").
 - [ ] **Hoofdrekenen → Tafels:** een juist antwoord geeft ✔, punten en een blije avatar.
 - [ ] **Getallen → Getallenlijn:** bij "Duid … aan" beweegt de pijl met ← →, `+` zoomt in, een klik zet de pijl.
@@ -23,6 +29,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   over de vraag of de uitleg. Je kan meteen verder typen in de terminal. Klik in de terminal: de klok blijft
   zichtbaar. Bij "Zet de klok op …" sleep je de lange wijzer in het klokvenster (of ←→, ↑↓, `+`/`−`): de
   uurwijzer draait mee; fout = groene wijzers tonen hoe het moest. Terug naar het menu: het venster verdwijnt.
+- [ ] **Het klokvenster met twee schermen:** het komt op het scherm waar de terminal (Windows) of de muis (Linux)
+  staat. Ook eens op KDE/Wayland.
 - [ ] **Het klokvenster:** sleep het naar een andere plek, stop en start opnieuw: het komt weer daar. Zet de
   terminal op volledig scherm: druk `F2` en de klok staat in de terminal (nog eens `F2` = terug).
 - [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens

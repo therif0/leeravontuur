@@ -2,6 +2,27 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.19.0 — één vaste werkwijze, met klad
+- **Elke oefening werkt nu op dezelfde manier**, zodat je het maar één keer moet leren:
+  1. lees de vraag;
+  2. reken in het **klad** (`Tab`): typ rekenregels zoals op papier, bv. `70 : 7 = 10`; elke regel krijgt meteen ✔
+     of ✘, met een hint die het antwoord niet verklapt;
+  3. typ je antwoord en Enter.
+- **`?` geeft telkens een volgende tip:** eerst de aanpak, dan het begin van het klad, dan hulp bij de regel in je
+  klad die niet klopt. Nooit het antwoord.
+- **Fout? Een tweede kans**, met een hulpje als het programma de denkfout herkent, en de vraag om klad te maken.
+  Pas juist na een tweede kans = de helft van de punten, en de vraag komt in de herhaalbak. (Niet bij ja/nee en
+  <, >, =.)
+- Na het nakijken staat **"Zo kan het:"**: de oplossing in klad-regels, zoals je ze zelf kunt typen.
+- Klad bij alle rekenoefeningen: hoofdrekenen, procenten, breuk van een getal, breuken optellen, tijd, geld,
+  snelheid, rekenen met de klok, formules en schaal. Een tip kost 2 punten, een juist klad geeft er 2 bij.
+- Nieuw onderwerp **Slim × en : (splitsen)** (Hoofdrekenen → 5): `91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13`,
+  `14 × 7 = 10 × 7 + 4 × 7`, en compenseren: `99 × 6 = 100 × 6 − 6`. Hier is het klad verplicht: het gaat om de
+  aanpak. Elke juiste splitsing telt.
+- Het klad leest een breuk zonder spaties als één getal: `3/4 : 2/5` klopt nu.
+- Het klokvenster komt op de monitor waar je werkt (met meer schermen).
+- Opgelost: een klik op "Wie ben jij?" bovenaan, terwijl je je naam typte, gaf een foutmelding.
+
 ## 0.18.0 — de klok
 - Nieuw onderwerp **De klok** (Tijd, geld en snelheid → 4), met een echte **wijzerklok in een eigen venster**
   (alle cijfers, de minuten klein erbuiten, een korte blauwe uurwijzer en een lange oranje minutenwijzer):
