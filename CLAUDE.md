@@ -5,6 +5,22 @@ Voor kinderen in Vlaanderen (nu een kind in het 5de leerjaar). Alle teksten in h
 Nederlands (Vlaams), met komma als decimaalteken.
 
 ## Architectuur (niet doorbreken)
+**In één oogopslag** (elke laag kent alleen de lagen eronder):
+```
+terminal/curriculum/  leerplan: Vak › Domein › Onderwerp = de menu's (wijst naar kern-ids en schermen)
+terminal/             weergave en invoer (curses): schermen, Oefenaar, navigatie, thema, tekens
+venster/              tkinter-vensters, elk in een eigen proces (klokvenster)
+kern/                 alle logica en opslag: onderwerpen, nakijken, diagnose, klad, punten, rapporten (geen curses)
+inhoud/               data: leerlijnen per vaardigheid, vraagstukwerelden, avatar (JSON)
+```
+Gouden regels:
+1. Logica in de kern, nooit in een scherm; de kern kent geen curses, kleuren of menu's.
+2. Wat het kind ziet, komt uit data of de registry (leerlijnen, `curriculum/`), niet uit losse code per scherm.
+3. Eén codepad: toets en klik doen hetzelfde; elke oefening gebruikt dezelfde werkwijze (lees, klad, antwoord).
+4. Bewaarde gegevens zijn heilig: alleen via `kern/opslag.py`, antwoorden alleen toevoegen, ids nooit hernoemen,
+   schema alleen via een nieuwe migratie.
+5. Een kind ziet nooit een crash of verloren werk; elke nieuwe regel krijgt een test die haar bewaakt.
+
 - `leeravontuur/kern/` = alle logica: vragen maken, nakijken, diagnose, uitleg, leerlijnen, instellingen.
   **De kern importeert nooit curses** en weet niets van kleuren. Later moet er een GUI bovenop kunnen.
   Teksten die de kern teruggeeft hebben een *rol* ("accent", "dim", "goed" …), geen kleur.
@@ -135,6 +151,24 @@ Python 3.10+.
 - Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik", y, x), ("wiel", ±1)).
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
   `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.
+
+## Werkwijze met Claude (zo werken we samen)
+- **De vader beslist** over alles wat het kind of de ouder ziet: menu's, namen, volgorde, teksten, rapport, export.
+  Claude doet een voorstel met een aanbeveling en bouwt pas na zijn akkoord. Noem hem "de vader", geen namen.
+- **Een grote verandering** (een verbouwing, een nieuw vak): eerst een **inventaris** van wat er nu is (afvinkbaar,
+  zodat niets vergeten wordt), dan een **plan in fasen**. Elke fase: eigen commit(s), tests groen, en dan **stoppen**:
+  melden wat er veranderde, afwijkingen van het plan, de testoutput en wat de volgende fase doet. Pas verder na
+  zijn akkoord.
+- **Bewijs vóór "klaar":** de volledige suite (ook de lange aapjestest bij grote wijzigingen), schermen echt
+  bekeken in tmux 80×24, en bij een verbouwing een vergelijking met de vorige versie op echte gegevens (een kopie).
+  Wat niet nagekeken is, wordt niet "klaar" genoemd.
+- Een fout of iets vreemds gezien buiten de opdracht: melden en voorstellen, niet zelf de opdracht uitbreiden.
+  Een kleine fout die het kind zou merken: melden, en na akkoord meteen in dezelfde branch.
+- Testen door de vader gebeurt op een kopie van de gegevens (`LEERAVONTUUR_DATA`), met een testlijst.
+- **Claude voegt nooit samen**, maakt geen tags of releases en verwijdert geen branches: dat doet de vader.
+  De geschiedenis van `main` wordt nooit herschreven.
+- Taal: in het programma en in de documenten van de repo Vlaams-Nederlands; Claude antwoordt de vader in het
+  Engels (hij schrijft Nederlands of Engels).
 
 ## Werkwijze (uitbrengen)
 - `main` = de versie die het kind gebruikt. Er wordt nooit rechtstreeks op `main` gewerkt.
