@@ -83,6 +83,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 ## 7. Speciale standen
 - [ ] `python3 oefeningen.py --kleurenblind`: juist en fout zijn nog altijd duidelijk (✔ ✘ en andere kleuren).
 - [ ] `python3 oefeningen.py --ascii`: alles is leesbaar met gewone tekens.
+- [ ] Het **numeriek klavier** (Num Lock aan): typ in het klad `12 + 3 = 15`, `4 * 5 = 20`, `8 / 2 = 4` en
+  `9 - 1 = 8` met de toetsen van het klavier; de kleine Enter werkt in de menu's en in het antwoord.
 - [ ] De muis: klikken op een menukeuze, een knop onderaan of de broodkruimel bovenaan werkt.
 - [ ] Het venster kleiner maken dan 80×24 geeft een melding; weer groter maken werkt gewoon verder.
 

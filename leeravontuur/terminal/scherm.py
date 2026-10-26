@@ -17,6 +17,31 @@ NIETS = -1
 VENSTER_TOETSEN = {"Enter": 10, "Escape": 27, "Left": curses.KEY_LEFT, "Right": curses.KEY_RIGHT,
                    "Up": curses.KEY_UP, "Down": curses.KEY_DOWN, "BackSpace": curses.KEY_BACKSPACE, "Tab": 9}
 
+# het numeriek klavier (#11) geeft soms een eigen toetscode in plaats van het teken:
+# - Windows (PDCurses): vaste codes voor / * - + . en Enter (ncurses gebruikt die codes niet);
+# - Linux/macOS (ncurses), als de terminal het klavier in "toepassingsmodus" zet: extra toetsen met een naam
+#   (kpADD …) en een code boven KEY_MAX die per terminal verschilt; daarom op naam.
+KLAVIER_PDCURSES = {getattr(curses, naam, code): teken for naam, code, teken in (
+    ("PADSLASH", 458, ord("/")), ("PADENTER", 459, 10), ("CTL_PADENTER", 460, 10), ("ALT_PADENTER", 461, 10),
+    ("PADSTOP", 462, ord(".")), ("PADSTAR", 463, ord("*")), ("PADMINUS", 464, ord("-")), ("PADPLUS", 465, ord("+")))}
+KLAVIER = KLAVIER_PDCURSES if sys.platform == "win32" else {}
+KLAVIER_NAMEN = {"kpADD": ord("+"), "kpSUB": ord("-"), "kpMUL": ord("*"), "kpDIV": ord("/"), "kpDOT": ord("."),
+                 "kpCMA": ord(","), "kpZRO": ord("0")}
+
+
+def vertaal_klavier(k):
+    """Een toets van het numeriek klavier als het gewone teken (of Enter); elke andere toets ongewijzigd."""
+    if not isinstance(k, int):
+        return k
+    if k in KLAVIER:
+        return KLAVIER[k]
+    if k > curses.KEY_MAX:
+        try:
+            return KLAVIER_NAMEN.get(curses.keyname(k).decode("ascii", "replace"), k)
+        except (ValueError, curses.error, AttributeError):
+            return k
+    return k
+
 WIEL_OP = getattr(curses, "BUTTON4_PRESSED", 0x10000)
 WIEL_NEER = getattr(curses, "BUTTON5_PRESSED", 0x200000)
 KLIK = curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED
@@ -207,6 +232,7 @@ class Scherm:
                 if self.slot and stil >= self.slot:
                     raise Vergrendeld()
                 continue
+            k = vertaal_klavier(k)
             if k == curses.KEY_F2 and venster and venster.getekend:  # de klok in de terminal of terug in het venster
                 venster.wissel()
                 return curses.KEY_RESIZE  # opnieuw tekenen
