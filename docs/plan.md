@@ -720,64 +720,10 @@ vaardigheidsbestand.
 - **Privacy bij publicatie:** alles blijft lokaal op de computer, er worden geen gegevens verstuurd. Dat staat expliciet
   in de README. Zo is er geen AVG-probleem zolang er geen server is (zie J).
 
-## O. Geparkeerd: het leerkrachtdeel
+## O. Geparkeerd: het deel voor coaches en leerkrachten
 
-*Nog niet inplannen. Een idee om later uit te werken, na fase 23 (Examens), waarop het verder bouwt.*
-
-Een leerkracht (of de sponsor-coach) ziet wat een ouder ziet, maar dan voor **een groep leerlingen**, en kan zelf
-**opdrachten en toetsen** maken.
-
-**Rollen**
-- Er komt een rol **Leerkracht** naast Ouder, met een eigen wachtwoord (via `kern/wachtwoord.py`).
-- De leerkracht ziet niets van de avatar, de winkel of de instellingen van het kind. Wel: de antwoorden, de rapporten
-  en de denkfouten.
-
-**Groepen**
-- Een groep is een klas of een niveaugroep, met leerlingen (naam of schuilnaam) en hun leerjaar.
-- Eén leerling kan in meer groepen zitten.
-
-**Opdrachten maken**, in `kern/opdrachten.py` (data, geen curses). Een opdracht is een lijstje van:
-- **onderwerpen uit de catalogus**: de leerkracht kiest de vaardigheid, het leerjaar of niveau, het aantal vragen,
-  en eventueel een paar parameters van de leerlijn ("alleen tafel 7 en 8", "alleen oppervlakte");
-- **eigen vragen**: een vraag, een antwoord en een uitleg. Bijvoorbeeld een woordpakket voor Frans of een vraagstuk
-  van de klas.
-
-Er zijn twee soorten:
-- een **oefenopdracht**: met tip en uitleg, en met een deadline;
-- een **toets** (de motor van fase 23): geen tip of uitleg tot het einde, één poging, optioneel met een tijdslimiet,
-  en verse vragen per leerling, zodat afkijken niet helpt.
-
-Een opdracht kan bewaard worden als sjabloon en volgend jaar opnieuw gebruikt.
-
-**Uitwisselen zonder server**
-- Alles blijft offline en zonder account in de cloud: kinderen zijn minderjarig (GDPR) en het programma gebruikt
-  alleen de standaardbibliotheek.
-- De leerkracht **exporteert een opdrachtpakket**, een bestand `.leeravontuur` (JSON). Dat gaat via Smartschool,
-  e-mail of een USB-stick.
-- Bij het kind: **"Opdracht van de juf/meester"** in het hoofdmenu. Het kind importeert het pakket en maakt de
-  opdracht.
-- Na afloop maakt het kind een **resultatenbestand** met een controlecode, zodat geknoei opvalt. Dat bestand gaat
-  terug naar de leerkracht.
-- Later kan er een **gedeelde map** bij (schoolnetwerk, OneDrive) die pakketten en resultaten vanzelf oppikt.
-  Nog steeds zonder eigen server.
-
-**Klasrapport** (`kern/rapporten.py` uitbreiden)
-- Per opdracht: wie klaar is, de scores en de tijd.
-- Per leerling: hetzelfde rapport als bij de ouder.
-- **Per denkfout over de hele groep** ("8 van de 22 leerlingen rekenen met 100 in plaats van 60"). Daarmee weet de
-  leerkracht wat ze morgen opnieuw uitlegt.
-- Export als CSV of tekst, en afdrukbaar.
-
-**Volgorde (later)**
-1. Fase 23 (Examens) afwerken: de toetsmotor die ouder en leerkracht delen.
-2. Het pakketformaat voor opdrachten en resultaten, met versies en tests.
-3. Het leerkrachtdeel in de terminal (groepen, opdrachten maken, importeren, klasrapport).
-4. Eigen vragen invoeren (met een controle op het formaat), en dan een gedeelde map.
-
-**Open vragen voor later**
-- Op welke computer werkt de leerkracht: een eigen installatie, of op de pc van de klas met meer leerlingen?
-- Welke kanalen gebruikt de school (Smartschool)?
-- Moeten de ouders toestemming geven, en mogen schuilnamen?
+*Nog niet ingepland.* De volledige brainstorm (coach eerst, deelpakket van de ouder, focusplan, klad terugzien,
+opdrachten en toetsen, klasschaal, en de vragen voor de sponsor) staat in [leerkracht-coach.md](leerkracht-coach.md).
 
 ## Structuur
 ```
