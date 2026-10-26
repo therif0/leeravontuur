@@ -296,6 +296,7 @@ class TestKlok(Basis):
         v = K.KLOK.maak_met(K.KLOK.parameters("5"), random.Random(1), {"soort": soort, "t": t})
         if v.data.get("t") != t:  # de soort kiest zelf een tijd: zet ze vast
             v.data["t"], v.antwoord = t, Decimal(t)
+            v.verwacht_tekst = K.woorden(t) if soort == "naar_woorden" else K.klok12(t)
             if isinstance(v.model, Wijzerklok) and soort != "zetten":
                 v.model = Wijzerklok(t)
         patch = mock.patch.object(K.KLOK, "maak", return_value=v)
@@ -348,7 +349,7 @@ class TestKlokvenster(TestKlok):
         kv = NepKlokvenster([{"toets": "3"}, {"toets": "."}, {"toets": "2"}, {"toets": "5"}, {"toets": "Enter"}])
         scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ("wacht",), ("wacht",),
                                   ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC], opslag=o, klokvenster=kv)
-        self.assertTrue(self.ergens(scherm, "De klok staat in het klokvenster"))
+        self.assertTrue(self.ergens(scherm, "De klok staat in een eigen venster"))
         rij = o.antwoorden(app.kind.id)[-1]
         self.assertEqual((rij["gegeven"], rij["juist"]), ("3.25", 1))
         getoond = [b for b in kv.gekregen if b.get("doe") == "toon"]
@@ -378,11 +379,36 @@ class TestKlokvenster(TestKlok):
         self.assertNotIn("klokvenster", laatste)
         self.assertIn("12", laatste)  # de wijzerplaat in de terminal
 
-    def test_f2_haalt_het_venster_terug(self):
+    def test_f2_klok_in_de_terminal_en_terug(self):
         self.vaste_vraag("lezen", 3 * 60 + 25)
         kv = NepKlokvenster()
-        self.speel([*self.START, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
-        self.assertTrue(any(b.get("naar_voren") for b in kv.gekregen[1:]))
+        scherm, _ = self.speel([*self.START, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
+        vragen = [b for b in scherm.beelden if "Hoe laat is het" in b]
+        self.assertIn("Zie je hem niet? Druk F2", vragen[0])
+        self.assertNotIn("eigen venster", vragen[-1])  # nu de klok in de terminal
+        self.assertIn({"doe": "verberg"}, kv.gekregen)
+        self.assertTrue(kv.in_terminal)  # en dat blijft zo, ook bij de volgende vraag
+        kv = NepKlokvenster()
+        scherm, _ = self.speel([*self.START, curses.KEY_F2, curses.KEY_F2, ESC, ESC, ESC, ESC], klokvenster=kv)
+        self.assertIn("eigen venster", [b for b in scherm.beelden if "Hoe laat is het" in b][-1])  # terug
+
+    def test_tekst_blijft_links_van_het_venster(self):
+        self.vaste_vraag("later", 8 * 60 + 50)
+        kv = NepKlokvenster()
+        scherm, _ = self.speel([*self.START, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
+        nagekeken = next(b for b in scherm.beelden if "Niet juist" in b)
+        beeld = nagekeken.split("\n")
+        for regel in beeld[11:23]:  # onder het oefenmaatje: de feedback en de uitleg
+            self.assertLessEqual(len(regel.rstrip()), 60, regel)
+
+    def test_versleepte_plek_onthouden(self):
+        o = self.opslag(("Test", "5"))
+        bewaard = []
+        kv = NepKlokvenster([{"plek": [10, 20, 300, 390]}])
+        kv.bij_plek = bewaard.append
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        self.speel([*self.START, ("wacht",), ("wacht",), ESC, ESC, ESC, ESC], opslag=o, klokvenster=kv)
+        self.assertEqual(bewaard, [[10, 20, 300, 390]])
 
 
 class TestTypen(Basis):

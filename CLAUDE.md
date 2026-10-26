@@ -12,7 +12,11 @@ Nederlands (Vlaams), met komma als decimaalteken.
   maakt de klok als vormen (data; ook het SVG-beeld voor de handleiding), `klokvenster.py` tekent ze. De terminal
   start het via `terminal/venster.Klokvenster` en praat met JSON-regels; toetsen en klikken in het venster komen in
   `Scherm.toets` binnen alsof ze in de terminal gebeurden. Lukt het niet (geen tkinter of beeldscherm), dan tekent de
-  terminal de klok. Tests gebruiken `NepKlokvenster`; `LEERAVONTUUR_KLOKVENSTER=0` zet het uit (schermafdrukken).
+  terminal de klok. Het venster mag nooit in de weg zitten: bovenop zolang er een klok in beeld is, geen focus
+  (Windows WS_EX_NOACTIVATE, X11 focusmodel active), plek via `klokvenster.kies_plek` (naast de terminal of
+  rechtsboven, hoogstens een kwart breed; de Oefenaar houdt de tekst dan links van `LINKS`), versleepte plek bewaard
+  (`klokvenster_plek` in de databank); F2 = de klok in de terminal. Tests gebruiken `NepKlokvenster`;
+  `LEERAVONTUUR_KLOKVENSTER=0` zet het uit (schermafdrukken).
 - `leeravontuur/terminal/` = alleen weergave en invoer (curses).
   - Kleuren uitsluitend via rollen uit `terminal/thema.py`. Geen `color_pair`/`COLOR_` elders
     (een test bewaakt dit). Juist/fout krijgt altijd ook een symbool (✔ ✘ !), want er is een

@@ -429,8 +429,8 @@ def teken_pixels(s, y, x0, p):
     return (len(p) + 1) // 2
 
 
-VENSTER_TEKST = "De klok staat in het klokvenster."
-VENSTER_HULP = "Niet te zien? Druk F2 of klik hier."
+VENSTER_TEKST = "De klok staat in een eigen venster."
+VENSTER_HULP = "Zie je hem niet? Druk F2: dan komt hij hier."
 
 
 def teken_klok(s, y, klok, x0=8, actie=None, uitslag=None, juist=None, tekst=""):

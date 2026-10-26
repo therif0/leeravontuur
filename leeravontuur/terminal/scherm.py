@@ -207,9 +207,9 @@ class Scherm:
                 if self.slot and stil >= self.slot:
                     raise Vergrendeld()
                 continue
-            if k == curses.KEY_F2 and venster:  # het klokvenster zoeken
-                venster.naar_voren()
-                continue
+            if k == curses.KEY_F2 and venster and venster.getekend:  # de klok in de terminal of terug in het venster
+                venster.wissel()
+                return curses.KEY_RESIZE  # opnieuw tekenen
             if isinstance(k, str):
                 if len(k) != 1:
                     k = NIETS
@@ -230,8 +230,8 @@ class Scherm:
                     continue
                 if actie == ("klokvenster",):
                     if venster:
-                        venster.naar_voren()
-                    continue
+                        venster.wissel()
+                    return curses.KEY_RESIZE
                 if isinstance(actie, tuple) and actie[0] == "kruimel":
                     raise TerugNaar(actie[1])
                 return actie

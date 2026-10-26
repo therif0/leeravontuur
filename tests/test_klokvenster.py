@@ -13,6 +13,7 @@ from unittest import mock
 from leeravontuur.terminal.scherm import Scherm
 from leeravontuur.terminal.venster import Klokvenster
 from leeravontuur.venster import klokbeeld as K
+from leeravontuur.venster import klokvenster as KV
 
 # een nep-venster: zegt klaar, en antwoordt op elke 'toon' met een Enter en een klik
 NEP = """
@@ -59,6 +60,41 @@ class TestKlokbeeld(unittest.TestCase):
         svg = K.naar_svg(K.vormen(205, juist=460, uitslag="fout"), onder=[("✘ zo moest het", "fout")], titel="x")
         boom = ET.fromstring(svg)
         self.assertTrue(boom.tag.endswith("svg"))
+
+
+class TestPlek(unittest.TestCase):
+    """Het venster mag de oefening nooit bedekken."""
+
+    def test_rechtsboven_nooit_over_de_tekst(self):
+        # het ergste geval: een terminal van 80 kolommen over het hele scherm; de tekst blijft links van kolom 60
+        for breed, hoog in ((1024, 600), (1280, 720), (1366, 728), (1920, 1040), (2560, 1400), (3840, 2100)):
+            x, y, b, h = KV.kies_plek((0, 0, breed, hoog))
+            with self.subTest(breed=breed):
+                self.assertGreaterEqual(x, breed * 60 / 80 - 1)
+                self.assertLessEqual(x + b, breed)
+                self.assertLessEqual(y + h, hoog)
+
+    def test_naast_de_terminal(self):
+        werk = (0, 0, 1920, 1040)
+        x, y, b, h = KV.kies_plek(werk, terminal=(100, 200, 900, 700))
+        self.assertGreaterEqual(x, 900)  # rechts ernaast
+        self.assertEqual(y, 200)
+        x, y, b, h = KV.kies_plek(werk, terminal=(1000, 100, 1900, 700))
+        self.assertLessEqual(x + b, 1000)  # rechts is geen plaats: links ernaast
+        x, y, b, h = KV.kies_plek(werk, terminal=(0, 0, 1920, 1040))
+        self.assertGreaterEqual(x, 1920 * 0.75 - 1)  # volle scherm: rechtsboven
+
+    def test_bewaarde_plek(self):
+        werk = (0, 0, 1920, 1040)
+        self.assertEqual(KV.kies_plek(werk, bewaard=[10, 20, 300, 390]), (10, 20, 300, 390))
+        # niet (meer) op het scherm, of rommel: dan de gewone plek
+        for raar in ([1800, 20, 300, 390], [10, 900, 300, 390], "x", [1, 2], [None, 1, 2, 3]):
+            self.assertEqual(KV.kies_plek(werk, bewaard=raar), KV.kies_plek(werk), raar)
+
+    def test_geometrie(self):
+        self.assertEqual(KV.lees_geometrie("320x416+1030+16"), (1030, 16, 320, 416))
+        self.assertEqual(KV.lees_geometrie("300x400+-8+-30"), (-8, -30, 300, 400))
+        self.assertIsNone(KV.lees_geometrie("rommel"))
 
 
 class TestToetsenUitHetVenster(unittest.TestCase):

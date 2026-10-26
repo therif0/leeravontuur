@@ -60,7 +60,11 @@ class App:
         if aan is None:
             aan = self.inst.klokvenster and os.environ.get("LEERAVONTUUR_KLOKVENSTER", "1") != "0"
         if aan and self.s.klokvenster is None:
-            self.s.klokvenster = Klokvenster()
+            try:
+                plek = json.loads(self.opslag.algemeen("klokvenster_plek") or "null")
+            except ValueError:
+                plek = None
+            self.s.klokvenster = Klokvenster(plek, lambda p: self.opslag.zet_algemeen("klokvenster_plek", json.dumps(p)))
         elif not aan and self.s.klokvenster is not None:
             self.s.klokvenster.stop()
             self.s.klokvenster = None

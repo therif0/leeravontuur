@@ -19,10 +19,12 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Eenheden → Tabel-oefening → Oppervlakte:** de tabel heeft 2 vakjes per eenheid, met ha, a en ca eronder.
 - [ ] **Tijd, geld en snelheid → Tijd:** bij "… min = ? u ? min" typ je bv. `2 u 15 min`; bij "Hoe laat kom je
   aan?" typ je bv. `11.15`.
-- [ ] **Tijd, geld en snelheid → De klok:** rechtsboven verschijnt het **klokvenster** met een echte klok. Typen kan
-  in de terminal én in het klokvenster. Bij "Zet de klok op …" sleep je de lange wijzer in het klokvenster (of ←→,
-  ↑↓, `+`/`−`): de uurwijzer draait mee; fout = groene wijzers tonen hoe het moest. Terug naar het menu: het
-  venster verdwijnt. Sluit het venster eens: de terminal tekent de klok. `F2` haalt het terug.
+- [ ] **Tijd, geld en snelheid → De klok:** het **klokvenster** verschijnt naast de terminal of rechtsboven, nooit
+  over de vraag of de uitleg. Je kan meteen verder typen in de terminal. Klik in de terminal: de klok blijft
+  zichtbaar. Bij "Zet de klok op …" sleep je de lange wijzer in het klokvenster (of ←→, ↑↓, `+`/`−`): de
+  uurwijzer draait mee; fout = groene wijzers tonen hoe het moest. Terug naar het menu: het venster verdwijnt.
+- [ ] **Het klokvenster:** sleep het naar een andere plek, stop en start opnieuw: het komt weer daar. Zet de
+  terminal op volledig scherm: druk `F2` en de klok staat in de terminal (nog eens `F2` = terug).
 - [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens
   `4.25`: je krijgt uitleg over "half".
 - [ ] **Meetkunde → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.

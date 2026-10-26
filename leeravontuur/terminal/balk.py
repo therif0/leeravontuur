@@ -226,6 +226,10 @@ class CoordInvoer:
         return []
 
 
+HINT = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wijzer · Enter"
+HINT_VENSTER = "Sleep de lange wijzer, of ←→ ↑↓ + −. Enter = klaar"
+
+
 class KlokInvoer:
     """De wijzers van een klok zetten: ←→ per minuut, ↑↓ per 5 minuten, + en − per uur, of klik waar de lange
     wijzer moet staan. De uurwijzer draait mee, zoals op een echte klok."""
@@ -236,7 +240,7 @@ class KlokInvoer:
         self.t = int(v.model.minuten) % 720
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
-        self.hint = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wijzer · Enter"
+        self.hint = HINT
         self.naast = (10, self.X0 + 25 + 4)
         self.h = 13
 
@@ -253,6 +257,7 @@ class KlokInvoer:
                             juist=self.v.antwoord if uitslag is False else None, tekst=self.v.tekst)
         venster = h < 13  # de klok staat in het klokvenster: de feedback komt dan gewoon eronder
         self.h, self.naast = (h + 1, None) if venster else (13, (10, self.X0 + 25 + 4))
+        self.hint = HINT_VENSTER if venster else HINT
 
     def toets(self, k):
         if isinstance(k, tuple):

@@ -69,18 +69,33 @@ Op de wijzerklok is de **korte, dikke** (blauwe) wijzer het uur en de **lange** 
 
 ### Het klokvenster
 
-De klok verschijnt in een **eigen venster**, rechtsboven op het scherm: een echte leerklok met alle cijfers en
-klein de minuten erbuiten (op 1 = 05, op 2 = 10 …). In de terminal staat dan "De klok staat in het klokvenster".
+De klok verschijnt in een **eigen venster**: een echte leerklok met alle cijfers en klein de minuten erbuiten
+(op 1 = 05, op 2 = 10 …). In de terminal staat dan "De klok staat in een eigen venster".
+
+![Het klokvenster naast een terminal op het hele scherm](../beelden/klokvenster-scherm.png)
+
+Het venster zit de oefening nooit in de weg:
+
+- Het staat **bovenop** zolang er een klok in beeld is, ook als je in de terminal klikt. Is er geen klok meer
+  (een andere vraag, het menu), dan verdwijnt het.
+- Het komt **naast de terminal**, of rechtsboven op het scherm, en is hoogstens een kwart van het scherm breed. De
+  terminal houdt zijn tekst dan links, zodat het venster nooit over de vraag of de uitleg staat.
+- Het neemt de **toetsen niet over**: je typt gewoon verder in de terminal (Windows en Linux). Op macOS kan het
+  venster de toetsen wel krijgen als je erin klikt. Dat geeft niet: wat je in het klokvenster typt, gaat ook naar
+  het programma.
+- Sleep je het venster ergens anders heen, dan komt het de volgende keer weer daar (per computer).
 
 ![Het klokvenster](../beelden/klokvenster-lezen.svg)
 
-- **Typen** mag in de terminal of in het klokvenster: wat je in het klokvenster typt, gaat naar het programma.
 - **Wijzers zetten:** klik of sleep de lange wijzer in het klokvenster, of gebruik de pijltjes. De uurwijzer
   draait mee, zoals bij een echte klok. Was het fout, dan tonen groene, gestreepte wijzers hoe het moest:
 
   ![Wijzers zetten: zo moest het](../beelden/klokvenster-zetten.svg)
 
-- Is het venster weg (achter een ander venster)? Druk **F2** of klik op de tekst in de terminal.
+- **Zie je het venster niet?** Druk **F2** (of klik op de tekst in de terminal): dan komt de klok in de terminal,
+  voor de rest van de keer. Nog eens F2 = terug naar het venster. Dat is nodig als de terminal echt "volledig
+  scherm" staat op macOS (de groene knop) of met F11 op Linux: daar laat het systeem geen ander venster bovenop.
+  Een gemaximaliseerde terminal (niet volledig scherm) werkt wel.
 - Sluit het kind het venster, dan tekent de terminal de klok tot de volgende vraag zelf.
 - Geen venster mogelijk (Linux zonder `python3-tk`, via ssh), of Opties → **Klok in een eigen venster** → uit, of
   gestart met `--zonder-klokvenster`: dan tekent de terminal de klok. In ASCII-modus is de uurwijzer `#` en de

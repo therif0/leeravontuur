@@ -9,12 +9,20 @@ en een probleem met het venster het programma nooit doet vastlopen. Praten gaat 
   buiten (stdout): {"klaar": true} of {"fout": "…"} bij het starten,
                    {"toets": "Enter"} (toetsen in dit venster gaan naar het programma),
                    {"klik": [dx, dy]} (waar de lange wijzer moet staan, tegenover het midden),
+                   {"plek": [x, y, b, h]} (het kind of de ouder versleepte het venster: volgende keer weer daar),
                    {"dicht": true} (het kind sloot het venster: het programma toont de klok dan zelf)
+
+Het venster moet de oefening nooit in de weg zitten: het blijft bovenop zolang er een klok in beeld is (en
+verdwijnt daarna), neemt de toetsen niet over (Windows), en komt naast de terminal of rechtsboven, nooit breder
+dan een kwart van het scherm. De terminal houdt dan zijn tekst links (terminal/oefenaar.py, LINKS).
+Een bewaarde plek (LEERAVONTUUR_KLOKPLEK, JSON) gaat voor.
 """
 
 import json
 import math
+import os
 import queue
+import re
 import sys
 import threading
 
@@ -23,6 +31,8 @@ from leeravontuur.venster.klokbeeld import KLEUR, vormen
 TITEL = "Leeravontuur · de klok"
 TOETSEN = {"Return": "Enter", "KP_Enter": "Enter", "Escape": "Escape", "Left": "Left", "Right": "Right",
            "Up": "Up", "Down": "Down", "BackSpace": "BackSpace", "Tab": "Tab", "Delete": "BackSpace"}
+MARGE = 16
+BREED, MIN_BREED = 320, 220
 
 
 def zeg(**bericht):
@@ -43,32 +53,177 @@ def lees(binnen):
     binnen.put({"doe": "stop"})
 
 
+def maat_voor(werk):
+    """(breedte, hoogte) van het venster: hoogstens een kwart van het scherm breed."""
+    x0, y0, x1, y1 = werk
+    b = int(max(MIN_BREED, min(BREED, (x1 - x0) * 0.25 - MARGE)))
+    return b, int(min(b * 1.3, (y1 - y0) - 2 * MARGE))
+
+
+def kies_plek(werk, terminal=None, bewaard=None):
+    """Waar het venster komt: (x, y, breedte, hoogte). werk = het bruikbare deel van het scherm (x0, y0, x1, y1),
+    terminal = waar de terminal staat (als we dat weten), bewaard = een plek die het kind zelf koos."""
+    x0, y0, x1, y1 = werk
+    if bewaard:
+        try:
+            bx, by, bb, bh = (int(v) for v in bewaard)
+        except (TypeError, ValueError):
+            bx = None
+        # helemaal op het scherm (het scherm kan kleiner zijn dan vorige keer)? dan daar
+        if bx is not None and bb >= MIN_BREED // 2 and x0 <= bx and bx + bb <= x1 and y0 <= by and by + bh <= y1:
+            return bx, by, bb, bh
+    b, h = maat_voor(werk)
+    if terminal:
+        tx0, ty0, tx1, ty1 = terminal
+        y = max(y0 + MARGE, min(ty0, y1 - h - MARGE))
+        if x1 - tx1 >= b + MARGE:  # rechts naast de terminal is plaats
+            return tx1 + MARGE // 2, y, b, h
+        if tx0 - x0 >= b + MARGE:  # of links
+            return tx0 - b - MARGE // 2, y, b, h
+    # de terminal vult (bijna) het scherm: rechtsboven, waar de oefening niets toont
+    return x1 - b - MARGE, y0 + MARGE, b, h
+
+
+def lees_geometrie(tekst):
+    """'320x416+1030+16' (zoals tkinter het geeft en terug wil) → (x, y, breedte, hoogte), of None."""
+    m = re.fullmatch(r"(\d+)x(\d+)\+(-?\d+)\+(-?\d+)", str(tekst).strip())
+    if not m:
+        return None
+    b, h, x, y = (int(v) for v in m.groups())
+    return x, y, b, h
+
+
+class Windows:
+    """Wat tkinter op Windows niet zelf kan: weten waar de terminal staat, en tonen zonder de toetsen af te nemen."""
+
+    def __init__(self):
+        import ctypes
+        from ctypes import wintypes
+        self.c, self.w = ctypes, wintypes
+        self.user32 = ctypes.windll.user32
+        self.terminal = self.user32.GetForegroundWindow()  # bij het starten: het terminalvenster van het kind
+
+    def _rect(self, hwnd):
+        r = self.w.RECT()
+        if not hwnd or not self.user32.GetWindowRect(hwnd, self.c.byref(r)):
+            return None
+        return r.left, r.top, r.right, r.bottom
+
+    def werk(self):
+        r = self.w.RECT()
+        if self.user32.SystemParametersInfoW(0x0030, 0, self.c.byref(r), 0):  # SPI_GETWORKAREA (zonder taakbalk)
+            return r.left, r.top, r.right, r.bottom
+        return None
+
+    def terminal_plek(self):
+        return self._rect(self.terminal)
+
+    def geen_focus(self, root):
+        """Het venster neemt nooit de toetsen over (WS_EX_NOACTIVATE); klikken op de wijzers werkt wel."""
+        hwnd = int(root.wm_frame(), 16)
+        stijl = self.user32.GetWindowLongW(hwnd, -20)  # GWL_EXSTYLE
+        self.user32.SetWindowLongW(hwnd, -20, stijl | 0x08000000)  # WS_EX_NOACTIVATE
+
+    def terug_naar_terminal(self):
+        if self.terminal:
+            self.user32.SetForegroundWindow(self.terminal)
+
+
 class Venster:
     def __init__(self, tk):
         self.tk = tk
+        try:
+            self.win = Windows() if sys.platform == "win32" else None
+        except Exception:  # nooit stoppen om een extraatje
+            self.win = None
         self.root = tk.Tk()
         self.root.title(TITEL)
         self.root.configure(bg=KLEUR["achtergrond"])
-        self.root.minsize(260, 320)
+        self.root.minsize(MIN_BREED, int(MIN_BREED * 1.2))
+        try:
+            self.bewaard = json.loads(os.environ.get("LEERAVONTUUR_KLOKPLEK") or "null")
+        except ValueError:
+            self.bewaard = None
+        self.geplaatst = False
+        self.eigen = None  # de plek die het programma zelf zette (die hoeven we niet te bewaren)
         self.stand = {"minuten": 0, "tekst": "", "klikbaar": False}
         self.laatste_minuut = None
-        self.vraag = tk.Label(self.root, text="", font=("Helvetica", 15, "bold"), bg=KLEUR["achtergrond"],
-                              fg=KLEUR["cijfer"], wraplength=340, justify="center")
-        self.vraag.pack(side="top", fill="x", padx=10, pady=(10, 0))
-        self.doek = tk.Canvas(self.root, width=360, height=360, bg=KLEUR["achtergrond"], highlightthickness=0)
+        self.vraag = tk.Label(self.root, text="", font=("Helvetica", 14, "bold"), bg=KLEUR["achtergrond"],
+                              fg=KLEUR["cijfer"], wraplength=BREED - 20, justify="center")
+        self.vraag.pack(side="top", fill="x", padx=8, pady=(8, 0))
+        self.doek = tk.Canvas(self.root, width=BREED, height=BREED, bg=KLEUR["achtergrond"], highlightthickness=0)
         self.doek.pack(side="top", fill="both", expand=True)
-        self.onder = tk.Label(self.root, text="", font=("Helvetica", 13), bg=KLEUR["achtergrond"],
-                              fg=KLEUR["cijfer"], wraplength=340, justify="center")
-        self.onder.pack(side="top", fill="x", padx=10, pady=(0, 10))
+        self.onder = tk.Label(self.root, text="", font=("Helvetica", 12), bg=KLEUR["achtergrond"],
+                              fg=KLEUR["cijfer"], wraplength=BREED - 20, justify="center")
+        self.onder.pack(side="top", fill="x", padx=8, pady=(0, 8))
         self.root.protocol("WM_DELETE_WINDOW", self.dicht)
         self.root.bind("<Key>", self.toets)
+        self.root.bind("<Configure>", self.verplaatst)
         self.doek.bind("<Button-1>", self.klik)
         self.doek.bind("<B1-Motion>", self.klik)
         self.doek.bind("<Configure>", lambda e: self.teken())
-        b, h = 380, 460
-        x = max(0, self.root.winfo_screenwidth() - b - 40)
-        self.root.geometry(f"{b}x{h}+{x}+60")  # rechtsboven, weg van het midden van de terminal
+        if sys.platform.startswith("linux"):
+            try:  # een hulpvenster dat de toetsen niet afneemt: ze blijven bij de terminal (klikken werkt wel)
+                self.root.wm_attributes("-type", "utility")
+                self.root.wm_focusmodel("active")
+            except tk.TclError:
+                pass
         self.root.withdraw()
+        if self.win:
+            try:
+                self.root.update_idletasks()
+                self.win.geen_focus(self.root)
+            except Exception:
+                pass
+
+    # ---- waar het venster staat --------------------------------------------------------------------
+
+    def werkgebied(self):
+        if self.win:
+            try:
+                w = self.win.werk()
+                if w:
+                    return w
+            except Exception:
+                pass
+        # elders: het hele scherm, met bovenaan plaats voor een menubalk
+        return 0, 30 if sys.platform == "darwin" else 0, self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+
+    def plaats(self):
+        terminal = None
+        if self.win:
+            try:
+                terminal = self.win.terminal_plek()
+            except Exception:
+                terminal = None
+        x, y, b, h = kies_plek(self.werkgebied(), terminal, self.bewaard)
+        self.eigen = (x, y, b, h)
+        self.root.geometry(f"{b}x{h}+{x}+{y}")
+        self.vraag.configure(wraplength=b - 20)
+        self.onder.configure(wraplength=b - 20)
+
+    def verplaatst(self, e):
+        """Het kind of de ouder sleepte het venster ergens anders heen: dat onthouden (even wachten tot het stil staat)."""
+        if e.widget is not self.root or self.root.state() != "normal":
+            return
+        if getattr(self, "_wacht", None):
+            self.root.after_cancel(self._wacht)
+        self._wacht = self.root.after(700, self.bewaar_plek)
+
+    def bewaar_plek(self):
+        self._wacht = None
+        try:
+            plek = lees_geometrie(self.root.wm_geometry())
+        except self.tk.TclError:
+            return
+        if plek is None:
+            return
+        if self.eigen and all(abs(a - b) <= 40 for a, b in zip(plek, self.eigen)):
+            return  # nog (ongeveer) waar het programma het zette: de randen van het venster tellen niet
+        self.eigen = self.bewaard = plek
+        self.vraag.configure(wraplength=plek[2] - 20)
+        self.onder.configure(wraplength=plek[2] - 20)
+        zeg(plek=list(plek))
 
     # ---- tekenen -------------------------------------------------------------------------------
 
@@ -108,19 +263,29 @@ class Venster:
         elif soort == "toon":
             self.stand = b
             self.laatste_minuut = None
-            breed = max(200, self.root.winfo_width() - 40)
-            self.vraag.configure(wraplength=breed)
-            self.onder.configure(wraplength=breed)
-            if self.root.state() != "normal" or b.get("naar_voren"):
+            if self.root.state() != "normal":
+                if not self.geplaatst or not self.bewaard:  # telkens naast de terminal (die kan verschoven zijn)
+                    self.plaats()
+                    self.geplaatst = True
                 self.root.deiconify()
-                self.root.lift()
-                try:  # even bovenop, zodat het venster niet achter de terminal verdwijnt
-                    self.root.attributes("-topmost", True)
-                    self.root.after(400, lambda: self.root.attributes("-topmost", False))
-                except self.tk.TclError:
-                    pass
+                self.bovenop()
+            elif b.get("naar_voren"):
+                self.bovenop()
             self.teken()
         return True
+
+    def bovenop(self):
+        """Bovenop blijven zolang er een klok in beeld is: zo verdwijnt het niet achter de terminal."""
+        try:
+            self.root.attributes("-topmost", True)
+        except self.tk.TclError:
+            pass
+        self.root.lift()
+        if self.win:  # de toetsen blijven bij de terminal
+            try:
+                self.root.after(50, self.win.terug_naar_terminal)
+            except Exception:
+                pass
 
     # ---- het kind --------------------------------------------------------------------------------
 

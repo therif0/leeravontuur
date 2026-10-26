@@ -44,6 +44,7 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
               "plek": "Typ bv. C4 (of (3, −2) in een assenstelsel).",
               "klokwoord": "Typ bv. kwart over drie, half vier of vijf voor half vier."}
 VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
+LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
 INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen invoer-object
 
 
@@ -234,6 +235,8 @@ class Oefenaar:
                         breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
+            if s.klokvenster is not None and s.klokvenster.toont():  # het klokvenster staat rechts: tekst links
+                breed = min(breed, LINKS - fx)
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
                 if eigen:  # de melding mag over 3 regels (dan valt de hint weg)

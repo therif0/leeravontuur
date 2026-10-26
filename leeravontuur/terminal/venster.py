@@ -22,7 +22,10 @@ START_S = 6.0  # zo lang wachten we hoogstens op het venster (één keer per ses
 class Klokvenster:
     OPDRACHT = ["-m", "leeravontuur.venster.klokvenster"]  # na sys.executable (een test kan iets anders starten)
 
-    def __init__(self):
+    def __init__(self, plek=None, bij_plek=None):
+        """plek = waar het kind het venster vorige keer zette (x, y, b, h), bij_plek(plek) = die plek bewaren."""
+        self.plek, self.bij_plek = plek, bij_plek
+        self.in_terminal = False  # het kind drukte F2: de klok in de terminal (tot het weer F2 drukt)
         self.proc = None
         self.kapot = None       # waarom het venster niet (meer) werkt, of None
         self.dicht = False      # het kind sloot het venster: tot de volgende klok tekent de terminal
@@ -36,7 +39,8 @@ class Klokvenster:
 
     def _start(self):
         wortel = str(Path(__file__).resolve().parent.parent.parent)
-        env = dict(os.environ, PYTHONPATH=os.pathsep.join(p for p in (wortel, os.environ.get("PYTHONPATH")) if p))
+        env = dict(os.environ, PYTHONPATH=os.pathsep.join(p for p in (wortel, os.environ.get("PYTHONPATH")) if p),
+                   LEERAVONTUUR_KLOKPLEK=json.dumps(self.plek))
         try:
             self.proc = subprocess.Popen(
                 [sys.executable, *self.OPDRACHT], stdin=subprocess.PIPE,
@@ -123,7 +127,7 @@ class Klokvenster:
     def toon(self, minuten, tekst="", klikbaar=False, juist=None, uitslag=None, onder="", onder_rol=""):
         """Zet de klok in het venster. Geeft True als dat lukte (dan toont de terminal alleen een verwijzing)."""
         self.getekend = True
-        if self.kapot or self.dicht:
+        if self.kapot or self.dicht or self.in_terminal:
             return False
         if self.proc is None and not self._start():
             return False
@@ -148,12 +152,20 @@ class Klokvenster:
                 self._stuur(doe="verberg")
             self.zichtbaar, self.laatste = False, None
 
-    def naar_voren(self):
-        """Het kind zoekt het venster (F2 of een klik op de verwijzing)."""
-        self.dicht = False
-        if self.laatste and self.proc is not None and not self.kapot:
-            self._stuur(doe="toon", **{**self.laatste, "naar_voren": True})
-            self.zichtbaar = True
+    def toont(self):
+        """Staat de klok van dit beeld in het venster? (Dan houdt de terminal zijn tekst links.)"""
+        return self.getekend and self.zichtbaar and not (self.kapot or self.dicht or self.in_terminal)
+
+    def wissel(self):
+        """F2 (of een klik op de verwijzing): ziet het kind het venster niet (bv. een terminal op het volle
+        scherm), dan komt de klok in de terminal; nog eens F2 = terug in het venster."""
+        if self.in_terminal or self.dicht:
+            self.in_terminal = self.dicht = False
+        else:
+            self.in_terminal = True
+            if self.zichtbaar and self.proc is not None:
+                self._stuur(doe="verberg")
+            self.zichtbaar, self.laatste = False, None
 
     def volgende(self):
         """Het volgende bericht uit het venster, of None."""
@@ -163,4 +175,11 @@ class Klokvenster:
             return None
         if b.get("dicht"):
             self.dicht, self.zichtbaar, self.laatste = True, False, None
+        elif "plek" in b:  # versleept: onthouden voor de volgende keer (hier, niet in de leesdraad: de databank)
+            self.plek = b["plek"]
+            if self.bij_plek:
+                try:
+                    self.bij_plek(self.plek)
+                except Exception as e:  # een plek bewaren mag nooit iets stukmaken
+                    foutlog.schrijf("klokvenster: plek bewaren", e)
         return b
