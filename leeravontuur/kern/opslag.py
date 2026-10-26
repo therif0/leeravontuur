@@ -481,9 +481,17 @@ class Opslag:
                            "AND dag >= ?", (kind_id, vaardigheid, str(sinds)))
         return {r[0] for r in rijen}
 
-    def recente_antwoorden(self, kind_id, vaardigheid, aantal=200):
-        rijen = self._lees("SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ? "
-                           "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, aantal))
+    def recente_antwoorden(self, kind_id, vaardigheid, aantal=200, zonder_modi=()):
+        zonder = f" AND modus NOT IN ({', '.join('?' * len(zonder_modi))})" if zonder_modi else ""
+        rijen = self._lees(f"SELECT * FROM antwoorden WHERE kind_id = ? AND vaardigheid = ?{zonder} "
+                           "ORDER BY tijdstip DESC, rowid DESC LIMIT ?", (kind_id, vaardigheid, *zonder_modi, aantal))
+        return [dict(r) for r in rijen]
+
+    def recente_antwoorden_van_sessies(self, kind_id, sessie_vaardigheid, aantal=200):
+        """De nieuwste antwoorden uit sessies met deze vaardigheid (bv. snelrekenen.tafels), wat de vragen ook waren."""
+        rijen = self._lees("SELECT a.* FROM antwoorden a JOIN sessies s ON s.id = a.sessie_id "
+                           "WHERE a.kind_id = ? AND s.vaardigheid = ? ORDER BY a.tijdstip DESC, a.rowid DESC LIMIT ?",
+                           (kind_id, sessie_vaardigheid, aantal))
         return [dict(r) for r in rijen]
 
     def al_juist(self, kind_id, sleutel):

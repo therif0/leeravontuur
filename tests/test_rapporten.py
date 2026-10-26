@@ -191,6 +191,58 @@ class TestIndeling(unittest.TestCase):
         self.assertIn("    Optellen en aftrekken, snelrekenen: 999 sommen, 100 % juist", regels)
         self.assertEqual(sum("gemiddeld 99 s" in t for t in regels), len(r.per_vaardigheid))  # nooit weggevallen
 
+    def test_status_snelrekenen_apart(self):
+        """De gewone status telt alleen de gewone oefeningen; snelrekenen heeft een eigen regel onder zijn onderwerp."""
+        status = {v.id: (st, n, pct) for v, st, n, _, pct in self.r.status}
+        self.assertEqual(status[self.T], ("bezig", 3, 67))   # vroeger 8: de 4 + 1 snelsommen telden mee
+        self.assertEqual(status[self.PM], ("bezig", 2, 50))  # zonder de som uit Gemengd
+        self.assertEqual(status[self.DH], ("nog niet gezien", 0, 0))  # zijn enige som was in Gemengd
+        self.assertEqual({i: (st, n, pct) for i, st, n, _, pct in self.r.snelstatus},
+                         {"snelrekenen.tafels": ("bezig", 4, 100), "snelrekenen.gemengd": ("bezig", 3, 67)})
+        tekst = self.deel(rapporten.regels(self.r, curriculum.indeling()), "STATUS PER VAARDIGHEID (alle tijd)")
+        i = tekst.index("    Tafels: bezig")
+        self.assertEqual(tekst[i + 1:i + 4], ["      3 vragen · laatst 20/10/2026 · laatste 20: 67 % juist",
+                                              "    Tafels, snelrekenen: bezig",
+                                              "      4 sommen · laatst 20/10/2026 · laatste 20: 100 % juist"])
+        self.assertIn("    Gemengd, snelrekenen: bezig", tekst)
+        self.assertFalse(any("Plus en min, snelrekenen" in t or "Optellen en aftrekken, snelrekenen" in t
+                             for t in tekst))  # nog geen snelronde plus en min: geen regel
+        plat = self.deel(rapporten.regels(self.r), "STATUS PER VAARDIGHEID (alle tijd)")
+        self.assertIn("  Snelrekenen: Tafels: bezig · 4 sommen · laatst 20/10/2026 · laatste 20: 100 % juist", plat)
+
+    def test_status_een_snelle_ronde_verandert_de_gewone_status_niet(self):
+        klok.zet(datetime(2026, 10, 21, 15, 0, tzinfo=CET))
+        s = self.o.start_sessie(self.kind.id, "snel60", "snelrekenen.tafels", "5")
+        for i in range(30):  # een gehaaste ronde: veel fout
+            self.o.bewaar_antwoord(s, self.kind.id, self.T, "5", "snel60", f"haast{i}", "vraag", "1", i % 2,
+                                   None, 1000, verwacht="2")
+        klok.zet(None)
+        r = rapporten.maak_rapport(self.o, self.kind, self.r.periode)
+        self.assertEqual([rij[1:] for rij in r.status], [rij[1:] for rij in self.r.status])
+        self.assertEqual({i: (n, pct) for i, _, n, _, pct in r.snelstatus}["snelrekenen.tafels"], (34, 50))
+
+    def test_status_zonder_snelrekenen_geen_extra_regel(self):
+        o = Opslag()
+        kind = o.nieuw_kind("Amira", "5")
+        s = o.start_sessie(kind.id, "reeks", self.T, "5")
+        o.bewaar_antwoord(s, kind.id, self.T, "5", "reeks", "t1", "vraag", "1", 1, None, 2000, verwacht="1")
+        r = rapporten.maak_rapport(o, kind, self.r.periode)
+        self.assertEqual(r.snelstatus, [])
+        self.assertFalse(any("snelrekenen" in t.lower() for t, _ in rapporten.regels(r, curriculum.indeling())))
+
+    def test_status_past_in_de_lezer(self):
+        """STATUS: elke regel past in de lezer (72 tekens), ook met de langste namen en veel antwoorden."""
+        dag = date(2026, 10, 20)
+        r = rapporten.Rapport(self.kind, self.r.periode, [])
+        from leeravontuur.kern import vaardigheden
+        r.status = [(v, "nog niet gezien" if i % 3 == 0 else "beheerst", 200, dag, 100)
+                    for i, v in enumerate(vaardigheden.REGISTER.values())]
+        r.snelstatus = [(f"snelrekenen.{s}", "beheerst", 200, dag, 100) for s in ("tafels", "plusmin", "gemengd")]
+        regels = [t for t, _ in rapporten.regels(r, curriculum.indeling())]
+        for tekst in regels:
+            self.assertLessEqual(len(tekst), 72, tekst)
+        self.assertEqual(sum("200 sommen" in t for t in regels), 3)
+
     def test_export_zelfde_kolommen_plus_vak_en_domein(self):
         with tempfile.TemporaryDirectory() as tmp:
             csv_pad, txt_pad = rapporten.exporteer(self.r, tmp, curriculum.indeling())

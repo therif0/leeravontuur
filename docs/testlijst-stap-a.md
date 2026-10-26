@@ -122,6 +122,9 @@ Ga naar Wiskunde › Hoofdrekenen en loop met ↑↓ door de onderwerpen.
       staan samen onder "Maten".
 - [ ] Snelrekenen staat **apart** onder zijn onderwerp ("Tafels, snelrekenen: … sommen"), niet meer meegeteld bij
       de gewone reeksen. Gemengd staat bij Gemengd.
+- [ ] STATUS PER VAARDIGHEID (alle tijd): de gewone regel (bv. "Tafels: beheerst") telt alleen de gewone
+      oefeningen. Snelrekenen heeft eronder een eigen regel ("Tafels, snelrekenen: … sommen"). Speel een snelle
+      ronde met veel fouten: de gewone regel van Tafels verandert niet.
 - [ ] De samenvatting bovenaan (vragen, juist, dagen) is dezelfde als in 0.19.0.
 - [ ] Exporteren (E): de CSV opent in Excel en heeft dezelfde kolommen als vroeger, met achteraan **vak** en
       **domein**.

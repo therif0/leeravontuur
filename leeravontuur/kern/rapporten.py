@@ -87,7 +87,8 @@ class Rapport:
     per_dag: dict = field(default_factory=dict)          # "JJJJ-MM-DD" -> [aantal, juist]
     per_vaardigheid: dict = field(default_factory=dict)  # bron -> {"aantal", "juist", "tijd_ms", "modi": Counter}
     denkfouten: Counter = field(default_factory=Counter)
-    status: list = field(default_factory=list)        # [(vaardigheid, status, aantal, laatst, pct)]
+    status: list = field(default_factory=list)        # [(vaardigheid, status, aantal, laatst, pct)], zonder snelrekenen
+    snelstatus: list = field(default_factory=list)    # [(snelrekenen.<soort>, status, aantal, laatst, pct)]
     herhaalbak: int = 0
     herhaal_vandaag: int = 0
 
@@ -99,7 +100,9 @@ class Rapport:
 def maak_rapport(opslag, kind, periode):
     rijen = opslag.antwoorden(kind.id, periode.van.isoformat(), periode.tot.isoformat())
     r = Rapport(kind, periode, rijen)
-    r.status = herhaling.overzicht(opslag, kind.id, list(vaardigheden.REGISTER.values()))
+    # de status telt snelrekenen apart (zoals PER ONDERWERP): een snelle ronde verandert de gewone status niet
+    r.status = herhaling.overzicht(opslag, kind.id, list(vaardigheden.REGISTER.values()), zonder_modi=SNEL)
+    r.snelstatus = herhaling.overzicht_sessies(opslag, kind.id, [SR.vaardigheid(s) for s in SR.SOORTEN])
     r.herhaalbak = len(opslag.herhaalbak(kind.id))
     r.herhaal_vandaag = len(herhaling.aan_de_beurt(opslag, kind.id))
     # snelrekenen telt apart: een snelrekensom is bewaard met de vaardigheid van de vraag (bv. de tafels), de sessie
@@ -259,24 +262,34 @@ def regels(r, indeling=None):
 
 
 def _status_regels(r, indeling=None):
-    """Status per vaardigheid (los van de periode) en de herhaalbak; met een indeling per vak en domein."""
+    """Status per vaardigheid (los van de periode) en de herhaalbak; met een indeling per vak en domein.
+    Snelrekenen heeft een eigen regel (onder zijn onderwerp); met een indeling past elke regel in de lezer."""
     if not r.status:
         return []
     uit = [("", ""), ("STATUS PER VAARDIGHEID (alle tijd)", "accent")]
+    items = ([(v.id, (v.naam, st, n, laatst, pct)) for v, st, n, laatst, pct in r.status] +
+             [(i, (naam(i), st, n, laatst, pct)) for i, st, n, laatst, pct in r.snelstatus])
 
     def regel(label, item):
-        _, (v, st, n, laatst, pct) = item
+        bron, (_, st, n, laatst, pct) = item
+        snel = bron.startswith("snelrekenen.")
+        if snel and indeling is not None:
+            label = f"{label}, snelrekenen"
         rol = "goed" if st == herhaling.BEHEERST else "dim" if st == herhaling.NIET_GEZIEN else ""
-        extra = "" if not n else f" · {n} vragen · laatst {datum(laatst)} · laatste 20: {pct} % juist"
-        return [(f"{inspring}{label}: {st}{extra}", rol)]
+        if not n:
+            return [(f"{inspring}{label}: {st}", rol)]
+        cijfers = f"{n} {'sommen' if snel else 'vragen'} · laatst {datum(laatst)} · laatste 20: {pct} % juist"
+        if indeling is None or len(f"{inspring}{label}: {st} · {cijfers}") <= LEZER:
+            return [(f"{inspring}{label}: {st} · {cijfers}", rol)]
+        return [(f"{inspring}{label}: {st}", rol), (f"{inspring}  {cijfers}", "dim")]
 
     if indeling is None:
         inspring = "  "
-        for rij in r.status:
-            uit += regel(rij[0].naam, (rij[0].id, rij))
+        for item in items:
+            uit += regel(item[1][0], item)
     else:
         inspring, rang = "    ", _rang(indeling)
-        uit += _per_domein(sorted(((rij[0].id, rij) for rij in r.status), key=lambda x: rang(x[0])), indeling, regel)
+        uit += _per_domein(sorted(items, key=lambda x: rang(x[0])), indeling, regel)
     uit.append((f"  Herhaalbak: {r.herhaalbak} {'onderwerp' if r.herhaalbak == 1 else 'onderwerpen'}"
                 f" ({r.herhaal_vandaag} vandaag aan de beurt)", "info"))
     return uit
