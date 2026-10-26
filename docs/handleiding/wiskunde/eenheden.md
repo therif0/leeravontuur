@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Eenheden** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Het kind zet maten om van de ene eenheid naar de andere: lengte (km … mm), massa (t … mg), inhoud (hl … ml),
 oppervlakte (km² … mm², met ha, a en ca) en volume (m³, dm³, cm³, samen met de liters). Het werkt zoals op school
 met de **eenhedentabel**: elke kolom naar rechts is 10 keer kleiner.

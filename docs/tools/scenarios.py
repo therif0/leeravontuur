@@ -45,8 +45,14 @@ def scherm_tekst(d):
     return scherm()
 
 
-def antwoord(d, tekst):
+def antwoord(d, tekst, tweede_kans=True):
+    """Typ een antwoord en Enter. Was het fout, dan geeft de vaste werkwijze eerst een tweede kans: met
+    tweede_kans=True typt het scenario hetzelfde antwoord nog eens, zodat het beeld nagekeken is (zoals vroeger)."""
     d.toets(("tekst", tekst), "Enter")
+    if tweede_kans:
+        time.sleep(0.4)
+        if "Probeer nog eens!" in scherm_tekst(d):
+            d.toets(("tekst", tekst), "Enter")
 
 
 OPNIEUW = ["Escape", "1", "2"]  # stoppen en opnieuw vrij oefenen op Normaal: een nieuwe vraag
@@ -235,6 +241,45 @@ def _(d):
     d.foto("hoofdrekenen-plusmin", "Optellen en aftrekken")
     antwoord(d, "1")
     d.foto("hoofdrekenen-plusmin-uitleg", "De uitleg met een strategie")
+
+
+@scenario("hoofdrekenen-splitsen")
+def _(d):
+    oefen(d, 2, 5)
+    d.wacht("Vrij oefenen")
+    vraag = r"(?m)^\s+(\d+) : (\d+) ="  # de vraag zelf, niet het voorbeeld in de hint (70 : 7 = 10)
+    for _ in range(40):
+        d.zoek(vraag, OPNIEUW)
+        m = re.search(vraag, scherm_tekst(d))
+        a, f = int(m.group(1)), int(m.group(2))
+        q = a // f
+        if q > 10 and q % 10:  # een quotiënt dat mooi in tientallen en eenheden splitst
+            break
+        d.toets(*OPNIEUW)
+    deel1, deel2 = f * (q // 10) * 10, f * (q % 10)
+    d.toets(("tekst", f"{a} = {deel1} + {deel2}"), "Enter", ("tekst", f"{deel1} : {f} = {q // 10 * 10}"), "Enter",
+            ("tekst", f"{deel2} : {f} = {q % 10}"), "Enter")
+    d.foto("hoofdrekenen-splitsen", "Splitsen in het klad: het klad staat meteen open")
+
+
+@scenario("werkwijze")
+def _(d):
+    oefen(d, 2, 2)  # optellen en aftrekken
+    d.wacht("Vrij oefenen")
+    d.zoek(r"\d+ \+ \d+ =", OPNIEUW)
+    m = re.search(r"(\d+) \+ (\d+) =", scherm_tekst(d))
+    a, b = int(m.group(1)), int(m.group(2))
+    d.toets("Tab")
+    rond = -(-b // 10) * 10  # naar boven afgerond op een tiental
+    d.toets(("tekst", f"{a} + {rond} = {a + rond}"), "Enter")
+    if rond != b:
+        d.toets(("tekst", f"{a + rond} - {rond - b} = {a + b}"), "Enter")
+    d.foto("werkwijze-klad", "Rekenen in het klad: Tab, een rekenregel, Enter (✔ of ✘)")
+    d.toets("Tab")
+    antwoord(d, str(a + b + 10), tweede_kans=False)
+    d.foto("werkwijze-tweede-kans", "Fout: een hulpje en een tweede kans")
+    antwoord(d, str(a + b + 10), tweede_kans=False)
+    d.foto("werkwijze-zo-kan-het", "Weer fout: het antwoord en 'Zo kan het:' in klad-regels")
 
 
 @scenario("hoofdrekenen-maal10")
@@ -733,8 +778,8 @@ def _(d):
     for _ in range(300):
         time.sleep(0.15)
         t = verhaal(d)
-        m = re.search(r"van (\d+) m lang en (\d+) m breed\. Voor 1 m² heb je (\d+)", t)
-        if m and len(re.findall(r"\d+", t)) == 4:  # (1 m² telt mee)
+        m = re.search(r"(\d+) m lang en (\d+) m breed\. Voor 1 m² heb je (\d+)", t)  # ("is …" of "van …")
+        if m:
             break
         d.toets(*OPNIEUW)
     else:

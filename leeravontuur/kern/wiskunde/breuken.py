@@ -10,6 +10,7 @@ from decimal import Decimal
 from fractions import Fraction
 
 from ..getal import GetypteBreuk, fmt, fmt_breuk
+from ..klad import oplossing_van
 from ..modellen import Breukbalk, Breukbalken, Groepjes
 from ..onderwerp import Onderwerp, Vraag
 
@@ -24,6 +25,21 @@ def _kgv(a, b):
 
 def _b(f, gemengd=False):
     return fmt_breuk(f, gemengd)
+
+
+def _kb(f):
+    """Een breuk zoals in het klad: 7/4 (een heel getal zonder noemer)."""
+    f = F(f)
+    return str(f.numerator) if f.denominator == 1 else f"{f.numerator}/{f.denominator}"
+
+
+def _ketting(*delen):
+    """'a = b = c', zonder twee keer hetzelfde na elkaar (3/4 = 3/4)."""
+    uit = []
+    for d in delen:
+        if not uit or uit[-1] != d:
+            uit.append(d)
+    return " = ".join(uit)
 
 
 def _waarde(getal):
@@ -357,6 +373,20 @@ class Optellen(_Breuken):
     def xy(self, v):
         return F(v.data["x"]), F(v.data["y"])
 
+    klad = "ja"
+
+    def oplossing(self, v):
+        x, y = self.xy(v)
+        op = v.data["op"]
+        n = v.data.get("n") or (x.denominator if x.denominator == y.denominator else
+                                x.denominator * y.denominator // math.gcd(x.denominator, y.denominator))
+        tx, ty = int(x * n), int(y * n)
+        som = tx + ty if op == "+" else tx - ty
+        if "n" in v.data or x.denominator == y.denominator:
+            return oplossing_van(_ketting(f"{tx}/{n} {op} {ty}/{n}", f"{som}/{n}", _kb(v.antwoord)))
+        return oplossing_van(_ketting(f"{_kb(x)} {op} {_kb(y)}", f"{tx}/{n} {op} {ty}/{n}", f"{som}/{n}",
+                                      _kb(v.antwoord)))
+
     def uitleg(self, v):
         x, y = self.xy(v)
         op = v.data["op"]
@@ -475,6 +505,26 @@ class BreukVan(_Breuken):
                     (f" = {v.verwacht}." if tekst != v.verwacht else ".")]
         return [f"Delen door {_b(y)} = vermenigvuldigen met het omgekeerde ({y.denominator}/{y.numerator}).",
                 f"{_b(x)} × {y.denominator}/{y.numerator} = {v.verwacht}."]
+
+    klad = "ja"
+
+    def oplossing(self, v):
+        d, s = v.data, v.data["soort"]
+        if s == "van":
+            t, n, g = d["t"], d["n"], d["g"]
+            return oplossing_van(f"{g} : {n} = {g // n}", f"{t} × {g // n} = {t * g // n}" if t > 1 else "")
+        x, y, uit = F(d["x"]), F(d["y"]), F(v.antwoord)
+        if s == "maal_nat":
+            k = x.numerator
+            return oplossing_van(_ketting(f"{k} × {_kb(y)}", f"{k * y.numerator}/{y.denominator}", _kb(uit)))
+        if s == "maal_breuk":
+            return oplossing_van(_ketting(f"{_kb(x)} × {_kb(y)}",
+                                          f"{x.numerator * y.numerator}/{x.denominator * y.denominator}", _kb(uit)))
+        if s == "deel_nat":
+            k = y.numerator
+            return oplossing_van(_ketting(f"{_kb(x)} : {k}", f"{x.numerator}/{x.denominator * k}", _kb(uit)))
+        return oplossing_van(_ketting(f"{_kb(x)} : {_kb(y)}", f"{_kb(x)} × {y.denominator}/{y.numerator}",
+                                      f"{x.numerator * y.denominator}/{x.denominator * y.numerator}", _kb(uit)))
 
     def tip(self, v):
         return {"van": "Eerst delen door de noemer, dan vermenigvuldigen met de teller.",

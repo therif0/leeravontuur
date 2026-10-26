@@ -213,7 +213,7 @@ class TestAapjes(Basis):
     SEEDS = range(int(os.environ.get("LEERAVONTUUR_AAP_SEEDS", "12")))
 
     def gebeurtenissen(self, rng, n):
-        toetsen = list("0123456789") * 3 + list("abcdefghijklmnopqrstuvwxyz") + list(" ?+-,/<>=r") + \
+        toetsen = list("0123456789") * 3 + list("abcdefghijklmnopqrstuvwxyz") + list(" ?+-,/<>=r") + list(":x*().") + ["\t"] * 2 + \
             [OK] * 8 + [ESC] * 2 + ["\t", "\b", "Ą", "œ", "é"] + \
             [curses.KEY_LEFT, curses.KEY_RIGHT, curses.KEY_UP, curses.KEY_DOWN] * 4 + \
             [curses.KEY_BACKSPACE, curses.KEY_DC, curses.KEY_HOME, curses.KEY_F1]

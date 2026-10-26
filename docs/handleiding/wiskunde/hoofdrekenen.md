@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Hoofdrekenen** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Rekenen uit het hoofd, met een **slimme strategie** in elke uitleg: compenseren, splitsen, × 9 = × 10 − 1,
 verdubbelen … Zo leert het kind niet alleen het antwoord, maar ook een manier om het snel te vinden.
 De vragen typ je gewoon in het antwoordvak; zie [Vrij oefenen](../README.md#vrij-oefenen) voor tip, uitleg en
@@ -116,6 +118,44 @@ Het dubbel en de helft uit het hoofd, door te splitsen: het dubbel van 37 = het 
 - een tiental vergeten
 <!-- /auto -->
 
+## Slim × en : (splitsen)
+
+Vermenigvuldigen en delen door het getal in handige stukken te splitsen. Hier is het **klad verplicht**: het gaat om
+de aanpak. Typ je meteen een antwoord, dan vraagt het programma eerst: "Laat in je klad zien hoe je splitst".
+
+| Soort | In het klad |
+|---|---|
+| × met splitsen | `14 x 7 = 10 x 7 + 4 x 7 = 70 + 28 = 98` (of elke stap op een eigen regel) |
+| : met splitsen | `91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13` (70: de tafel van 7 met een 0) |
+| × met compenseren | `99 x 6 = 100 x 6 - 6 = 594` |
+
+Elke juiste splitsing telt: `91 = 49 + 42` is net zo goed als `70 + 21`. Staat er een rekenfout in de splitsing, dan
+wordt het antwoord gewoon nagekeken (met een tweede kans).
+
+![Splitsen in het klad](../beelden/hoofdrekenen-splitsen.svg)
+
+**Per leerjaar**
+
+<!-- auto:leerlijn wiskunde.hoofdrekenen.splitsen -->
+|  | 3de leerjaar | 4de leerjaar | 5de leerjaar | 6de leerjaar | 1ste middelbaar |
+|---|---|---|---|---|---|
+| **soorten vragen** | × met splitsen (14 × 7), : met splitsen (91 : 7) | + × met compenseren (99 × 6) | idem | idem | idem |
+| **× met getallen tot** | 50 | 99 | 999 | idem | idem |
+| **delen door hoogstens** | 5 | 9 | idem | idem | idem |
+| **delen: getallen tot** | 100 | 200 | 1000 | idem | idem |
+| **compenseren met** | — | 9, 19, 29 | 19, 29, 49, 99, 199 | 49, 99, 199, 999 | 99, 199, 999 |
+| **ook kommagetallen (2,4 × 6)** | nee | idem | idem | ja | idem |
+<!-- /auto -->
+
+**Herkende denkfouten**
+
+<!-- auto:denkfouten wiskunde.hoofdrekenen.splitsen -->
+- bij splitsen een stuk vergeten
+- bij splitsen een stuk niet gedeeld of vermenigvuldigd
+- bij compenseren de verkeerde kant op verbeterd
+- bij compenseren maar 1 keer verbeterd in plaats van × het getal
+<!-- /auto -->
+
 ## Spiekbrief
 
 <!-- auto:spiekbrief wiskunde.hoofdrekenen.tafels -->
@@ -128,6 +168,9 @@ COMPENSEREN  (een getal dat bijna rond is)
 
 SPLITSEN
   347 + 285 = 347 + 200 + 80 + 5 = 632
+  14 × 7 = 10 × 7 + 4 × 7 = 70 + 28 = 98
+  91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13   (70: de tafel van 7 met een 0)
+  99 × 6 = 100 × 6 − 1 × 6 = 600 − 6 = 594   (compenseren)
 
 TAFELS
   × 9  = × 10 en dan één keer eraf:  9 × 7 = 70 − 7 = 63

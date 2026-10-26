@@ -140,11 +140,13 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="183" textLength="459" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 1 1/11.  (1 s)</text>
+<text x="62" y="183" textLength="459" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 1 1/11.  (3 s)</text>
 <text x="62" y="219" textLength="585" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Je telde (of trok) ook de noemers op. De noemer zegt hoe groot de</text>
 <text x="62" y="237" textLength="603" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">stukken zijn: die blijft hetzelfde als de breuken gelijknamig zijn.</text>
-<text x="62" y="255" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Zelfde noemer: tel de tellers op, de noemer (11) blijft.</text>
-<text x="62" y="273" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">7/11 + 5/11 = 12/11 = 1 1/11.</text>
+<text x="62" y="255" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Zo kan het:</text>
+<text x="8" y="273" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        7/11 + 5/11 = 12/11                                                     </text>
+<text x="62" y="291" textLength="504" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Zelfde noemer: tel de tellers op, de noemer (11) blijft.</text>
+<text x="62" y="309" textLength="261" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">7/11 + 5/11 = 12/11 = 1 1/11.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>

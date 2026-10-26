@@ -91,6 +91,20 @@ class TestPlek(unittest.TestCase):
         for raar in ([1800, 20, 300, 390], [10, 900, 300, 390], "x", [1, 2], [None, 1, 2, 3]):
             self.assertEqual(KV.kies_plek(werk, bewaard=raar), KV.kies_plek(werk), raar)
 
+    def test_meer_monitors(self):
+        een = (0, 0, 1920, 1080)
+        self.assertEqual(KV.monitor_van(een, (1500, 300)), een)
+        self.assertEqual(KV.monitor_van((0, 0, 2560, 1080), (2000, 10)), (0, 0, 2560, 1080))  # ultrabreed: één scherm
+        twee = (0, 0, 3840, 1080)
+        self.assertEqual(KV.monitor_van(twee, (500, 300)), (0, 0, 1920, 1080))
+        self.assertEqual(KV.monitor_van(twee, (2500, 300)), (1920, 0, 3840, 1080))
+        drie = (0, 0, 5760, 1080)
+        self.assertEqual(KV.monitor_van(drie, (3000, 10)), (1920, 0, 3840, 1080))
+        self.assertEqual(KV.monitor_van(twee, None), (0, 0, 1920, 1080))
+        # rechtsboven op de monitor van de muis, niet op die helemaal rechts
+        x, y, b, h = KV.kies_plek(KV.monitor_van(twee, (500, 300)))
+        self.assertLessEqual(x + b, 1920)
+
     def test_geometrie(self):
         self.assertEqual(KV.lees_geometrie("320x416+1030+16"), (1030, 16, 320, 416))
         self.assertEqual(KV.lees_geometrie("300x400+-8+-30"), (-8, -30, 300, 400))

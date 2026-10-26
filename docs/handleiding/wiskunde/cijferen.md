@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Cijferen** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Rekenen **onder elkaar**, zoals op papier: in een rooster met één cijfer per vakje. Optellen (met onthouden),
 aftrekken (met lenen), vermenigvuldigen (ook met 2 cijfers en kommagetallen) en de **staartdeling** stap voor stap.
 

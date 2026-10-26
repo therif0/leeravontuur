@@ -13,13 +13,15 @@ from ..kern import avatar as A
 from ..kern import herhaling, leerjaren, selectie
 from ..kern import punten as P
 from ..kern.getal import fmt
+from ..kern.klad import analyseer
 from ..kern.modellen import Getallenlijn
 from . import maatje
 from . import modellen as M
 from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
-from .scherm import ENTER, ESC, TerugNaar
+from .kladblad import LEEG_ENTER, Kladblad
+from .scherm import ENTER, ESC, TerugNaar, teken_van
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -46,6 +48,11 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
 VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
 LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
 INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen invoer-object
+# de vaste werkwijze: geen tweede kans waar raden te makkelijk is, of waar het object zelf stap voor stap nakijkt
+GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur"}
+TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
+KLAD_BREED, KLAD_HOOG = 54, 6
+KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
 
 
 def vraagtekst(v):
@@ -153,14 +160,22 @@ class Oefenaar:
         s.put(y + 1, 4, soort, "dim")
 
     def stel_vraag(self, kr, o, v, soort, ses, nr=None, resultaten=None, vrij=False):
-        """Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
+        """Eén vraag volgens de vaste werkwijze: lees, reken in het klad (Tab), antwoord. ? = de volgende tip,
+        fout = één tweede kans. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
         s = self.s
-        buf, melding, goed, tip = "", "", None, False
+        buf, melding, melding_rol, goed, tip = "", "", "fout", None, False
         tip_gebruikt, extra, getal, d = False, "", None, None
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
         obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
         eigen = bool(obj and getattr(obj, "eigen_tekst", False))  # het object tekent zelf de vraag (vraagstuk)
+        # de vaste werkwijze: klad (bij een gewoon antwoordvak), getrapte tips, een tweede kans
+        kb = Kladblad() if not obj and not lijnen and o.klad_voor(v) else None
+        verplicht = kb is not None and o.klad_voor(v) == "verplicht"
+        focus = KLAD if verplicht else ANTWOORD
+        tips, tip_nr, tiptekst = (o.tips(v) if not obj else []), 0, ""
+        tweede = v.invoer not in GEEN_TWEEDE_KANS
+        eerste_fout, kans_melding, klad_ok, analyse = None, "", False, None
         self.herkansing = False
         ses.vraag_getoond()
         lof = random.choice(LOF)
@@ -177,7 +192,9 @@ class Oefenaar:
                 knoppen = [("←→", "pijl", None), ("+", "inzoomen", ord("+")), ("−", "uitzoomen", ord("-")),
                            ("Enter", "hier!", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
             else:
-                knoppen = [("Enter", "controleren", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+                knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
+                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?", "tip", ord("?")),
+                    ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             if vrij:
                 s.put(2, 4, f"Vrij oefenen: {self.vrij_goed + bool(goed)} van "
@@ -197,12 +214,13 @@ class Oefenaar:
                     s.put(y - 1 + i, x, regel, "bold")
                 vy, vx = y - 1 + len(regels), x
             if not lijnen and not obj:
-                rol = "veld" if goed is None else ("goedvak" if goed else "foutvak")
-                s.tekstvak(vy, vx, buf, VAK.get(v.invoer, 12), rol)
+                rol = ("veld" if focus == ANTWOORD else "dim") if goed is None else ("goedvak" if goed else "foutvak")
+                s.tekstvak(vy, vx, buf, VAK.get(v.invoer, 12), rol, ("focus", ANTWOORD) if kb and goed is None else None)
                 if v.eenheid:
                     s.put(vy, vx + 15, v.eenheid, "bold")
             fb, fx, breed = y + 3, x, 70  # waar de feedback begint (rij, kolom) en hoe breed ze mag zijn
             hint_y = None
+            hoog = False  # een hoog model: de feedback (en het klad) komen ernaast
             if eigen:
                 obj.teken(s, 4, goed, tip)
                 fb, fx = 4 + obj.hoogte(goed is not None), 4
@@ -215,7 +233,7 @@ class Oefenaar:
                     breed, hint_y = 78 - fx, min(9 + obj.hoogte() + 1, s.maat()[0] - 2)
                 else:
                     fb = 8 + obj.hoogte(goed is not None) + 1
-                melding = obj.melding
+                melding, melding_rol = kans_melding or obj.melding, "fout" if kans_melding else obj.melding_rol
             elif lijnen:
                 lijn = lijnen[-1]
                 fout_bij = v.antwoord if goed is False else None
@@ -231,12 +249,21 @@ class Oefenaar:
                 else:
                     h, b = M.teken_model(s, 9, model, uitslag=goed, tekst=v.tekst)  # rij 9: onder het maatje
                     if h > 7:  # hoog model: de feedback komt ernaast
-                        fb, fx = 10, 8 + b + 3
+                        fb, fx, hoog = 10, 8 + b + 3, True
                         breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
             if s.klokvenster is not None and s.klokvenster.toont():  # het klokvenster staat rechts: tekst links
                 breed = min(breed, LINKS - fx)
+            if kb and goed is None:  # het klad: onder het antwoord, of naast een hoog model
+                kx, kw = (fx, min(KLAD_BREED, 78 - fx)) if hoog else (x, min(KLAD_BREED, breed))
+                ky = fb + 1 if hoog else max(vy + 2, fb)
+                kh = max(2, min(KLAD_HOOG, s.maat()[0] - 2 - ky - 4))
+                label = "▸ Klad" if focus == KLAD else "Klad (Tab)"
+                s.put(ky - 1, kx, label, "accent" if focus == KLAD else "dim")
+                s.zones.voeg(ky - 1, kx, 1, len(label), ("focus", KLAD))
+                plek = kb.teken(s, ky, kx, kw, kh, focus == KLAD, ("focus", KLAD))
+                fb = ky + kh + 1
             maatje.teken(self.app, "denken" if tip and goed is None else gezicht, ballon, ruim=True, hoog=spring)
             if goed is None:
                 if eigen:  # de melding mag over 3 regels (dan valt de hint weg)
@@ -246,18 +273,22 @@ class Oefenaar:
                     if len(stukken) > 2:
                         hint_y = s.maat()[0]  # buiten het scherm
                 else:
-                    s.put(fb, fx, melding, obj.melding_rol if obj else "fout")
+                    for i, stuk in enumerate(textwrap.wrap(melding, breed)[:2]):
+                        s.put(fb + i, fx, stuk, melding_rol)
                 if tip and not eigen:
-                    tekst = obj.hulp(o) if obj else o.tip(v)
-                    van = fb + 1 if obj else fb
-                    for i, stuk in enumerate(textwrap.wrap(("Hulp: " if obj else "Tip: ") + tekst,
-                                                           min(breed, 70 if lijnen or obj else 54))[:2 if obj else 3]):
+                    tekst = ("Hulp: " + obj.hulp(o)) if obj else tiptekst
+                    van = fb + (2 if len(melding) > breed else 1) if obj or melding else fb
+                    for i, stuk in enumerate(textwrap.wrap(tekst, min(breed, 70 if lijnen or obj else 54))[:2 if obj else 3]):
                         s.put(van + i, fx, stuk, "accent")
-                s.put(hint_y or fb + 3, x, obj.hint if obj else HINTS.get(v.invoer, HINTS["getal"]), "dim")
+                hint = (obj.hint if obj else KLAD_HINT if kb and focus == KLAD else
+                        HINTS.get(v.invoer, HINTS["getal"]))
+                s.put(hint_y or min(fb + 3, s.maat()[0] - 2), x, hint, "dim")
                 if obj and obj.cursor_pos:
                     s.cursor(True, *obj.cursor_pos)
                 elif lijnen or obj:
                     s.cursor(False)
+                elif focus == KLAD and plek:
+                    s.cursor(True, *plek)
                 else:
                     s.cursor(True, vy, vx + 1 + len(buf))
             else:
@@ -269,22 +300,25 @@ class Oefenaar:
                                                                  obj.uitleg_na[:1])
                 elif goed:
                     kop, rol = "✔ " + lof + extra, "goed"
-                    uitleg = o.uitleg(v) if vrij else []
+                    uitleg = (["Je klad is helemaal juist. Netjes gewerkt!"] if klad_ok else []) + (
+                        self.uitwerking(o, v) if vrij else [])
                 elif obj and obj.fouten and getal == v.antwoord:
                     kop, rol = f"! De uitkomst klopt, maar onderweg ging het {obj.fouten} keer mis.{extra}", "accent"
                     uitleg = ([d[1]] if d else []) + o.uitleg(v)
                 else:
                     kop, rol = f"✘ Niet juist. Het juiste antwoord is {v.verwacht}.{extra}", "fout"
-                    uitleg = ([d[1]] if d else []) + o.uitleg(v)
+                    in_klad = [f"In je klad: {analyse['eerste'][2]}"] if analyse and analyse["eerste"] else []
+                    uitleg = ([d[1]] if d else []) + in_klad + self.uitwerking(o, v)
                 yy = fb
                 for stuk in textwrap.wrap(kop, breed):
                     s.put(yy, fx, stuk, rol)
                     yy += 1
                 yy += 1
                 for regel in uitleg:
-                    for stuk in textwrap.wrap(regel, breed):
+                    tekst, rol = regel if isinstance(regel, tuple) else (regel, "accent")
+                    for stuk in textwrap.wrap(tekst, breed, subsequent_indent="  " if rol == "" else ""):
                         if yy < s.maat()[0] - 1:
-                            s.put(yy, fx, stuk, "accent")
+                            s.put(yy, fx, stuk, rol)
                         yy += 1
             if spring:
                 s.pauze(170)
@@ -300,12 +334,34 @@ class Oefenaar:
             if k == ESC:
                 s.cursor(False)
                 return None
-            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)):
+            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)) and not (kb and focus == KLAD
+                                                                                         and kb.buf):
                 tip = tip_gebruikt = True
+                if not obj:
+                    tip_nr += 1
+                    tiptekst = self.volgende_tip(o, v, tips, tip_nr, kb)
+                continue
+            if kb and isinstance(k, tuple) and k[0] in ("focus", "klad"):  # een klik op het klad of het antwoord
+                if k[0] == "klad":
+                    focus = KLAD
+                    kb.haal_terug(k[1])
+                else:
+                    focus = k[1]
+                continue
+            if kb and k == TAB:
+                focus = ANTWOORD if focus == KLAD else KLAD
+                melding = ""
+                continue
+            if kb and focus == KLAD:
+                kb.melding = ""
+                if kb.toets(k, teken_van(k), KLAD_BREED) == LEEG_ENTER:
+                    focus = ANTWOORD
+                melding, melding_rol = kb.melding, kb.melding_rol or "fout"
                 continue
             if obj:
                 uit = obj.toets(k)
                 if uit is None:
+                    kans_melding = ""
                     continue
                 buf, getal = uit
             elif lijnen:
@@ -320,13 +376,41 @@ class Oefenaar:
                 continue
             else:
                 getal = o.lees_vraag(v, buf)
+            if verplicht and getal is not None:  # eerst het klad: zien hoe het kind het aanpakt
+                ok, nodig = o.klad_klaar(v, kb.gelezen)
+                if not ok:
+                    melding, melding_rol, focus = nodig, "accent", KLAD
+                    continue
             if getal is None:
                 tip = False
-                melding = ("Typ eerst je antwoord." if not buf.strip() else ONLEESBAAR.get(
-                    v.invoer, "Dat is geen getal. Gebruik een komma voor kommagetallen, bv. 0,25."))
+                melding, melding_rol = ("Typ eerst je antwoord." if not buf.strip() else ONLEESBAAR.get(
+                    v.invoer, "Dat is geen getal. Gebruik een komma voor kommagetallen, bv. 0,25.")), "fout"
                 continue
             goed = o.nakijken(v, getal) and not (obj and obj.fouten)
             d = (obj and (obj.diagnose or o.diagnose_rijen(v, obj.rijen()))) or o.diagnose(v, getal)
+            opl = o.oplossing_of_niets(v) if kb else None
+            if kb and kb.regels and opl:
+                analyse = analyseer(opl.stappen, opl.paden, kb.gelezen)
+                klad_ok = analyse["eerste"] is None and analyse["compleet"]
+            if not goed and tweede and eerste_fout is None and not (obj and getattr(obj, "eigen_tip", False)):
+                # de tweede kans: een hulpje (als de denkfout herkend is) en de vraag om klad te maken
+                eerste_fout = buf.strip()
+                hulp = d[1] if d else "Nog niet juist."
+                if kb:
+                    hulp += (" Maak eens klad (Tab): reken stap voor stap." if not kb.regels else
+                             " Kijk je klad nog eens na." + (f" {analyse['eerste'][2]}" if analyse and
+                                                             analyse["eerste"] else ""))
+                else:
+                    hulp += " Probeer nog eens."
+                goed, d, getal = None, None, None
+                if obj:
+                    kans_melding = hulp
+                else:
+                    melding, melding_rol = hulp, "fout"
+                    if not lijnen:
+                        buf = ""
+                gezicht, ballon = "denken", "Probeer nog eens!"
+                continue
             extra_data = {"stapfouten": obj.fouten} if obj and obj.fouten else None
             if obj and getattr(obj, "extra", None):
                 extra_data = {**(extra_data or {}), **obj.extra}
@@ -334,12 +418,44 @@ class Oefenaar:
                 self.herkansing = obj.extra.get("eerste_fout") is not None
                 if goed:
                     d = None
+            elif not eigen:
+                werkwijze = {"tips": tip_nr, "eerste_fout": eerste_fout}
+                if kb:
+                    werkwijze.update(klad=kb.teksten, klad_ok=klad_ok)
+                extra_data = {**(extra_data or {}), **{k_: w for k_, w in werkwijze.items() if w not in (None, 0, [])}}
+                self.herkansing = eerste_fout is not None
             self.laatste_d = d
             ses.antwoord(v.sleutel, vraagtekst(v), buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
-                         extra=extra_data, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
+                         extra=extra_data or None, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
             extra = self.tijd_tekst(ses) + (f"  +{ses.laatste_punten} punten" if ses.laatste_punten else "")
             gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
             spring = goed and self.app.inst.animaties and self.app.inst.avatar
+
+    @staticmethod
+    def volgende_tip(o, v, tips, nr, kb):
+        """Tip nr (vanaf 1): eerst de vaste tips van het onderwerp (de aanpak, het begin van het klad), daarna hulp
+        bij het klad. Nooit het antwoord."""
+        if nr <= len(tips):
+            return f"Tip {nr}: {tips[nr - 1]}"
+        if kb is None:
+            return f"Tip {len(tips)}: {tips[-1]}" if tips else "Tip: lees de vraag nog eens rustig."
+        opl = o.oplossing_of_niets(v)
+        if not kb.regels:
+            return f"Tip {nr}: schrijf je eerste stap in het klad (Tab)."
+        a = analyseer(opl.stappen, opl.paden, kb.gelezen) if opl else None
+        if a and a["eerste"]:
+            return f"Tip {nr}: {a['eerste'][2]}"
+        return f"Tip {nr}: je klad ziet er goed uit. Reken verder, of vul je antwoord in (Tab)."
+
+    @staticmethod
+    def uitwerking(o, v):
+        """Na het nakijken: "Zo kan het:" met de oplossing in klad-regels, en daaronder het waarom."""
+        opl = o.oplossing_of_niets(v) if o.klad_voor(v) else None
+        if not opl or not opl.stappen:
+            return o.uitleg(v)
+        regels = [("Zo kan het:", "bold")] + [("  " + st.reken, "") for st in opl.stappen]
+        waarom = [st.waarom for st in opl.stappen if st.waarom]
+        return regels + (waarom or o.uitleg(v)[:2])
 
     @staticmethod
     def lijn_toets(lijnen, cursor, k, v):

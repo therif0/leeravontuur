@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Meetkunde** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Oppervlakte en omtrek op een rooster, formules, hoeken, coördinaten (de schatkaart en het assenstelsel) en schaal.
 
 ## Oppervlakte en omtrek

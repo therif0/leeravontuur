@@ -57,6 +57,11 @@ PARAMETERS = {  # parameter → wat het betekent (vaardigheid.parameter gaat voo
     "procenten": "procenten",
     "wiskunde.eenheden.omzetten.soorten": "soorten eenheden",
     "max_stap": "komma hoogstens zoveel eenheden verschuiven",
+    "wiskunde.hoofdrekenen.splitsen.groot": "× met getallen tot",
+    "deler_max": "delen door hoogstens",
+    "deeltal_max": "delen: getallen tot",
+    "compenseer": "compenseren met",
+    "wiskunde.hoofdrekenen.splitsen.komma": "ook kommagetallen (2,4 × 6)",
     "wiskunde.eenheden.omzetten.cijfers": "cijfers in het getal (van–tot)",
     "dec_getal": "cijfers na de komma in de vraag",
     "dec_antw": "cijfers na de komma in het antwoord",
@@ -101,6 +106,8 @@ PARAMETERS = {  # parameter → wat het betekent (vaardigheid.parameter gaat voo
 
 SOORTEN = {  # de interne namen van soorten vragen → leesbaar
     # hoofdrekenen, getallen
+    "maal_splitsen": "× met splitsen (14 × 7)", "deel_splitsen": ": met splitsen (91 : 7)",
+    "maal_compenseren": "× met compenseren (99 × 6)",
     "deelbaar": "deelbaar door …?", "delers": "alle delers", "ggd": "ggd", "kgv": "kgv", "priem": "priemgetal?",
     "aflezen": "aflezen", "aanduiden": "aanduiden", "sprong": "sprongen", "temperatuur": "thermometer",
     # breuken
@@ -189,7 +196,7 @@ def waarde(vaardigheid, naam, w):
         return ", ".join(getal(m) for m in w)
     if naam == "assen":
         return f"−{w} … {w}" if w else "nee (schatkaart)"
-    if w in ([], 0) and naam in ("procenten", "gram", "noemers"):
+    if w in ([], 0) and naam in ("procenten", "gram", "noemers", "compenseer"):
         return "—"  # (komt in dat leerjaar niet voor)
     if naam in ("overbodig", "intro"):
         return f"{round(w * 100)} %"

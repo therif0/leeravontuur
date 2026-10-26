@@ -18,7 +18,11 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     - Met `r` draai je de typrichting om.
     - Bij oppervlakte heeft elke eenheid 2 vakjes, bij volume 3; ha, a, ca en de liters staan eronder.
   - **Spiekbrief** met uitleg en voorbeelden.
-- **Hoofdrekenen:** maal- en deeltafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren
+- **Elke oefening op dezelfde manier:** lees de vraag, reken in het **klad** (`Tab`; elke regel wordt meteen
+  nagekeken), typ je antwoord. `?` geeft telkens een volgende tip (nooit het antwoord), een fout antwoord krijgt een
+  **tweede kans**, en na het nakijken staat "Zo kan het:" in klad-regels.
+- **Hoofdrekenen:** maal- en deeltafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren,
+  en **slim × en : met splitsen** (`91 : 7 = 70 : 7 + 21 : 7`, `99 × 6 = 100 × 6 − 6`; met verplicht klad)
   - elke uitleg toont een strategie stap voor stap (compenseren, splitsen, × 9 = × 10 − 1 …)
   - herkent denkfouten (bv. *"bij compenseren moest je 1 aftrekken, je deed het omgekeerd"*)
   - vanaf het 1ste middelbaar ook met negatieve getallen

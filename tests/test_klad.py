@@ -22,8 +22,11 @@ class TestLezen(unittest.TestCase):
             r = self.juist(tekst)
             self.assertEqual(r.netjes, "3 × 4 = 12")
             self.assertEqual(r.schakels[0].ops, [MAAL])
-        for tekst in ["12:4=3", "12/4=3", "12 ÷ 4 = 3"]:
+        for tekst in ["12:4=3", "12 / 4 = 3", "12 ÷ 4 = 3"]:
             self.assertEqual(self.juist(tekst).netjes, "12 : 4 = 3")
+        # zonder spaties is a/b een breuk (één getal): dat klopt ook, en 3/4 : 2/5 wordt (3/4) : (2/5)
+        self.assertEqual(self.juist("12/4=3").netjes, "12/4 = 3")
+        self.assertEqual(self.juist("3/4 : 2/5 = 15/8").uitkomst, Fraction(15, 8))
         self.assertEqual(self.juist("10 - 2,40 = 7,60").netjes, "10 − 2,40 = 7,60")
 
     def test_kommagetallen_en_punt(self):

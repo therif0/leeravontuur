@@ -8,6 +8,8 @@ Regels (eerlijk en moeilijk te 'farmen'):
 - elke 5 juist op rij: +10; een reeks van 10 zonder fout: +20; een onderwerp beheerst in de herhaalbak: +15
 - een vraagstuk: dubbel (het is meer werk), −3 per tip (minstens 5), +5 zonder tip, +5 als het klad helemaal juist is;
   pas juist na een fout eerste antwoord: de helft
+- een gewone oefening (de vaste werkwijze): −2 per tip (minstens 2), +2 als het klad helemaal juist is, pas juist na
+  een tweede kans: de helft
 """
 
 from .leerjaren import LEERJAREN
@@ -21,6 +23,8 @@ BONUS_TABEL = 5
 TIP_KOST = 3
 BONUS_ZONDER_TIP = 5
 BONUS_KLAD = 5
+TIP_KOST_GEWOON = 2
+BONUS_KLAD_GEWOON = 2
 
 
 def niveau_verschil(eigen_leerjaar, leerjaar):
@@ -49,4 +53,10 @@ def voor_antwoord(juist, eigen_leerjaar, leerjaar, modus, al_juist, extra=None):
         if extra.get("klad_ok"):
             p += BONUS_KLAD
         return p, "vraagstuk juist"
-    return p, "juist antwoord"
+    if extra and extra.get("eerste_fout") is not None:
+        p //= 2
+    if extra and extra.get("tips"):
+        p = max(TIP_KOST_GEWOON, p - TIP_KOST_GEWOON * extra["tips"])
+    if extra and extra.get("klad_ok"):
+        p += BONUS_KLAD_GEWOON
+    return p, "juist na een tweede kans" if extra and extra.get("eerste_fout") is not None else "juist antwoord"

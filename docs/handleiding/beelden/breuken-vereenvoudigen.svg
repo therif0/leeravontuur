@@ -196,7 +196,7 @@
 <text x="80" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="314" y="219" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│░░░░░░░░░░░░░░░░░░░░░░░░░│</text>
 <text x="566" y="219" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">1/2</text>
-<text x="62" y="255" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 1/2.  (1 s)</text>
+<text x="62" y="255" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 1/2.  (2 s)</text>
 <text x="62" y="291" textLength="621" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">2/4 is juist, maar kan nog eenvoudiger: deel teller en noemer door 2.</text>
 <text x="62" y="309" textLength="369" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">De grootste gemene deler van 4 en 8 is 4.</text>
 <text x="62" y="327" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">4 : 4 = 1 en 8 : 4 = 2, dus 1/2.</text>

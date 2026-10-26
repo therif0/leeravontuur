@@ -2,6 +2,8 @@
 
 **Waar:** Leren & oefenen → Wiskunde → **Vraagstukken** · [← terug naar de inhoud](../README.md)
 
+Alle oefeningen volgen [de vaste werkwijze](../README.md#de-vaste-werkwijze-lees-klad-antwoord): lees, reken in het klad (`Tab`), antwoord; `?` voor een tip, en bij een fout een tweede kans.
+
 Bij een vraagstuk moet een kind eerst **lezen en denken**, dan pas rekenen: wat weet ik, wat wordt er gevraagd,
 welke bewerking hoort erbij, en kan mijn antwoord kloppen? Er zijn 3 onderwerpen:
 

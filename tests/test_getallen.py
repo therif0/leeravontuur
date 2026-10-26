@@ -175,7 +175,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         xs, _ = M.posities(lijn_rond(20, 30, 1))
         with mock.patch.object(G.GETALLENLIJN, "maak", side_effect=[aanduid_vraag(), aanduid_vraag()]):
-            scherm, app = self.speel([*NAAR_LIJN, ("klik", 10, xs[4]), OK, ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
+            scherm, app = self.speel([*NAAR_LIJN, ("klik", 10, xs[4]), OK, OK, ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         rijen = o.antwoorden(app.kind.id)
         self.assertEqual(rijen[0]["gegeven"], "24")
         self.assertFalse(rijen[0]["juist"])
@@ -185,7 +185,7 @@ class TestSchermen(Basis):
     def test_uitzoomen(self):
         o = self.opslag(("Test", "5"))
         with mock.patch.object(G.GETALLENLIJN, "maak", side_effect=[aanduid_vraag(), aanduid_vraag()]):
-            scherm, app = self.speel([*NAAR_LIJN, RECHTS, RECHTS, "+", "-", RECHTS, OK, ESC, ESC, ESC, ESC, ESC, ESC],
+            scherm, app = self.speel([*NAAR_LIJN, RECHTS, RECHTS, "+", "-", RECHTS, OK, OK, ESC, ESC, ESC, ESC, ESC, ESC],
                                      opslag=o)
         self.assertEqual(o.antwoorden(app.kind.id)[0]["gegeven"], "23")
 

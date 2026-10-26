@@ -150,8 +150,10 @@
 <text x="80" y="201" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">(●●●●●●●●●●●)</text>
 <text x="206" y="201" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">(●●●●●●●●●●●)</text>
 <text x="332" y="201" textLength="117" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">(●●●●●●●●●●●)</text>
-<text x="62" y="237" textLength="423" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 11.  (1 s)</text>
-<text x="62" y="273" textLength="414" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Verdeel 77 in 7 gelijke groepjes: 77 : 7 = 11.</text>
+<text x="62" y="237" textLength="423" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#cd3131" font-weight="bold">✘ Niet juist. Het juiste antwoord is 11.  (3 s)</text>
+<text x="62" y="273" textLength="99" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Zo kan het:</text>
+<text x="8" y="291" textLength="720" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4">        77 : 7 = 11                                                             </text>
+<text x="62" y="309" textLength="414" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e510" font-weight="bold">Verdeel 77 in 7 gelijke groepjes: 77 : 7 = 11.</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
 <rect x="17" y="422" width="63" height="18" fill="#000000"/>
 <rect x="80" y="422" width="153" height="18" fill="#11a8cd"/>

@@ -15,13 +15,15 @@ De schermafdrukken zijn echte beelden van het programma (80 × 24 tekens), met h
 - [Bedienen: toetsen en muis](#bedienen-toetsen-en-muis)
 - [Een onderwerp kiezen](#een-onderwerp-kiezen)
 - [Niveaus: Makkelijk tot Heel moeilijk](#niveaus-makkelijk-tot-heel-moeilijk)
+- [De vaste werkwijze: lees, klad, antwoord](#de-vaste-werkwijze-lees-klad-antwoord)
 - [Vrij oefenen](#vrij-oefenen)
 - [Een reeks van 10 en fouten opnieuw](#een-reeks-van-10-en-fouten-opnieuw)
 - [Punten](#punten)
 
 **Deel 1: Wiskunde**
 1. [Eenheden](wiskunde/eenheden.md): lengte, massa, inhoud, oppervlakte en volume omzetten, met de eenhedentabel
-2. [Hoofdrekenen](wiskunde/hoofdrekenen.md): tafels, plus en min, × en : met 10/100/1000, verdubbelen en halveren
+2. [Hoofdrekenen](wiskunde/hoofdrekenen.md): tafels, plus en min, × en : met 10/100/1000, verdubbelen en halveren,
+   slim × en : met splitsen
 3. [Getallen](wiskunde/getallen.md): plaatswaarde, afronden, deelbaarheid, de getallenlijn
 4. [Cijferen](wiskunde/cijferen.md): optellen, aftrekken en vermenigvuldigen onder elkaar, de staartdeling
 5. [Breuken](wiskunde/breuken.md): de breukbalk, vereenvoudigen, vergelijken, optellen, breuk van een getal
@@ -137,9 +139,47 @@ Het leerjaar van het kind stelt de ouder in (ouderdeel → Kinderen). Bestaat ee
 leerjaar, dan staat er "(nog niet in dit leerjaar)" en kun je dat niveau niet kiezen. Wat er per leerjaar aan bod
 komt, staat bij elk onderwerp in een tabel **Per leerjaar**.
 
+## De vaste werkwijze: lees, klad, antwoord
+
+Elke oefening werkt op dezelfde manier. Zo moet een kind het maar één keer leren.
+
+1. **Lees** de vraag bovenaan.
+2. **Reken in het klad**, zoals op papier. `Tab` gaat naar het klad (of klik op "Klad"). Typ een rekenregel, bv.
+   `70 : 7 = 10` of `47 + 100 = 147`, en druk Enter: elke regel krijgt meteen ✔ (klopt) of ✘ (rekenfout), met een
+   hint die het antwoord niet verklapt. Je typt `x` voor maal en `:` voor delen. Een lege regel + Enter (of `Tab`)
+   = terug naar het antwoord. Backspace op een lege regel of een klik op een regel haalt ze terug.
+3. **Antwoord** in het antwoordvak, en Enter.
+
+Verder overal hetzelfde:
+
+- **`?` = de volgende tip**, telkens een beetje meer, maar nooit het antwoord:
+  1. de aanpak ("Maak er eerst een rond getal van");
+  2. het begin van het klad ("Begin je klad zo: 47 + 100 = …");
+  3. hulp bij de eerste regel in je klad die niet klopt.
+- **Fout? Een tweede kans.** Het programma zegt wat er misliep (als het de denkfout herkent) en vraagt om klad te
+  maken. Is het ook de tweede keer fout, dan krijg je het antwoord en de uitwerking. Pas juist na een tweede kans =
+  de helft van de punten, en de vraag komt in de [herhaalbak](herhalen.md).
+  Geen tweede kans bij ja/nee en bij <, >, = (dan zou raden te makkelijk zijn).
+- **Na het nakijken: "Zo kan het:"**, de oplossing in klad-regels, zoals je ze zelf kunt typen, met het waarom
+  eronder.
+
+![Rekenen in het klad](beelden/werkwijze-klad.svg)
+
+![Een tweede kans](beelden/werkwijze-tweede-kans.svg)
+
+![Zo kan het](beelden/werkwijze-zo-kan-het.svg)
+
+Klad is er bij elke oefening waarin gerekend wordt: hoofdrekenen (behalve een tafel uit het hoofd), procenten,
+breuk van een getal, breuken optellen, tijd, geld, snelheid, rekenen met de klok, formules en schaal. Bij **slim × en
+: (splitsen)** is het klad verplicht: daar gaat het om de aanpak. Waar niets te rekenen valt (de klok lezen, het
+honderdveld, de getallenlijn …) zijn er dezelfde toetsen, tips en tweede kans, maar geen klad. Cijferen heeft het
+rooster en de staartdeling: dat is daar het klad. [Snelrekenen](snelrekenen.md) heeft geen klad, tips of tweede
+kans: daar gaat het om snel.
+
 ## Vrij oefenen
 
-Elke vraag staat links; rechts kijkt het **oefenmaatje** (je avatar) mee. Typ je antwoord en druk Enter.
+Elke vraag staat links; rechts kijkt het **oefenmaatje** (je avatar) mee. Typ je antwoord en druk Enter (zie
+[de vaste werkwijze](#de-vaste-werkwijze-lees-klad-antwoord)).
 
 ![Een vraag](beelden/basis-vraag.svg)
 
@@ -151,8 +191,9 @@ Elke vraag staat links; rechts kijkt het **oefenmaatje** (je avatar) mee. Typ je
 
   ![Een juist antwoord](beelden/basis-juist.svg)
 
-- Fout: ✘, het juiste antwoord en de uitleg stap voor stap. Herkent het programma een **denkfout**, dan staat die
-  er eerst bij (bij elk onderwerp staat welke denkfouten het herkent). Het maatje geeft een kleine hint.
+- Fout: eerst een tweede kans. Weer fout: ✘, het juiste antwoord en de uitwerking ("Zo kan het:"). Herkent het
+  programma een **denkfout**, dan staat die er eerst bij (bij elk onderwerp staat welke denkfouten het herkent).
+  Het maatje geeft een kleine hint.
 
   ![Een fout antwoord](beelden/basis-fout.svg)
 
@@ -190,6 +231,10 @@ Stop je een reeks in het midden met `Esc`, dan blijven de antwoorden die je al g
 | 5 juist op rij | +10 |
 | Een reeks van 10 zonder fout | +20 |
 | Een onderwerp beheerst in de herhaalbak | +15 |
+| Per tip (`?`) | −2 (je krijgt er altijd minstens 2) |
+| Het klad helemaal juist | +2 |
+| Pas juist na een tweede kans | de helft |
+| Een vraagstuk | eigen regels: zie [Vraagstukken](wiskunde/vraagstukken.md#punten) |
 
 Met punten koop je dingen voor je avatar in de [winkel](avatar-en-winkel.md). De ouder ziet elk punt in het
 puntenlogboek en kan bonuspunten geven ([ouderdeel](ouderdeel.md)).

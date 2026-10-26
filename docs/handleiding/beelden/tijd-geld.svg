@@ -139,18 +139,24 @@
 <rect x="665" y="152" width="9" height="9" fill="#262626"/>
 <rect x="692" y="152" width="9" height="9" fill="#ffaf00"/>
 <rect x="701" y="152" width="9" height="9" fill="#ffaf00"/>
-<text x="62" y="237" textLength="558" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -5</text>
+<text x="62" y="165" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Klad (Tab)</text>
+<text x="62" y="183" textLength="315" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">typ hier je rekenregels: 3 x 4 = 12</text>
+<text x="62" y="363" textLength="558" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -5</text>
 <rect x="8" y="422" width="9" height="18" fill="#11a8cd"/>
-<rect x="17" y="422" width="63" height="18" fill="#000000"/>
-<rect x="80" y="422" width="126" height="18" fill="#11a8cd"/>
-<rect x="206" y="422" width="27" height="18" fill="#000000"/>
-<rect x="233" y="422" width="54" height="18" fill="#11a8cd"/>
-<rect x="287" y="422" width="45" height="18" fill="#000000"/>
-<rect x="332" y="422" width="387" height="18" fill="#11a8cd"/>
-<text x="17" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
-<text x="80" y="435" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> controleren  </text>
-<text x="206" y="435" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[?]</text>
-<text x="233" y="435" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> tip  </text>
-<text x="287" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
-<text x="332" y="435" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> stoppen                                   </text>
+<rect x="17" y="422" width="45" height="18" fill="#000000"/>
+<rect x="62" y="422" width="144" height="18" fill="#11a8cd"/>
+<rect x="206" y="422" width="63" height="18" fill="#000000"/>
+<rect x="269" y="422" width="126" height="18" fill="#11a8cd"/>
+<rect x="395" y="422" width="27" height="18" fill="#000000"/>
+<rect x="422" y="422" width="54" height="18" fill="#11a8cd"/>
+<rect x="476" y="422" width="45" height="18" fill="#000000"/>
+<rect x="521" y="422" width="198" height="18" fill="#11a8cd"/>
+<text x="17" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Tab]</text>
+<text x="62" y="435" textLength="144" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> naar het klad  </text>
+<text x="206" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Enter]</text>
+<text x="269" y="435" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> controleren  </text>
+<text x="395" y="435" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[?]</text>
+<text x="422" y="435" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> tip  </text>
+<text x="476" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#11a8cd" font-weight="bold">[Esc]</text>
+<text x="521" y="435" textLength="198" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> stoppen              </text>
 </g></svg>

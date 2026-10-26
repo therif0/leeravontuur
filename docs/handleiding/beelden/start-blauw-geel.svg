@@ -9,7 +9,7 @@
 <rect x="638" y="35" width="9" height="9" fill="#d75f5f"/>
 <rect x="647" y="35" width="9" height="9" fill="#d75f5f"/>
 <rect x="656" y="35" width="9" height="9" fill="#d75f5f"/>
-<text x="431" y="39" textLength="126" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">Volgende lukt!</text>
+<text x="404" y="39" textLength="153" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">Probeer nog eens!</text>
 <rect x="602" y="44" width="72" height="18" fill="#d75f5f"/>
 <rect x="602" y="44" width="9" height="9" fill="#d75f5f"/>
 <rect x="611" y="44" width="9" height="9" fill="#d75f5f"/>
@@ -22,7 +22,7 @@
 <rect x="674" y="53" width="9" height="9" fill="#d75f5f"/>
 <rect x="683" y="53" width="9" height="9" fill="#d75f5f"/>
 <rect x="692" y="53" width="9" height="9" fill="#d75f5f"/>
-<text x="44" y="57" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vrij oefenen: 0 van 1 juist</text>
+<text x="44" y="57" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vrij oefenen: 0 van 0 juist</text>
 <rect x="602" y="62" width="18" height="18" fill="#5fd787"/>
 <rect x="620" y="62" width="72" height="18" fill="#00d75f"/>
 <rect x="593" y="71" width="9" height="9" fill="#262626"/>
@@ -89,10 +89,9 @@
 <rect x="701" y="98" width="9" height="9" fill="#00d75f"/>
 <rect x="710" y="98" width="9" height="9" fill="#00875f"/>
 <rect x="593" y="116" width="9" height="18" fill="#262626"/>
-<rect x="602" y="116" width="18" height="18" fill="#00d75f"/>
-<rect x="620" y="116" width="9" height="18" fill="#262626"/>
-<rect x="629" y="116" width="36" height="18" fill="#00d75f"/>
-<rect x="665" y="116" width="9" height="18" fill="#262626"/>
+<rect x="602" y="116" width="45" height="18" fill="#00d75f"/>
+<rect x="647" y="116" width="18" height="18" fill="#262626"/>
+<rect x="665" y="116" width="9" height="18" fill="#00d75f"/>
 <rect x="674" y="116" width="9" height="18" fill="#ffd75f"/>
 <rect x="683" y="116" width="9" height="18" fill="#00875f"/>
 <rect x="692" y="116" width="9" height="18" fill="#ffaf00"/>
@@ -121,10 +120,10 @@
 <rect x="602" y="134" width="9" height="9" fill="#00875f"/>
 <rect x="611" y="134" width="9" height="9" fill="#00d75f"/>
 <rect x="620" y="134" width="9" height="9" fill="#00d75f"/>
-<rect x="629" y="134" width="9" height="9" fill="#262626"/>
-<rect x="638" y="134" width="9" height="9" fill="#262626"/>
-<rect x="647" y="134" width="9" height="9" fill="#262626"/>
-<rect x="656" y="134" width="9" height="9" fill="#262626"/>
+<rect x="629" y="134" width="9" height="9" fill="#00d75f"/>
+<rect x="638" y="134" width="9" height="9" fill="#00d75f"/>
+<rect x="647" y="134" width="9" height="9" fill="#00d75f"/>
+<rect x="656" y="134" width="9" height="9" fill="#00d75f"/>
 <rect x="665" y="134" width="9" height="9" fill="#00d75f"/>
 <rect x="674" y="134" width="9" height="9" fill="#00d75f"/>
 <rect x="683" y="134" width="9" height="9" fill="#ffaf00"/>
@@ -183,7 +182,7 @@
 <text x="314" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="386" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="467" y="183" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│░░░░░░░░│</text>
-<text x="575" y="183" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d70000" font-weight="bold">5/6</text>
+<text x="575" y="183" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">5/6</text>
 <rect x="89" y="188" width="9" height="18" fill="#ff00ff"/>
 <rect x="98" y="188" width="9" height="18" fill="#ff00ff"/>
 <rect x="107" y="188" width="9" height="18" fill="#ff00ff"/>
@@ -228,16 +227,25 @@
 <text x="314" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="386" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="467" y="201" textLength="90" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│░░░░░░░░│</text>
-<text x="62" y="273" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d70000" font-weight="bold">✘ Niet juist. Het juiste antwoord is 4/6.  (4 s)</text>
-<text x="62" y="309" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">De balk is verdeeld in 6 gelijke stukken: de noemer is 6.</text>
-<text x="62" y="327" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">4 stukken zijn gearceerd: de teller is 4. Dus 4/6.</text>
+<text x="503" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">▲</text>
+<text x="80" y="237" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">6 stukken</text>
+<text x="62" y="273" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d70000" font-weight="bold">Nog niet juist. Probeer nog eens.</text>
+<text x="62" y="327" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">←→ kies een stuk · spatie of klik = arceren</text>
 <rect x="8" y="422" width="9" height="18" fill="#af0000"/>
-<rect x="17" y="422" width="63" height="18" fill="#000000"/>
-<rect x="80" y="422" width="153" height="18" fill="#af0000"/>
-<rect x="233" y="422" width="45" height="18" fill="#000000"/>
-<rect x="278" y="422" width="441" height="18" fill="#af0000"/>
-<text x="17" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[Enter]</text>
-<text x="80" y="435" textLength="153" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> volgende vraag  </text>
-<text x="233" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[Esc]</text>
-<text x="278" y="435" textLength="441" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> stoppen                                         </text>
+<rect x="17" y="422" width="72" height="18" fill="#000000"/>
+<rect x="89" y="422" width="81" height="18" fill="#af0000"/>
+<rect x="170" y="422" width="63" height="18" fill="#000000"/>
+<rect x="233" y="422" width="72" height="18" fill="#af0000"/>
+<rect x="305" y="422" width="27" height="18" fill="#000000"/>
+<rect x="332" y="422" width="54" height="18" fill="#af0000"/>
+<rect x="386" y="422" width="45" height="18" fill="#000000"/>
+<rect x="431" y="422" width="288" height="18" fill="#af0000"/>
+<text x="17" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[spatie]</text>
+<text x="89" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> arceer  </text>
+<text x="170" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[Enter]</text>
+<text x="233" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> klaar  </text>
+<text x="305" y="435" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[?]</text>
+<text x="332" y="435" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> tip  </text>
+<text x="386" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#ff8787" font-weight="bold">[Esc]</text>
+<text x="431" y="435" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5"> stoppen                        </text>
 </g></svg>

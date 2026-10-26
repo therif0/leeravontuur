@@ -109,7 +109,7 @@ class TestSchermen(Basis):
                   for i in range(1, 11)]
         antwoorden = []
         for i in range(1, 11):
-            antwoorden += [*(str(7 * i) if i != 6 else "41"), OK, OK]
+            antwoorden += [*str(7 * i), OK, OK] if i != 6 else [*"41", OK, *"41", OK, OK]  # fout: tweede kans
         with mock.patch.object(H.TAFELS, "maak", side_effect=vragen):
             scherm, app = self.speel([OK, OK, hm("Leren & oefenen"), "1", "2", "1", "2", OK, *antwoorden,
                                       ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)

@@ -84,6 +84,21 @@ def kies_plek(werk, terminal=None, bewaard=None):
     return x1 - b - MARGE, y0 + MARGE, b, h
 
 
+def monitor_van(scherm, punt):
+    """Met meer monitors ziet tkinter één breed scherm. Welk stuk is de monitor waar `punt` (bv. de muis) staat?
+    Is het scherm veel breder dan hoog, dan schatten we het aantal monitors (naast elkaar, 16:9 of 16:10).
+    Geeft (x0, y0, x1, y1) van die monitor, of het hele scherm."""
+    x0, y0, x1, y1 = scherm
+    breed, hoog = x1 - x0, y1 - y0
+    if hoog <= 0 or breed / hoog <= 2.0:  # één scherm (ook 21:9 ultrabreed)
+        return scherm
+    aantal = max(1, round(breed / (hoog * 16 / 9)))
+    stuk = breed / aantal
+    px = min(max(punt[0], x0), x1 - 1) if punt else x0
+    i = int((px - x0) // stuk)
+    return int(x0 + i * stuk), y0, int(x0 + (i + 1) * stuk), y1
+
+
 def lees_geometrie(tekst):
     """'320x416+1030+16' (zoals tkinter het geeft en terug wil) → (x, y, breedte, hoogte), of None."""
     m = re.fullmatch(r"(\d+)x(\d+)\+(-?\d+)\+(-?\d+)", str(tekst).strip())
@@ -110,8 +125,21 @@ class Windows:
         return r.left, r.top, r.right, r.bottom
 
     def werk(self):
-        r = self.w.RECT()
-        if self.user32.SystemParametersInfoW(0x0030, 0, self.c.byref(r), 0):  # SPI_GETWORKAREA (zonder taakbalk)
+        """Het werkgebied (zonder taakbalk) van de monitor waar de terminal staat."""
+        c, w = self.c, self.w
+
+        class MONITORINFO(c.Structure):
+            _fields_ = [("cbSize", w.DWORD), ("rcMonitor", w.RECT), ("rcWork", w.RECT), ("dwFlags", w.DWORD)]
+
+        if self.terminal:
+            monitor = self.user32.MonitorFromWindow(self.terminal, 2)  # MONITOR_DEFAULTTONEAREST
+            info = MONITORINFO()
+            info.cbSize = c.sizeof(MONITORINFO)
+            if monitor and self.user32.GetMonitorInfoW(monitor, c.byref(info)):
+                r = info.rcWork
+                return r.left, r.top, r.right, r.bottom
+        r = w.RECT()
+        if self.user32.SystemParametersInfoW(0x0030, 0, c.byref(r), 0):  # SPI_GETWORKAREA (het hoofdscherm)
             return r.left, r.top, r.right, r.bottom
         return None
 
@@ -186,8 +214,14 @@ class Venster:
                     return w
             except Exception:
                 pass
-        # elders: het hele scherm, met bovenaan plaats voor een menubalk
-        return 0, 30 if sys.platform == "darwin" else 0, self.root.winfo_screenwidth(), self.root.winfo_screenheight()
+        # elders: de monitor waar de muis staat (daar werkt het kind), met bovenaan plaats voor een menubalk
+        scherm = (0, 30 if sys.platform == "darwin" else 0, self.root.winfo_screenwidth(),
+                  self.root.winfo_screenheight())
+        try:
+            muis = self.root.winfo_pointerxy()
+        except self.tk.TclError:
+            muis = None
+        return monitor_van(scherm, muis)
 
     def plaats(self):
         terminal = None

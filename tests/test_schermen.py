@@ -318,9 +318,11 @@ class TestKlok(Basis):
     def test_half_vier_is_geen_half_vijf(self):
         v = self.vaste_vraag("woorden_naar", 3 * 60 + 30)
         o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([*self.START, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        scherm, app = self.speel([*self.START, *"4.30", OK, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Half vier is een half uur"))  # het hulpje bij de tweede kans
         rij = o.antwoorden(app.kind.id)[-1]
-        self.assertEqual((rij["juist"], rij["diagnose"]), (0, "klok_half"), v.tekst)
+        self.assertEqual((rij["juist"], rij["diagnose"], rij["gegeven"]), (0, "klok_half", "4.30"), v.tekst)
+        self.assertIn('"eerste_fout": "4.30"', rij["extra"])
 
     def test_in_woorden(self):
         self.vaste_vraag("naar_woorden", 3 * 60 + 25)
@@ -361,8 +363,9 @@ class TestKlokvenster(TestKlok):
     def test_wijzers_zetten_met_een_klik_in_het_venster(self):
         v = self.vaste_vraag("zetten", 7 * 60)
         o = self.opslag(("Test", "5"))
-        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}])  # de lange wijzer recht naar boven
-        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
+        # de lange wijzer recht naar boven, Enter (fout? dan een tweede kans: nog eens Enter)
+        kv = NepKlokvenster([{"klik": [0, -80]}, {"toets": "Enter"}, {"toets": "Enter"}])
+        scherm, app = self.speel([*self.START, ("wacht",), ("wacht",), ("wacht",), ("wacht",), ESC, ESC, ESC, ESC, ESC],
                                  opslag=o, klokvenster=kv)
         rij = o.antwoorden(app.kind.id)[-1]
         self.assertTrue(rij["gegeven"].endswith(".00 u") or rij["gegeven"].endswith(".00"), rij["gegeven"])
@@ -395,7 +398,7 @@ class TestKlokvenster(TestKlok):
     def test_tekst_blijft_links_van_het_venster(self):
         self.vaste_vraag("later", 8 * 60 + 50)
         kv = NepKlokvenster()
-        scherm, _ = self.speel([*self.START, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
+        scherm, _ = self.speel([*self.START, *"1.00", OK, *"1.00", OK, ESC, ESC, ESC, ESC], klokvenster=kv)
         nagekeken = next(b for b in scherm.beelden if "Niet juist" in b)
         beeld = nagekeken.split("\n")
         for regel in beeld[11:23]:  # onder het oefenmaatje: de feedback en de uitleg
@@ -411,7 +414,149 @@ class TestKlokvenster(TestKlok):
         self.assertEqual(bewaard, [[10, 20, 300, 390]])
 
 
+class TestWerkwijze(Basis):
+    """De vaste werkwijze in elke oefening: klad met Tab, getrapte tips, een tweede kans en "Zo kan het:"."""
+
+    def naar(self, o):
+        """De toetsen tot vrij oefenen op Normaal in onderwerp o (gezocht in de domeinen van Wiskunde)."""
+        scherm = NepScherm([])
+        app = App(scherm, self.opslag(), kleuren=False)
+        for i, (_, _, onderwerpen, _) in enumerate(app.domeinen(), 1):
+            if onderwerpen and o in onderwerpen:
+                stap = [str(onderwerpen.index(o) + 1)] if len(onderwerpen) > 1 else []
+                return [OK, OK, "2", "1", str(i % 10), *stap, "1", "2"]
+        raise AssertionError(o.id)
+
+    def vast(self, o, v):
+        from unittest import mock
+        patch = mock.patch.object(o, "maak", return_value=v)
+        patch.start()
+        self.addCleanup(patch.stop)
+        return self.naar(o)
+
+    def plusmin(self):
+        from decimal import Decimal
+        from leeravontuur.kern.onderwerp import Vraag
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
+        v = Vraag(H.PLUSMIN.id, f"{H.PLUSMIN.id}:plus compenseren:47+99", "47 + 99 =", Decimal(146),
+                  data={"a": "47", "b": "99", "op": "+", "strategie": "compenseren", "rond": 100, "verschil": 1,
+                        "schaal": 1, "onderwerp": "plus compenseren"})
+        return self.vast(H.PLUSMIN, v)
+
+    def test_klad_met_tab_en_dan_antwoorden(self):
+        o = self.opslag(("Test", "5"))
+        toetsen = [*self.plusmin(), TAB, *"47 + 100 = 147", OK, *"147 - 1 = 146", OK, TAB, *"146", OK]
+        scherm, app = self.speel(toetsen + [ESC] * 5, opslag=o)
+        self.assertTrue(self.ergens(scherm, "▸ Klad"))
+        self.assertTrue(self.ergens(scherm, "147 − 1 = 146"))  # netjes, met ✔
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual(rij["juist"], 1)
+        self.assertIn('"klad_ok": true', rij["extra"])
+        self.assertEqual(o.punten_saldo(app.kind.id), 12)  # 10 + 2 voor een juist klad
+
+    def test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), TAB, OK, *"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["gegeven"], "146")
+
+    def test_tweede_kans_halve_punten_en_herhaalbak(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), *"148", OK, *"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Bij compenseren moest je 1 aftrekken"))  # het hulpje
+        self.assertTrue(self.ergens(scherm, "Maak eens"))  # … klad (Tab): de regel loopt door
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["juist"], len(o.antwoorden(app.kind.id))), (1, 1))  # één antwoord, juist
+        self.assertIn('"eerste_fout": "148"', rij["extra"])
+        self.assertEqual(o.punten_saldo(app.kind.id), 5)  # de helft
+        self.assertEqual(len(o.herhaalbak(app.kind.id)), 1)
+
+    def test_twee_keer_fout_zo_kan_het(self):
+        scherm, _ = self.speel([*self.plusmin(), *"148", OK, *"148", OK, ESC, ESC, ESC, ESC, ESC])
+        beeld = next(b for b in scherm.beelden if "Zo kan het:" in b)
+        self.assertIn("47 + 100 = 147", beeld)
+        self.assertIn("147 − 1 = 146", beeld)
+
+    def test_tips_getrapt(self):
+        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", ESC, ESC, ESC, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Tip 1: Maak er eerst een rond getal van"))
+        self.assertTrue(self.ergens(scherm, "Tip 2: Begin je klad zo: 47 + 100 = …"))
+        self.assertTrue(self.ergens(scherm, "Tip 3: schrijf je eerste stap in het klad"))
+
+    def test_klik_op_het_klad(self):
+        toetsen = self.plusmin()
+        scherm, _ = self.speel(toetsen)
+        beeld = next(b for b in scherm.beelden if "Klad (Tab)" in b).split("\n")
+        y = next(i for i, r in enumerate(beeld) if "Klad (Tab)" in r)
+        scherm, _ = self.speel([*toetsen, ("klik", y, beeld[y].index("Klad") + 1), *"1 + 1 = 2", OK])
+        self.assertTrue(self.ergens(scherm, "✔ Deze regel klopt."))
+
+    def test_ja_nee_zonder_tweede_kans(self):
+        from decimal import Decimal
+        from leeravontuur.kern.onderwerp import Vraag
+        from leeravontuur.kern.wiskunde import getallen as G
+        v = Vraag(G.DEELBAARHEID.id, f"{G.DEELBAARHEID.id}:deelbaar:4677:3", "Is 4 677 deelbaar door 3? (ja of nee)",
+                  "ja", data={"soort": "deelbaar", "onderwerp": "deelbaar door 3", "deler": 3, "n": 4677},
+                  invoer="janee")
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.vast(G.DEELBAARHEID, v), *"nee", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual(rij["juist"], 0)  # meteen nagekeken: bij ja of nee is een tweede kans raden
+        self.assertTrue(self.ergens(scherm, "Niet juist"))
+
+    def test_splitsen_eerst_het_klad(self):
+        from decimal import Decimal
+        from leeravontuur.kern.onderwerp import Vraag
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
+        v = Vraag(H.SPLITSEN.id, f"{H.SPLITSEN.id}:deel_splitsen:91:7", "91 : 7 =", Decimal(13),
+                  data={"soort": "deel_splitsen", "a": "91", "f": "7", "op": ":", "delen": ["70", "21"],
+                        "onderwerp": "deel_splitsen"})
+        o = self.opslag(("Test", "5"))
+        toetsen = [*self.vast(H.SPLITSEN, v), TAB, *"13", OK]  # het klad staat open: Tab = naar het antwoord
+        scherm, app = self.speel(toetsen + [ESC] * 5, opslag=o)
+        self.assertTrue(self.ergens(scherm, "Laat in je klad zien hoe je splitst"))
+        self.assertEqual(o.antwoorden(app.kind.id), [])  # telt niet als poging
+        toetsen += [*"70 : 7 = 10", OK, *"21 : 7 = 3", OK, TAB, OK]
+        scherm, app = self.speel(toetsen + [ESC] * 5, opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
+
+    def test_elk_rekenonderwerp_past_met_het_klad_open(self):
+        """In elk leerjaar: 6 klad-regels en 3 tips, en alles blijft binnen 80 × 24 (de knoppen blijven zichtbaar)."""
+        import random
+        from leeravontuur.kern.leerjaren import LEERJAREN
+        from leeravontuur.kern.onderwerp import ONDERWERPEN
+        for oid, o in ONDERWERPEN.items():
+            if not o.klad:
+                continue
+            for jaar in LEERJAREN[:-1]:
+                if not o.aangeboden(jaar):
+                    continue
+                v = next((v for v in (o.maak(jaar, rng=random.Random(z)) for z in range(40)) if o.klad_voor(v)), None)
+                if v is None or v.invoer in INVOER_OBJECTEN:
+                    continue
+                with self.subTest(oid=oid, jaar=jaar, vraag=v.tekst):
+                    from unittest import mock
+                    with mock.patch.object(o, "maak", return_value=v):
+                        regels = [k for _ in range(6) for k in [*"12 + 3 = 15", OK]]
+                        toetsen = [*self.naar(o)] + ([] if o.klad_voor(v) == "verplicht" else [TAB])
+                        scherm, _ = self.speel([*toetsen, *regels, "?", "?", "?"])
+                    beeld = next(b for b in reversed(scherm.beelden) if "Klad" in b).split("\n")
+                    self.assertEqual(len(beeld), 24)
+                    self.assertTrue(beeld[-1].startswith(" [Tab]"), beeld[-1])
+                    tip = next(i for i, r in enumerate(beeld) if "Tip 3" in r)
+                    self.assertLess(tip, 23)
+
+
+TAB = 9
+INVOER_OBJECTEN = {"rooster", "staart", "vraagstuk", "speur", "keuze", "balk", "veld", "coord", "wijzers", "lijn"}
+
+
 class TestTypen(Basis):
+    def test_broodkruimel_bij_een_nieuw_kind(self):
+        """Een klik op "Wie ben jij?" terwijl je je naam typt: terug naar de keuze, nooit een fout."""
+        scherm, app = self.speel([OK, ("klik", 0, 16), ("klik", 0, 2), *"Zoë", OK, OK, ESC], opslag=self.opslag())
+        self.assertTrue(self.ergens(scherm, "Hallo! Hoe heet je?"))
+        self.assertEqual(app.kind.naam, "Zoë")
+
     def test_accenten_typen(self):
         scherm, app = self.speel([OK, *"Zoë", OK, OK, ESC], opslag=self.opslag())
         self.assertEqual(app.kind.naam, "Zoë")

@@ -20,7 +20,7 @@ from pathlib import Path
 
 from .. import verhaal as V
 from ..getal import fmt, fmt_groot, lees_getal
-from ..klad import lees_regel
+from ..klad import analyseer, lees_regel
 from ..modellen import Gegeven, Keuze, Rekenstap, Speur, Verhaal
 from ..onderwerp import Onderwerp, Vraag
 from .grootheden import duur_tekst, klok_tekst, lees_duur, lees_klok
@@ -970,48 +970,9 @@ def stel_samen(structuur, variant, wereld, item, p, rng, zin_keuze=None):
 # ---- het klad nakijken --------------------------------------------------------------------------------------
 
 def analyseer_klad(model, regels):
-    """Kijkt het klad na tegenover de stappen en de foute paden.
-
-    Geeft {'status': [per regel 'goed'/'ok'/'reken'/'denk'/None], 'eerste': (regelnr, code, tekst) of None,
-           'gedekt': ids van stappen die erin staan, 'compleet': staat de uitkomst in het klad?}."""
-    juiste = {F(st.uitkomst): st.id for st in model.stappen}
+    """Kijkt het klad na tegenover de stappen en de foute paden (kern/klad.analyseer)."""
     overbodig = {F(g.waarde) for g in model.gegevens.values() if not g.nodig}
-    status, gedekt, eerste = [], set(), None
-    for nr, tekst in enumerate(regels, 1):
-        r = lees_regel(tekst) if isinstance(tekst, str) else tekst
-        st = None
-        if r.juist is False:
-            st = "reken"
-            if eerste is None:
-                eerste = (nr, "vs_rekenfout", f"Regel {nr}: {r.melding}")
-        elif r.juist:
-            st = "ok"
-            for s in r.schakels:
-                waarden = [s.gegeven.getal] + ([s.gegeven.rest] if s.gegeven.rest is not None else [])
-                if any(w in juiste for w in waarden):
-                    gedekt.update(juiste[w] for w in waarden if w in juiste)
-                    st = "goed"
-                    continue
-                sig = (_op(s.ops), sorted(s.operanden), s.gegeven.getal)
-                pad = next((p for p in model.paden if sig in p[4]), None)
-                if pad is None and overbodig & set(s.operanden):
-                    pad = next((p for p in model.paden if p[0] == "vs_overbodig"), None)
-                if pad is None:
-                    pad = next((p for p in model.paden if s.gegeven.getal in (p[2],) and p[0] != "vs_komma"
-                                and len(s.ops) > 1), None)
-                if pad:
-                    st = "denk"
-                    if eerste is None:
-                        eerste = (nr, pad[0], f"Regel {nr}: {pad[1]}")
-                    break
-        status.append(st)
-    eind = F(model.stappen[-1].uitkomst)
-    return {"status": status, "eerste": eerste, "gedekt": gedekt,
-            "compleet": model.stappen[-1].id in gedekt or eind in juiste and juiste[eind] in gedekt}
-
-
-def _op(ops):
-    return {"van": "pct"}.get(ops[0], ops[0]) if len(ops) == 1 else None
+    return analyseer(model.stappen, model.paden, regels, overbodig, rekenfout="vs_rekenfout")
 
 
 # ---- het onderwerp -----------------------------------------------------------------------------------------

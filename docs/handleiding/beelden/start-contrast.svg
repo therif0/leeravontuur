@@ -3,8 +3,8 @@
 <g font-family="DejaVu Sans Mono, Menlo, Consolas, monospace" font-size="15">
 <rect x="8" y="8" width="693" height="18" fill="#e5e5e5"/>
 <text x="8" y="21" textLength="693" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> Leeravontuur › Leren › Wiskunde › Breuken › Breuken herkennen › Vrij oefenen</text>
-<text x="530" y="39" textLength="180" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[^-^] Volgende lukt!</text>
-<text x="44" y="57" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vrij oefenen: 0 van 1 juist</text>
+<text x="503" y="39" textLength="207" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[o_~] Probeer nog eens!</text>
+<text x="44" y="57" textLength="243" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Vrij oefenen: 0 van 0 juist</text>
 <text x="44" y="75" textLength="378" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">Breuken herkennen · Normaal (5de leerjaar)</text>
 <text x="62" y="129" textLength="225" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">Arceer 4/8 van de balk.  </text>
 <rect x="89" y="170" width="9" height="18" fill="#e5e5e5"/>
@@ -40,7 +40,7 @@
 <text x="251" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="314" y="183" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="368" y="183" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│░░░░░░│░░░░░│░░░░░░│</text>
-<text x="575" y="183" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">5/8</text>
+<text x="575" y="183" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" font-weight="bold">5/8</text>
 <rect x="89" y="188" width="9" height="18" fill="#e5e5e5"/>
 <rect x="98" y="188" width="9" height="18" fill="#e5e5e5"/>
 <rect x="107" y="188" width="9" height="18" fill="#e5e5e5"/>
@@ -74,16 +74,25 @@
 <text x="251" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="314" y="201" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│</text>
 <text x="368" y="201" textLength="189" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">│░░░░░░│░░░░░│░░░░░░│</text>
-<text x="62" y="273" textLength="432" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">✘ Niet juist. Het juiste antwoord is 4/8.  (4 s)</text>
-<text x="62" y="309" textLength="513" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">De balk is verdeeld in 8 gelijke stukken: de noemer is 8.</text>
-<text x="62" y="327" textLength="450" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">4 stukken zijn gearceerd: de teller is 4. Dus 4/8.</text>
+<text x="395" y="219" textLength="9" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">▲</text>
+<text x="80" y="237" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">8 stukken</text>
+<text x="62" y="273" textLength="297" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">Nog niet juist. Probeer nog eens.</text>
+<text x="62" y="327" textLength="387" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#d4d4d4" opacity="0.6">←→ kies een stuk · spatie of klik = arceren</text>
 <rect x="8" y="422" width="9" height="18" fill="#e5e5e5"/>
-<rect x="17" y="422" width="63" height="18" fill="#000000"/>
-<rect x="80" y="422" width="153" height="18" fill="#e5e5e5"/>
-<rect x="233" y="422" width="45" height="18" fill="#000000"/>
-<rect x="278" y="422" width="441" height="18" fill="#e5e5e5"/>
-<text x="17" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[Enter]</text>
-<text x="80" y="435" textLength="153" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> volgende vraag  </text>
-<text x="233" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[Esc]</text>
-<text x="278" y="435" textLength="441" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> stoppen                                         </text>
+<rect x="17" y="422" width="72" height="18" fill="#000000"/>
+<rect x="89" y="422" width="81" height="18" fill="#e5e5e5"/>
+<rect x="170" y="422" width="63" height="18" fill="#000000"/>
+<rect x="233" y="422" width="72" height="18" fill="#e5e5e5"/>
+<rect x="305" y="422" width="27" height="18" fill="#000000"/>
+<rect x="332" y="422" width="54" height="18" fill="#e5e5e5"/>
+<rect x="386" y="422" width="45" height="18" fill="#000000"/>
+<rect x="431" y="422" width="288" height="18" fill="#e5e5e5"/>
+<text x="17" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[spatie]</text>
+<text x="89" y="435" textLength="81" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> arceer  </text>
+<text x="170" y="435" textLength="63" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[Enter]</text>
+<text x="233" y="435" textLength="72" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> klaar  </text>
+<text x="305" y="435" textLength="27" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[?]</text>
+<text x="332" y="435" textLength="54" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> tip  </text>
+<text x="386" y="435" textLength="45" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#e5e5e5" font-weight="bold">[Esc]</text>
+<text x="431" y="435" textLength="288" lengthAdjust="spacingAndGlyphs" xml:space="preserve" fill="#000000"> stoppen                        </text>
 </g></svg>
