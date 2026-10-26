@@ -23,6 +23,7 @@ from ..getal import fmt, fmt_groot, lees_getal
 from ..klad import lees_regel
 from ..modellen import Gegeven, Keuze, Rekenstap, Speur, Verhaal
 from ..onderwerp import Onderwerp, Vraag
+from .grootheden import duur_tekst, klok_tekst, lees_duur, lees_klok
 from .procenten import geld
 
 D, F = Decimal, Fraction
@@ -85,9 +86,13 @@ def mooi(x, decimalen=2):
 
 
 def tekst_getal(x, eenheid=""):
-    """Een getal zoals in het verhaal: '€ 3,20', '750 g', '1 250'."""
+    """Een getal zoals in het verhaal: '€ 3,20', '750 g', '1 250', '9.45 u' (klok), '1 u 35 min' (duur)."""
     if eenheid == "€":
         return "€ " + geld(x)
+    if eenheid == "klok":
+        return klok_tekst(x)
+    if eenheid == "duur":
+        return duur_tekst(x)
     t = fmt_groot(x) if abs(x) >= 10000 else fmt(x)
     return f"{t} {eenheid}" if eenheid else t
 
@@ -153,6 +158,8 @@ class Bouw:
 
     def reken_tekst(self, st, waarden, d):
         def getal(x, eenheid=""):
+            if eenheid in ("klok", "duur"):
+                return tekst_getal(x, eenheid)
             return geld(x) if eenheid == "€" else fmt_groot(x) if abs(x) >= 10000 else fmt(x)
 
         def t(i):
@@ -718,9 +725,55 @@ class PerStuk(Structuur):
             b.kan(0, a * p, "Eén {ding.enk} kost minder dan alle {a} samen.")
 
 
+class Tijdsduur(Structuur):
+    """Tijdstippen en tijdsduur (alles in minuten na middernacht)."""
+    id, naam, soort = "tijdsduur", "tijdsduur en aankomstuur", "agenda"
+
+    def bouw(self, b, variant, item):
+        for k in ("wat", "start", "einde", "start_v", "einde_v"):
+            b.ctx[k] = item[k]
+        stap = 1 if b.p["factor"] >= 25 else 5
+        begin = b.getal(item["van"][0] * 60, item["van"][1] * 60, stap)
+        duur = b.getal(*item["duur"], stap=stap)
+        if duur < 20 or begin + duur >= 24 * 60 or (variant == "twee" and "stuk2" not in item):
+            raise Opnieuw("tijd")
+        if variant == "duur":
+            b.geg("b", begin, "het begin-uur", "klok")
+            b.geg("e", begin + duur, "het eind-uur", "klok")
+            b.stap("−", ["e", "b"], "d", "hoe lang het duurt",
+                   "Hoe lang? Van het begin tot het einde: tel in stapjes tot het volle uur, en dan verder.",
+                   "Van {b} tot {e}: tel tot het volle uur en dan verder.", "duur")
+            b.kan(0, 12 * 60, "Het duurt minder dan een halve dag.")
+        elif variant == "begin":
+            b.geg("e", begin + duur, "het eind-uur", "klok")
+            b.geg("d", duur, "hoe lang het duurt", "duur")
+            b.stap("−", ["e", "d"], "b", "het begin-uur", "Tel terug van het einde: eerst tot het volle uur.",
+                   "Het eindigt om {e} en duurt {d}: tel {d} terug.", "klok")
+            if (begin + duur) % 60 < duur % 60:
+                b.extra.append(("vs_uur_vergeten", F(begin + 60), "Over het volle uur terug: er gaat een uur af."))
+            b.kan(0, begin + duur, "Het begint vóór het eindigt.")
+        else:
+            b.geg("b", begin, "het begin-uur", "klok")
+            b.geg("d", duur, "hoe lang het duurt", "duur")
+            b.stap("+", ["b", "d"], "e", "het eind-uur", "Tel de tijd erbij: eerst de uren, dan de minuten. "
+                   "Na 59 minuten komt er een uur bij.", "Vanaf {b}: {d} erbij.", "klok")
+            einde = begin + duur
+            if begin % 60 + duur % 60 >= 60:
+                b.extra.append(("vs_uur_vergeten", F(einde - 60), "60 minuten zijn een uur: er komt een uur bij."))
+            if variant == "twee":
+                d2 = b.getal(*item["d2"], stap=stap)
+                if einde + d2 >= 24 * 60:
+                    raise Opnieuw("te laat")
+                b.geg("d2", d2, "hoe lang het tweede stuk duurt", "duur")
+                b.stap("+", ["e", "d2"], "a", "het uur van aankomst", "Daarna nog het tweede stuk erbij.",
+                       "Vanaf {e}: nog {d2} erbij.", "klok")
+                einde += d2
+            b.kan(begin, 24 * 60, "Je komt later aan dan je vertrekt.")
+
+
 STRUCTUREN = {s.id: s for s in [Samen(), Verschil(), Groepen(), Rest(), SamenDelen(), Wisselgeld(), TweeSoorten(),
                                 PerKg(), Korting(), Sparen(), Recept(), BreukVan(), Omtrek(), Gemiddelde(),
-                                Snelheid(), Tegels(), Schaal(), Lint(), PerStuk()]}
+                                Snelheid(), Tegels(), Schaal(), Lint(), PerStuk(), Tijdsduur()]}
 
 # ---- foute paden ------------------------------------------------------------------------------------------
 
@@ -740,6 +793,7 @@ DENKFOUTEN = {
     "vs_kan_niet": "een antwoord dat niet kan kloppen",
     "vs_gemiddelde_aantal": "gedeeld door het verkeerde aantal",
     "vs_omtrek": "de omtrek berekend in plaats van de oppervlakte",
+    "vs_uur_vergeten": "60 minuten niet omgezet in een uur",
     **{f"vs_{NAAM_OP[a]}_ipv_{NAAM_OP[b]}": f"{VOLTOOID[a]} in plaats van {VOLTOOID[b]}"
        for a in VOLTOOID for b in VOLTOOID if a != b},
 }
@@ -790,7 +844,7 @@ def foute_paden(b, gevraagd):
         ops = [b.w[o] if isinstance(o, str) else F(o) for o in st.operanden]
         if st.op in VOLTOOID and len(ops) == 2 and 1 not in st.operanden:  # (+ 1 extra doos: geen andere bewerking)
             for alt in VOLTOOID:
-                if alt == st.op:
+                if alt == st.op or (st.eenheid in ("klok", "duur") and alt in ("×", ":")):
                     continue
                 w = _reken_alles(st_, basis, i, alt)
                 if w is None or (alt == ":" and mooi(w[st.id], 2) is None):
@@ -825,7 +879,7 @@ def foute_paden(b, gevraagd):
     for st in st_[:-1]:
         voeg("vs_tussenstap", f"Dat is {st.naam}. Gevraagd is {gevraagd}: je bent nog niet klaar.",
              {**b.w, eind: b.w[st.id]})
-    for factor in (10, 100, 1000):
+    for factor in (() if st_[-1].eenheid in ("klok", "duur") else (10, 100, 1000)):
         for w in (juist * factor, juist / factor):
             voeg("vs_komma", "Je antwoord is 10, 100 of 1000 keer te groot of te klein. Kijk naar de komma "
                              "(en de eenheid).", {eind: w})
@@ -870,8 +924,10 @@ def stel_samen(structuur, variant, wereld, item, p, rng, zin_keuze=None):
     if tpl.get("schud"):
         rng.shuffle(groepen)
     # af en toe een overbodig gegeven
-    if rng.random() < p["overbodig"] and wereld.get("weetjes"):
-        weetje = rng.choice(wereld["weetjes"])
+    weetjes = [w for w in wereld.get("weetjes", []) if structuur != "tijdsduur"
+               or ("uur" not in w["zin"] and w.get("eenheid") != "min")]  # geen tweede uur in een verhaal over tijd
+    if rng.random() < p["overbodig"] and weetjes:
+        weetje = rng.choice(weetjes)
         eenheid = weetje.get("eenheid", "")
         nodig_waarden = {g.waarde for g in b.g.values()} | {st.uitkomst for st in b.stappen}
         x = b.getal(*weetje["x"], stap=1)
@@ -905,7 +961,8 @@ def stel_samen(structuur, variant, wereld, item, p, rng, zin_keuze=None):
     laatste = b.stappen[-1]
     eenheid = laatste.eenheid
     paden = foute_paden(b, gevraagd)
-    model = Verhaal(zinnen, b.g, b.stappen, gevraagd, opties, (voor, na), eenheid, b.controle, paden)
+    model = Verhaal(zinnen, b.g, b.stappen, gevraagd, opties, (voor, na), eenheid, b.controle, paden,
+                    eenheid if eenheid in ("klok", "duur") else "getal")
     waarden = "/".join(geld(g.waarde) if g.eenheid == "€" else fmt(g.waarde) for g in b.g.values())
     return model, " ".join(V.tekst(z) for z in zinnen), f"{wereld['id']}:{waarden}"
 
@@ -970,6 +1027,11 @@ def lees_antwoord(tekst):
 
 def antwoordzin(model, waarde):
     voor, na = model.antwoordzin
+    soort = getattr(model, "soort", "getal")
+    if soort == "klok":
+        return f"{voor}{klok_tekst(waarde)[:-2]}{na}"  # 'om 11.20 u': de u staat al in de zin
+    if soort == "duur":
+        return f"{voor}{duur_tekst(waarde)}{na}"
     return f"{voor}{geld(waarde) if voor.rstrip().endswith('€') else fmt(waarde)}{na}"
 
 
@@ -1032,8 +1094,8 @@ class Vraagstukken(Onderwerp):
             except Opnieuw:
                 continue
             laatste = model.stappen[-1]
-            verwacht = tekst_getal(laatste.uitkomst, laatste.eenheid if laatste.eenheid in ("€", "m", "g", "ml",
-                                                                                                "kg") else "")
+            verwacht = tekst_getal(laatste.uitkomst, laatste.eenheid if laatste.eenheid in ("€", "m", "g", "ml", "kg",
+                                                                                                "klok", "duur") else "")
             return Vraag(self.id, f"{self.id}:{structuur}/{variant}:{sleutel}", tekst, laatste.uitkomst,
                          "", {"structuur": structuur, "variant": variant, "onderwerp": structuur}, invoer="vraagstuk",
                          model=model, verwacht_tekst=verwacht)
@@ -1044,6 +1106,14 @@ class Vraagstukken(Onderwerp):
         return delen[1].split("/")[0] if len(delen) >= 3 and delen[0] == self.id else None
 
     def lees(self, tekst):
+        return lees_antwoord(tekst)
+
+    def lees_vraag(self, v, tekst):
+        soort = getattr(v.model, "soort", "getal")
+        if soort == "klok":
+            return lees_klok(tekst)
+        if soort == "duur":
+            return lees_duur(tekst) or lees_antwoord(tekst)  # 1 u 35 min, of 95 (minuten)
         return lees_antwoord(tekst)
 
     def diagnose(self, v, getal):
@@ -1093,6 +1163,8 @@ def _eenheden(model):
 
 
 def _getal(x, eenheid):
+    if eenheid in ("klok", "duur"):
+        return tekst_getal(int(x) % 1440 if eenheid == "klok" else int(x), eenheid)
     x = F(x)
     d = mooi(x, 3) if mooi(x, 3) is not None else D(round(float(x), 2)).normalize()
     return geld(d) if eenheid == "€" else fmt_groot(d) if abs(d) >= 10000 else fmt(d)
@@ -1174,8 +1246,9 @@ class Speurneus(Onderwerp):
         i = rng.choice(kandidaten)
         st = m.stappen[i]
         juist = F(st.uitkomst)
-        keuzes = [x for x in (juist * 10, juist / 10, juist + 10, juist - 1, juist + 1) if x > 0 and x != juist
-                  and mooi(x, 2) is not None]
+        mogelijk = (juist + 60, juist - 60, juist + 10, juist - 10) if st.eenheid in ("klok", "duur") else \
+            (juist * 10, juist / 10, juist + 10, juist - 1, juist + 1)
+        keuzes = [x for x in mogelijk if x > 0 and x != juist and mooi(x, 2) is not None]
         fout = rng.choice(keuzes)
         basis = {k: F(g.waarde) for k, g in m.gegevens.items()}
         w = _reken_alles(m.stappen, basis, i, resultaat=fout)
@@ -1284,6 +1357,7 @@ class Schatten(Onderwerp):
             soort = (data or {}).get("soort") if (data or {}).get("soort") in p["soorten"] else rng.choice(p["soorten"])
             uit = (self._ongeveer if soort == "ongeveer" else self._kan)(v, rng)
             if uit is None:
+                data = None  # (bv. een tijdstip uit de herhaalbak: kies een ander soort vraagstuk)
                 continue
             vraag, opties, juist, uitleg, sleutel = uit
             model = Keuze(v.model, vraag, opties, juist, uitleg)
@@ -1294,6 +1368,8 @@ class Schatten(Onderwerp):
 
     def _ongeveer(self, v, rng):
         m = v.model
+        if m.soort != "getal":
+            return None  # een tijdstip schat je niet in ordes van grootte
         x = schat(v.antwoord)
         if x == 0:
             return None
@@ -1312,7 +1388,7 @@ class Schatten(Onderwerp):
 
     def _kan(self, v, rng):
         m = v.model
-        if not m.controle:
+        if not m.controle or m.soort != "getal":
             return None
         lo, hi, waarom = m.controle
         a = F(v.antwoord)

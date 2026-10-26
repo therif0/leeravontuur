@@ -16,6 +16,7 @@ from ..kern.wiskunde import cijferen as C
 from ..kern.wiskunde import getallen as G
 from ..kern.wiskunde import grootheden as TG
 from ..kern.wiskunde import hoofdrekenen as H
+from ..kern.wiskunde import klok as KL
 from ..kern.wiskunde import meetkunde as MK
 from ..kern.wiskunde import procenten as PR
 from ..kern.wiskunde import vraagstukken as VS
@@ -345,14 +346,14 @@ class App:
                     raise
 
     def domeinen(self):
-        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp)."""
+        """De domeinen van Wiskunde: (naam, uitleg, onderwerpen of None voor Eenheden, spiekbrief-onderwerp(en))."""
         return [("Eenheden", "lengte, massa, inhoud, oppervlakte, volume", None, None),
                 ("Hoofdrekenen", "tafels, plus en min, × 10, dubbel en helft", H.ALLE, H.TAFELS),
                 ("Getallen", "plaatswaarde, afronden, deelbaarheid, getallenlijn", G.ALLE, G.PLAATSWAARDE),
                 ("Cijferen", "onder elkaar: + − × en de staartdeling", C.ALLE, C.OPTELLEN),
                 ("Breuken", "breukbalk, vereenvoudigen, vergelijken, + −, van", BR.ALLE, BR.HERKENNEN),
                 ("Procenten", "honderdveld, procent van, korting en btw", PR.ALLE, PR.VELD),
-                ("Tijd, geld en snelheid", "uren en minuten, wisselgeld, km/u", TG.ALLE, TG.TIJD),
+                ("Tijd, geld en snelheid", "de klok, uren en minuten, wisselgeld, km/u", TG.ALLE + [KL.KLOK], [TG.TIJD, KL.KLOK]),
                 ("Meetkunde", "oppervlakte en omtrek, formules, hoeken, schatkaart, schaal", MK.ALLE, MK.ROOSTER),
                 ("Vraagstukken", "oplossen in 4 stappen, Speurneus, schatten", VS.ALLE, VS.VRAAGSTUKKEN)]
 

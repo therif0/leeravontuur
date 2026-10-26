@@ -511,6 +511,43 @@ def _(d):
     d.foto("tijd-eindtijd-uitleg", "Aankomstuur: nagekeken")
 
 
+@scenario("klok-lezen")
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Hoe laat is het op de klok", OPNIEUW)
+    d.foto("klok-lezen", "De wijzerklok lezen")
+
+
+@scenario("klok-zetten")
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Zet de klok op", OPNIEUW)
+    d.toets("+", "Up", "Up", "Right")
+    d.foto("klok-zetten", "De wijzers zetten: de uurwijzer draait mee")
+
+
+@scenario("klok-woorden-fout")
+def _(d):
+    from leeravontuur.kern.wiskunde.klok import lees_woorden
+    from leeravontuur.kern.wiskunde.grootheden import klok_tekst
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek(r"Hoe schrijf je '[a-z ]*half [a-z]+' in cijfers", OPNIEUW, keer=80)
+    woorden = re.search(r"Hoe schrijf je '([a-z ]+)' in cijfers", scherm_tekst(d)).group(1)
+    antwoord(d, klok_tekst(lees_woorden(woorden) + 60).replace(" u", ""))
+    d.foto("klok-woorden-fout", "Half vier gelezen als half vijf: uitleg over 'half'")
+
+
+@scenario("klok-ascii", argumenten=["--ascii"])
+def _(d):
+    oefen(d, 7, 4)
+    d.wacht("Vrij oefenen")
+    d.zoek("Hoe laat is het op de klok", OPNIEUW)
+    d.foto("klok-ascii", "De wijzerklok in ASCII: # is de uurwijzer, * de minutenwijzer")
+
+
 @scenario("tijd-geld")
 def _(d):
     oefen(d, 7, 2)
@@ -689,6 +726,30 @@ def _(d):
     d.toets("a")
     antwoord(d, str(2 * (l + b) * n))
     d.foto("vraagstukken-tegels", "Met de omtrek gerekend in plaats van de oppervlakte: een hulpje")
+
+
+@scenario("vraagstukken-tijd")
+def _(d):
+    from leeravontuur.kern.wiskunde.grootheden import duur_tekst, klok_tekst, lees_duur, lees_klok
+    oefen(d, 9, 1)
+    for _ in range(300):
+        time.sleep(0.15)
+        t = verhaal(d)
+        tijden = re.findall(r"\b\d{1,2}\.\d{2} u", t)
+        duren = re.findall(r"(?<![\d.])(\d+ u \d+ min|\d+ min)", t)
+        if "Hoe laat" in t and len(tijden) == 1 and len(duren) == 1 and lees_klok(tijden[0]) % 60:
+            break
+        d.toets(*OPNIEUW)
+    else:
+        raise RuntimeError("geen vraagstuk met een aankomstuur gevonden")
+    b, du = lees_klok(tijden[0]), lees_duur(duren[0])
+    d.toets("Tab", ("tekst", "+"), "Enter")
+    u, m = divmod(int(b), 60)
+    honderd = f"{u}.{m + int(du)}" if m + du < 100 else f"{u + 1}.{m + int(du) - 100:02d}"
+    d.toets(("tekst", f"{klok_tekst(b).replace(' u', '')} + {int(du)} = {honderd}"), "Enter")
+    d.foto("vraagstukken-tijd-fout", "Gerekend alsof een uur 100 minuten heeft: de hint in het klad")
+    d.toets(("tekst", f"{klok_tekst(b)} + {duur_tekst(du)} = {klok_tekst(b + du)}"), "Enter")
+    d.foto("vraagstukken-tijd", "Kloktijden in het klad: tijdstip + tijdsduur = tijdstip")
 
 
 @scenario("vraagstukken-speurneus")

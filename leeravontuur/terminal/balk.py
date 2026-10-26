@@ -1,15 +1,17 @@
 """Interactieve modellen als invoer-objecten voor terminal/oefenaar.py (zelfde vorm als terminal/rooster.py):
-de breukbalk (arceren, noemer kiezen, vereenvoudigen), het honderdveld (vakjes kleuren) en de schatkaart
-(een kruisje zetten).
+de breukbalk (arceren, noemer kiezen, vereenvoudigen), het honderdveld (vakjes kleuren), de schatkaart
+(een kruisje zetten) en de wijzerklok (de wijzers zetten).
 """
 
 import curses
+import math
 from decimal import Decimal
 
 from ..kern.getal import GetypteBreuk
 from dataclasses import replace
 
-from ..kern.modellen import Breukbalk
+from ..kern.modellen import Breukbalk, Wijzerklok
+from ..kern.wiskunde.grootheden import klok_tekst
 from . import modellen as M
 from .scherm import ENTER, ESC
 
@@ -224,4 +226,56 @@ class CoordInvoer:
         return []
 
 
-INVOER = {"balk": BalkInvoer, "veld": VeldInvoer, "coord": CoordInvoer}
+class KlokInvoer:
+    """De wijzers van een klok zetten: ←→ per minuut, ↑↓ per 5 minuten, + en − per uur, of klik waar de lange
+    wijzer moet staan. De uurwijzer draait mee, zoals op een echte klok."""
+    X0 = 8
+
+    def __init__(self, v, o):
+        self.v, self.o = v, o
+        self.t = int(v.model.minuten) % 720
+        self.melding, self.melding_rol = "", "fout"
+        self.fouten, self.diagnose, self.cursor_pos = 0, None, None
+        self.hint = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik = de lange wijzer · Enter = klaar"
+        self.naast = (10, self.X0 + 25 + 4)
+
+    def hoogte(self, nagekeken=False):
+        return 13
+
+    def knoppen(self):
+        return [("←→↑↓", "draaien", None), ("Enter", "zo staat hij goed", 10), ("?", "tip", ord("?")),
+                ("Esc", "stoppen", ESC)]
+
+    def teken(self, s, y, uitslag=None, hulp=False):
+        M.teken_klok(s, y + 1, Wijzerklok(self.t), self.X0,
+                     (lambda dx, dy: ("wijzer", dx, dy)) if uitslag is None else None)
+
+    def toets(self, k):
+        if isinstance(k, tuple):
+            if k[0] == "wijzer" and (k[1] or k[2]):
+                hoek = math.degrees(math.atan2(k[1], -k[2])) % 360
+                minuut = round(hoek / 6) % 60
+                uur = self.t // 60
+                if self.t % 60 >= 45 and minuut < 15:   # voorbij 12: een uur later
+                    uur += 1
+                elif self.t % 60 < 15 and minuut >= 45:  # terug voorbij 12: een uur vroeger
+                    uur -= 1
+                self.t = (uur * 60 + minuut) % 720
+            return None
+        stap = {curses.KEY_LEFT: -1, curses.KEY_RIGHT: 1, curses.KEY_UP: 5, curses.KEY_DOWN: -5,
+                ord("+"): 60, ord("="): 60, ord("-"): -60, ord("−"): -60}.get(k)
+        if stap:
+            self.t = (self.t + stap) % 720
+            return None
+        if k in ENTER:
+            return klok_tekst(self.t), Decimal(self.t)
+        return None
+
+    def hulp(self, o):
+        return o.tip(self.v)
+
+    def rijen(self):
+        return []
+
+
+INVOER = {"balk": BalkInvoer, "veld": VeldInvoer, "coord": CoordInvoer, "wijzers": KlokInvoer}

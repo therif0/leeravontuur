@@ -11,7 +11,7 @@ from decimal import Decimal
 
 from ..kern.getal import fmt
 from ..kern.modellen import (Breukbalk, Breukbalken, Figuur, Getallenlijn, Groepjes, Hoek, Honderdveld, Kaart,
-                             Procentstrook)
+                             Procentstrook, Wijzerklok)
 from . import thema
 
 HOOGTE = 4
@@ -146,6 +146,8 @@ def teken_model(s, y, model, x0=8):
         return teken_kaart(s, y, model, x0)
     if isinstance(model, Hoek):
         return teken_hoek(s, y, model.graden, x0)
+    if isinstance(model, Wijzerklok):
+        return teken_klok(s, y, model, x0)
     return 0, 0
 
 
@@ -372,3 +374,81 @@ def teken_hoek(s, y, graden, x0=8):
             vorige = kol
     s.put(hoekpunt_y, hoekpunt_x, "●", "accent")
     return HOEK_R + 1, 4 * HOEK_R + 9
+
+
+# ---- de wijzerklok -------------------------------------------------------------------------------------------
+
+KLOK_R = 10  # straal in pixels: de wijzerplaat is 21 × 21 pixels = 21 tekens breed en 11 rijen hoog
+
+
+def klok_pixels(klok, r=KLOK_R):
+    """De wijzerklok als pixels: None, "lijn" (rand en streepjes), "rand" (de korte uurwijzer, dik) of
+    "vulling" (de lange minutenwijzer)."""
+    n = 2 * r + 1
+    p = [[None] * n for _ in range(n)]
+    for y in range(n):
+        for x in range(n):
+            if abs(math.hypot(x - r, y - r) - r) < 0.5:
+                p[y][x] = "lijn"
+    for uur in range(12):
+        a = math.radians(uur * 30)
+        p[round(r - (r - 1.4) * math.cos(a))][round(r + (r - 1.4) * math.sin(a))] = "lijn"
+    if klok.wijzers:
+        uur_hoek, min_hoek = klok.hoeken()
+        for rol, hoek, lengte, dik in (("vulling", min_hoek, r - 2, False), ("rand", uur_hoek, r * 0.55, True)):
+            a = math.radians(hoek)
+            stap = 0.0
+            while stap <= lengte:
+                x, y = r + stap * math.sin(a), r - stap * math.cos(a)
+                plekken = [(round(x), round(y))]
+                if dik:
+                    plekken += [(round(x + 0.5), round(y)), (round(x), round(y + 0.5))]
+                for px, py in plekken:
+                    if 0 <= px < n and 0 <= py < n:
+                        p[py][px] = rol
+                stap += 0.25
+    return p
+
+
+def teken_pixels(s, y, x0, p):
+    """Een raster van pixelrollen tekenen met ▀/▄-halfblokken (2 pixels per teken). Geeft het aantal rijen."""
+    naam = s.inst.thema
+    for t in range((len(p) + 1) // 2):
+        boven, onder = p[2 * t], p[2 * t + 1] if 2 * t + 1 < len(p) else [None] * len(p[0])
+        for x, (b, o) in enumerate(zip(boven, onder)):
+            if b is None and o is None:
+                continue
+            if b == o:
+                s.put(y + t, x0 + x, "█", thema.rol_pixel(b, None, naam))
+            elif b is None:
+                s.put(y + t, x0 + x, "▄", thema.rol_pixel(o, None, naam))
+            else:
+                s.put(y + t, x0 + x, "▀", thema.rol_pixel(b, o, naam))
+    return (len(p) + 1) // 2
+
+
+def teken_klok(s, y, klok, x0=8, actie=None):
+    """Een ronde wijzerklok met 12, 3, 6 en 9 erbuiten. Geeft (hoogte, breedte) = (13, 25).
+    Met actie(dx, dy) is elk vakje van de wijzerplaat klikbaar (dx, dy in pixels vanaf het midden)."""
+    r = KLOK_R
+    p = klok_pixels(klok)
+    xk = x0 + 2  # de wijzerplaat (met links plaats voor de 9)
+    s.put(y, xk + r - 1, "12", "bold")
+    s.put(y + 1 + r // 2, x0, "9", "bold")
+    s.put(y + 1 + r // 2, xk + 2 * r + 2, "3", "bold")
+    s.put(y + 2 + r, xk + r, "6", "bold")
+    if kan_pixels_rooster(s):
+        teken_pixels(s, y + 1, xk, p)
+    else:  # met tekens: # = de korte uurwijzer, * = de lange minutenwijzer
+        for t in range((len(p) + 1) // 2):
+            for x in range(len(p[0])):
+                cel = {p[2 * t][x], p[2 * t + 1][x] if 2 * t + 1 < len(p) else None}
+                teken = "#" if "rand" in cel else "*" if "vulling" in cel else "." if "lijn" in cel else None
+                if teken:
+                    s.put(y + 1 + t, xk + x, teken, "accent" if teken == "#" else "bold" if teken == "*" else "dim")
+    s.put(y + 1 + r // 2, xk + r, "o" if not kan_pixels_rooster(s) else "●", "bold")
+    if actie:
+        for t in range(r + 1):
+            for x in range(2 * r + 1):
+                s.zones.voeg(y + 1 + t, xk + x, 1, 1, actie(x - r, 2 * t - r))
+    return 2 * r // 2 + 3, 2 * r + 5

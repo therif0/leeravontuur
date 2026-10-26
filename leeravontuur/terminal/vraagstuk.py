@@ -24,7 +24,7 @@ OPWOORD = {"+": "optellen", "−": "aftrekken", "×": "vermenigvuldigen", ":": "
            "pct": "het procent berekenen", "heel": "delen", "rest": "delen (de rest)", "boven": "delen"}
 PLAN_TOETS = {"+": "+", "-": "−", "−": "−", "x": "×", "X": "×", "*": "×", ":": ":", "/": ":", "o": "omzetten"}
 KLAD_TEKENS = set("0123456789,.+-−*xX×:/()=%€ ") | set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ²³")
-ANTW_TEKENS = set("0123456789,.€ -")
+ANTW_TEKENS = set("0123456789,.€ -:umin")  # ook 11.20 en 1 u 35 min
 MAX_KLAD = 8
 NAAST_MAATJE, MAATJE_ONDER = 58, 9   # tot rij 9 staat rechts het maatje: daar is een regel hoogstens 58 breed
 
@@ -240,6 +240,11 @@ class VraagstukInvoer:
             return "Typ de bewerkingen in volgorde: + - x : (o = omzetten) · Enter = verder"
         if self.fase == REKEN:
             return "Eén stap per regel · typ x voor maal, : voor delen · Enter = nakijken"
+        soort = getattr(self.m, "soort", "getal")
+        if soort == "klok":
+            return "Typ een tijdstip, bv. 11.20 (of 11:20), en druk Enter."
+        if soort == "duur":
+            return "Typ uren en minuten, bv. 1 u 35 min (of 95 voor 95 minuten), en druk Enter."
         return "Typ je antwoord (een getal, met een komma) en druk Enter."
 
     # ---- toetsen -------------------------------------------------------------------------------------
@@ -424,7 +429,9 @@ class VraagstukInvoer:
             return None
         getal = self.o.lees_vraag(self.v, self.antw)
         if getal is None:
-            self.melding, self.melding_rol = "Typ een getal, bv. 7,60.", "fout"
+            self.melding, self.melding_rol = {"klok": "Typ een tijdstip, bv. 11.20.",
+                                              "duur": "Typ bv. 1 u 35 min (minuten: hoogstens 59)."}.get(
+                getattr(self.m, "soort", "getal"), "Typ een getal, bv. 7,60."), "fout"
             return None
         juist = self.o.nakijken(self.v, getal)
         analyse = VS.analyseer_klad(self.m, [r for _, r in self.klad])

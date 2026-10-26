@@ -281,6 +281,61 @@ class TestSpeurneusEnSchatten(Basis):
         self.assertTrue(rij["gegeven"].startswith("a)"))
 
 
+class TestKlok(Basis):
+    """Leren › Wiskunde › Tijd, geld en snelheid › De klok › Vrij oefenen, met een vaste vraag."""
+    START = [OK, OK, "2", "1", "7", "4", "1", "2"]
+
+    def vaste_vraag(self, soort, t):
+        import random
+        from decimal import Decimal
+        from unittest import mock
+        from leeravontuur.kern.modellen import Wijzerklok
+        from leeravontuur.kern.wiskunde import klok as K
+        v = K.KLOK.maak_met(K.KLOK.parameters("5"), random.Random(1), {"soort": soort, "t": t})
+        if v.data.get("t") != t:  # de soort kiest zelf een tijd: zet ze vast
+            v.data["t"], v.antwoord = t, Decimal(t)
+            if isinstance(v.model, Wijzerklok) and soort != "zetten":
+                v.model = Wijzerklok(t)
+        patch = mock.patch.object(K.KLOK, "maak", return_value=v)
+        patch.start()
+        self.addCleanup(patch.stop)
+        return v
+
+    def test_lezen_ook_in_ascii(self):
+        self.vaste_vraag("lezen", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"3.25", OK, ESC, ESC, ESC, ESC, ESC], opslag=o,
+                                 voorrang={"ascii": True})
+        self.assertTrue(self.ergens(scherm, "Hoe laat"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["vaardigheid"], rij["juist"]), ("wiskunde.eenheden.klok", 1))
+        for beeld in scherm.beelden:
+            self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
+
+    def test_half_vier_is_geen_half_vijf(self):
+        v = self.vaste_vraag("woorden_naar", 3 * 60 + 30)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"4.30", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["juist"], rij["diagnose"]), (0, "klok_half"), v.tekst)
+
+    def test_in_woorden(self):
+        self.vaste_vraag("naar_woorden", 3 * 60 + 25)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *"vijf voor half vier", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
+
+    def test_wijzers_zetten(self):
+        v = self.vaste_vraag("zetten", 7 * 60 + 40)
+        stappen = (int(v.antwoord) - int(v.model.minuten)) % 720
+        toetsen = [ord("+")] * (stappen // 60) + [curses.KEY_RIGHT] * (stappen % 60)
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.START, *toetsen, OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["juist"], 1)
+        beeld = next(b for b in scherm.beelden if "Zet de klok" in b).split("\n")
+        self.assertIn("[Enter]", beeld[-1])  # de hint staat niet over de knoppen
+
+
 class TestTypen(Basis):
     def test_accenten_typen(self):
         scherm, app = self.speel([OK, *"Zoë", OK, OK, ESC], opslag=self.opslag())

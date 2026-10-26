@@ -2,6 +2,23 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.18.0 — de klok
+- Nieuw onderwerp **De klok** (Tijd, geld en snelheid → 4), met een getekende **wijzerklok**:
+  - lees de klok (typ `3.25`) of **zet de wijzers** zelf: pijltjes, `+` en `−` voor een uur, of klik waar de lange
+    wijzer moet staan; de uurwijzer draait mee, zoals bij een echte klok;
+  - tijden **in woorden**, zoals we ze in Vlaanderen zeggen: "kwart over drie", "vijf voor half vier",
+    "tien over half vier". Half vier is 3.30!;
+  - de **24 uur** (3.15 's middags = 15.15 u) en **later of vroeger** ("Hoe laat is het 35 minuten later?"), in het
+    6de ook over middernacht heen;
+  - het programma herkent o.a. "uurwijzer en minutenwijzer verwisseld", "half vier gelezen als 4.30" en
+    "gerekend alsof een uur 100 minuten heeft".
+- **Tijd in de vraagstukken** (vanaf het 4de): hoe lang duurt de film, hoe laat komt de trein aan, hoe laat moet je
+  vertrekken? In het 6de ook een rit in twee stukken. 2 nieuwe werelden: de bioscoop en de trein (nu 22).
+- Het **klad** kent nu kloktijden: `9.45 u + 35 min = 10.20 u` klopt, en wie met 100 minuten rekent, hoort dat
+  een uur 60 minuten heeft.
+- De spiekbrief van Tijd, geld en snelheid heeft nu ook een stuk over de klok.
+- Winkel: een wekker.
+
 ## 0.17.0 — vraagstukken 2: Speurneus en schatten
 - **Speurneus** (Vraagstukken → 2): een ander kind loste een vraagstuk op. Zit er een fout in? Kies de regel waar het
   misloopt (of "Alles is juist!") en dan waarom: een rekenfout, de verkeerde bewerking, gestopt na een tussenstap,
