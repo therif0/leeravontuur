@@ -66,6 +66,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - een verhaalmachine mengt rekenstructuren met werelden (bakker, metselaar, boer …): duizenden verhalen,
     soms met een overbodig gegeven of een omgekeerde vraag
   - herkent denkfouten: een andere bewerking, gestopt na een tussenstap, niet omgezet, een overbodig gegeven …
+  - **Speurneus**: zoek de fout in het klad van een ander kind, en zeg waarom
+  - **schatten en controleren**: ongeveer hoeveel? Kan dat antwoord kloppen?
 - **Snelrekenen** (hoofdmenu): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.

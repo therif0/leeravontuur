@@ -629,11 +629,7 @@ def bedrag(x):
 
 def wisselgeld_vraag(d):
     """Vrij oefenen op Normaal tot er een wisselgeld-vraagstuk zonder overbodig gegeven staat: (a, p, b)."""
-    wiskunde(d, 9)
-    d.wacht("Hoe wil je oefenen")
-    d.toets("1")
-    d.wacht("Hoe moeilijk")
-    d.toets("2")
+    oefen(d, 9, 1)
     for _ in range(300):
         time.sleep(0.15)
         t = verhaal(d)
@@ -677,10 +673,50 @@ def _(d):
     d.foto("vraagstukken-tweede-kans", "Meteen geantwoord, maar het is een tussenuitkomst: een hulpje en klad maken")
 
 
+@scenario("vraagstukken-tegels")
+def _(d):
+    oefen(d, 9, 1)
+    for _ in range(300):
+        time.sleep(0.15)
+        t = verhaal(d)
+        m = re.search(r"van (\d+) m lang en (\d+) m breed\. Voor 1 m² heb je (\d+)", t)
+        if m and len(re.findall(r"\d+", t)) == 4:  # (1 m² telt mee)
+            break
+        d.toets(*OPNIEUW)
+    else:
+        raise RuntimeError("geen tegels-vraagstuk gevonden")
+    l, b, n = (int(x) for x in m.groups())
+    d.toets("a")
+    antwoord(d, str(2 * (l + b) * n))
+    d.foto("vraagstukken-tegels", "Met de omtrek gerekend in plaats van de oppervlakte: een hulpje")
+
+
+@scenario("vraagstukken-speurneus")
+def _(d):
+    oefen(d, 9, 2)
+    for _ in range(80):
+        time.sleep(0.15)
+        if re.search(r"\d\. .* = ", scherm_tekst(d)) and "Alles is juist" in scherm_tekst(d):
+            break
+        d.toets(*OPNIEUW)
+    d.toets("Down")
+    d.foto("vraagstukken-speurneus", "De Speurneus: in welke regel zit de fout?")
+
+
+@scenario("vraagstukken-kan")
+def _(d):
+    oefen(d, 9, 3)
+    for _ in range(80):
+        time.sleep(0.15)
+        if "Kan dat kloppen" in scherm_tekst(d):
+            break
+        d.toets(*OPNIEUW)
+    d.foto("vraagstukken-kan", "Kan dat kloppen? Je hoeft het niet uit te rekenen")
+
+
 @scenario("vraagstukken-spiekbrief")
 def _(d):
-    wiskunde(d, 9)
-    d.wacht("Hoe wil je oefenen")
+    wiskunde(d, 9, 1)
     d.toets("3")
     d.wacht("4 STAPPEN")
     d.foto("vraagstukken-spiekbrief", "De spiekbrief van Vraagstukken")

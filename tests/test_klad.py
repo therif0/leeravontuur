@@ -47,6 +47,11 @@ class TestLezen(unittest.TestCase):
         self.juist("3 m 40 cm = 340 cm")
         self.assertIn("komma", self.fout("750 g = 7,5 kg").melding)
 
+    def test_duizendtallen_met_een_spatie(self):
+        self.assertEqual(self.juist("12 x 25 000 = 300 000").netjes, "12 × 25 000 = 300 000")
+        self.juist("300 000 cm = 3 km")
+        self.juist("2 u 15 min = 135 min")  # (geen duizendtal)
+
     def test_procent_en_breuk_van(self):
         r = self.juist("25 % van 80 = 20")
         self.assertEqual((r.schakels[0].ops, r.schakels[0].operanden), ([VAN], [25, 80]))

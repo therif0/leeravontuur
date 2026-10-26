@@ -86,6 +86,13 @@ PARAMETERS = {  # parameter → wat het betekent (vaardigheid.parameter gaat voo
     "gram": "gewichten in stappen van (g)",
     "wiskunde.vraagstukken.oplossen.procenten": "procent korting",
     "overbodig": "kans op een overbodig gegeven",
+    "fouten": "soorten klad",
+    "wiskunde.vraagstukken.speurneus.structuren": "soorten vraagstukken",
+    "wiskunde.vraagstukken.schatten.structuren": "soorten vraagstukken",
+    "wiskunde.vraagstukken.speurneus.max": "getallen tot",
+    "wiskunde.vraagstukken.schatten.max": "getallen tot",
+    "wiskunde.vraagstukken.speurneus.procenten": "procent korting",
+    "wiskunde.vraagstukken.schatten.procenten": "procent korting",
     "intro": "kans op een inleidende zin",
 }
 
@@ -134,6 +141,14 @@ SOORTEN = {  # de interne namen van soorten vragen → leesbaar
     "recept/gewoon": "recept voor meer of minder personen (: ×)", "breuk_van/gewoon": "een breuk van een aantal (: ×)",
     "breuk_van/niet": "het andere deel (: × −)", "omtrek/gewoon": "omtrek: een hek rondom (+ ×)",
     "omtrek/prijs": "omtrek en prijs (+ × ×)",
+    "gemiddelde/drie": "gemiddelde van 3 (+ :)", "gemiddelde/vier": "gemiddelde van 4 (+ :)",
+    "snelheid/afstand": "snelheid: hoe ver? (×)", "snelheid/tijd": "snelheid: hoe lang? (:)",
+    "snelheid/minuten": "snelheid met minuten (omzetten, ×)", "tegels/tegels": "tegels: oppervlakte (× ×)",
+    "tegels/prijs": "tegels: prijs per m² (× ×)", "schaal/echt": "schaal: kaart → echt (×, omzetten)",
+    "lint/stukken": "in stukken knippen (omzetten, :)", "lint/over": "wat blijft er over? (omzetten, rest)",
+    "per_stuk/een": "de prijs van één (:)", "per_stuk/drie": "regel van drie (: ×)",
+    "alles_juist": "alles juist", "rekenfout": "met een rekenfout", "denkfout": "met een denkfout",
+    "ongeveer": "ongeveer hoeveel?", "kan": "kan dat kloppen?",
     # waar dezelfde naam iets anders betekent (vaardigheid.soort gaat voor)
     "wiskunde.procenten.van.van": "procent van een getal",
     "wiskunde.meetkunde.hoeken.driehoek": "de derde hoek van een driehoek",

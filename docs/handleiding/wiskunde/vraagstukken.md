@@ -3,8 +3,15 @@
 **Waar:** Leren & oefenen → Wiskunde → **Vraagstukken** · [← terug naar de inhoud](../README.md)
 
 Bij een vraagstuk moet een kind eerst **lezen en denken**, dan pas rekenen: wat weet ik, wat wordt er gevraagd,
-welke bewerking hoort erbij, en kan mijn antwoord kloppen? Het programma volgt daarvoor **4 stappen**. Daarin
-zit het Vlaamse schema **Gegeven · Gevraagd · Oplossing · Antwoord**.
+welke bewerking hoort erbij, en kan mijn antwoord kloppen? Er zijn 3 onderwerpen:
+
+- **Vraagstukken oplossen** in 4 stappen (hieronder);
+- de **[Speurneus](#speurneus-zoek-de-fout)**: zoek de fout in het klad van een ander kind;
+- **[Schatten en controleren](#schatten-en-controleren)**: ongeveer hoeveel? En kan dat antwoord kloppen?
+
+## Vraagstukken oplossen
+
+Het programma volgt **4 stappen**. Daarin zit het Vlaamse schema **Gegeven · Gevraagd · Oplossing · Antwoord**.
 
 | Stap | Wat het kind doet | Op het scherm |
 |---|---|---|
@@ -104,7 +111,8 @@ Elk vraagstuk is een mengsel van vier stukken. Daardoor zijn er duizenden versch
 | **verwoording** | "Op elke plaat liggen 24 broodjes." of "Er liggen 24 broodjes op elke plaat." | `inhoud/vraagstukken/zinnen.json` |
 | **getallen** | mooi gekozen per leerjaar, binnen realistische grenzen (een brood kost € 2–4) | de leerlijn |
 
-- Er zijn 13 rekenstructuren met elk 1–3 varianten (ook **omgekeerde vragen**), en 16 werelden.
+- Er zijn 19 rekenstructuren met elk 1–3 varianten (ook **omgekeerde vragen**), en 20 werelden. Ook gemiddelde,
+  snelheid (km per uur), tegels (oppervlakte), schaal, lint in stukken (m en cm) en de regel van drie.
 - De volgorde van de zinnen wisselt soms.
 - Vanaf het 3de leerjaar duikt er soms een **overbodig gegeven** op ("De bakker begint om 5 uur."), vaker in hogere
   leerjaren.
@@ -118,7 +126,7 @@ Elk vraagstuk is een mengsel van vier stukken. Daardoor zijn er duizenden versch
 <!-- auto:leerlijn wiskunde.vraagstukken.oplossen -->
 |  | 3de leerjaar | 4de leerjaar | 5de leerjaar | 6de leerjaar | 1ste middelbaar |
 |---|---|---|---|---|---|
-| **soorten vraagstukken** | samen (+), het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel volle? (: met rest), wat blijft er over? (de rest), wisselgeld (−) | + hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), een breuk van een aantal (: ×), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×) | het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), wat blijft er over? (de rest), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), prijs per kg (omzetten, ×), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×) | het ontbrekende deel (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), twee soorten en wisselgeld (4 stappen), prijs per kg (omzetten, ×), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), omtrek en prijs (+ × ×) | 'minder dan' maar optellen (valkuil), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), twee soorten en wisselgeld (4 stappen), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), het andere deel (: × −), omtrek en prijs (+ × ×) |
+| **soorten vraagstukken** | samen (+), het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel volle? (: met rest), wat blijft er over? (de rest), wisselgeld (−) | + hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), een breuk van een aantal (: ×), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), in stukken knippen (omzetten, :), de prijs van één (:) | het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), wat blijft er over? (de rest), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), prijs per kg (omzetten, ×), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), gemiddelde van 3 (+ :), in stukken knippen (omzetten, :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), snelheid: hoe ver? (×) | het ontbrekende deel (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), twee soorten en wisselgeld (4 stappen), prijs per kg (omzetten, ×), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), tegels: prijs per m² (× ×), snelheid: hoe lang? (:), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) | 'minder dan' maar optellen (valkuil), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), twee soorten en wisselgeld (4 stappen), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), het andere deel (: × −), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), tegels: prijs per m² (× ×), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) |
 | **getallen tot** | 1000 | 10 000 | 100 000 | 1 000 000 | idem |
 | **groepjes, stuks of keer: hoogstens** | 10 | 12 | 20 | 25 | 30 |
 | **prijzen in stappen van (€)** | 1 | 0,5 | 0,05 | idem | 0,01 |
@@ -148,6 +156,8 @@ verhaal.
 - 'minder' gelezen als aftrekken (het verhaal zegt iets anders)
 - een rekenfout in het klad
 - een antwoord dat niet kan kloppen
+- gedeeld door het verkeerde aantal
+- de omtrek berekend in plaats van de oppervlakte
 - opgeteld in plaats van afgetrokken
 - opgeteld in plaats van vermenigvuldigd
 - opgeteld in plaats van gedeeld
@@ -162,6 +172,86 @@ verhaal.
 - gedeeld in plaats van vermenigvuldigd
 <!-- /auto -->
 
+![Tegels: de oppervlakte, en niet de omtrek](../beelden/vraagstukken-tegels.svg)
+
+## Speurneus: zoek de fout
+
+Een ander kind loste het vraagstuk op. Zit er een fout in? Het kind kiest de **regel** waar het misloopt (↑↓ en
+Enter, het nummer typen of klikken), of **0 · Alles is juist!** Daarna kiest het **waarom**, uit 3 redenen (a, b, c).
+
+- De fouten komen uit dezelfde foute paden als hierboven: een andere bewerking, gestopt na een tussenstap, een
+  stap vergeten, niet omgezet, een overbodig gegeven gebruikt. Of het is een gewone **rekenfout** (bv. de komma).
+- Soms is alles juist: dan is "Alles is juist!" het goede antwoord. Ook dan staan er 3 redenen klaar, zodat het
+  scherm niets verraadt.
+- Juist = de goede regel **en** de goede reden. Na het nakijken staat ✘ bij de foute regel, met de uitleg.
+
+![De Speurneus](../beelden/vraagstukken-speurneus.svg)
+
+**Per leerjaar**
+
+<!-- auto:leerlijn wiskunde.vraagstukken.speurneus -->
+|  | 3de leerjaar | 4de leerjaar | 5de leerjaar | 6de leerjaar | 1ste middelbaar |
+|---|---|---|---|---|---|
+| **soorten klad** | — | alles juist, met een rekenfout, met een denkfout | idem | idem | idem |
+| **soorten vraagstukken** | — | samen (+), het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel volle? (: met rest), wat blijft er over? (de rest), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld (−), wisselgeld bij meer stuks (× −), een breuk van een aantal (: ×), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), in stukken knippen (omzetten, :), de prijs van één (:) | het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), wat blijft er over? (de rest), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), prijs per kg (omzetten, ×), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), gemiddelde van 3 (+ :), in stukken knippen (omzetten, :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), snelheid: hoe ver? (×) | het ontbrekende deel (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), twee soorten en wisselgeld (4 stappen), prijs per kg (omzetten, ×), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), tegels: prijs per m² (× ×), snelheid: hoe lang? (:), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) | 'minder dan' maar optellen (valkuil), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), twee soorten en wisselgeld (4 stappen), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), het andere deel (: × −), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), tegels: prijs per m² (× ×), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) |
+| **getallen tot** | — | 10 000 | 100 000 | 1 000 000 | idem |
+| **groepjes, stuks of keer: hoogstens** | — | 12 | 20 | 25 | 30 |
+| **prijzen in stappen van (€)** | — | 0,5 | 0,05 | idem | 0,01 |
+| **gewichten in stappen van (g)** | — | — | 250 | 50 | idem |
+| **procent korting** | — | — | 10, 20, 25, 50 | + 5, 15, 30, 40, 75 | 5, 12, 15, 20, 25, 30, 35, 40, 60, 75 |
+| **noemers** | — | 2, 3, 4, 5, 10 | + 8 | + 6 | 3, 4, 5, 6, 8, 10, 12 |
+| **kans op een overbodig gegeven** | — | 25 % | 35 % | 45 % | 50 % |
+| **kans op een inleidende zin** | — | 30 % | 25 % | 20 % | idem |
+
+— = komt nog niet aan bod in het 3de leerjaar: dat niveau kun je dan niet kiezen (er staat "nog niet in dit leerjaar").
+<!-- /auto -->
+
+**Herkende denkfouten**
+
+<!-- auto:denkfouten wiskunde.vraagstukken.speurneus -->
+- de foute regel niet gevonden
+- de fout gevonden, maar niet waarom
+- een fout gezien waar er geen was
+- de fout niet gezien
+<!-- /auto -->
+
+## Schatten en controleren
+
+Twee soorten vragen bij een verhaal. Het kind hoeft niets uit te rekenen:
+
+- **Ongeveer hoeveel?** Kies uit 3, in ordes van grootte: ongeveer 300, 3000 of 30? (vanaf het 4de leerjaar)
+- **Kan dat kloppen?** Een ander kind geeft een antwoord; kan dat? Bv. "2600 leden gaan niet mee op kamp" als de
+  jeugdbeweging 52 leden heeft. De uitleg zegt waarom (een deel is nooit meer dan het geheel).
+
+Kies met a, b of c (of ↑↓ en Enter, of klik). Met `?` komt er een tip.
+
+![Kan dat kloppen?](../beelden/vraagstukken-kan.svg)
+
+**Per leerjaar**
+
+<!-- auto:leerlijn wiskunde.vraagstukken.schatten -->
+|  | 3de leerjaar | 4de leerjaar | 5de leerjaar | 6de leerjaar | 1ste middelbaar |
+|---|---|---|---|---|---|
+| **soorten vragen** | kan dat kloppen? | + ongeveer hoeveel? | idem | idem | idem |
+| **soorten vraagstukken** | samen (+), het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel volle? (: met rest), wat blijft er over? (de rest), wisselgeld (−) | + hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), een breuk van een aantal (: ×), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), in stukken knippen (omzetten, :), de prijs van één (:) | het ontbrekende deel (−), hoeveel meer? (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), groepjes: hoeveel in totaal? (×), eerlijk verdelen (:), hoeveel groepjes? (:), wat blijft er over? (de rest), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), prijs per kg (omzetten, ×), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), gemiddelde van 3 (+ :), in stukken knippen (omzetten, :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), snelheid: hoe ver? (×) | het ontbrekende deel (−), zoveel meer: hoeveel? (+), 'minder dan' maar optellen (valkuil), eerlijk verdelen (:), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), wisselgeld bij meer stuks (× −), twee soorten kopen (× × +), twee soorten en wisselgeld (4 stappen), prijs per kg (omzetten, ×), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), een breuk van een aantal (: ×), het andere deel (: × −), omtrek: een hek rondom (+ ×), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), wat blijft er over? (omzetten, rest), regel van drie (: ×), tegels: oppervlakte (× ×), tegels: prijs per m² (× ×), snelheid: hoe lang? (:), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) | 'minder dan' maar optellen (valkuil), hoeveel groepjes? (:), hoeveel nodig? (naar boven afronden), samen en dan verdelen (+ :), twee soorten en wisselgeld (4 stappen), prijs per kg en wisselgeld (3 stappen), prijs met korting (% −), hoeveel korting? (%), sparen: hoeveel weken? (− : naar boven), recept voor meer of minder personen (: ×), het andere deel (: × −), omtrek en prijs (+ × ×), gemiddelde van 4 (+ :), tegels: prijs per m² (× ×), snelheid met minuten (omzetten, ×), schaal: kaart → echt (×, omzetten) |
+| **getallen tot** | 1000 | 10 000 | 100 000 | 1 000 000 | idem |
+| **groepjes, stuks of keer: hoogstens** | 10 | 12 | 20 | 25 | 30 |
+| **prijzen in stappen van (€)** | 1 | 0,5 | 0,05 | idem | 0,01 |
+| **gewichten in stappen van (g)** | — | idem | 250 | 50 | idem |
+| **procent korting** | — | idem | 10, 20, 25, 50 | + 5, 15, 30, 40, 75 | 5, 12, 15, 20, 25, 30, 35, 40, 60, 75 |
+| **noemers** | — | 2, 3, 4, 5, 10 | + 8 | + 6 | 3, 4, 5, 6, 8, 10, 12 |
+| **kans op een overbodig gegeven** | 15 % | 25 % | 35 % | 45 % | 50 % |
+| **kans op een inleidende zin** | 30 % | idem | 25 % | 20 % | idem |
+<!-- /auto -->
+
+**Herkende denkfouten**
+
+<!-- auto:denkfouten wiskunde.vraagstukken.schatten -->
+- 10 keer te groot of te klein geschat
+- een antwoord dat niet kan kloppen, niet opgemerkt
+- een antwoord dat kan kloppen, afgewezen
+<!-- /auto -->
+
 ## Punten
 
 | | Punten |
@@ -171,6 +261,8 @@ verhaal.
 | zonder tip | +5 |
 | het klad helemaal juist | +5 |
 | pas juist na de tweede kans | de helft |
+
+Bij de Speurneus en bij Schatten en controleren gelden de gewone punten.
 
 ## Wat de ouder ziet
 

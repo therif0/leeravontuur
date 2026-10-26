@@ -551,6 +551,7 @@
     ".M..."
    ]
   },
-  "kladblok": {"naam": "Kladblok", "anker": "mond", "dy": -1, "dx": 5, "pixels": ["Z.Z.Z", "NNNNN", "NBBNN", "NNNNN", "NBBBN", "NNNNN"]}
+  "kladblok": {"naam": "Kladblok", "anker": "mond", "dy": -1, "dx": 5, "pixels": ["Z.Z.Z", "NNNNN", "NBBNN", "NNNNN", "NBBBN", "NNNNN"]},
+  "vergrootglas": {"naam": "Vergrootglas (Speurneus)", "anker": "mond", "dy": -2, "dx": 5, "pixels": [".ZZZ..", "ZCCCZ.", "ZCWCZ.", "ZCCCZ.", ".ZZZ..", "....M.", ".....M"]}
  }
 }

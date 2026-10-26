@@ -846,7 +846,7 @@ Kleine fasen, zodat Imrane snel nieuwe dingen krijgt en jij tussendoor kunt bijs
 | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
 | 15 | **Meer eenheden** | inhoud, oppervlakte (2 vakjes/kolom), dm³ ↔ l, tijd, geld, snelheid |
 | 16a | **Vraagstukken met kladblad** (0.16.0) | 4 stappen met Gegeven/Gevraagd/Oplossing/Antwoord, kladparser, verhaalmachine (13 structuren × 16 werelden), foute paden automatisch, getrapte tips, tweede kans |
-| 16b | **Vraagstukken 2** (0.17.0) | meer structuren en werelden (gemiddelde, tijdsduur, snelheid, tegels, schaal, lint), Speurneus (zoek de fout), Schatten & controleren |
+| 16b | **Vraagstukken 2** (0.17.0) | 19 structuren × 20 werelden (+ gemiddelde, snelheid, tegels, schaal, lint, regel van drie), Speurneus (zoek de fout), Schatten & controleren. Nog niet: tijdsduur en aankomstuur in een vraagstuk (vraagt een klok-antwoord) |
 | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
 | 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |
 | 19 | **Dictee (afdrukken)** | afdrukbaar ouder- en kindblad, woordpakket van de week, overtypen + diagnose achteraf, flitsdictee |
