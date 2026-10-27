@@ -23,14 +23,17 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 ## 3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)
 - [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
   `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. `?` drie keer: de aanpak, het
-  begin van het klad, hulp bij je klad. Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het
-  antwoord en "Zo kan het:".
+  begin van het klad, hulp bij je klad ("Tip 1 van 3" …); een vierde keer: weer tip 1. **F1** doet hetzelfde als `?`.
+  Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het antwoord en "Zo kan het:".
+- [ ] **Het klad en Tab** (bv. Breuken en procenten → Optellen en aftrekken): typ in het klad een regel **zonder**
+  Enter en druk Tab: de regel blijft staan (met ✔ of ✘) en je staat in je antwoord.
 - [ ] **Hoofdrekenen → Slim × en : (splitsen):** het klad staat meteen open. Typ meteen een antwoord (Tab, Enter):
   "Laat in je klad zien hoe je splitst". Met `70 : 7 = 10` en `21 : 7 = 3` in het klad mag je antwoorden.
 - [ ] **Meten → Lengte (m):** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").
 - [ ] **Hoofdrekenen → Tafels:** een juist antwoord geeft ✔, punten en een blije avatar.
 - [ ] **Getallen → Getallenlijn:** bij "Duid … aan" beweegt de pijl met ← →, `+` zoomt in, een klik zet de pijl.
-- [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje.
+- [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje. Onthouden: typ het
+  laatste cijfer, ↑, typ wat je onthoudt (de cursor blijft in die kolom), ↓: je staat er recht onder.
 - [ ] **Cijferen → Staartdeling:** de deling groeit stap voor stap mee.
 - [ ] **Breuken en procenten → Herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
 - [ ] **Breuken en procenten → Honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
@@ -45,6 +48,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   staat. Ook eens op KDE/Wayland.
 - [ ] **Het klokvenster:** sleep het naar een andere plek, stop en start opnieuw: het komt weer daar. Zet de
   terminal op volledig scherm: druk `F2` en de klok staat in de terminal (nog eens `F2` = terug).
+- [ ] **De klok, 24 uur:** de vraag zegt "… 's middags. Schrijf dat zoals op een digitale klok (24-urennotatie)."
 - [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens
   `4.25`: je krijgt uitleg over "half".
 - [ ] **Meten → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.

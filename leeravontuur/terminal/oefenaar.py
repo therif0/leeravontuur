@@ -304,10 +304,16 @@ class Oefenaar:
                     kb.haal_terug(k[1])
                 else:
                     focus = k[1]
+                if focus != KLAD:
+                    kb.rond_af()
                 continue
             if kb and k == TAB:
-                focus = ANTWOORD if focus == KLAD else KLAD
                 melding = ""
+                if focus == KLAD:  # een regel zonder Enter verdwijnt niet: eerst nakijken (#22)
+                    kb.melding = ""
+                    kb.rond_af()
+                    melding, melding_rol = kb.melding, kb.melding_rol or "fout"
+                focus = ANTWOORD if focus == KLAD else KLAD
                 continue
             if kb and focus == KLAD:
                 kb.melding = ""

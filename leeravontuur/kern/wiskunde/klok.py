@@ -129,7 +129,7 @@ class Klok(Onderwerp):
     denkfouten = {"klok_wijzers": "uurwijzer en minutenwijzer verwisseld",
                   "klok_half": "'half vier' gelezen als 4.30 (half vier = 3.30)",
                   "klok_uur_te_ver": "het volgende uur genomen (de uurwijzer staat er nog maar bijna)",
-                  "klok_24": "in 24 uur: 12 niet (of te veel) bij het uur opgeteld",
+                  "klok_24": "24-urennotatie: 12 niet (of te veel) bij het uur opgeteld",
                   "klok_uur_vergeten": "60 minuten niet omgezet in een uur",
                   "klok_richting": "later en vroeger verwisseld",
                   "klok_met_100": "gerekend alsof een uur 100 minuten heeft"}
@@ -176,7 +176,8 @@ class Klok(Onderwerp):
             d["t"] = t24
             deel = dagdeel(t24)
             return Vraag(self.id, f"{self.id}:24uur:{t24}",
-                         f"Het is {deel}. Hoe laat is het in 24 uur?", D(t24), data=d, invoer="klok",
+                         f"Het is {deel}. Schrijf dat zoals op een digitale klok (24-urennotatie).", D(t24),
+                         data=d, invoer="klok",
                          model=Wijzerklok(t24), verwacht_tekst=klok_tekst(t24))
         # later of vroeger
         begin = rng.randrange(7 * 60, 21 * 60, stap)

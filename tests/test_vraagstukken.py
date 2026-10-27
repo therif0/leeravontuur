@@ -283,6 +283,14 @@ class TestInvoer(unittest.TestCase):
         self.obj.toets(ord("3"))
         self.assertEqual((self.obj.fase, self.obj.buf), (2, "3"))
 
+    def test_tab_uit_het_klad_houdt_de_regel(self):
+        """#22: een klad-regel zonder Enter en dan Tab (naar Controle): de regel staat in het klad, nagekeken."""
+        self.typ("3 x 4 = 12")
+        self.obj.toets(9)
+        self.assertEqual((self.obj.fase, self.obj.buf), (3, ""))
+        self.assertEqual(self.obj.kb.teksten, ["3 x 4 = 12"])
+        self.assertIn("klopt", self.obj.melding)
+
 
 class TestSpeurneus(unittest.TestCase):
     def test_elke_soort_fout(self):

@@ -2,6 +2,21 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.20.2 — kleine verbeteringen uit de tests
+- **Tips draaien rond:** `?` geeft telkens de volgende tip ("Tip 1 van 3", "Tip 2 van 3" …) en na de laatste
+  opnieuw de eerste. Vroeger bleef het hangen op "schrijf je eerste stap in het klad". `?` werkt nu ook midden in
+  een klad-regel.
+- **F1 geeft ook een tip.** Op een AZERTY-klavier is `?` Shift + komma; F1 is één toets. De knop heet `[?/F1]`.
+- **Cijferen, onthouden:** een cijfer in de onthouden-rij blijft in zijn kolom staan. Met ↓ ga je terug naar de rij
+  waarin je typte, recht eronder. Vroeger schoof de cursor een vakje naar links.
+- **De klok:** "Hoe laat is het in 24 uur?" was verwarrend (over 24 uur is het hetzelfde uur). Nu: "Het is tien
+  over vier 's middags. Schrijf dat zoals op een digitale klok (24-urennotatie)."
+- **Het klad:** een regel die je typt zonder Enter, verdwijnt niet meer als je met Tab naar je antwoord gaat (of
+  in een vraagstuk naar een andere stap). Hij wordt nagekeken zoals met Enter.
+- **Kleinigheden:** in het hoofdmenu loopt de uitleg niet meer onder de avatar door; in de moestuin is het zomer
+  (er werden tomaten geoogst in juli en augustus, terwijl het "lente" was). Op de getallenlijn heten de knoppen
+  "zoom in" en "zoom uit".
+
 ## 0.20.1 — het numeriek klavier
 - De toetsen **/ * - +** en de kleine **Enter** van het numeriek klavier werken nu overal: in de menu's, in het
   antwoord en in het klad. Op Windows deden ze niets; op Linux kwamen / * - + niet aan in sommige terminals.
