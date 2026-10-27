@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.1 — je klad blijft staan
+- **Na het nakijken blijft je klad staan** in een kader "Jouw klad" rechtsonder, naast "Zo kan het:" (je laatste
+  3 regels, met hun nummer). Elke regel krijgt ✔ of ✘, en een **!** op de regel waar je redenering afweek, ook als
+  de som zelf klopt. Zie je dezelfde fout als in je antwoord, dan zegt de uitleg kort "Dat zie je in je klad,
+  regel 2 (!)." Staat de wijzerklok in de terminal, dan komt het kader onder de uitleg (of niet, als er geen plaats
+  is).
+- Hoofdrekenen, compenseren: het klad herkent nu ook "omgekeerd gecompenseerd" (bv. 147 + 1 in plaats van 147 − 1).
+
 ## 0.21.0 — een digitaal klokje
 - **Een tijdstip typ je nu op een digitaal klokje** met grote cijfers: bij de 24-urennotatie, "Hoe laat is het
   … later?", "kwart over tien in cijfers", "Hoe laat kom je aan?" … Je typt zoals altijd (`16.10`, `16:10` of

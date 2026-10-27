@@ -24,7 +24,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - **Spiekbrief** met uitleg en voorbeelden.
 - **Elke oefening op dezelfde manier:** lees de vraag, reken in het **klad** (`Tab`; elke regel wordt meteen
   nagekeken), typ je antwoord. `?` geeft telkens een volgende tip (nooit het antwoord), een fout antwoord krijgt een
-  **tweede kans**, en na het nakijken staat "Zo kan het:" in klad-regels.
+  **tweede kans**, en na het nakijken staat "Zo kan het:" in klad-regels, met je eigen klad ernaast (! = daar
+  week je af).
 - **Hoofdrekenen:** maal- en deeltafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren,
   en **slim × en : met splitsen** (`91 : 7 = 70 : 7 + 21 : 7`, `99 × 6 = 100 × 6 − 6`; met verplicht klad)
   - elke uitleg toont een strategie stap voor stap (compenseren, splitsen, × 9 = × 10 − 1 …)

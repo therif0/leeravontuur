@@ -29,6 +29,9 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het antwoord en "Zo kan het:".
 - [ ] **Het klad en Tab** (bv. Breuken en procenten → Optellen en aftrekken): typ in het klad een regel **zonder**
   Enter en druk Tab: de regel blijft staan (met ✔ of ✘) en je staat in je antwoord.
+- [ ] **Je klad na het nakijken** (Hoofdrekenen → Optellen en aftrekken, bv. 47 + 99): klad `47 + 100 = 147` en
+  `147 + 1 = 148`, antwoord twee keer `148`. Rechtsonder staat "Jouw klad" met ✔ bij regel 1 en **!** bij regel 2;
+  de uitleg zegt "Dat zie je in je klad, regel 2 (!)." Zonder klad: geen kader.
 - [ ] **Hoofdrekenen → Slim × en : (splitsen):** het klad staat meteen open. Typ meteen een antwoord (Tab, Enter):
   "Laat in je klad zien hoe je splitst". Met `70 : 7 = 10` en `21 : 7 = 3` in het klad mag je antwoorden.
 - [ ] **Meten → Lengte (m):** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").

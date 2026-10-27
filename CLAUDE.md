@@ -74,7 +74,8 @@ Gouden regels:
   Nieuwe onderdelen: test `test_avatar.py` controleert dat gezicht en ankers op het lijf staan.
 - **De vaste werkwijze** (elke oefening dezelfde, zodat het kind niet verloren loopt): lees, klad (`Tab`), antwoord;
   `?` = getrapte tips (`Onderwerp.tips`), fout = één tweede kans (niet bij janee/vergelijk/keuze en objecten met een
-  eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`), daarna "Zo kan het:" in klad-regels. Het klad
+  eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`), daarna "Zo kan het:" in klad-regels, met het
+  eigen klad ernaast (`Kladblad.teken_kader`: ✔ ✘ en ! waar `analyseer` een denkfout ziet). Het klad
   is één onderdeel voor alles: `terminal/kladblad.py` (ook in het vraagstuk). **Elk nieuw rekenonderwerp** zet
   `klad = "ja"` (of `"verplicht"`, met `klad_klaar`) en geeft `oplossing(v)` in klad-regels (`kern/klad.stap`,
   `oplossing_van`, `fout_pad`); `tests/test_werkwijze.py` kijkt na dat elke regel klopt en op het antwoord eindigt.
