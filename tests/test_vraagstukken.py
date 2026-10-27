@@ -283,6 +283,27 @@ class TestInvoer(unittest.TestCase):
         self.obj.toets(ord("3"))
         self.assertEqual((self.obj.fase, self.obj.buf), (2, "3"))
 
+    def test_tijdstip_als_op_een_digitaal_klokje(self):
+        """#21: een tijdstip als antwoord staat er als 14:5_ (de : komt vanzelf); een letter kan er niet in."""
+        v = maak("5", "tijdsduur", "eind")
+        obj = VraagstukInvoer(v, O)
+        obj.toets(ord("a"))  # meteen naar Controle
+        for c in "145x":
+            obj.toets(ord(c))
+        self.assertEqual(obj.antw, "145")
+        from leeravontuur.terminal.nepscherm import NepScherm
+        from leeravontuur.terminal.scherm import Scherm
+        from leeravontuur.kern.instellingen import Instellingen
+        win = NepScherm([])
+        obj.teken(Scherm(win, Instellingen()), 4)
+        self.assertIn(" 1:45 ", win.tekst())  # 145 = 1.45 (zo leest het programma het ook)
+        obj.toets(ord("5"))
+        win = NepScherm([])
+        obj.teken(Scherm(win, Instellingen()), 4)
+        self.assertIn("14:55", win.tekst())
+        uit = obj.toets(10)
+        self.assertEqual(uit[1], v.antwoord)
+
     def test_tab_uit_het_klad_houdt_de_regel(self):
         """#22: een klad-regel zonder Enter en dan Tab (naar Controle): de regel staat in het klad, nagekeken."""
         self.typ("3 x 4 = 12")

@@ -91,7 +91,9 @@ Gouden regels:
   `model` uit `kern/modellen.py` (alleen data: Getallenlijn, Rooster, Staartdeling). De terminal tekent het:
   `terminal/modellen.py` (getallenlijn) en `terminal/rooster.py` (invoer-objecten voor rooster en staartdeling).
   Hulp per vakje komt uit `Onderwerp.kolom_hulp`, diagnose uit alle rijen uit `Onderwerp.diagnose_rijen`.
-  Verder: `"duur"` (typ `2 u 15 min`) en `"klok"` (typ `11.15`), beide in `kern/wiskunde/grootheden.py`;
+  Verder: `"duur"` (typ `2 u 15 min`) en `"klok"` (typ `11.15`), beide in `kern/wiskunde/grootheden.py`; `"klok"`
+  toont het getypte op een digitaal klokje (`terminal/digitaal.py`, wat erop staat komt uit `klok_cijfers`; compact
+  naast een hoog model);
   de klok (`kern/wiskunde/klok.py`): model `Wijzerklok` (in het klokvenster, of pixels in
   `terminal/modellen.teken_klok`, in ASCII `#` = uur en `*` = minuten), `"wijzers"` (zet de wijzers: `KlokInvoer` in `terminal/balk.py`) en `"klokwoord"` (typ
   "vijf voor half vier": `klok.woorden`/`lees_woorden`); tijden zijn minuten na middernacht, een wijzerklok kijkt

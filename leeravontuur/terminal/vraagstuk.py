@@ -13,6 +13,7 @@ import textwrap
 
 from ..kern import verhaal as V
 from ..kern.wiskunde import vraagstukken as VS
+from ..kern.wiskunde.grootheden import klok_cijfers
 from .kladblad import LEEG_ENTER, Kladblad
 from .scherm import BACKSPACE, ENTER, ESC, teken_van
 
@@ -193,10 +194,13 @@ class VraagstukInvoer:
         voor, na = self.m.antwoordzin
         s.put(yc, KOP, voor, "")
         vak = KOP + len(voor)
-        s.tekstvak(yc, vak, self.antw, 10, "veld" if self.fase == CONTROLE else "dim", ("fase", CONTROLE))
+        tekst = self.antw
+        if self.antw and getattr(self.m, "soort", "getal") == "klok" and (c := klok_cijfers(self.antw)):
+            tekst = f"{c[:2]}:{c[2:]}".strip()  # een tijdstip zoals op een digitaal klokje: 16:1_ (#21)
+        s.tekstvak(yc, vak, tekst, 10, "veld" if self.fase == CONTROLE else "dim", ("fase", CONTROLE))
         s.put(yc, vak + 12, na, "")
         if self.fase == CONTROLE:
-            self.cursor_pos = (yc, vak + 1 + len(self.antw))
+            self.cursor_pos = (yc, vak + 1 + len(tekst))
         # de tip
         if self.tiptekst:
             for i, stuk in enumerate(textwrap.wrap(self.tiptekst, 76)[:2]):
@@ -242,7 +246,7 @@ class VraagstukInvoer:
             return "Eén stap per regel · typ x voor maal, : voor delen · Enter = nakijken"
         soort = getattr(self.m, "soort", "getal")
         if soort == "klok":
-            return "Typ een tijdstip, bv. 11.20 (of 11:20), en druk Enter."
+            return "Typ een tijdstip, bv. 11.20 of 1120 (de : komt vanzelf), en druk Enter."
         if soort == "duur":
             return "Typ uren en minuten, bv. 1 u 35 min (of 95 voor 95 minuten), en druk Enter."
         return "Typ je antwoord (een getal, met een komma) en druk Enter."
@@ -403,6 +407,8 @@ class VraagstukInvoer:
         if k in ENTER:
             return self.controleer()
         if ch and ch in ANTW_TEKENS and len(self.antw) < 10:
+            if getattr(self.m, "soort", "getal") == "klok" and klok_cijfers(self.antw + ch) is None:
+                return None  # een tijdstip: alleen wat er een kan worden (zoals op het digitale klokje, #21)
             self.antw += ch
             self.melding = ""
         return None

@@ -54,6 +54,21 @@ def lees_klok(tekst):
     return D(u * 60 + minuten)
 
 
+def klok_cijfers(tekst):
+    """Wat een digitaal klokje toont terwijl het kind een tijdstip typt (#21): 4 tekens (uur, uur, min, min),
+    '_' = nog leeg, ' ' = geen cijfer. '16.1' → '161_', '9.45' en '945' → ' 945', '' → '____'.
+    None als het geen tijdstip kan worden ('abc', '12345')."""
+    t = (tekst or "").strip().lower().replace(" ", "")
+    if t.endswith("u"):
+        t = t[:-1]
+    if m := re.fullmatch(r"(\d{0,2})[.:hu](\d{0,2})", t):
+        uur, minuten = m.groups()
+        return (uur.rjust(2) if uur else "__") + minuten.ljust(2, "_")
+    if not re.fullmatch(r"\d{0,4}", t):
+        return None
+    return (" " + t) if len(t) == 3 else t.ljust(4, "_")
+
+
 class _Grootheid(Onderwerp):
     vast = ("soort",)
     klad = "ja"
