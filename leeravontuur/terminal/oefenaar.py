@@ -284,19 +284,38 @@ class Oefenaar:
                     uitleg = ([d[1]] if d else []) + o.uitleg(v)
                 else:
                     kop, rol = f"✘ Niet juist. Het juiste antwoord is {v.verwacht}.{extra}", "fout"
-                    in_klad = [f"In je klad: {analyse['eerste'][2]}"] if analyse and analyse["eerste"] else []
+                    eerste_klad = analyse["eerste"] if analyse else None
+                    in_klad = ([] if not eerste_klad else
+                               [f"Dat zie je in je klad, regel {eerste_klad[0]} (!)."] if d and eerste_klad[1] == d[0] else
+                               [f"In je klad: {eerste_klad[2]}"])
                     uitleg = ([d[1]] if d else []) + in_klad + self.uitwerking(o, v)
+                # het klad blijft staan (#22): rechtsonder naast de uitleg, of eronder als rechts geen plaats is
+                n = min(3, len(kb.regels)) if kb and not eigen else 0
+                naast = n and not hoog and not (s.klokvenster is not None and s.klokvenster.toont())
+                kw = 38 if naast else min(38, 78 - fx)
+                kader = (s.maat()[0] - 4 - n, 78 - kw) if naast else None
+
+                def stukken(tekst, y, inspring=""):  # tekst die tot naast het kader komt, stopt ervoor
+                    uit = textwrap.wrap(tekst, breed, subsequent_indent=inspring)
+                    if kader and y + len(uit) > kader[0]:
+                        uit = textwrap.wrap(tekst, min(breed, kader[1] - fx - 2), subsequent_indent=inspring)
+                    return uit
                 yy = fb
-                for stuk in textwrap.wrap(kop, breed):
+                for stuk in stukken(kop, yy):
                     s.put(yy, fx, stuk, rol)
                     yy += 1
                 yy += 1
                 for regel in uitleg:
                     tekst, rol = regel if isinstance(regel, tuple) else (regel, "accent")
-                    for stuk in textwrap.wrap(tekst, breed, subsequent_indent="  " if rol == "" else ""):
+                    for stuk in stukken(tekst, yy, "  " if rol == "" else ""):
                         if yy < s.maat()[0] - 1:
                             s.put(yy, fx, stuk, rol)
                         yy += 1
+                status = analyse["status"] if analyse else None
+                if kader:
+                    kb.teken_kader(s, *kader, kw, n, status)
+                elif n and yy + n + 2 <= s.maat()[0] - 2:
+                    kb.teken_kader(s, yy + 1, fx, kw, n, status)
             if spring:
                 s.pauze(170)
                 spring = False
