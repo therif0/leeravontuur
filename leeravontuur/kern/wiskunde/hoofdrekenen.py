@@ -27,6 +27,7 @@ def _plaats(n, k):
 class Tafels(Onderwerp):
     id = "wiskunde.hoofdrekenen.tafels"
     naam = "Maal- en deeltafels"
+    spiek_kop = "TAFELS"
     omschrijving = "de tafels van vermenigvuldiging en de deeltafels"
     denkfouten = {"plus_ipv_maal": "opgeteld in plaats van vermenigvuldigd",
                   "buurtafel": "één stap ernaast in de tafel",
@@ -130,6 +131,7 @@ class Tafels(Onderwerp):
 class PlusMin(Onderwerp):
     id = "wiskunde.hoofdrekenen.plusmin"
     naam = "Optellen en aftrekken"
+    spiek_kop = "COMPENSEREN  (een getal dat bijna rond is)"
     omschrijving = "uit het hoofd optellen en aftrekken met strategieën"
     denkfouten = {"compenseren_verkeerd": "bij compenseren de verkeerde kant op verbeterd",
                   "onthouden": "een tiental of honderdtal vergeten (onthouden)",
@@ -272,6 +274,7 @@ def _splits(b):
 class MaalDeel10(Onderwerp):
     id = "wiskunde.hoofdrekenen.maaldeel10"
     naam = "× en : met 10, 100, 1000"
+    spiek_kop = "× EN : MET 10, 100, 1000"
     omschrijving = "vermenigvuldigen en delen met 10, 100, 1000 (de komma verschuift)"
     denkfouten = {"verkeerde_richting_10": "de komma de verkeerde kant op geschoven",
                   "plaatsen_10": "de komma te ver of te weinig geschoven"}
@@ -351,6 +354,7 @@ class MaalDeel10(Onderwerp):
 class DubbelHelft(Onderwerp):
     id = "wiskunde.hoofdrekenen.dubbelhelft"
     naam = "Verdubbelen en halveren"
+    spiek_kop = "VERDUBBELEN EN HALVEREN"
     omschrijving = "het dubbel en de helft uit het hoofd"
     denkfouten = {"helft_dubbel": "het dubbel en de helft verwisseld", "dubbel_onthouden": "een tiental vergeten"}
     vast = ("soort",)
@@ -428,6 +432,7 @@ class Splitsen(Onderwerp):
     """91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13. Het klad is verplicht: het gaat om de aanpak, niet alleen de uitkomst."""
     id = "wiskunde.hoofdrekenen.splitsen"
     naam = "Slim × en : (splitsen)"
+    spiek_kop = "SPLITSEN"
     omschrijving = "× en : met splitsen in handige stukken, en compenseren (99 × 6)"
     denkfouten = {"split_deel_vergeten": "bij splitsen een stuk vergeten",
                   "split_niet_gedeeld": "bij splitsen een stuk niet gedeeld of vermenigvuldigd",

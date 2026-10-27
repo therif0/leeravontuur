@@ -227,9 +227,22 @@ class TestNavigatie(TestModiStarten):
         self.assertIn("Breuken en procenten", self.app.s.kruimel)
         self.assertIn("Procent van een getal", self.app.s.kruimel)
 
+    def test_spiekbrieven_kort(self):
+        """#20: zolang er één vak is, geen "Welk vak?"; een domein met één spiekbrief opent die meteen, bij meer staat
+        in de uitleg welke er zijn."""
+        spiek = str(HOOFDMENU.index("Spiekbrieven") + 1)
+        beeld = self.speel([OK, OK, spiek])[-1]
+        self.assertIn("Welke spiekbrief?", beeld)
+        self.assertIn("1. Getallen", beeld)
+        self.assertIn("2 spiekbrieven: Breuken, Procenten", beeld)
+        getallen = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.getallen")
+        beeld = self.speel([OK, OK, spiek, str(getallen)])[-1]
+        self.assertIn("PLAATSWAARDE", beeld)
+        self.assertEqual(self.app.s.kruimel[-2:], ["Spiekbrieven", "Getallen"])
+
     def test_gedeelde_spiekbrief_een_keer(self):
         meten = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.meten")
-        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Spiekbrieven") + 1), "1", str(meten)])[-1]
+        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Spiekbrieven") + 1), str(meten)])[-1]
         self.assertEqual(beeld.count("Eenheden omzetten"), 1)
         self.assertIn("2. Oppervlakte en formules", beeld)
         self.assertNotIn("3. ", beeld)

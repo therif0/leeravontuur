@@ -19,13 +19,16 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] V, S, T en Z werken ook als kleine letter; een letter die er niet bij hoort, doet niets; een klik op een
   knop onderaan doet hetzelfde als de toets. Na de oefening sta je terug op hetzelfde onderwerp.
 - [ ] Een klik op de broodkruimel bovenaan (bv. "Wiskunde") midden in een oefening brengt je naar dat menu.
-- [ ] **Spiekbrieven › Wiskunde › Meten:** Eenheden omzetten en Oppervlakte en formules (zonder hoeken of schaal).
+- [ ] **Spiekbrieven** toont meteen de 8 domeinen (geen "Welk vak?" meer), met wat erin staat. **Getallen** opent
+  meteen de spiekbrief; **Meten** vraagt eerst welke: Eenheden omzetten of Oppervlakte en formules.
 - [ ] **▶ Verder** start de vorige oefening (of eerst de herhaalvragen).
 
 ## 3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)
 - [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
   `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. `?` drie keer: de aanpak, het
-  begin van het klad, hulp bij je klad ("Tip 1 van 3" …); een vierde keer: weer tip 1. **F1** doet hetzelfde als `?`.
+  begin van het klad, hulp bij je klad ("Tip 1 van 3" …, bij de laatste: "Nog hulp nodig? Druk nog eens ?/F1: je
+  spiekbrief."); een vierde keer: de **spiekbrief**, bij het kopje over compenseren. Esc: terug naar je vraag (je
+  antwoord en klad staan er nog); nog eens `?`: weer tip 1. **F1** doet hetzelfde als `?`.
   Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het antwoord en "Zo kan het:".
 - [ ] **Het klad en Tab** (bv. Breuken en procenten → Optellen en aftrekken): typ in het klad een regel **zonder**
   Enter en druk Tab: de regel blijft staan (met ✔ of ✘) en je staat in je antwoord.
@@ -39,6 +42,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Getallen → Getallenlijn:** bij "Duid … aan" beweegt de pijl met ← →, `+` zoomt in, een klik zet de pijl.
 - [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje. Onthouden: typ het
   laatste cijfer, ↑, typ wat je onthoudt (de cursor blijft in die kolom), ↓: je staat er recht onder.
+  Nog eens `?` op hetzelfde vakje: de spiekbrief bij OPTELLEN; Esc = terug naar je som.
 - [ ] **Cijferen → Staartdeling:** de deling groeit stap voor stap mee.
 - [ ] **Breuken en procenten → Herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
 - [ ] **Breuken en procenten → Honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
@@ -63,7 +67,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Meten → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.
 - [ ] **Meetkunde → Schatkaart:** bij "Zet een kruisje op …" verplaats je het kruisje met de pijltjes of een klik.
 - [ ] **Vraagstukken:** duid met ← → en spatie de getallen aan, kies met ↓ wat er gevraagd wordt, ga met Tab naar
-  het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk `?`: de belangrijke woorden lichten op.
+  het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk `?`: de belangrijke woorden lichten op. Na de
+  4 tips zegt de knop onderaan "spiekbrief": nog eens `?` opent "Een vraagstuk in 4 stappen".
 - [ ] **Vraagstukken:** druk `a` en typ meteen een fout antwoord: je krijgt een hulpje en een tweede kans.
 - [ ] **Vraagstukken → Speurneus:** kies met ↑↓ de foute regel (of "Alles is juist!") en dan de reden (a, b of c).
 - [ ] **Vraagstukken** met tijd (bv. "Hoe laat komt de trein aan?"): typ in het klad `9.45 u + 35 min = 10.20 u`

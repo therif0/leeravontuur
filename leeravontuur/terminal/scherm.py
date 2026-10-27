@@ -396,8 +396,9 @@ class Scherm:
             elif toetsen is not None and (teken_van(k) or "").lower() in {t for t, _ in toetsen[sel][1:]}:
                 return gekozen(sel, teken_van(k).lower())
 
-    def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen"):
-        """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}."""
+    def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen", begin=None):
+        """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}.
+        begin = de tekst van een regel (bv. een kopje) die bovenaan moet staan bij het openen."""
         top = 0
         while True:
             if self.te_klein():
@@ -410,6 +411,9 @@ class Scherm:
                 stukken = textwrap.wrap(tekst, w - 8, subsequent_indent=inspring + "  ") or [""]
                 lijnen += [(s, rol) for s in stukken]
             zicht = h - 4
+            if begin is not None:
+                top = next((i for i, (t, _) in enumerate(lijnen) if t.strip() == begin), 0)
+                begin = None
             top = max(0, min(top, len(lijnen) - zicht))
             self.nieuw(kruimel, [("↑↓", scroll_uitleg, None)] + list(knoppen))
             for i, (tekst, rol) in enumerate(lijnen[top:top + zicht]):

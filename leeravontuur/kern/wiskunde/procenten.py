@@ -108,6 +108,7 @@ class _Procenten(Onderwerp):
 class Veld(_Procenten):
     id = "wiskunde.procenten.honderdveld"
     naam = "Het honderdveld"
+    spiek_kop = "PROCENT = PER HONDERD"
     omschrijving = "procent = per honderd: aflezen en kleuren"
     denkfouten = {"wit_geteld": "de witte vakjes geteld in plaats van de gekleurde",
                   "kommagetal_ipv_procent": "een kommagetal gegeven in plaats van een percentage"}
@@ -164,6 +165,7 @@ NETTE_BREUKEN = [(1, 2), (1, 4), (3, 4), (1, 5), (2, 5), (3, 5), (4, 5), (1, 10)
 class Omzetten(_Procenten):
     id = "wiskunde.procenten.omzetten"
     naam = "Procent, breuk en kommagetal"
+    spiek_kop = "HANDIG OM TE KENNEN"
     omschrijving = "25 % = 1/4 = 0,25"
     denkfouten = {"komma_procent": "kommagetal en procent: de komma 2 plaatsen verkeerd",
                   "niet_vereenvoudigd": "niet volledig vereenvoudigd"}
@@ -218,6 +220,7 @@ class Omzetten(_Procenten):
 class ProcentVan(_Procenten):
     id = "wiskunde.procenten.van"
     naam = "Procent van een getal"
+    spiek_kop = "PROCENT VAN EEN GETAL"
     omschrijving = "20 % van 80, en hoeveel % is 12 van 48?"
     denkfouten = {"procent_als_antwoord": "het percentage zelf als antwoord gegeven",
                   "gedeeld_door_procent": "door het percentage gedeeld",
@@ -287,6 +290,7 @@ DINGEN = ["een fiets", "een jas", "een spelcomputer", "een paar schoenen", "een 
 class Korting(_Procenten):
     id = "wiskunde.procenten.korting"
     naam = "Korting en btw"
+    spiek_kop = "KORTING EN BTW"
     omschrijving = "wat betaal je met korting of met btw?"
     denkfouten = {"alleen_korting": "alleen de korting berekend (niet afgetrokken van de prijs)",
                   "korting_opgeteld": "de korting bij de prijs opgeteld",

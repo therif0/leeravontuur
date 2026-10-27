@@ -99,6 +99,7 @@ def optel_kolommen(getallen):
 class Optellen(_Cijferen):
     id = "wiskunde.cijferen.optellen"
     naam = "Cijferend optellen"
+    spiek_kop = "OPTELLEN"
     omschrijving = "onder elkaar, met onthouden"
     denkfouten = {"onthouden_vergeten": "onthouden vergeten bij het optellen"}
     vast = ("soort",)
@@ -189,6 +190,7 @@ def aftrek_kolommen(a, b):
 class Aftrekken(_Cijferen):
     id = "wiskunde.cijferen.aftrekken"
     naam = "Cijferend aftrekken"
+    spiek_kop = "AFTREKKEN"
     omschrijving = "onder elkaar, met lenen"
     denkfouten = {"kleinste_van_grootste": "per kolom de kleinste van de grootste afgetrokken",
                   "lenen_vergeten": "geleend, maar de kolom links niet 1 kleiner gemaakt"}
@@ -275,6 +277,7 @@ def maal_rij(A, cijfer, r):
 class Vermenigvuldigen(_Cijferen):
     id = "wiskunde.cijferen.vermenigvuldigen"
     naam = "Cijferend vermenigvuldigen"
+    spiek_kop = "VERMENIGVULDIGEN"
     omschrijving = "onder elkaar, ook met 2 cijfers en kommagetallen"
     denkfouten = {"niet_opgeschoven": "de tweede rij niet opgeschoven (de 0 vergeten)",
                   "komma_product": "de komma op de verkeerde plaats in het product"}
@@ -444,6 +447,7 @@ def staart_fout(stap, gegeven, deler):
 class Delen(_Cijferen):
     id = "wiskunde.cijferen.delen"
     naam = "Staartdeling"
+    spiek_kop = "STAARTDELING"
     omschrijving = "stap voor stap: deel, maal, min, neer"
     denkfouten = {"staart_te_veel": "bij de staartdeling te veel keer geschat",
                   "staart_te_weinig": "bij de staartdeling te weinig keer geschat (rest te groot)",

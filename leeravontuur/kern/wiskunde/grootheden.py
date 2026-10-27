@@ -97,6 +97,7 @@ OMREKENEN = [  # (groot, groot meervoud, klein, factor)
 class Tijd(_Grootheid):
     id = "wiskunde.eenheden.tijd"
     naam = "Tijd"
+    spiek_kop = "TIJD"
     omschrijving = "uren, minuten, seconden en tijdsduur"
     denkfouten = {"tijd_met_100": "met 100 gerekend in plaats van met 60",
                   "tijd_uur_vergeten": "60 minuten niet omgezet in een uur",
@@ -242,6 +243,7 @@ FRUIT = [("appel", "appels", 25, 70), ("peer", "peren", 30, 80), ("banaan", "ban
 class Geld(_Grootheid):
     id = "wiskunde.eenheden.geld"
     naam = "Geld"
+    spiek_kop = "GELD"
     omschrijving = "euro en cent, betalen en wisselgeld"
     denkfouten = {"geld_komma": "de komma verkeerd: 1 euro = 100 cent",
                   "wisselgeld_opgeteld": "opgeteld in plaats van afgetrokken"}
@@ -330,6 +332,7 @@ REIZIGERS = [("Een fietser", "fietst", 12, 24, 4), ("Een auto", "rijdt", 60, 120
 class Snelheid(_Grootheid):
     id = "wiskunde.eenheden.snelheid"
     naam = "Snelheid"
+    spiek_kop = "SNELHEID  (6de leerjaar)"
     omschrijving = "afstand, tijd en snelheid (km/u, m/s)"
     denkfouten = {"snelheid_bewerking": "vermenigvuldigd in plaats van gedeeld (of omgekeerd)",
                   "snelheid_minuten": "minuten niet omgezet in uren",

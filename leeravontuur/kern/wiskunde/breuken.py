@@ -128,6 +128,7 @@ class _Breuken(Onderwerp):
 class Herkennen(_Breuken):
     id = "wiskunde.breuken.herkennen"
     naam = "Breuken herkennen"
+    spiek_kop = "DE BREUKBALK"
     omschrijving = "welke breuk is gearceerd? zelf arceren"
     denkfouten = {"teller_noemer_omgewisseld": "teller en noemer omgewisseld",
                   "ongearceerd_geteld": "de stukken die niet gearceerd zijn geteld",
@@ -173,6 +174,7 @@ class Herkennen(_Breuken):
 class Gelijkwaardig(_Breuken):
     id = "wiskunde.breuken.gelijkwaardig"
     naam = "Gelijkwaardig en vereenvoudigen"
+    spiek_kop = "GELIJKWAARDIG EN VEREENVOUDIGEN"
     omschrijving = "2/3 = ?/12, vereenvoudigen, met de balk"
     denkfouten = {"niet_vereenvoudigd": "niet volledig vereenvoudigd",
                   "alleen_teller": "alleen de teller (of alleen de noemer) veranderd",
@@ -253,6 +255,7 @@ class Gelijkwaardig(_Breuken):
 class Vergelijken(_Breuken):
     id = "wiskunde.breuken.vergelijken"
     naam = "Breuken vergelijken"
+    spiek_kop = "VERGELIJKEN EN OPTELLEN"
     omschrijving = "groter, kleiner of gelijk? (<, > of =)"
     denkfouten = {"grotere_noemer_groter": "gedacht dat een grotere noemer een grotere breuk geeft",
                   "alleen_tellers": "alleen de tellers vergeleken bij verschillende noemers"}
@@ -319,6 +322,7 @@ class Vergelijken(_Breuken):
 class Optellen(_Breuken):
     id = "wiskunde.breuken.optellen"
     naam = "Optellen en aftrekken"
+    spiek_kop = "VERGELIJKEN EN OPTELLEN"
     omschrijving = "gelijknamig, ongelijknamig, gemengde getallen"
     denkfouten = {"tellers_en_noemers": "tellers én noemers opgeteld (1/2 + 1/3 = 2/5)",
                   "niet_gelijknamig": "niet gelijknamig gemaakt (tellers opgeteld, één noemer gehouden)"}
@@ -440,6 +444,7 @@ class Optellen(_Breuken):
 class BreukVan(_Breuken):
     id = "wiskunde.breuken.van"
     naam = "Breuk van een getal"
+    spiek_kop = "BREUK VAN EEN GETAL"
     omschrijving = "2/3 van 12, × en : met breuken"
     denkfouten = {"alleen_gedeeld": "alleen door de noemer gedeeld (de teller vergeten)",
                   "omgekeerd_breuk": "door de teller gedeeld en met de noemer vermenigvuldigd",
@@ -562,6 +567,7 @@ class BreukVan(_Breuken):
 class Kommagetal(_Breuken):
     id = "wiskunde.breuken.kommagetal"
     naam = "Breuk en kommagetal"
+    spiek_kop = "BREUK EN KOMMAGETAL"
     omschrijving = "3/4 = 0,75 en 0,6 = 3/5"
     denkfouten = {"breuk_als_komma": "de breuk gelezen als kommagetal (3/4 = 3,4)",
                   "tiende_honderdste": "tienden en honderdsten verwisseld"}

@@ -43,6 +43,7 @@ class _Getallen(Onderwerp):
 class Plaatswaarde(_Getallen):
     id = "wiskunde.getallen.plaatswaarde"
     naam = "Plaatswaarde"
+    spiek_kop = "PLAATSWAARDE"
     omschrijving = "wat is elk cijfer waard? (E, T, H … t, h)"
     denkfouten = {"cijfer_ipv_waarde": "het cijfer gegeven in plaats van zijn waarde",
                   "verkeerde_plaats": "een plaats ernaast gekeken"}
@@ -107,6 +108,7 @@ class Plaatswaarde(_Getallen):
 class Afronden(_Getallen):
     id = "wiskunde.getallen.afronden"
     naam = "Afronden"
+    spiek_kop = "AFRONDEN"
     omschrijving = "op tientallen, honderdtallen … en tienden"
     denkfouten = {"afgekapt": "afgekapt in plaats van afgerond", "verkeerde_plaats_afronden": "op de verkeerde plaats afgerond"}
     vast = ("k",)
@@ -174,6 +176,7 @@ def _priem(n):
 class Deelbaarheid(_Getallen):
     id = "wiskunde.getallen.deelbaarheid"
     naam = "Deelbaarheid"
+    spiek_kop = "DEELBAAR DOOR …"
     omschrijving = "kenmerken, delers, priemgetallen, ggd, kgv"
     denkfouten = {"kenmerk": "het kenmerk van deelbaarheid verkeerd toegepast"}
     vast = ("soort", "deler")
@@ -264,6 +267,7 @@ class Deelbaarheid(_Getallen):
 class GetallenlijnOnderwerp(_Getallen):
     id = "wiskunde.getallen.getallenlijn"
     naam = "Getallenlijn"
+    spiek_kop = "GETALLENLIJN"
     omschrijving = "aflezen, aanduiden, sprongen, thermometer"
     denkfouten = {"streepje_ernaast": "één streepje ernaast", "niet_ingezoomd": "niet ver genoeg ingezoomd",
                   "sprong_verkeerde_kant": "de verkeerde kant op gesprongen"}

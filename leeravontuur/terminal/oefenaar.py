@@ -52,6 +52,8 @@ GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagst
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
 KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
+MEER_HULP = " Nog hulp nodig? Druk nog eens ?/F1: je spiekbrief."  # na de laatste tip (#20)
+KORT_HULP = " Nog eens ?/F1: je spiekbrief."  # na de hulp van een invoer-object
 
 
 def vraagtekst(v):
@@ -100,13 +102,16 @@ class Oefenaar:
         else:
             self.reeks(o, jaar, soort)
 
-    def spiekbrief(self, kr, o):
+    def spiekbrief(self, kr, o, v=None):
+        """De spiekbrief. Met een vraag v (vanuit de oefening, #20): bij het kopje van die vraag, en Esc = terug naar
+        de vraag."""
         regels = []
         for x in (o if isinstance(o, (list, tuple)) else [o]):  # een domein kan meer spiekbrieven hebben
             regels += ([("", "")] if regels else []) + (x.spiekbrief() or [(x.naam, "accent"), ("", ""),
                                                                             (x.omschrijving, "")])
-        self.s.lezer(kr, regels, [("Esc", "terug", ("terug",))],
-                     {k: None for k in (ESC, ord("q"), *ENTER, ("terug",))})
+        self.s.lezer(kr, regels, [("Esc", "terug naar je vraag" if v else "terug", ("terug",))],
+                     {k: None for k in (ESC, ord("q"), *ENTER, ("terug",))},
+                     begin=o.kop_op_spiekbrief(v) if v is not None else None)
 
     # ---- één vraag ------------------------------------------------------------------
 
@@ -138,6 +143,10 @@ class Oefenaar:
         verplicht = kb is not None and o.klad_voor(v) == "verplicht"
         focus = KLAD if verplicht else ANTWOORD
         tips, tip_nr, tiptekst = (o.tips(v) if not obj else []), 0, ""
+        # na de laatste tip: de spiekbrief (#20); daarna begint het weer bij tip 1
+        spiek = bool(o.spiekbrief())
+        periode = max(1, len(tips) + (kb is not None)) + spiek
+        laatste_hulp = None  # bij een invoer-object: nog eens ? op dezelfde plek = de spiekbrief
         tweede = v.invoer not in GEEN_TWEEDE_KANS
         eerste_fout, kans_melding, klad_ok, analyse = None, "", False, None
         self.herkansing = False
@@ -146,6 +155,7 @@ class Oefenaar:
         while True:
             if s.te_klein():
                 continue
+            tip_knop = "spiekbrief" if spiek and tip_nr % periode == periode - 1 else "tip"
             if goed is not None:
                 laatste = not vrij and nr == self.totaal - 1
                 knoppen = [("Enter", "naar je resultaat" if laatste else "volgende vraag", 10),
@@ -154,10 +164,10 @@ class Oefenaar:
                 knoppen = obj.knoppen()
             elif lijnen:
                 knoppen = [("←→", "pijl", None), ("+", "zoom in", ord("+")), ("−", "zoom uit", ord("-")),
-                           ("Enter", "hier!", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+                           ("Enter", "hier!", 10), ("?/F1", tip_knop, ord("?")), ("Esc", "stoppen", ESC)]
             else:
                 knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
-                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?/F1", "tip", ord("?")),
+                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?/F1", tip_knop, ord("?")),
                     ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             if vrij:
@@ -252,8 +262,15 @@ class Oefenaar:
                         s.put(fb + i, fx, stuk, melding_rol)
                 if tip and not eigen:
                     tekst = ("Hulp: " + obj.hulp(o)) if obj else tiptekst
+                    tw = min(breed, 70 if lijnen or obj else 54)  # naast een hoog object is er plaats voor 4 regels
+                    tn = (4 if getattr(obj, "naast", None) else 2) if obj else 3
+                    if tekst.endswith(MEER_HULP):  # de wenk naar de spiekbrief alleen als hij helemaal past
+                        tekst = tekst[:-len(MEER_HULP)]
+                    if spiek and (obj or tip_knop == "spiekbrief") and \
+                            len(textwrap.wrap(tekst + (KORT_HULP if obj else MEER_HULP), tw)) <= tn:
+                        tekst += KORT_HULP if obj else MEER_HULP
                     van = fb + (2 if len(melding) > breed else 1) if obj or melding else fb
-                    for i, stuk in enumerate(textwrap.wrap(tekst, min(breed, 70 if lijnen or obj else 54))[:2 if obj else 3]):
+                    for i, stuk in enumerate(textwrap.wrap(tekst, tw)[:tn]):
                         s.put(van + i, fx, stuk, "accent")
                 hint = (obj.hint if obj else KLAD_HINT if kb and focus == KLAD else
                         HINTS.get(v.invoer, HINTS["getal"]))
@@ -334,11 +351,25 @@ class Oefenaar:
                     continue
                 s.cursor(False)
                 return None
-            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)):  # ook midden in een klad-regel
+            eigen_tip = obj is not None and getattr(obj, "eigen_tip", False)
+            if k == ord("?") and (not eigen_tip or (spiek and getattr(obj, "tips_op", False))):  # ook in het klad
                 tip = tip_gebruikt = True
-                if not obj:
+                if eigen_tip:  # het object gaf al zijn tips: nu de spiekbrief
+                    getattr(obj, "spiekbrief_bekeken", lambda: None)()
+                    self.spiekbrief(kr + ["Spiekbrief"], o, v)
+                elif obj:
+                    hulp = obj.hulp(o)
+                    if spiek and hulp == laatste_hulp:
+                        laatste_hulp, tip = None, False
+                        self.spiekbrief(kr + ["Spiekbrief"], o, v)
+                    else:
+                        laatste_hulp = hulp
+                else:
                     tip_nr += 1
-                    tiptekst = self.volgende_tip(o, v, tips, tip_nr, kb)
+                    tiptekst = self.volgende_tip(o, v, tips, tip_nr, kb, spiek)
+                    if tiptekst is None:
+                        tip = False
+                        self.spiekbrief(kr + ["Spiekbrief"], o, v)
                 continue
             if kb and isinstance(k, tuple) and k[0] in ("focus", "klad"):  # een klik op het klad of het antwoord
                 if k[0] == "klad":
@@ -438,14 +469,22 @@ class Oefenaar:
             gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
             spring = goed and self.app.inst.animaties and self.app.inst.avatar
 
-    @staticmethod
-    def volgende_tip(o, v, tips, nr, kb):
+    @classmethod
+    def volgende_tip(cls, o, v, tips, nr, kb, spiek=False):
         """Tip nr (vanaf 1): de vaste tips van het onderwerp (de aanpak, het begin van het klad), dan hulp bij het
-        klad, en daarna opnieuw van voren af aan (#15). Nooit het antwoord."""
-        aantal = len(tips) + (kb is not None)
-        if not aantal:
+        klad, dan (spiek) de spiekbrief (#20): dan geeft dit None. Daarna opnieuw van voren af aan (#15).
+        Nooit het antwoord."""
+        aantal = max(1, len(tips) + (kb is not None))
+        i = (nr - 1) % (aantal + spiek) + 1
+        if i > aantal:
+            return None
+        tekst = cls._tip(o, v, tips, i, aantal, kb)
+        return tekst + MEER_HULP if spiek and i == aantal else tekst
+
+    @staticmethod
+    def _tip(o, v, tips, i, aantal, kb):
+        if not tips and kb is None:
             return "Tip: lees de vraag nog eens rustig."
-        i = (nr - 1) % aantal + 1
         kop = f"Tip {i} van {aantal}" if aantal > 1 else "Tip"
         if i <= len(tips):
             return f"{kop}: {tips[i - 1]}"
