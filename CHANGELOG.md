@@ -2,6 +2,12 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.20.3 — "Hoe moeilijk?" bij onderwerpen van een hoger leerjaar
+- Snelheid, Schaal en Korting en btw bestaan pas vanaf het 6de leerjaar (Procenten vanaf het 5de). Voor een kind
+  van een lager leerjaar deed Makkelijk of Normaal daar niets: de keuze sprong terug naar Normaal. Nu staat de
+  keuze meteen op het eerste niveau dat wel kan (Enter werkt dus meteen), en bij een niveau dat nog niet kan
+  staat "(pas vanaf het 6de leerjaar)"; kies je het toch, dan zegt het programma waarom en welk niveau wel kan.
+
 ## 0.20.2 — kleine verbeteringen uit de tests
 - **Tips draaien rond:** `?` geeft telkens de volgende tip ("Tip 1 van 3", "Tip 2 van 3" …) en na de laatste
   opnieuw de eerste. Vroeger bleef het hangen op "schrijf je eerste stap in het klad". `?` werkt nu ook midden in

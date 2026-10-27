@@ -73,17 +73,22 @@ class Oefenaar:
     # ---- niveau en start ------------------------------------------------------------
 
     def kies_niveau(self, kr, o):
+        """Hoe moeilijk? Een niveau waarvan het leerjaar het onderwerp nog niet kent (bv. Snelheid pas vanaf het
+        6de), kan niet: de keuze start dan op het dichtste niveau dat wel kan, en kiezen zegt waarom (#27)."""
         eigen = self.app.inst.leerjaar
-        opties, jaren = [], []
-        for i, (naam, _) in enumerate(leerjaren.NIVEAUS):
-            jaar = leerjaren.leerjaar_voor_niveau(eigen, i)
-            jaren.append(jaar)
-            opties.append((naam, leerjaren.NAMEN[jaar] + ("" if o.aangeboden(jaar) else "  (nog niet in dit leerjaar)")))
+        jaren = [leerjaren.leerjaar_voor_niveau(eigen, i) for i in range(len(leerjaren.NIVEAUS))]
+        kan = [o.aangeboden(j) for j in jaren]
+        vanaf = next((j for j in leerjaren.LEERJAREN if o.aangeboden(j)), None)
+        opties = [(naam, leerjaren.NAMEN[j] + ("" if kan[i] else f"  (pas vanaf het {leerjaren.NAMEN[vanaf]})"))
+                  for i, ((naam, _), j) in enumerate(zip(leerjaren.NIVEAUS, jaren))]
+        start = min((i for i in range(len(kan)) if kan[i]), key=lambda i: (abs(i - 1), -i), default=1)
+        info = [f"Jouw leerjaar: {leerjaren.NAMEN[eigen]}"]
         while True:
-            k = self.s.menu(kr, "Hoe moeilijk?", opties, start=1,
-                            info=[f"Jouw leerjaar: {leerjaren.NAMEN[eigen]}"])
-            if k is None or o.aangeboden(jaren[k]):
+            k = self.s.menu(kr, "Hoe moeilijk?", opties, start=start, info=info)
+            if k is None or kan[k] or not any(kan):
                 return k
+            info = info[:1] + ["", f"Dit oefen je pas vanaf het {leerjaren.NAMEN[vanaf]}. "
+                                   f"Kies {leerjaren.NIVEAUS[start][0]}."]
 
     def start(self, o, vorm, niveau):
         jaar = leerjaren.leerjaar_voor_niveau(self.app.inst.leerjaar, niveau)
