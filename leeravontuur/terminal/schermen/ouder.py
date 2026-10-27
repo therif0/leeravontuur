@@ -13,7 +13,7 @@ HOOFD = "Leeravontuur"
 KR = [HOOFD, "Ouders"]
 SLOT_SECONDEN = 600
 PIN_ITERATIES = 100_000  # een pincode van 4 cijfers is toch snel te raden; snel controleren is hier belangrijker
-VERGETEN = "Vergeten? Start dan met:  python3 oefeningen.py --wachtwoord-vergeten"
+VERGETEN = "Vergeten? Start dan met:  python3 leeravontuur.py --wachtwoord-vergeten"
 
 
 class Ouderdeel:

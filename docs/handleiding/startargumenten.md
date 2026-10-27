@@ -2,14 +2,14 @@
 
 [← terug naar de inhoud](README.md)
 
-Je start het programma met `python3 oefeningen.py` (op Windows `python oefeningen.py`). Achter de opdracht kun je
+Je start het programma met `python3 leeravontuur.py` (op Windows `python leeravontuur.py`). Achter de opdracht kun je
 een of meer **argumenten** zetten, bv.:
 
 ```text
-python3 oefeningen.py --kleurenblind
-python3 oefeningen.py --kleurenblind blauw-geel --geen-muis
-python3 oefeningen.py --ouder
-python3 oefeningen.py --help
+python3 leeravontuur.py --kleurenblind
+python3 leeravontuur.py --kleurenblind blauw-geel --geen-muis
+python3 leeravontuur.py --ouder
+python3 leeravontuur.py --help
 ```
 
 `--help` toont deze lijst ook in de terminal.
@@ -78,5 +78,5 @@ ging iets mis". Alleen nodig om een fout te zoeken.
 | `LEERAVONTUUR_ZAAD` | Altijd dezelfde vragen (gebruikt voor de schermafdrukken van deze handleiding). |
 | `LEERAVONTUUR_AAP`, `LEERAVONTUUR_AAP_SEEDS`, `LEERAVONTUUR_AAP_RONDES` | Voor de automatische "aapjestest": hoe lang die willekeurig op toetsen drukt. |
 
-Voorbeeld (Linux/macOS): `LEERAVONTUUR_DATA=~/proef python3 oefeningen.py`. Op Windows (PowerShell):
-`$env:LEERAVONTUUR_DATA="C:\proef"; python oefeningen.py`.
+Voorbeeld (Linux/macOS): `LEERAVONTUUR_DATA=~/proef python3 leeravontuur.py`. Op Windows (PowerShell):
+`$env:LEERAVONTUUR_DATA="C:\proef"; python leeravontuur.py`.

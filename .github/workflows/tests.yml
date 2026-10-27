@@ -24,4 +24,6 @@ jobs:
           PYTHONIOENCODING: utf-8
         run: python tests/ci.py
       - name: Starter controleren
-        run: python oefeningen.py --versie
+        run: |
+          python leeravontuur.py --versie
+          python oefeningen.py --versie

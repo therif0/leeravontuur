@@ -128,17 +128,20 @@ Python staat er meestal al op.
 ```bash
 git clone https://github.com/therif0/leeravontuur.git
 cd leeravontuur
-python3 oefeningen.py
+./leeravontuur-linux.sh
 ```
-Een snelkoppeling in het startmenu maken (eenmalig): `python3 oefeningen.py --snelkoppeling`
+(of `python3 leeravontuur.py`). Een snelkoppeling in het startmenu maken (eenmalig):
+`python3 leeravontuur.py --snelkoppeling`
 
 ### macOS
 Installeer Python via [python.org](https://www.python.org/downloads/) (of `brew install python`) en doe daarna in de Terminal:
 ```bash
 git clone https://github.com/therif0/leeravontuur.git
 cd leeravontuur
-python3 oefeningen.py
+python3 leeravontuur.py
 ```
+Daarna kun je ook dubbelklikken op **leeravontuur-mac.command** in de map (de eerste keer misschien: rechtsklik ›
+Open).
 
 ### Windows
 1. Installeer Python via [python.org](https://www.python.org/downloads/) of de Microsoft Store.
@@ -147,8 +150,10 @@ python3 oefeningen.py
 git clone https://github.com/therif0/leeravontuur.git
 cd leeravontuur
 py -m pip install -r requirements.txt
-py oefeningen.py
+py leeravontuur.py
 ```
+Daarna start je het ook met een **dubbelklik op leeravontuur-win.bat** in de map (zet er gerust een snelkoppeling
+van op het bureaublad).
 `requirements.txt` installeert op Windows één klein pakket (`windows-curses`). Op Linux en macOS installeert het niets.
 
 Het venster moet minstens **80×24** tekens groot zijn.
@@ -161,6 +166,7 @@ dat soms apart installeren: `sudo apt install python3-tk` (Ubuntu, Debian) of `s
 ```bash
 git pull
 ```
+Tot versie 0.20.3 heette de starter `oefeningen.py`. Die naam werkt nog altijd (hij start `leeravontuur.py`).
 
 ## Handleiding
 De volledige handleiding met schermafdrukken staat in [docs/handleiding](docs/handleiding/README.md): elk onderdeel,
@@ -190,7 +196,7 @@ Kinderen › Weergave; dat wordt bewaard. Een startargument geldt alleen zolang 
 
 ## Ouderwachtwoord vergeten?
 ```bash
-python3 oefeningen.py --wachtwoord-vergeten
+python3 leeravontuur.py --wachtwoord-vergeten
 ```
 Dat wist alleen het wachtwoord; de gegevens van de kinderen blijven bewaard. Het wachtwoord is een slot tegen
 nieuwsgierige kinderen, geen echte beveiliging: wie aan de computer kan, kan het omzeilen. Wil je het echt

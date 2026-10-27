@@ -61,14 +61,14 @@ hoofdmenu. **De punten en antwoorden zijn bewaard.** De fout komt in het foutenl
 
 ### Het foutenlogboek
 
-- `python3 oefeningen.py --fouten` toont de laatste 3 fouten en waar het bestand staat.
+- `python3 leeravontuur.py --fouten` toont de laatste 3 fouten en waar het bestand staat.
 - Het ouderdeel meldt onderaan als er fouten in het logboek staan.
 - Stuur het bestand `fouten.log` door aan wie het programma maakt; dan kan de fout opgelost worden.
 - Om een fout zelf te zoeken: start met `--debug`; dan stopt het programma met de volledige melding.
 
 ## Het wachtwoord van het ouderdeel vergeten
 
-`python3 oefeningen.py --wachtwoord-vergeten`, dan `JA` typen. Het wachtwoord is gewist; de gegevens van de
+`python3 leeravontuur.py --wachtwoord-vergeten`, dan `JA` typen. Het wachtwoord is gewist; de gegevens van de
 kinderen blijven. De volgende keer in het ouderdeel kies je een nieuw. Een vergeten **pincode** van een kind haal je
 weg in het ouderdeel → Kinderen → Pincode.
 
@@ -88,4 +88,4 @@ weg in het ouderdeel → Kinderen → Pincode.
 ## Nog iets anders?
 
 Gebruik **Zeg het ons** in het programma, of geef de opmerking door aan wie het programma maakt, samen met
-`fouten.log` en de versie (`python3 oefeningen.py --versie`).
+`fouten.log` en de versie (`python3 leeravontuur.py --versie`).

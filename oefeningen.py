@@ -1,26 +1,8 @@
 #!/usr/bin/env python3
-"""Leeravontuur starten: python3 oefeningen.py   (hulp: python3 oefeningen.py --help)
+"""De oude naam van de starter: start nu leeravontuur.py. Dit bestand blijft voorlopig bestaan, zodat oude
+snelkoppelingen en gewoontes (python3 oefeningen.py) blijven werken."""
 
-Een gratis leerprogramma van Solve It Now. Iedereen moet kunnen leren.
-"""
+import runpy
+from pathlib import Path
 
-import sys
-
-if sys.version_info < (3, 10):
-    print("Leeravontuur heeft Python 3.10 of nieuwer nodig.")
-    print(f"Je hebt nu Python {sys.version.split()[0]}. Installeer een nieuwere versie via https://www.python.org")
-    sys.exit(1)
-
-try:
-    import curses  # noqa: F401
-except ImportError:
-    print("Er ontbreekt nog één onderdeel om het scherm te tekenen (curses).")
-    if sys.platform == "win32":
-        print("Doe eerst (één keer):   py -m pip install -r requirements.txt")
-    else:
-        print("Doe eerst (één keer):   python3 -m pip install -r requirements.txt")
-    sys.exit(1)
-
-from leeravontuur.__main__ import main  # noqa: E402
-
-sys.exit(main())
+runpy.run_path(str(Path(__file__).resolve().parent / "leeravontuur.py"), run_name="__main__")

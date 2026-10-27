@@ -145,9 +145,12 @@ Gouden regels:
 ## Platformen
 Windows, macOS en Linux. Alleen de standaardbibliotheek; op Windows `windows-curses` (requirements.txt).
 Python 3.10+.
+Starten: `leeravontuur.py` (de Python-versie en curses nakijken, dan `leeravontuur/__main__.py`), met een
+dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.command`, `leeravontuur-linux.sh`
+(`.gitattributes` bewaakt CRLF/LF). `oefeningen.py` is de oude naam en start `leeravontuur.py`.
 
 ## Testen
-- `python3 -m unittest discover -s tests` (of `python3 oefeningen.py --test`). Draait ook in CI op 3 systemen.
+- `python3 -m unittest discover -s tests` (of `python3 leeravontuur.py --test`). Draait ook in CI op 3 systemen.
 - Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik", y, x), ("wiel", ±1)).
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
   `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.

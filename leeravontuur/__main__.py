@@ -1,4 +1,4 @@
-"""Leeravontuur starten: python3 -m leeravontuur (of python3 oefeningen.py)."""
+"""Leeravontuur starten: python3 leeravontuur.py (of python3 -m leeravontuur)."""
 
 import argparse
 import os
@@ -13,7 +13,7 @@ from . import LICENTIE, MAKER, MOTTO, NAAM, VERSIE  # noqa: E402
 
 def maak_parser():
     p = argparse.ArgumentParser(
-        prog="oefeningen.py",
+        prog="leeravontuur.py",
         description=f"{NAAM}: een gratis leerprogramma van {MAKER}. {MOTTO}.")
     p.add_argument("--kleurenblind", nargs="?", const="rood-groen", choices=["rood-groen", "blauw-geel"],
                    help="kleuren voor kleurenblindheid (standaard: rood-groen)")
@@ -42,7 +42,7 @@ def snelkoppeling():
     if not sys.platform.startswith("linux"):
         print("Een menu-snelkoppeling maken kan voorlopig alleen op Linux.")
         return 1
-    starter = Path(__file__).resolve().parent.parent / "oefeningen.py"
+    starter = Path(__file__).resolve().parent.parent / "leeravontuur.py"
     starter.chmod(starter.stat().st_mode | 0o111)
     if shutil.which("konsole"):
         exec_regel, terminal = f'konsole --hide-menubar -e python3 "{starter}"', "false"

@@ -1,9 +1,11 @@
 # Testlijst voor de ouder (± 15 minuten)
 
 Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf op wat niet klopt
-(of gebruik **Zeg het ons** in het programma). Starten: `python3 oefeningen.py` in de map van het programma.
+(of gebruik **Zeg het ons** in het programma). Starten: `python3 leeravontuur.py` in de map van het programma.
 
 ## 1. Starten en kind
+- [ ] Dubbelklik op **leeravontuur-win.bat** (Windows) of **leeravontuur-mac.command** (macOS): het programma start.
+  `py oefeningen.py` (de oude naam) start ook nog.
 - [ ] Het startscherm toont "Leeravontuur" en "Solve It Now"; Enter gaat verder.
 - [ ] "Wie ben jij?" toont je kind(eren). Kies je kind: het hoofdmenu zegt "Hallo …!".
 - [ ] Rechts staat de avatar met het aantal punten.
@@ -77,7 +79,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Mijn avatar → L (Schermkleuren):** elk thema werkt meteen en blijft na het herstarten.
 
 ## 6. Ouderdeel
-- [ ] Start met `python3 oefeningen.py --ouder` (of kies "Ouders" bij "Wie ben jij?"). Het vraagt je wachtwoord.
+- [ ] Start met `python3 leeravontuur.py --ouder` (of kies "Ouders" bij "Wie ben jij?"). Het vraagt je wachtwoord.
 - [ ] **Rapporten:** kies je kind en "Vandaag": je ziet wat er geoefend werd per vak › domein, met de denkfouten.
   Snelrekenen staat apart onder zijn onderwerp (ook in de status). Exporteren (E): de CSV heeft achteraan vak
   en domein.
@@ -87,8 +89,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Opmerkingen:** wat via "Zeg het ons" geschreven werd, staat hier.
 
 ## 7. Speciale standen
-- [ ] `python3 oefeningen.py --kleurenblind`: juist en fout zijn nog altijd duidelijk (✔ ✘ en andere kleuren).
-- [ ] `python3 oefeningen.py --ascii`: alles is leesbaar met gewone tekens.
+- [ ] `python3 leeravontuur.py --kleurenblind`: juist en fout zijn nog altijd duidelijk (✔ ✘ en andere kleuren).
+- [ ] `python3 leeravontuur.py --ascii`: alles is leesbaar met gewone tekens.
 - [ ] Het **numeriek klavier** (Num Lock aan): typ in het klad `12 + 3 = 15`, `4 * 5 = 20`, `8 / 2 = 4` en
   `9 - 1 = 8` met de toetsen van het klavier; de kleine Enter werkt in de menu's en in het antwoord.
 - [ ] De muis: klikken op een menukeuze, een knop onderaan of de broodkruimel bovenaan werkt.
@@ -100,5 +102,5 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Het programma twee keer openen geeft een waarschuwing.
 
 ## Iets klopt niet?
-- `python3 oefeningen.py --fouten` toont onverwachte fouten (als die er zijn).
+- `python3 leeravontuur.py --fouten` toont onverwachte fouten (als die er zijn).
 - Stuur dat door, samen met wat je deed en wat je zag.

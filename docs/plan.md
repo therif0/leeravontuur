@@ -105,7 +105,7 @@ eigen branch en pull request.
   Op Windows komt er één pakket bij: `requirements.txt` bevat `windows-curses>=2.4; sys_platform == "win32"`
   (2.4.2 heeft wheels voor Python 3.13 en 3.14). Op Linux en macOS installeert dat niets.
 - **Een package in plaats van één bestand.** Dat is beter te onderhouden en te testen.
-  `oefeningen.py` blijft de starter (`python3 oefeningen.py [--ouder] [--ascii]`). Die controleert de Python-versie
+  `leeravontuur.py` blijft de starter (`python3 leeravontuur.py [--ouder] [--ascii]`). Die controleert de Python-versie
   en curses, en geeft anders een duidelijke Nederlandstalige melding.
 - **GUI later mogelijk** (vastgelegd in `CLAUDE.md` in de repo, zodat elke volgende sessie het weet):
   - `kern/` importeert **nooit** curses. Daar zitten de vragen, de controle, de diagnose, de uitleg, de sessies,
@@ -416,7 +416,7 @@ en denkfouten, export. Nog niet: examens, eigen inhoud, het trendgrafiekje en op
 
 - **Kindaccounts:** bij de start kiest hij zijn naam (met een optionele kind-pincode). Elk kind heeft eigen vooruitgang,
   sterren, herhaalbak en instellingen.
-- **Ouderdeel:** via `python3 oefeningen.py --ouder` of "Ouders" bij "Wie ben jij?" + wachtwoord.
+- **Ouderdeel:** via `python3 leeravontuur.py --ouder` of "Ouders" bij "Wie ben jij?" + wachtwoord.
   Bij de eerste keer stel je een wachtwoord in. Na 10 minuten zonder toets wordt het ouderdeel automatisch afgesloten.
   - **Kinderen beheren.** Instellingen per kind: niveau, timer zichtbaar, open vakken/domeinen, avatar.
   - **Rapporten per dag, week of maand, of een zelf gekozen periode:**
@@ -803,7 +803,9 @@ Wat beslist is, staat hier op één plek; de uitwerking staat in de code, `CLAUD
 
 ## Structuur (zoals in 0.20)
 ```
-oefeningen.py                 starter: python3 oefeningen.py [--ouder] [--ascii] … (zie --help)
+leeravontuur.py               starter: python3 leeravontuur.py [--ouder] [--ascii] … (zie --help)
+leeravontuur-win.bat          dubbelklikken op Windows (ook -mac.command, -linux.sh)
+oefeningen.py                 de oude naam van de starter (start leeravontuur.py)
 requirements.txt              windows-curses (alleen Windows)
 CLAUDE.md                     afspraken: architectuur, menu's, werkwijze met Claude, uitbrengen
 CHANGELOG.md · README.md      wat er nieuw is (gewone taal) · installeren en starten

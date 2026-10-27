@@ -52,7 +52,7 @@ De schermafdrukken zijn echte beelden van het programma (80 × 24 tekens), met h
 
 ## Starten en een kind kiezen
 
-Start het programma met `python3 oefeningen.py` in de map van het programma (op Windows: `python oefeningen.py`,
+Start het programma met `python3 leeravontuur.py` in de map van het programma (op Windows: `python leeravontuur.py`,
 of dubbelklik op de snelkoppeling). Hoe je het installeert, staat in de [README](../../README.md).
 
 ![Het startscherm](beelden/basis-start.svg)

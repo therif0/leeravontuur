@@ -1,0 +1,4 @@
+# de startbestanden: Windows wil CRLF, macOS en Linux LF (ook als ze op een ander systeem uitgecheckt worden)
+*.bat text eol=crlf
+*.command text eol=lf
+*.sh text eol=lf

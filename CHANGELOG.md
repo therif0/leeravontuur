@@ -2,6 +2,13 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.20.4 — starten met een dubbelklik
+- De starter heet nu **leeravontuur.py** (`py leeravontuur.py` of `python3 leeravontuur.py`). De oude naam
+  `oefeningen.py` werkt nog altijd: hij start gewoon `leeravontuur.py`.
+- **Dubbelklikken om te starten:** `leeravontuur-win.bat` (Windows), `leeravontuur-mac.command` (macOS) en
+  `leeravontuur-linux.sh` (Linux). Op Windows blijft het venster open als er iets misloopt (bv. Python ontbreekt),
+  zodat je de melding kan lezen.
+
 ## 0.20.3 — "Hoe moeilijk?" bij onderwerpen van een hoger leerjaar
 - Snelheid, Schaal en Korting en btw bestaan pas vanaf het 6de leerjaar (Procenten vanaf het 5de). Voor een kind
   van een lager leerjaar deed Makkelijk of Normaal daar niets: de keuze sprong terug naar Normaal. Nu staat de
