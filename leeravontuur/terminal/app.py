@@ -209,7 +209,11 @@ class App:
                                 [(label, uitleg) for label, uitleg, _ in keuzes], info=info,
                                 onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu,
                                 uitleg_tot=self.avatar_links())
-                if k is None or keuzes[k][2] is None:
+                if k is None:  # Esc: eerst vragen (werkwijzen, fase 2); "Stoppen" kiezen stopt meteen
+                    if self.s.bevestig("Wil je stoppen met Leeravontuur?", "Je antwoorden en punten zijn bewaard."):
+                        return
+                    continue
+                if keuzes[k][2] is None:
                     return
                 keuzes[k][2]()
             except TerugNaar:

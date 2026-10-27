@@ -274,6 +274,18 @@ class TestMuis(Basis):
         # na de klik op [Esc] staan we terug in het hoofdmenu
         self.assertIn("Wat wil je doen?", scherm2.beelden[-1])
 
+    def test_esc_in_het_hoofdmenu_vraagt_eerst(self):
+        """Werkwijzen fase 2: Esc in het hoofdmenu vraagt eerst "Wil je stoppen met Leeravontuur?" (Nee gekozen)."""
+        scherm, _ = self.speel([OK, OK, ESC, OK, "x"])
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met Leeravontuur?"))
+        self.assertIn("Wat wil je doen?", na_het_kader(scherm))  # Nee: terug in het hoofdmenu
+        self.assertEqual(scherm.toetsen, [])  # het programma liep verder (ook "x" is gelezen)
+        scherm, _ = self.speel([OK, OK, ESC, curses.KEY_LEFT, OK, "x"])
+        self.assertEqual(scherm.toetsen, ["x"])  # Ja: het programma stopte
+        scherm, _ = self.speel([OK, OK, hm("Stoppen"), "x"])
+        self.assertFalse(self.ergens(scherm, "Wil je stoppen"))  # "Stoppen" kiezen: meteen
+        self.assertEqual(scherm.toetsen, ["x"])
+
     def test_broodkruimel_terug_naar_hoofdmenu(self):
         scherm, _ = self.speel([OK, OK, hm("Wiskunde"), "1", ("klik", 0, 2), ESC])
         self.assertIn("Wat wil je doen?", scherm.beelden[-1])
@@ -654,6 +666,31 @@ class TestWerkwijze(Basis):
         scherm, _ = self.speel([*self.plusmin(), *"146", OK, self.KRUIMEL_WISKUNDE])
         self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
         self.assertTrue(self.ergens(scherm, "Welk onderwerp?"))
+
+    def test_gestopte_reeks_toont_het_resultaat(self):
+        """Werkwijzen fase 2: een reeks die je halverwege stopt, toont het resultaat van wat al gedaan is."""
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
+        self.plusmin()  # zet de vraag vast
+        reeks = naar(H.PLUSMIN, toets="Enter")
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*reeks, *"146", OK, OK, *"140", OK, *"140", OK, OK,
+                                  ESC, curses.KEY_LEFT, OK], opslag=o)
+        resultaat = next(b for b in scherm.beelden if "› Resultaat" in b)
+        self.assertIn("Je stopte na 2 van de 10 vragen.", resultaat)
+        self.assertIn("Je score: 1 / 2", resultaat)
+        self.assertIn("[F] fouten opnieuw", resultaat)
+        self.assertIn("★ Je verdiende", resultaat)  # de punten van wat al gedaan is
+        # meteen gestopt (nog niets beantwoord): gewoon terug naar het menu
+        scherm, _ = self.speel([*reeks, ESC, curses.KEY_LEFT, OK], opslag=o)
+        self.assertFalse(self.ergens(scherm, "› Resultaat"))
+        self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
+
+    def test_gestopte_reeks_bij_maten(self):
+        scherm, _ = self.speel([*naar("wiskunde.meten.massa", toets="Enter"), "1", OK, OK,
+                                ESC, curses.KEY_LEFT, OK])
+        resultaat = next(b for b in scherm.beelden if "› Resultaat" in b)
+        self.assertIn("Je stopte na 1 van de 10 vragen.", resultaat)
+        self.assertIn("Je score: 0 / 1", resultaat)
 
     def test_esc_na_het_nakijken_stopt_meteen(self):
         scherm, _ = self.speel([*self.plusmin(), *"146", OK, ESC])
