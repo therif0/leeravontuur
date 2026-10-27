@@ -33,6 +33,19 @@ class TestLezen(unittest.TestCase):
         for fout in ("", "11.75", "25.00", "abc", "11.5"):
             self.assertIsNone(T.lees_klok(fout), fout)
 
+    def test_klok_cijfers(self):
+        """#21: wat het digitale klokje toont terwijl het kind typt ('_' = nog leeg, ' ' = geen cijfer)."""
+        for tekst, cijfers in [("", "____"), ("1", "1___"), ("16", "16__"), ("161", " 161"), ("1610", "1610"),
+                               ("16.", "16__"), ("16.1", "161_"), ("16.10", "1610"), ("9.", " 9__"),
+                               ("9.45", " 945"), ("945", " 945"), ("11:15", "1115"), ("11 u 15", "1115"),
+                               ("11.15 u", "1115"), ("11u", "11__")]:
+            self.assertEqual(T.klok_cijfers(tekst), cijfers, tekst)
+        for fout in ("abc", "16.1a", "12345", "1.2.3"):
+            self.assertIsNone(T.klok_cijfers(fout), fout)
+        for tekst in ("16.10", "1610", "9.45", "945", "11 u 15"):  # wat het klokje toont, kijkt het programma na
+            c = T.klok_cijfers(tekst)
+            self.assertEqual(T.lees_klok(c.strip()), T.lees_klok(tekst), tekst)
+
     def test_teksten(self):
         self.assertEqual(T.duur_tekst(95), "1 u 35 min")
         self.assertEqual(T.duur_tekst(120), "2 u")
@@ -123,6 +136,23 @@ class TestSchermen(Basis):
         self.assertEqual(rij["gegeven"], "2 u 15 min")
         self.assertTrue(rij["juist"])
         self.assertTrue(self.ergens(scherm, "Minuten: hoogstens 59"))  # '135' alleen is geen antwoord
+
+    def test_digitaal_klokje(self):
+        """#21: een tijdstip typ je op een digitaal klokje: wat je typt, staat er meteen in grote cijfers; een letter
+        komt er niet in; 1610 (zonder punt) is ook goed."""
+        v = T.TIJD.maak_met(T.TIJD.parameters("5"), random.Random(3), {"soort": "eindtijd"})
+        o = self.opslag(("Test", "5"))
+        with mock.patch.object(T.TIJD, "maak", side_effect=[v, v]):
+            scherm, app = self.speel([*naar(1), *"1a"], opslag=o)
+        beeld = next(b for b in reversed(scherm.beelden) if "Je vertrekt om" in b)
+        self.assertIn("░░░░", beeld)       # nog lege cijfers
+        self.assertIn("   █", beeld)       # de 1, in grote cijfers
+        self.assertIn("┌" + "─" * 31 + "┐", beeld)
+        self.assertNotIn("1a", beeld)      # een letter kan geen tijdstip worden
+        uur, minuut = divmod(int(v.antwoord), 60)
+        with mock.patch.object(T.TIJD, "maak", side_effect=[v, v]):
+            scherm, app = self.speel([*naar(1), *f"{uur}{minuut:02d}", OK, *STOP], opslag=o)
+        self.assertTrue(o.antwoorden(app.kind.id)[-1]["juist"])
 
     def test_spiekbrief(self):
         scherm, _ = self.speel([*naar_spiekbrief("Tijd, geld en snelheid", 2), ESC, ESC, ESC, ESC])

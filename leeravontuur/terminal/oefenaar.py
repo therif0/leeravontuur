@@ -15,6 +15,8 @@ from ..kern import punten as P
 from ..kern.getal import fmt
 from ..kern.klad import analyseer
 from ..kern.modellen import Getallenlijn
+from ..kern.wiskunde.grootheden import klok_cijfers
+from . import digitaal as DG
 from . import maatje
 from . import modellen as M
 from . import balk as B
@@ -31,7 +33,7 @@ HINTS = {"getal": "Kommagetal? Gebruik een komma: 0,25. Negatief? Typ een min: -
          "breuk": "Typ een breuk met /: 3/4 · een gemengd getal met een spatie: 1 3/4",
          "vergelijk": "Typ < (kleiner dan), > (groter dan) of = (gelijk aan) en druk Enter.",
          "duur": "Typ uren en minuten, bv. 2 u 15 min (of 2u15).",
-         "klok": "Typ een tijdstip, bv. 11.15 u (of 11:15).",
+         "klok": "Typ zoals altijd: 11.15 of 1115 (de : komt vanzelf). Backspace = terug.",
          "woord": "Typ scherp, recht, stomp, gestrekt of vol en druk Enter.",
          "plek": "Eerst de letter (of x), dan het getal (of y): bv. C4 of (3, −2).",
          "klokwoord": "Typ in woorden, bv. kwart over drie of vijf voor half vier."}
@@ -129,6 +131,7 @@ class Oefenaar:
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
         obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
+        digi = v.invoer == "klok"  # een tijdstip typ je op een digitaal klokje (#21)
         eigen = bool(obj and getattr(obj, "eigen_tekst", False))  # het object tekent zelf de vraag (vraagstuk)
         # de vaste werkwijze: klad (bij een gewoon antwoordvak), getrapte tips, een tweede kans
         kb = Kladblad() if not obj and not lijnen and o.klad_voor(v) else None
@@ -165,16 +168,19 @@ class Oefenaar:
                 self.voortgang(2, nr, resultaten, soort)
             y, x = 6, 6
             vy, vx = y, x + len(v.tekst) + 2  # waar het antwoordvak staat
+            onder = y + 1  # de eerste vrije rij onder de vraag
             if eigen:
                 pass
-            elif lijnen or obj or vx + VAK.get(v.invoer, 12) + 2 + len(v.eenheid) <= 62:  # past naast de vraag (links van het maatje)
+            elif lijnen or obj or (len(v.tekst) <= 54 if digi else
+                                   vx + VAK.get(v.invoer, 12) + 2 + len(v.eenheid) <= 62):  # past (links van het maatje)
                 s.put(y, x, v.tekst + "  ", "bold")
             else:  # lange vraag: over meer regels, het antwoordvak eronder
                 regels = textwrap.wrap(v.tekst, 54)
                 for i, regel in enumerate(regels):
                     s.put(y - 1 + i, x, regel, "bold")
                 vy, vx = y - 1 + len(regels), x
-            if not lijnen and not obj:
+                onder = vy
+            if not lijnen and not obj and not digi:
                 rol = ("veld" if focus == ANTWOORD else "dim") if goed is None else ("goedvak" if goed else "foutvak")
                 s.tekstvak(vy, vx, buf, VAK.get(v.invoer, 12), rol, ("focus", ANTWOORD) if kb and goed is None else None)
                 if v.eenheid:
@@ -182,6 +188,7 @@ class Oefenaar:
             fb, fx, breed = y + 3, x, 70  # waar de feedback begint (rij, kolom) en hoe breed ze mag zijn
             hint_y = None
             hoog = False  # een hoog model: de feedback (en het klad) komen ernaast
+            model_h = 0
             if eigen:
                 obj.teken(s, 4, goed, tip)
                 fb, fx = 4 + obj.hoogte(goed is not None), 4
@@ -209,11 +216,18 @@ class Oefenaar:
                     fb = 14
                 else:
                     h, b = M.teken_model(s, 9, model, uitslag=goed, tekst=v.tekst)  # rij 9: onder het maatje
+                    model_h = h
                     if h > 7:  # hoog model: de feedback komt ernaast
                         fb, fx, hoog = 10, 8 + b + 3, True
                         breed, hint_y = 78 - fx, min(9 + h + 1, s.maat()[0] - 2)
                     else:
                         fb = max(fb, 9 + h + 1)
+            if digi:  # het digitale klokje: onder de vraag, of naast een hoog model (de klok in de terminal)
+                dy, dx = (9, fx) if hoog else (9 + model_h + 1 if model_h else onder + 1, x + 2)
+                DG.teken(s, dy, dx, klok_cijfers(buf), "bold" if goed is None else ("goed" if goed else "fout"),
+                         "accent" if goed is None and focus == ANTWOORD else "dim",
+                         ("focus", ANTWOORD) if kb and goed is None else None, compact=hoog)
+                fb = dy + DG.COMPACT_H if hoog else max(fb, dy + DG.HOOGTE + 1)
             if s.klokvenster is not None and s.klokvenster.toont():  # het klokvenster staat rechts: tekst links
                 breed = min(breed, LINKS - fx)
             if kb and goed is None:  # het klad: onder het antwoord, of naast een hoog model
@@ -250,6 +264,8 @@ class Oefenaar:
                     s.cursor(False)
                 elif focus == KLAD and plek:
                     s.cursor(True, *plek)
+                elif digi:
+                    s.cursor(False)
                 else:
                     s.cursor(True, vy, vx + 1 + len(buf))
             else:
@@ -339,6 +355,8 @@ class Oefenaar:
                 buf = fmt(lijnen[-1].streepjes()[cursor])
                 getal = o.lees_vraag(v, buf)
             elif k not in ENTER:
+                if digi and (ch := teken_van(k)) is not None and klok_cijfers(buf + ch) is None:
+                    continue  # het klokje neemt alleen wat een tijdstip kan worden
                 buf = s.bewerk(buf, k, VAK.get(v.invoer, 12))
                 melding = ""
                 continue
