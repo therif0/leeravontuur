@@ -51,6 +51,10 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Het klokvenster:** sleep het naar een andere plek, stop en start opnieuw: het komt weer daar. Zet de
   terminal op volledig scherm: druk `F2` en de klok staat in de terminal (nog eens `F2` = terug).
 - [ ] **De klok, 24 uur:** de vraag zegt "… 's middags. Schrijf dat zoals op een digitale klok (24-urennotatie)."
+  Het antwoordvak is een **digitaal klokje**: typ `16.1` en zie `16:1░`, dan `0`: `16:10`. Backspace wist het
+  laatste cijfer, een letter komt er niet in. Ook `1610` (zonder punt) is goed.
+- [ ] **Tijd → "Hoe laat kom je aan?"** en een **vraagstuk met een tijdstip**: ook daar het klokje (in het vraagstuk
+  klein: `14:55` in het vakje).
 - [ ] **De klok** met `--zonder-klokvenster`: de klok staat in de terminal. Typ bij "vijf voor half vier = ?" eens
   `4.25`: je krijgt uitleg over "half".
 - [ ] **Meten → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.

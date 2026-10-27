@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.0 — een digitaal klokje
+- **Een tijdstip typ je nu op een digitaal klokje** met grote cijfers: bij de 24-urennotatie, "Hoe laat is het
+  … later?", "kwart over tien in cijfers", "Hoe laat kom je aan?" … Je typt zoals altijd (`16.10`, `16:10` of
+  `1610`); de cijfers verschijnen meteen, de `:` komt vanzelf en Backspace wist het laatste cijfer. Een letter
+  komt er niet in. Staat de wijzerklok in de terminal (zonder klokvenster), dan is het klokje kleiner en staat het
+  ernaast.
+- In een vraagstuk met een tijdstip staat je antwoord in het vakje ook als `14:55` (de `:` komt vanzelf).
+
 ## 0.20.4 — starten met een dubbelklik
 - De starter heet nu **leeravontuur.py** (`py leeravontuur.py` of `python3 leeravontuur.py`). De oude naam
   `oefeningen.py` werkt nog altijd: hij start gewoon `leeravontuur.py`.
