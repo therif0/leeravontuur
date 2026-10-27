@@ -2,6 +2,15 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.3 — de spiekbrief erbij
+- **Na de laatste tip opent `?` (of F1) de spiekbrief**, meteen bij het stukje over je oefening (bv. "Compenseren"
+  bij plus en min, "Later en vroeger" bij de klok). De laatste tip zegt het al: "Nog hulp nodig? Druk nog eens ?/F1:
+  je spiekbrief.", en onderaan staat dan `[?/F1] spiekbrief`. **Esc brengt je terug naar dezelfde vraag**, met alles
+  wat je al typte. Daarna begint `?` weer bij tip 1. Zo ook bij cijferen (nog eens `?` op hetzelfde vakje), bij
+  vraagstukken (na de 4 tips), de Speurneus, schatten en Maten.
+- **Het menu Spiekbrieven is korter:** geen "Welk vak?" meer (er is nu één vak), meteen de domeinen met wat erin
+  staat. Heeft een domein maar één spiekbrief, dan opent die meteen.
+
 ## 0.21.2 — Esc vraagt eerst
 - **Esc midden in een vraag stopt niet meer meteen.** Er komt eerst een kader "Wil je stoppen met deze vraag?" met
   [Ja, stoppen] en [Nee, verder]; **Nee staat gekozen**. Enter (of nog eens Esc) = gewoon verder, met alles wat je al

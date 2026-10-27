@@ -313,5 +313,11 @@ class Klok(Onderwerp):
     def spiekbrief(self):
         return SPIEKBRIEF
 
+    def kop_op_spiekbrief(self, v):
+        s = v.data.get("soort")
+        return {"lezen": "DE WIJZERKLOK", "zetten": "DE WIJZERKLOK", "naar_woorden": "IN WOORDEN",
+                "woorden_naar": "IN WOORDEN", "24uur": "24 UUR", "later": "LATER EN VROEGER",
+                "vroeger": "LATER EN VROEGER"}.get(s)
+
 
 KLOK = Klok()

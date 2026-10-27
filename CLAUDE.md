@@ -73,7 +73,9 @@ Gouden regels:
   Het oefenmaatje (`terminal/maatje.py`) gebruikt de pixel-avatar waar plaats is, anders een tekstgezichtje.
   Nieuwe onderdelen: test `test_avatar.py` controleert dat gezicht en ankers op het lijf staan.
 - **De vaste werkwijze** (elke oefening dezelfde, zodat het kind niet verloren loopt): lees, klad (`Tab`), antwoord;
-  `?` = getrapte tips (`Onderwerp.tips`), fout = één tweede kans (niet bij janee/vergelijk/keuze en objecten met een
+  `?` = getrapte tips (`Onderwerp.tips`), na de laatste tip de spiekbrief bij het kopje van de vraag
+  (`Onderwerp.spiek_kop`/`kop_op_spiekbrief`; een test kijkt na dat elk kopje bestaat; Esc = terug naar de vraag),
+  daarna weer tip 1; fout = één tweede kans (niet bij janee/vergelijk/keuze en objecten met een
   eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`), daarna "Zo kan het:" in klad-regels, met het
   eigen klad ernaast (`Kladblad.teken_kader`: ✔ ✘ en ! waar `analyseer` een denkfout ziet). Het klad
   is één onderdeel voor alles: `terminal/kladblad.py` (ook in het vraagstuk). **Elk nieuw rekenonderwerp** zet

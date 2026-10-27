@@ -63,10 +63,13 @@ def plek(scherm, tekst):
 
 
 def naar_spiekbrief(domein, nr=1):
-    """Hoofdmenu › Spiekbrieven › Wiskunde › domein (label) › de nr-de spiekbrief."""
+    """Hoofdmenu › Spiekbrieven › domein (label): heeft het domein één spiekbrief, dan staat die meteen open;
+    anders de nr-de (#20: "Welk vak?" valt weg zolang er één vak is)."""
     v = CU.VAKKEN[0]
-    d = next(i for i, x in enumerate(v.domeinen, 1) if x.label == domein)
-    return [OK, OK, hm("Spiekbrieven"), "1", str(d), str(nr)]
+    d = next(x for x in v.domeinen if x.label == domein)
+    i = [x for x in v.domeinen if any(o.spiek for o in x.onderwerpen)].index(d) + 1
+    titels = {o.spiek.titel for o in d.onderwerpen if o.spiek}
+    return [OK, OK, hm("Spiekbrieven"), str(i)] + ([str(nr)] if len(titels) > 1 else [])
 
 
 class Basis(unittest.TestCase):
@@ -534,6 +537,58 @@ class TestWerkwijze(Basis):
         scherm, app = self.speel(toetsen + [*"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertIn('"klad": ["47 + 100 = 147"]', o.antwoorden(app.kind.id)[-1]["extra"])
 
+    def test_na_de_tips_de_spiekbrief(self):
+        """#20: na de laatste tip opent nog eens ? de spiekbrief (bij het juiste kopje); Esc = terug naar dezelfde vraag
+        (niets kwijt); daarna begint ? weer bij tip 1. De spiekbrief telt als een tip."""
+        import random
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
+        v = next(v for v in (H.TAFELS.maak_met(H.TAFELS.parameters("5"), random.Random(z)) for z in range(50))
+                 if v.antwoord >= 10 and v.tekst.count("×") == 1 and not v.tekst.startswith("-"))
+        antwoord = str(v.antwoord)
+        o = self.opslag(("Test", "5"))
+        aantal = max(1, len(H.TAFELS.tips(v)) + bool(H.TAFELS.klad_voor(v)))
+        toetsen = [*self.vast(H.TAFELS, v), antwoord[0], *["?"] * aantal]
+        scherm, _ = self.speel(toetsen, opslag=o)
+        self.assertIn("[?/F1] spiekbrief", next(b for b in reversed(scherm.beelden) if v.tekst in b))
+        scherm, app = self.speel([*toetsen, "?", ESC, "?", *antwoord[1:], OK], opslag=o)
+        brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
+        self.assertIn("TAFELS", [r.strip() for r in brief.split("\n")[2:5]], brief)  # meteen bij het kopje
+        self.assertIn("[Esc] terug naar je vraag", brief)
+        terug = scherm.beelden[scherm.beelden.index(brief) + 1]
+        self.assertIn(v.tekst, terug)
+        self.assertTrue(self.ergens(scherm, "Tip 1 van") or self.ergens(scherm, "Tip:"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["gegeven"], rij["juist"]), (antwoord, 1))  # het eerste cijfer bleef staan
+        self.assertIn(f'"tips": {aantal + 2}', rij["extra"])            # de spiekbrief telt als een tip
+
+    def test_spiekbrief_na_de_tips_overal(self):
+        """#20: rooster (? twee keer op hetzelfde vakje), vraagstuk (na de 4 tips) en Maten (na de tip)."""
+        from leeravontuur.kern.onderwerp import ONDERWERPEN
+        for o, n, kop in ((ONDERWERPEN["wiskunde.cijferen.optellen"], 2, "OPTELLEN"),
+                          (ONDERWERPEN["wiskunde.vraagstukken.oplossen"], 5, "EEN VRAAGSTUK IN 4 STAPPEN")):
+            with self.subTest(o.id):
+                scherm, _ = self.speel([*naar(o), *["?"] * n, ESC])
+                brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
+                self.assertIn(kop, [r.strip() for r in brief.split("\n")[2:5]])
+                self.assertFalse(any("› Spiekbrief" in b for b in scherm.beelden[:scherm.beelden.index(brief)]))
+        scherm, _ = self.speel([*naar("wiskunde.meten.massa"), "?", "?", ESC])
+        self.assertTrue(self.ergens(scherm, "Nog hulp nodig? Druk nog eens ?/F1: je spiekbrief."))
+        brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
+        self.assertIn("[Esc] terug naar je vraag", brief)
+
+    def test_elk_spiekkopje_bestaat(self):
+        """Het kopje waar de spiekbrief opent (Onderwerp.kop_op_spiekbrief) staat echt op de spiekbrief."""
+        import random
+        from leeravontuur.kern.onderwerp import ONDERWERPEN
+        for o in ONDERWERPEN.values():
+            koppen = [t for t, _ in (o.spiekbrief() or [])]
+            for z in range(15):
+                v = o.maak(o.jaar_voor("5"), rng=random.Random(z))
+                kop = o.kop_op_spiekbrief(v)
+                if kop is not None:
+                    with self.subTest(o=o.id, kop=kop):
+                        self.assertIn(kop, koppen)
+
     def test_esc_vraagt_eerst_en_nee_houdt_alles(self):
         """#33: Esc midden in een vraag vraagt eerst "Wil je stoppen?"; Nee (gekozen) houdt antwoord en klad."""
         o = self.opslag(("Test", "5"))
@@ -662,8 +717,8 @@ class TestWerkwijze(Basis):
         self.assertTrue(self.ergens(scherm, "Tip 3 van 3: schrijf je eerste stap in het klad"))
 
     def test_tips_draaien_rond(self):
-        """#15: na de laatste tip begint ? opnieuw bij de eerste (niet telkens "schrijf je eerste stap")."""
-        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", "?", ESC, ESC, ESC, ESC, ESC])
+        """#15: na de laatste tip (en de spiekbrief, #20) begint ? opnieuw bij de eerste."""
+        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", "?", ESC, "?"])
         tips = [b for b in scherm.beelden if "Tip " in b]
         self.assertIn("Tip 1 van 3: Maak er eerst een rond getal van", tips[-1].replace("\n", " "))
 

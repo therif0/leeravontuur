@@ -23,7 +23,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     - Bij oppervlakte heeft elke eenheid 2 vakjes, bij volume 3; ha, a, ca en de liters staan eronder.
   - **Spiekbrief** met uitleg en voorbeelden.
 - **Elke oefening op dezelfde manier:** lees de vraag, reken in het **klad** (`Tab`; elke regel wordt meteen
-  nagekeken), typ je antwoord. `?` geeft telkens een volgende tip (nooit het antwoord), een fout antwoord krijgt een
+  nagekeken), typ je antwoord. `?` geeft telkens een volgende tip (nooit het antwoord), na de laatste tip
+  opent `?` de **spiekbrief** bij het juiste kopje (Esc = terug naar je vraag), een fout antwoord krijgt een
   **tweede kans**, en na het nakijken staat "Zo kan het:" in klad-regels, met je eigen klad ernaast (! = daar
   week je af).
 - **Hoofdrekenen:** maal- en deeltafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren,

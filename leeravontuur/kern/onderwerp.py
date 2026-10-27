@@ -154,6 +154,12 @@ class Onderwerp:
     def spiekbrief(self):
         return []
 
+    spiek_kop = None  # het kopje op de spiekbrief waar dit onderwerp staat (daar opent ze vanuit de oefening, #20)
+
+    def kop_op_spiekbrief(self, v):
+        """Het kopje van de spiekbrief bij deze vraag (de spiekbrief opent daar), of None (bovenaan)."""
+        return self.spiek_kop
+
     # ---- algemeen ----------------------------------------------------------------
     def parameters(self, leerjaar):
         return leerlijnen.parameters(self.id, leerjaar)

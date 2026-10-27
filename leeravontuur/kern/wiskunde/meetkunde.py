@@ -62,6 +62,7 @@ def maak_figuur(vorm, p, rng):
 class Rooster(_Meetkunde):
     id = "wiskunde.meetkunde.rooster"
     naam = "Oppervlakte en omtrek"
+    spiek_kop = "OPPERVLAKTE EN OMTREK"
     omschrijving = "tel de vakjes en de randjes op het rooster"
     vast = ("soort", "vorm")
     denkfouten = {"omtrek_oppervlakte": "omtrek en oppervlakte verwisseld",
@@ -142,6 +143,7 @@ FIGUREN = {  # figuur: (naam, wat, eenheid)
 class Formules(_Meetkunde):
     id = "wiskunde.meetkunde.formules"
     naam = "Formules"
+    spiek_kop = "FORMULES"
     omschrijving = "oppervlakte, omtrek en volume uitrekenen"
     vast = ("soort",)
     denkfouten = {"deel_door_2_vergeten": "vergeten te delen door 2",
@@ -311,6 +313,7 @@ def hoek_soort(graden):
 class Hoeken(_Meetkunde):
     id = "wiskunde.meetkunde.hoeken"
     naam = "Hoeken"
+    spiek_kop = "HOEKEN"
     omschrijving = "scherp, recht, stomp; de hoeken van een driehoek"
     denkfouten = {"stomp_scherp": "scherp en stomp verwisseld",
                   "hoekensom": "de som van de hoeken in een driehoek is 180°",
@@ -407,6 +410,7 @@ def lees_coord(kaart, tekst):
 class Coordinaten(_Meetkunde):
     id = "wiskunde.meetkunde.coordinaten"
     naam = "Schatkaart"
+    spiek_kop = "COÖRDINATEN"
     omschrijving = "coördinaten: waar ligt de schat?"
     denkfouten = {"coord_omgewisseld": "kolom en rij (x en y) omgewisseld",
                   "rij_van_boven": "de rijen van boven geteld in plaats van van onder"}
@@ -471,6 +475,7 @@ def schaal_tekst(n):
 class Schaal(_Meetkunde):
     id = "wiskunde.meetkunde.schaal"
     naam = "Schaal"
+    spiek_kop = "SCHAAL"
     omschrijving = "kaart en werkelijkheid: 1 : 1000"
     denkfouten = {"schaal_niet_omgezet": "cm niet omgezet naar m of km (of omgekeerd)",
                   "schaal_omgekeerd": "gedeeld in plaats van vermenigvuldigd (of omgekeerd)"}

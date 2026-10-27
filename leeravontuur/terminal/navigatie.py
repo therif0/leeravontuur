@@ -3,6 +3,8 @@
 Alles komt uit terminal/curriculum; hier staan geen namen van vakken, domeinen of onderwerpen. Een modus is een
 toets op het gemarkeerde onderwerp, nooit een menu: na de toets komt hoogstens de bestaande keuze "Hoe moeilijk?"."""
 
+from dataclasses import dataclass
+
 from . import curriculum as CU
 from .scherm import TerugNaar
 
@@ -91,13 +93,46 @@ def domein(app, domein_, kr):
 
 
 def spiekbrieven(app, kr):
-    """Hoofdmenu › Spiekbrieven › Vak › Domein › de spiekbrieven van dat domein (elke één keer)."""
-    _menu(app, kr, "Welk vak?", CU.VAKKEN, lambda v, kr_: _menu(
-        app, kr_, "Welk onderwerp?", v.domeinen, lambda d, kr2: _spiek_lijst(app, d, kr2)))
+    """Hoofdmenu › Spiekbrieven › (Vak ›) Domein › de spiekbrief (#20). "Welk vak?" valt weg zolang er één vak is;
+    een domein met één spiekbrief opent die meteen, met meer kies je er nog een (elke titel één keer)."""
+    if len(CU.VAKKEN) == 1:
+        _spiek_domeinen(app, CU.VAKKEN[0], kr)
+    else:
+        _menu(app, kr, "Welk vak?", CU.VAKKEN, lambda v, kr_: _spiek_domeinen(app, v, kr_))
+
+
+def brieven_van(domein_):
+    """De spiekbrieven van een domein, elke titel één keer, in de volgorde van de onderwerpen."""
+    return list({o.spiek.titel: o.spiek for o in domein_.onderwerpen if o.spiek}.values())
+
+
+@dataclass(frozen=True)
+class _SpiekKeuze:
+    label: str
+    uitleg: str
+    domein: object
+
+
+def _spiek_domeinen(app, vak_, kr):
+    keuzes = []
+    for d in vak_.domeinen:
+        brieven = brieven_van(d)
+        if brieven:
+            uitleg = d.uitleg if len(brieven) == 1 else \
+                f"{len(brieven)} spiekbrieven: " + ", ".join(b.titel for b in brieven)
+            keuzes.append(_SpiekKeuze(d.label, uitleg, d))
+
+    def open_domein(keuze, kr_):
+        brieven = brieven_van(keuze.domein)
+        if len(brieven) == 1:
+            brieven[0].toon(app, kr_)
+        else:
+            _spiek_lijst(app, keuze.domein, kr_)
+    _menu(app, kr, "Welke spiekbrief?", keuzes, open_domein)
 
 
 def _spiek_lijst(app, domein_, kr):
-    brieven = list({o.spiek.titel: o.spiek for o in domein_.onderwerpen if o.spiek}.values())
+    brieven = brieven_van(domein_)
     sel = 0
     while True:
         try:

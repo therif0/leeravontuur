@@ -82,7 +82,7 @@ class VraagstukInvoer:
         k = [("Tab", "volgende stap", TAB)]
         if self.fase == LEES:
             k.append(("Spatie", "aanduiden" if not self.onder else "kiezen", ord(" ")))
-        k.append(("?/F1", f"tip ({max(0, 4 - self.tips)} over)", ord("?")))
+        k.append(("?/F1", "spiekbrief" if self.tips_op else f"tip ({max(0, 4 - self.tips)} over)", ord("?")))
         k.append(("Enter", "controleren" if self.fase == CONTROLE else "ok", 10))
         return k + [("Esc", "stoppen", ESC)]
 
@@ -497,6 +497,16 @@ class VraagstukInvoer:
                 ontbreekt = [st.naam for st in m.stappen if st.id not in analyse["gedekt"]]
                 self.tiptekst = ("Tip 4: je klad ziet er goed uit. Nog uit te rekenen: " + ", ".join(ontbreekt) + "."
                                  if ontbreekt else "Tip 4: je klad is klaar. Schrijf je antwoord in stap 4.")
+        if len(textwrap.wrap(self.tiptekst + " Nog eens ?/F1: je spiekbrief.", 76)) <= 2:
+            self.tiptekst += " Nog eens ?/F1: je spiekbrief."
+
+    @property
+    def tips_op(self):
+        """Alle tips gegeven: de Oefenaar opent dan bij ? de spiekbrief (#20)."""
+        return self.tips >= 4
+
+    def spiekbrief_bekeken(self):
+        self.tips += 1  # telt als een tip (voor de punten)
 
     def hulp(self, o):
         return self.tiptekst
@@ -536,6 +546,14 @@ class _MetTip:
     eigen_tip = True
     tip_aan = False
 
+    @property
+    def tips_op(self):
+        """De tip is gegeven: de Oefenaar opent dan bij ? de spiekbrief (#20)."""
+        return self.tip_aan
+
+    def spiekbrief_bekeken(self):
+        pass  # de tip telt al
+
     def tip_h(self):
         return 1 if self.tip_aan else 0
 
@@ -565,7 +583,8 @@ class SpeurInvoer(_MetTip):
             (4 if self.regel and not nagekeken else 0) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "spiekbrief" if self.tip_aan else "tip", ord("?")),
+                ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
@@ -672,7 +691,8 @@ class KeuzeInvoer(_MetTip):
         return len(self.lijnen) + 2 + len(self.vraag) + 1 + len(self.m.opties) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "spiekbrief" if self.tip_aan else "tip", ord("?")),
+                ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None

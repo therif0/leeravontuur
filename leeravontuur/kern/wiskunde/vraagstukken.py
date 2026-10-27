@@ -1026,6 +1026,7 @@ SPIEKBRIEF = [
 class Vraagstukken(Onderwerp):
     id = "wiskunde.vraagstukken.oplossen"
     naam = "Vraagstukken oplossen"
+    spiek_kop = "EEN VRAAGSTUK IN 4 STAPPEN"
     omschrijving = "verhaaltjes lezen, plannen, rekenen in je klad en controleren"
     denkfouten = DENKFOUTEN
     vast = ("structuur", "variant")
@@ -1151,6 +1152,7 @@ def regel_tekst(model, st, op, ops, r):
 class Speurneus(Onderwerp):
     id = "wiskunde.vraagstukken.speurneus"
     naam = "Speurneus: zoek de fout"
+    spiek_kop = "IN HET KLAD"
     omschrijving = "een ander kind loste het op: zit er een fout in, en waarom?"
     denkfouten = {"vs_speur_regel": "de foute regel niet gevonden", "vs_speur_reden": "de fout gevonden, maar niet waarom",
                   "vs_speur_niets": "een fout gezien waar er geen was", "vs_speur_gemist": "de fout niet gezien"}
@@ -1299,6 +1301,7 @@ def schat(x):
 class Schatten(Onderwerp):
     id = "wiskunde.vraagstukken.schatten"
     naam = "Schatten en controleren"
+    spiek_kop = "KAN DAT KLOPPEN?"
     omschrijving = "ongeveer hoeveel? en: kan dat antwoord kloppen?"
     denkfouten = {"vs_schat_10": "10 keer te groot of te klein geschat",
                   "vs_kan_ja": "een antwoord dat niet kan kloppen, niet opgemerkt",

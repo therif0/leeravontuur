@@ -145,7 +145,7 @@ class Eenheden:
             if goed is None:
                 knoppen = [("Enter", "controleren", 10), ("Esc", "stoppen", ESC)]
                 if vrij:
-                    knoppen.insert(1, ("?/F1", "tip", ord("?")))
+                    knoppen.insert(1, ("?/F1", "spiekbrief" if tip else "tip", ord("?")))
             else:
                 laatste = not vrij and nr == self.totaal - 1
                 knoppen = [("Enter", "naar je resultaat" if laatste else "volgende vraag", 10),
@@ -169,7 +169,7 @@ class Eenheden:
                 s.put(y + 3, x, melding, "fout")
                 if tip:
                     s.put(y + 3, x, "Tip: " + E.regel_uitleg(v)[0], "accent")
-                    s.put(y + 4, x, "(Kijk ook eens in de spiekbrief.)", "dim")
+                    s.put(y + 4, x, "Nog hulp nodig? Druk nog eens ?/F1: je spiekbrief.", "dim")
                 s.put(y + 6, x, "Kommagetal? Gebruik een komma: 0,25", "dim")
                 s.cursor(True, y, vx + 1 + len(buf))
             else:
@@ -207,7 +207,9 @@ class Eenheden:
                     continue
                 s.cursor(False)
                 return None
-            if k == ord("?") and vrij:
+            if k == ord("?") and vrij and tip:  # na de tip: de spiekbrief (#20); Esc = terug naar de vraag
+                self.spiekbrief(kr + ["Spiekbrief"], terug="terug naar je vraag")
+            elif k == ord("?") and vrij:
                 tip = tip_gebruikt = True
             elif k in ENTER:
                 getal = lees_getal(buf)
@@ -651,7 +653,7 @@ class Eenheden:
         else:
             self.reeks(gekozen, jaar, soort, tabel=data["vorm"] == "tabel")
 
-    def spiekbrief(self, kr):
+    def spiekbrief(self, kr, terug="terug"):
         toetsen = {k: None for k in (ESC, ord("q"), *ENTER)}
         toetsen[("terug",)] = None
-        self.s.lezer(kr, E.spiekbrief(), [("Esc", "terug", ("terug",))], toetsen)
+        self.s.lezer(kr, E.spiekbrief(), [("Esc", terug, ("terug",))], toetsen)
