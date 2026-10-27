@@ -249,6 +249,10 @@ class VraagstukInvoer:
 
     # ---- toetsen -------------------------------------------------------------------------------------
     def ga(self, fase):
+        if self.fase == REKEN and fase % 4 != REKEN:  # weg uit het klad: een halve regel niet kwijt (#22)
+            self.kb.rond_af()
+            if self.kb.melding:
+                self.melding, self.melding_rol = self.kb.melding, self.kb.melding_rol
         self.fase = fase % 4
         self.onder = self.fase == LEES and self.onder
 

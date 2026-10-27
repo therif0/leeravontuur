@@ -75,6 +75,12 @@ class Kladblad:
             self.buf += ch
         return None
 
+    def rond_af(self):
+        """Het kind gaat weg uit het klad (Tab, een klik): een getypte regel zonder Enter niet laten verdwijnen,
+        maar nakijken zoals bij Enter (#22)."""
+        if self.buf.strip():
+            self.toets(ENTER[0], None)
+
     def haal_terug(self, nr):
         """Een klik op een regel: terug in de typregel (als die leeg is)."""
         if not self.buf and 0 <= nr < len(self.regels):

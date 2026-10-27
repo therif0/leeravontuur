@@ -491,6 +491,18 @@ class TestWerkwijze(Basis):
         self.assertIn('"klad_ok": true', rij["extra"])
         self.assertEqual(o.punten_saldo(app.kind.id), 12)  # 10 + 2 voor een juist klad
 
+    def test_tab_zonder_enter_houdt_de_regel(self):
+        """#22: een klad-regel getypt zonder Enter en dan Tab: de regel blijft staan (nagekeken), niet weg."""
+        o = self.opslag(("Test", "5"))
+        toetsen = [*self.plusmin(), TAB, *"47 + 100 = 147", TAB]
+        scherm, app = self.speel(toetsen, opslag=o)
+        laatste = next(b for b in reversed(scherm.beelden) if "47 + 99 =" in b)
+        self.assertIn("47 + 100 = 147", laatste)
+        self.assertIn("Klad (Tab)", laatste)  # de focus staat weer op het antwoord
+        self.assertNotIn("typ hier je rekenregels", laatste)
+        scherm, app = self.speel(toetsen + [*"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertIn('"klad": ["47 + 100 = 147"]', o.antwoorden(app.kind.id)[-1]["extra"])
+
     def test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord(self):
         o = self.opslag(("Test", "5"))
         scherm, app = self.speel([*self.plusmin(), TAB, OK, *"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
