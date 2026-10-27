@@ -45,6 +45,12 @@ def lijn_rond(van, tot, stap, **kw):
     return Getallenlijn(Decimal(van), Decimal(tot), Decimal(stap), **kw)
 
 
+# de plaatswaarden boven het rooster (#18): macht van 10 → (kort, lang)
+PLAATSEN = {7: ("TM", "tienmiljoenen"), 6: ("M", "miljoenen"), 5: ("HD", "honderdduizendtallen"),
+            4: ("TD", "tienduizendtallen"), 3: ("D", "duizendtallen"), 2: ("H", "honderdtallen"), 1: ("T", "tientallen"),
+            0: ("E", "eenheden"), -1: ("t", "tienden"), -2: ("h", "honderdsten"), -3: ("d", "duizendsten")}
+
+
 @dataclass
 class Rooster:
     """Cijferen onder elkaar (+, −, ×). Elk cijfer in een vakje; een komma staat tussen twee vakjes.
@@ -64,6 +70,15 @@ class Rooster:
     def macht(self, kolom):
         """De plaats van een kolom als macht van 10 (0 = eenheden, −1 = tienden …)."""
         return self.breedte - 1 - self.rechts - kolom
+
+    def plaatswaarden_kloppen(self):
+        """Hebben de kolommen een vaste plaatswaarde? Niet bij × met een kommagetal: daar staan de getallen rechts
+        uitgelijnd, niet op de komma (#18)."""
+        return not (self.komma_zelf and any("," in g for g in self.gegeven))
+
+    def plaats_naam(self, kolom):
+        """(kort, lang) voor de plaatswaarde van een kolom, bv. ("T", "tientallen"), of None (#18)."""
+        return PLAATSEN.get(self.macht(kolom)) if self.plaatswaarden_kloppen() else None
 
     def plaats(self, tekst):
         """({kolom: cijfer}, kolom waarna de komma staat of None) voor een getal in dit rooster."""

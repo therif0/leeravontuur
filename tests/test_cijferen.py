@@ -6,10 +6,13 @@ from unittest import mock
 
 from leeravontuur.kern import leerjaren
 from leeravontuur.kern.getal import fmt, lees_getal
+from leeravontuur.kern.instellingen import Instellingen
 from leeravontuur.kern.modellen import Rooster, Staartdeling
 from leeravontuur.kern.onderwerp import Vraag
 from leeravontuur.kern.wiskunde import cijferen as C
-from leeravontuur.terminal.rooster import RoosterInvoer
+from leeravontuur.terminal.nepscherm import NepScherm
+from leeravontuur.terminal.rooster import MAATJE_ONDER, MAATJE_X, RoosterInvoer
+from leeravontuur.terminal.scherm import Scherm
 
 try:
     from .test_schermen import ESC, OK, Basis, naar_spiekbrief
@@ -145,6 +148,94 @@ class TestRooster(unittest.TestCase):
         self.assertEqual((ri.rij, ri.kol, ri.onth), (1, 2, {2: "1"}))
 
 
+class TestPlaatswaarden(unittest.TestCase):
+    """#18: p zet E T H … boven de kolommen."""
+
+    def teken(self, ri):
+        s = Scherm(NepScherm(), Instellingen(), False)
+        ri.teken(s, 8)
+        return s, s.win.tekst().splitlines()
+
+    def test_elke_kolom_heeft_een_naam(self):
+        """Elk rooster (+, −, × zonder komma) in elk leerjaar: elke kolom heeft een plaatswaarde."""
+        rng = random.Random(18)
+        for o in (C.OPTELLEN, C.AFTREKKEN, C.VERMENIGVULDIGEN):
+            for jaar in leerjaren.LEERJAREN:
+                if not o.aangeboden(jaar):
+                    continue
+                for _ in range(60):
+                    r = o.maak(jaar, rng=rng).model
+                    if r.plaatswaarden_kloppen():
+                        with self.subTest(o=o.id, jaar=jaar, gegeven=r.gegeven):
+                            self.assertTrue(all(r.plaats_naam(c) for c in range(r.breedte)))
+                    else:
+                        self.assertTrue(r.komma_zelf and any("," in g for g in r.gegeven))
+
+    def test_namen(self):
+        r = Rooster("+", ["12,5", "3,25"], 5, 2)
+        self.assertEqual([r.plaats_naam(c)[0] for c in range(5)], ["H", "T", "E", "t", "h"])
+        self.assertEqual(r.plaats_naam(1), ("T", "tientallen"))
+        self.assertIsNone(Rooster("×", ["2,5", "3"], 3, 0, komma_zelf=True).plaats_naam(2))
+
+    def test_aan_en_uit(self):
+        ri = RoosterInvoer(optel_vraag(), C.OPTELLEN)
+        _, regels = self.teken(ri)
+        self.assertNotIn("H  T  E", regels[7])
+        ri.toets(ord("p"))
+        self.assertTrue(ri.plaatswaarden)
+        s, regels = self.teken(ri)
+        self.assertIn("D  H  T  E  ◂ je staat bij de E (eenheden)", regels[7])
+        self.assertEqual(regels[8].index("·") + 3, regels[8].index("·", regels[8].index("·") + 1))  # breder
+        ri.toets(ord("4"))  # een cijfer: je staat nu bij de T
+        _, regels = self.teken(ri)
+        self.assertIn("◂ je staat bij de T (tientallen)", regels[7])
+        ri.toets(ord("P"))
+        self.assertFalse(ri.plaatswaarden)
+        self.assertIn("Plaatswaarden uit", ri.melding)
+
+    def test_klik_met_plaatswaarden(self):
+        """Met de bredere kolommen kiest een klik nog altijd het juiste vakje."""
+        ri = RoosterInvoer(optel_vraag(), C.OPTELLEN)
+        ri.plaatswaarden = True
+        s, regels = self.teken(ri)
+        y = 8 + 1 + 2 + 1  # onthouden, 2 getallen, de streep: de uitkomst
+        self.assertEqual(s.zones.zoek(y, ri.x(1)), ("cel", 0, 1))
+        self.assertEqual(ri.x(1) - ri.x(0), 3)
+
+    def test_maal_met_komma(self):
+        v = Vraag(C.VERMENIGVULDIGEN.id, "x", "2,5 × 3 =", D("7.5"), invoer="rooster",
+                  model=Rooster("×", ["2,5", "3"], 3, 0, ["uitkomst"], ["7,5"], komma_zelf=True))
+        ri = RoosterInvoer(v, C.VERMENIGVULDIGEN)
+        self.assertNotIn("p", [k[0] for k in ri.knoppen()])
+        ri.toets(ord("p"))
+        self.assertIn("Bij × met een komma", ri.melding)
+        ri.plaatswaarden = True  # ook als het kind ze aan heeft: hier geen letters
+        _, regels = self.teken(ri)
+        self.assertNotIn("E", regels[7])
+        self.assertEqual(ri.x(1) - ri.x(0), 2)
+
+    def test_past_overal(self):
+        """Het breedste rooster in elk leerjaar, met plaatswaarden: binnen 80 tekens, niet over het maatje, en de
+        voetregel past."""
+        rng = random.Random(81)
+        for o in (C.OPTELLEN, C.AFTREKKEN, C.VERMENIGVULDIGEN):
+            for jaar in leerjaren.LEERJAREN:
+                if not o.aangeboden(jaar):
+                    continue
+                v = max((o.maak(jaar, rng=rng) for _ in range(60)), key=lambda v: v.model.breedte)
+                ri = RoosterInvoer(v, o)
+                ri.plaatswaarden = True
+                for kol in range(v.model.breedte):
+                    ri.kol = kol
+                    with self.subTest(o=o.id, jaar=jaar, kol=kol):
+                        _, regels = self.teken(ri)
+                        self.assertIn("uitkomst  (typrichting ←)", "\n".join(regels))  # niet afgeknipt
+                        for y, regel in enumerate(regels[:MAATJE_ONDER + 1]):
+                            self.assertLessEqual(len(regel), MAATJE_X, (y, regel))
+                voet = "  ".join(f"[{t}] {u}" for t, u, _ in ri.knoppen())
+                self.assertLessEqual(len(voet) + 1, 80, voet)
+
+
 def staart_vraag():
     g, st, q, r = C.staart_stappen(D(452), 7, 0)
     return Vraag(C.DELEN.id, f"{C.DELEN.id}:452:7", "452 : 7 =", q, invoer="staart", model=Staartdeling(g, 7, st, r),
@@ -243,6 +334,18 @@ class TestSchermen(Basis):
         self.assertFalse(rij["juist"])
         self.assertEqual(rij["diagnose"], "staart_te_veel")
         self.assertTrue(self.ergens(scherm, "7 × 7 = 49, dat is meer dan 45"))
+
+    def test_plaatswaarden_onthouden(self):
+        """#18: p bij de eerste vraag; de volgende vraag en een nieuwe start hebben ze ook (per kind bewaard)."""
+        o = self.opslag(("Test", "5"))
+        with mock.patch.object(C.OPTELLEN, "maak", side_effect=[optel_vraag()] * 3):
+            scherm, app = self.speel([*naar(1), "p", *"234", OK, OK, ESC], opslag=o)
+        self.assertTrue(o.instellingen_van(app.kind.id).plaatswaarden)
+        vragen = [b for b in scherm.beelden if "347 + 85" in b and "Plaatswaarden aan" not in b]
+        self.assertIn("◂ je staat bij de E (eenheden)", vragen[-1])  # de tweede vraag: meteen aan
+        with mock.patch.object(C.OPTELLEN, "maak", side_effect=[optel_vraag()] * 2):
+            scherm, _ = self.speel([*naar(1), ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "D  H  T  E  ◂ je staat bij de E"))
 
     def test_spiekbrief(self):
         scherm, _ = self.speel([*naar_spiekbrief("Cijferen"), ESC, ESC, ESC, ESC])

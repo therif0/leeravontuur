@@ -12,6 +12,7 @@ from ..kern.getal import lees_getal
 from .scherm import BACKSPACE, ENTER, ESC
 
 TAB = 9
+MAATJE_X, MAATJE_ONDER = 60, 9  # tot rij 9 staat rechts het maatje (vanaf kolom 60)
 
 
 class RoosterInvoer:
@@ -26,6 +27,7 @@ class RoosterInvoer:
         self.typ_rij = None  # de laatste rij waarin het kind typte: ↓ uit de onthouden-rij gaat daarheen (#16)
         self.kol = self.r.breedte - 1
         self.links = True  # typrichting: van rechts naar links
+        self.plaatswaarden = False  # E T H … boven de kolommen (#18; de Oefenaar zet de keuze van het kind)
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
         self.hint = "Typ van rechts naar links · ↑ = onthouden-rij · Tab = volgende rij"
@@ -43,13 +45,18 @@ class RoosterInvoer:
             uit[i] = eerste + i + (1 if n > 1 and i == n - 1 else 0)
         return uit
 
+    def toont_plaatswaarden(self):
+        return self.plaatswaarden and self.r.plaatswaarden_kloppen()
+
     def x(self, kol):
-        return self.X0 + 2 * kol
+        return self.X0 + (3 if self.toont_plaatswaarden() else 2) * kol  # met plaatswaarden iets breder (TD, HD)
 
     def knoppen(self):
         k = [("Enter", "klaar", 10), ("?/F1", "hulp", ord("?")), ("r", "richting", ord("r"))]
         if self.r.komma_zelf:
             k.append((",", "komma", ord(",")))
+        if self.r.plaatswaarden_kloppen():  # naast [,] komma past "plaatswaarden" niet in 80 tekens
+            k.append(("p", "E T H" if self.r.komma_zelf else "plaatswaarden", ord("p")))
         return k + [("Esc", "stoppen", ESC)]
 
     # ---- tekenen ------------------------------------------------------------------------
@@ -58,6 +65,8 @@ class RoosterInvoer:
         ys = self.rij_y(y)
         bezig = uitslag is None
         links, rechts = self.x(0) - 3, self.x(r.breedte - 1)
+        if self.toont_plaatswaarden():
+            self.teken_plaatswaarden(s, y - 1, rechts, bezig)
         # welke vakjes van de gegeven getallen oplichten bij hulp: {(rij, kolom)}
         licht = set()
         if hulp and bezig:
@@ -116,6 +125,17 @@ class RoosterInvoer:
             pijl = "←" if self.links else "→"
             s.put(ys[n - 1], rechts + 3, f"uitkomst  (typrichting {pijl})", "dim")
 
+    def teken_plaatswaarden(self, s, y, rechts, bezig):
+        """De rij E T H … boven de kolommen (#18); de letter van je kolom licht op, erachter wat ze betekent."""
+        for c in range(self.r.breedte):
+            naam = self.r.plaats_naam(c)
+            if naam:
+                s.put(y, self.x(c) + 1 - len(naam[0]), naam[0], "cursor" if bezig and c == self.kol else "dim")
+        naam = self.r.plaats_naam(self.kol)
+        zin = f"◂ je staat bij de {naam[0]} ({naam[1]})" if naam else ""
+        if bezig and zin and rechts + 3 + len(zin) <= (MAATJE_X if y <= MAATJE_ONDER else 79):
+            s.put(y, rechts + 3, zin, "dim")
+
     # ---- invoer -------------------------------------------------------------------------
     def rijen_lijst(self):
         return [-1] + list(range(len(self.r.invul)))
@@ -164,6 +184,14 @@ class RoosterInvoer:
         elif k in (ord("r"), ord("R")):
             self.links = not self.links
             self.melding, self.melding_rol = f"Typrichting: {'← van rechts naar links' if self.links else '→ van links naar rechts'}", "info"
+            return None
+        elif k in (ord("p"), ord("P")):
+            if not r.plaatswaarden_kloppen():
+                self.melding = "Bij × met een komma reken je eerst zonder komma: geen plaatswaarden."
+            else:
+                self.plaatswaarden = not self.plaatswaarden
+                self.melding = f"Plaatswaarden {'aan' if self.plaatswaarden else 'uit'} (p)"
+            self.melding_rol = "info"
             return None
         elif k == ord(","):
             if r.komma_zelf and self.rij == len(r.invul) - 1:
