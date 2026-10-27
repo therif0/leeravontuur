@@ -81,6 +81,8 @@ Gouden regels:
   `oplossing_van`, `fout_pad`); `tests/test_werkwijze.py` kijkt na dat elke regel klopt en op het antwoord eindigt.
   De terminal vraagt de oplossing altijd via `oplossing_of_niets` (een fout komt in het logboek, nooit bij het kind).
   Het klad-nakijken tegenover een oplossing is `kern/klad.analyseer` (ook voor vraagstukken).
+  Esc midden in een vraag (nog niet nagekeken) of een snelrekenronde: eerst `scherm.wil_stoppen` (kader met
+  `Scherm.bevestig`, "Nee" gekozen; de tijd erin telt niet mee via `Sessie.pauze`). Een nieuw oefenscherm doet hetzelfde.
 - **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
   (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan
