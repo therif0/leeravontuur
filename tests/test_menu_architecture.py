@@ -268,7 +268,8 @@ class TestNavigatie(TestModiStarten):
             self.assertTrue(all(ord(c) < 128 for c in beeld), beeld)
 
     def test_broodkruimel_uit_elke_soort_oefening(self):
-        """Een klik op de broodkruimel midden in een oefening (gewone reeks, maten, snelrekenen) gaat naar dat niveau."""
+        """Een klik op de broodkruimel midden in een oefening (gewone reeks, maten, snelrekenen) vraagt eerst "Wil je
+        stoppen?" (#33); Ja (← Enter) gaat naar dat niveau."""
         import curses
         for oid, toets in [("wiskunde.hoofdrekenen.tafels", "\n"), ("wiskunde.meten.lengte", "v"),
                            ("wiskunde.hoofdrekenen.gemengd", "\n")]:
@@ -281,8 +282,9 @@ class TestNavigatie(TestModiStarten):
             for woord, verwacht in [("Leeravontuur", "Wat wil je doen?"), ("Wiskunde", "Welk onderwerp?"),
                                     (d.label, "wat wil je oefenen?")]:
                 with self.subTest(oid, niveau=woord):
-                    beeld = self.speel([*naar, ("klik", 0, kop.index(woord) + 1)])[-1]
-                    self.assertIn(verwacht, beeld)
+                    beelden = self.speel([*naar, ("klik", 0, kop.index(woord) + 1), curses.KEY_LEFT, OK])
+                    self.assertTrue(any("Wil je stoppen met deze" in b for b in beelden))
+                    self.assertIn(verwacht, beelden[-1])
 
     def test_geen_namen_in_de_menumodules(self):
         """Namen van vakken, domeinen en onderwerpen staan alleen in het leerplan (terminal/curriculum)."""

@@ -10,7 +10,7 @@ from ...kern import punten as P
 from .. import maatje
 from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
-from ..scherm import BACKSPACE, ENTER, ESC, wil_stoppen
+from ..scherm import BACKSPACE, ENTER, ESC
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -132,7 +132,13 @@ class Eenheden:
     # ---- een gewone vraag ----------------------------------------------
 
     def stel_vraag(self, kr, v, soort, ses, nr=None, resultaten=None, vrij=False):
-        """Toont één vraag. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
+        """Toont één vraag. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc. Zolang ze niet nagekeken is,
+        vragen Esc en de broodkruimel eerst "Wil je stoppen?" (Scherm.bewaak, #33)."""
+        self.open = True
+        with self.s.bewaak(lambda: self.open, ses):
+            return self._stel_vraag(kr, v, soort, ses, nr, resultaten, vrij)
+
+    def _stel_vraag(self, kr, v, soort, ses, nr, resultaten, vrij):
         s = self.s
         buf, melding, goed, tip = "", "", None, False
         tip_gebruikt, tijd, punten = False, "", ""
@@ -193,7 +199,10 @@ class Eenheden:
                 s.pauze(170)
                 spring = False
                 continue
+            self.open = goed is None  # voor de bewaker: nog niet nagekeken
             k = s.toets()
+            if k == curses.KEY_RESIZE:  # opnieuw tekenen (ook na "Nee, verder" in het kader)
+                continue
             if k == curses.KEY_F1:  # F1 = ? (#14)
                 k = ord("?")
             if goed is not None:
@@ -202,9 +211,7 @@ class Eenheden:
                 if k == ESC:
                     return buf, goed, True
                 continue
-            if k == ESC:  # midden in een vraag: eerst vragen (#33)
-                if not wil_stoppen(s, ses):
-                    continue
+            if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
                 s.cursor(False)
                 return None
             if k == ord("?") and vrij and tip:  # na de tip: de spiekbrief (#20); Esc = terug naar de vraag
@@ -284,7 +291,12 @@ class Eenheden:
         return yy + 1
 
     def tabel_vraag(self, kr, v, soort, ses, nr, resultaten):
-        """Eén tabel-oefening. Geeft (antwoord, goed?, tabel goed?, stoppen?) of None bij Esc."""
+        """Eén tabel-oefening. Geeft (antwoord, goed?, tabel goed?, stoppen?) of None bij Esc (met de bewaker, #33)."""
+        self.open = True
+        with self.s.bewaak(lambda: self.open, ses):
+            return self._tabel_vraag(kr, v, soort, ses, nr, resultaten)
+
+    def _tabel_vraag(self, kr, v, soort, ses, nr, resultaten):
         s = self.s
         inst = self.app.inst
         cols = E.TABELLEN[v.cat]
@@ -381,7 +393,10 @@ class Eenheden:
                 s.put(yy, 4, E.regel_uitleg(v)[0], "accent")
                 s.put(yy + 1, 4, f"De komma springt van {v.van} naar {v.naar}: "
                                  f"lees af → {fmt(v.antwoord)} {v.naar}.", "accent")
+            self.open = goed is None  # voor de bewaker: nog niet nagekeken
             k = s.toets()
+            if k == curses.KEY_RESIZE:  # opnieuw tekenen (ook na "Nee, verder" in het kader)
+                continue
 
             if goed is not None:
                 if k in ENTER or k == ord(" "):
@@ -402,9 +417,7 @@ class Eenheden:
                 if pos < n:
                     laatste_cel = pos
                 continue
-            if k == ESC:  # midden in een vraag: eerst vragen (#33)
-                if not wil_stoppen(s, ses):
-                    continue
+            if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
                 s.cursor(False)
                 return None
             if k in (9, curses.KEY_RIGHT):

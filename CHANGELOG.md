@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.5 — ook de broodkruimel vraagt eerst
+- **Een klik op de broodkruimel bovenaan midden in een vraag vraagt nu ook eerst "Wil je stoppen?"** (net als Esc
+  sinds 0.21.2). Nee: alles staat er nog (je antwoord en je klad). Dat geldt ook in de spiekbrief die je vanuit een
+  vraag opende, bij Maten en bij snelrekenen. Stop je een ronde van 60 seconden of 20 sommen via de broodkruimel,
+  dan zie je eerst nog je uitslag (en krijg je je bonus), daarna ga je naar het menu dat je aanklikte.
+- Achter de schermen: één "bewaker" voor alle oefenschermen in plaats van een controle per scherm, zodat een nieuw
+  oefenscherm vanzelf beschermd is.
+
 ## 0.21.4 — plaatswaarden boven het rooster
 - **Cijferen onder elkaar: druk `p` en de plaatswaarden staan boven de kolommen** (`E T H D TD HD M`, en `t h d`
   na de komma). De kolommen worden iets breder, de letter van de kolom waar je staat licht op, en ernaast staat

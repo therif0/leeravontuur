@@ -83,8 +83,10 @@ Gouden regels:
   `oplossing_van`, `fout_pad`); `tests/test_werkwijze.py` kijkt na dat elke regel klopt en op het antwoord eindigt.
   De terminal vraagt de oplossing altijd via `oplossing_of_niets` (een fout komt in het logboek, nooit bij het kind).
   Het klad-nakijken tegenover een oplossing is `kern/klad.analyseer` (ook voor vraagstukken).
-  Esc midden in een vraag (nog niet nagekeken) of een snelrekenronde: eerst `scherm.wil_stoppen` (kader met
-  `Scherm.bevestig`, "Nee" gekozen; de tijd erin telt niet mee via `Sessie.pauze`). Een nieuw oefenscherm doet hetzelfde.
+  Weggaan midden in een vraag (nog niet nagekeken) of een snelrekenronde: een oefenscherm zet `with s.bewaak(actief,
+  ses)`; dan vragen **Esc en de broodkruimel** (ook vanuit de spiekbrief) vanzelf eerst "Wil je stoppen?"
+  (`Scherm.bevestig`, "Nee" gekozen; Nee = `KEY_RESIZE`, de tijd erin telt niet mee via `Sessie.pauze`). Esc in een
+  deelscherm (`@deelscherm`: menu, lezer, invoer, kader) is van dat deelscherm. Een nieuw oefenscherm doet hetzelfde.
 - **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
   (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan
@@ -162,7 +164,10 @@ dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.comman
 - `python3 -m unittest discover -s tests` (of `python3 leeravontuur.py --test`). Draait ook in CI op 3 systemen.
 - Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik", y, x), ("wiel", ±1)).
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
-  `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1). X10-codes (`\e[M` + 3 bytes) worden als Esc gelezen.
+  `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1), en daarna de loslaat-code `$'\e[<0;X;Ym'` (anders
+  denkt ncurses dat de knop nog ingedrukt is en telt de volgende klik niet). Start het programma in tmux met
+  `TERM=xterm-256color`, anders leest ncurses de code als Esc + tekens. X10-codes (`\e[M` + 3 bytes) worden als Esc
+  gelezen.
 
 ## Werkwijze met Claude (zo werken we samen)
 - **De vader beslist** over alles wat het kind of de ouder ziet: menu's, namen, volgorde, teksten, rapport, export.

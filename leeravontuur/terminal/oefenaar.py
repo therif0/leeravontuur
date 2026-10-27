@@ -23,7 +23,7 @@ from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
 from .kladblad import LEEG_ENTER, Kladblad
-from .scherm import ENTER, ESC, teken_van, wil_stoppen
+from .scherm import ENTER, ESC, teken_van
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -129,7 +129,13 @@ class Oefenaar:
 
     def stel_vraag(self, kr, o, v, soort, ses, nr=None, resultaten=None, vrij=False):
         """Eén vraag volgens de vaste werkwijze: lees, reken in het klad (Tab), antwoord. ? = de volgende tip,
-        fout = één tweede kans. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc."""
+        fout = één tweede kans. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc.
+        Zolang ze niet nagekeken is, vragen Esc en de broodkruimel eerst "Wil je stoppen?" (Scherm.bewaak, #33)."""
+        self.open = True
+        with self.s.bewaak(lambda: self.open, ses):
+            return self._stel_vraag(kr, o, v, soort, ses, nr, resultaten, vrij)
+
+    def _stel_vraag(self, kr, o, v, soort, ses, nr, resultaten, vrij):
         s = self.s
         buf, melding, melding_rol, goed, tip = "", "", "fout", None, False
         tip_gebruikt, extra, getal, d = False, "", None, None
@@ -339,7 +345,10 @@ class Oefenaar:
                 s.pauze(170)
                 spring = False
                 continue
+            self.open = goed is None  # voor de bewaker: nog niet nagekeken
             k = s.toets()
+            if k == curses.KEY_RESIZE:  # opnieuw tekenen (ook na "Nee, verder" in het kader)
+                continue
             if k == curses.KEY_F1:  # F1 = ? (op een AZERTY-klavier is ? Shift + komma, #14)
                 k = ord("?")
             if goed is not None:
@@ -348,9 +357,7 @@ class Oefenaar:
                 if k == ESC:
                     return buf, goed, True
                 continue
-            if k == ESC:  # midden in een vraag: eerst vragen of het kind echt wil stoppen (#33)
-                if not wil_stoppen(s, ses):
-                    continue
+            if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
                 s.cursor(False)
                 return None
             eigen_tip = obj is not None and getattr(obj, "eigen_tip", False)
