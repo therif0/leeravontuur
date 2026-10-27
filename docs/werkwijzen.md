@@ -28,7 +28,7 @@ De vraag is nog niet nagekeken. Wat het kind getypt heeft (antwoord en klad) is 
 | **Het klokvenster sluiten** of F2 | ✔ de klok komt in de terminal, de vraag blijft | – | – |
 | **Een fout in het programma** (vangnet) | ✔ "Oei, er ging iets mis", terug naar het hoofdmenu | ✔ idem | ✔ idem |
 
-- [ ] **De oorzaak van ✘:** de vraag "Wil je stoppen?" hangt aan de **Esc-toets**, apart in 4 schermen
+- [x] **De oorzaak van ✘:** de vraag "Wil je stoppen?" hangt aan de **Esc-toets**, apart in 4 schermen
   (`terminal/oefenaar.py`, 2× `schermen/eenheden.py`, `schermen/snelrekenen.py`).
   Een klik op de broodkruimel komt daar niet langs. `Scherm.toets` gooit meteen `TerugNaar`, en de menu's vangen
   die op. Elk nieuw oefenscherm moet het kader ook opnieuw zelf inbouwen.
@@ -47,7 +47,7 @@ De vraag is nog niet nagekeken. Wat het kind getypt heeft (antwoord en klad) is 
 | Herhalen: weg via de broodkruimel | geen samenvatting ("x juist, y komen morgen terug") | ✘ (klein) |
 | Vrij oefenen: weg via de broodkruimel | de vraag "Je had 2 fouten, nog eens?" valt weg | ✘ (klein) |
 
-- [ ] **?** Een onderbroken reeks toont het resultaat van wat al gedaan is ("Je stopte na 5 vragen: 4 juist", met
+- [x] **?** Een onderbroken reeks toont het resultaat van wat al gedaan is ("Je stopte na 5 vragen: 4 juist", met
   de uitleg bij de fout en F = fouten opnieuw). Of blijft het zoals nu (meteen naar het menu)?
 - [ ] **?** Enter op het resultaat: zo laten (snel verder oefenen), of moet "nieuwe reeks" een eigen toets krijgen
   (N, zoals nu al kan), met Enter = terug naar het menu?
@@ -65,7 +65,7 @@ De vraag is nog niet nagekeken. Wat het kind getypt heeft (antwoord en klad) is 
 | Esc op het startscherm of in "Wie ben jij?" | het programma stopt | ✔ (er is nog niets begonnen) |
 | Ouderdeel, 10 minuten niets gedaan | "vergrendeld", terug naar "Wie ben jij?" | ✔ |
 
-- [ ] **Esc in het hoofdmenu:** een kind dat een paar keer te veel Esc drukt (om "terug" te gaan), zit plots buiten
+- [x] **Esc in het hoofdmenu:** een kind dat een paar keer te veel Esc drukt (om "terug" te gaan), zit plots buiten
   het programma. Dat overkwam mij ook bij het testen in tmux. **?** Een kader "Wil je stoppen met Leeravontuur?"
   (Nee gekozen), net als bij een vraag?
 
@@ -130,6 +130,16 @@ weg. Esc werkt nog wel, maar het kind ziet de knop niet.
 
 **Later, een eigen project: Maten volgens de vaste werkwijze** (§4: klad, tips in de reeks, tweede kans). Pas na
 een voorstel met mockups.
+
+## Stand
+
+- **Fase 1** (0.21.5, PR #38): één bewaker (`Scherm.bewaak`): Esc en de broodkruimel vragen eerst, ook vanuit de
+  spiekbrief; snelrekenen via de kruimel toont eerst de uitslag. ✔
+- **Fase 2** (0.21.6): Esc in het hoofdmenu vraagt eerst; een gestopte reeks (ook fouten opnieuw, gelijkaardige
+  vragen en Maten) toont het resultaat van wat al gedaan is ("Je stopte na 2 van de 10 vragen.", met de punten).
+  Meteen gestopt (nog niets beantwoord): gewoon terug naar het menu. ✔
+- Geparkeerd: Ctrl-C, Enter op het resultaat, de toets q, Maten volgens de vaste werkwijze, de voetregels, de tip
+  bij "Hoe laat kom je aan?".
 
 ## Wat de vader koos (27/10)
 

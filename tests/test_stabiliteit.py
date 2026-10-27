@@ -185,7 +185,8 @@ class TestVangnet(Basis):
         from leeravontuur.terminal.oefenaar import Oefenaar
         o = self.opslag(("Test", "5"))
         with mock.patch.object(Oefenaar, "spiekbrief", side_effect=RuntimeError("expres")):
-            scherm, app = self.speel([*naar_spiekbrief("Hoofdrekenen"), OK, ESC], opslag=o)
+            # Esc in het hoofdmenu vraagt eerst (werkwijzen, fase 2): ← Enter = Ja, stoppen
+            scherm, app = self.speel([*naar_spiekbrief("Hoofdrekenen"), OK, ESC, curses.KEY_LEFT, OK], opslag=o)
         self.assertTrue(self.ergens(scherm, "Oei, er ging iets mis."))
         self.assertIn("RuntimeError: expres", foutlog.meldingen()[-1])
         self.assertIn("Spiekbrieven", foutlog.meldingen()[-1])  # waar het gebeurde

@@ -2,6 +2,13 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.6 — stoppen zonder verrassingen
+- **Esc in het hoofdmenu vraagt eerst "Wil je stoppen met Leeravontuur?"** (Nee staat gekozen). Wie een paar keer te
+  veel Esc drukt, zit niet meer plots buiten het programma. "Stoppen" kiezen in het menu stopt meteen.
+- **Stop je een reeks halverwege, dan zie je toch je resultaat** van wat je al deed: "Je stopte na 2 van de 10
+  vragen.", je score, je punten en de uitleg bij je fouten, met F = fouten opnieuw. Ook bij Maten en bij "fouten
+  opnieuw". Stop je meteen bij de eerste vraag, dan ga je gewoon terug naar het menu.
+
 ## 0.21.5 — ook de broodkruimel vraagt eerst
 - **Een klik op de broodkruimel bovenaan midden in een vraag vraagt nu ook eerst "Wil je stoppen?"** (net als Esc
   sinds 0.21.2). Nee: alles staat er nog (je antwoord en je klad). Dat geldt ook in de spiekbrief die je vanuit een

@@ -572,18 +572,20 @@ class Oefenaar:
         self.totaal = len(vragen)
         self.verdiend = 0
         with self.app.sessie(modus, vaardigheid or vragen[0][0].id, jaar) as ses:
-            for nr, (o, v) in enumerate(vragen):
-                uit = self.stel_vraag(kr, o, v, soort, ses, nr, resultaten)
-                if uit is None:
-                    return resultaten, True
-                resultaten.append(dict(o=o, v=v, antw=uit[0], goed=uit[1], tijd=ses.laatste_tijd_ms,
-                                       d=self.laatste_d))
-                self.verwerk(o, v, uit[1] and not self.herkansing, items[nr] if items else None)
-                if uit[-1]:
-                    return resultaten, True
-            if modus == "reeks" and len(vragen) == REEKS and all(r["goed"] for r in resultaten):
-                ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
-            self.verdiend = ses.punten
+            try:
+                for nr, (o, v) in enumerate(vragen):
+                    uit = self.stel_vraag(kr, o, v, soort, ses, nr, resultaten)
+                    if uit is None:
+                        return resultaten, True
+                    resultaten.append(dict(o=o, v=v, antw=uit[0], goed=uit[1], tijd=ses.laatste_tijd_ms,
+                                           d=self.laatste_d))
+                    self.verwerk(o, v, uit[1] and not self.herkansing, items[nr] if items else None)
+                    if uit[-1]:
+                        return resultaten, True
+                if modus == "reeks" and len(vragen) == REEKS and all(r["goed"] for r in resultaten):
+                    ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
+            finally:
+                self.verdiend = ses.punten  # ook bij stoppen: de punten van wat al gedaan is
         return resultaten, False
 
     def nieuwe_vragen(self, o, jaar, aantal=REEKS):
@@ -600,12 +602,14 @@ class Oefenaar:
         kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + ["Reeks van 10"]
         while True:
             res, gestopt = self.speel(kr, soort, "reeks", jaar, self.nieuwe_vragen(o, jaar))
-            if gestopt or not self.na_reeks(kr, soort, jaar, res):
+            if (gestopt and not res) or not self.na_reeks(kr, soort, jaar, res, gestopt):
                 return
 
-    def na_reeks(self, kr, soort, jaar, res):
+    def na_reeks(self, kr, soort, jaar, res, gestopt=False):
+        """Het resultaat (ook van een gestopte reeks: wat al gedaan is), en daarna eventueel fouten opnieuw of
+        gelijkaardige vragen. True = nog een reeks."""
         while True:
-            keuze = self.rapport(kr, soort, res)
+            keuze = self.rapport(kr, soort, res, gestopt)
             fouten = [r for r in res if not r["goed"]]
             if keuze == "fouten" and fouten:
                 res, gestopt = self.speel(kr + ["Fouten opnieuw"], soort, "fouten_opnieuw", jaar,
@@ -616,14 +620,16 @@ class Oefenaar:
                 res, gestopt = self.speel(kr + ["Gelijkaardige vragen"], soort, "gelijkaardig", jaar, vragen)
             else:
                 return keuze == "nieuw"
-            if gestopt:
+            if gestopt and not res:
                 return False
 
-    def rapport(self, kr, soort, resultaten):
+    def rapport(self, kr, soort, resultaten, gestopt=False):
         naam = self.app.inst.naam
         totaal = len(resultaten)
         goed = sum(r["goed"] for r in resultaten)
-        if goed == totaal:
+        if goed == totaal and gestopt:
+            bericht, rol = "Tot nu toe alles juist!", "goed"
+        elif goed == totaal:
             bericht, rol = f"Perfect{', ' + naam if naam else ''}! Alles juist!", "goed"
         elif goed >= 0.8 * totaal:
             bericht, rol = "Heel goed gedaan!", "goed"
@@ -633,6 +639,8 @@ class Oefenaar:
             bericht, rol = "Blijf oefenen, je kan het! Lees de uitleg hieronder rustig na.", "fout"
         n, j = self.app.vandaag()
         regels = [(f"Je score: {goed} / {totaal}", rol), (bericht, rol), (soort, "dim")]
+        if gestopt:  # een onderbroken reeks: het resultaat van wat al gedaan is
+            regels.insert(0, (f"Je stopte na {totaal} van de {self.totaal} vragen.", "info"))
         if self.verdiend:
             regels.append((f"★ Je verdiende {self.verdiend} punten. Je hebt er nu "
                            f"{self.app.opslag.punten_saldo(self.app.kind.id)}.", "accent"))
@@ -695,8 +703,8 @@ class Oefenaar:
                           [(r["o"], r["o"].maak_herhaling(r["o"].herhaal_data(r["v"]), jaar, vermijd)) for r in fouten])
                 res, gestopt = self.speel(kr + ["Fouten opnieuw"], soort, "fouten_opnieuw" if k == 0 else "gelijkaardig",
                                           jaar, vragen)
-                if not gestopt:
-                    self.na_reeks(kr, soort, jaar, res)
+                if res:  # ook gestopt: het resultaat van wat al gedaan is
+                    self.na_reeks(kr, soort, jaar, res, gestopt)
 
     def herhalen(self, kr, items, onderwerp_van):
         """Herhaalbak-items (met nieuwe getallen), op het eigen leerjaar."""

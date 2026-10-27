@@ -122,7 +122,11 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **De broodkruimel midden in een vraag** (klik bv. op "Wiskunde" bovenaan): hetzelfde kader. Nee: alles staat er
   nog. Ook in de spiekbrief die je met `?` vanuit een vraag opende (Esc daar = gewoon terug naar de vraag). Bij 60
   seconden: na Ja eerst de uitslag, dan het menu.
-- [ ] **Esc** gaat overal een stap terug; in het hoofdmenu stopt het programma met "Tot de volgende keer".
+- [ ] **Esc** gaat overal een stap terug. In het hoofdmenu vraagt Esc eerst "Wil je stoppen met Leeravontuur?" (Nee
+  gekozen); Ja (← Enter) of de keuze **Stoppen** stopt met "Tot de volgende keer".
+- [ ] **Een reeks halverwege stoppen** (bv. Tafels › Enter, 2 vragen beantwoorden, dan Esc): het resultaat toont "Je
+  stopte na 2 van de 10 vragen.", je score, je punten en de uitleg bij je fouten (F = fouten opnieuw). Esc meteen bij
+  de eerste vraag: gewoon terug naar het menu.
 - [ ] Opnieuw starten: "Vandaag: x/y juist" bovenaan klopt nog.
 - [ ] Het programma twee keer openen geeft een waarschuwing.
 

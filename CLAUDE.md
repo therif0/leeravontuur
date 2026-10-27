@@ -87,6 +87,8 @@ Gouden regels:
   ses)`; dan vragen **Esc en de broodkruimel** (ook vanuit de spiekbrief) vanzelf eerst "Wil je stoppen?"
   (`Scherm.bevestig`, "Nee" gekozen; Nee = `KEY_RESIZE`, de tijd erin telt niet mee via `Sessie.pauze`). Esc in een
   deelscherm (`@deelscherm`: menu, lezer, invoer, kader) is van dat deelscherm. Een nieuw oefenscherm doet hetzelfde.
+  Een gestopte reeks met al minstens één antwoord toont het resultaat van wat gedaan is (`na_reeks(..., gestopt)`:
+  "Je stopte na 2 van de 10 vragen."); Esc in het hoofdmenu vraagt eerst (`App.hoofdmenu`).
 - **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
   (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan

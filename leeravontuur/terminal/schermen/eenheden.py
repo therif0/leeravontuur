@@ -495,22 +495,24 @@ class Eenheden:
         resultaten = []
         self.totaal = aantal
         with self.app.sessie(modus, E.OMZETTEN.id, jaar) as ses:
-            for nr in range(aantal):
-                v = maker(nr)
-                if tabel:
-                    uit = self.tabel_vraag(kr, v, soort, ses, nr, resultaten)
-                else:
-                    uit = self.stel_vraag(kr, v, soort, ses, nr, resultaten)
-                if uit is None:
-                    return resultaten, True
-                resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None,
-                                       tijd=ses.laatste_tijd_ms))
-                self.verwerk(v, uit[1], tabel, items[nr] if items else None)
-                if uit[-1]:
-                    return resultaten, True
-            if modus in ("reeks", "tabel") and aantal == REEKS and all(r["goed"] for r in resultaten):
-                ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
-            self.verdiend = ses.punten
+            try:
+                for nr in range(aantal):
+                    v = maker(nr)
+                    if tabel:
+                        uit = self.tabel_vraag(kr, v, soort, ses, nr, resultaten)
+                    else:
+                        uit = self.stel_vraag(kr, v, soort, ses, nr, resultaten)
+                    if uit is None:
+                        return resultaten, True
+                    resultaten.append(dict(v=v, antw=uit[0], goed=uit[1], tabel=uit[2] if tabel else None,
+                                           tijd=ses.laatste_tijd_ms))
+                    self.verwerk(v, uit[1], tabel, items[nr] if items else None)
+                    if uit[-1]:
+                        return resultaten, True
+                if modus in ("reeks", "tabel") and aantal == REEKS and all(r["goed"] for r in resultaten):
+                    ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
+            finally:
+                self.verdiend = ses.punten  # ook bij stoppen: de punten van wat al gedaan is
         return resultaten, False
 
     def nieuwe_vragen(self, gekozen, jaar, tabel):
@@ -531,15 +533,16 @@ class Eenheden:
         while True:
             res, gestopt = self.speel(self.kruimel + [naam], soort, "tabel" if tabel else "reeks", jaar,
                                       self.nieuwe_vragen(gekozen, jaar, tabel), REEKS, tabel)
-            if gestopt:
+            if gestopt and not res:
                 return
-            if not self.na_reeks(naam, soort, jaar, tabel, res):
+            if not self.na_reeks(naam, soort, jaar, tabel, res, gestopt):
                 return
 
-    def na_reeks(self, naam, soort, jaar, tabel, res):
-        """Rapport tonen en eventueel fouten opnieuw of gelijkaardige vragen. True = nog een reeks."""
+    def na_reeks(self, naam, soort, jaar, tabel, res, gestopt=False):
+        """Rapport tonen (ook van een gestopte reeks: wat al gedaan is) en eventueel fouten opnieuw of
+        gelijkaardige vragen. True = nog een reeks."""
         while True:
-            keuze = self.rapport(self.kruimel + [naam], soort, res)
+            keuze = self.rapport(self.kruimel + [naam], soort, res, gestopt)
             fouten = [r for r in res if not r["goed"] or r["tabel"] is False]
             if keuze == "fouten" and fouten:
                 vragen = [r["v"] for r in fouten]
@@ -552,15 +555,17 @@ class Eenheden:
                                           jaar, lambda nr: vragen[nr], len(vragen), tabel)
             else:
                 return keuze == "nieuw"
-            if gestopt:
+            if gestopt and not res:
                 return False
 
-    def rapport(self, kr, soort, resultaten):
+    def rapport(self, kr, soort, resultaten, gestopt=False):
         """Toont de score en de uitleg. Geeft "nieuw", "menu", "fouten" of "gelijkaardig"."""
         naam = self.app.inst.naam
         totaal = len(resultaten)
         goed = sum(r["goed"] for r in resultaten)
-        if goed == totaal:
+        if goed == totaal and gestopt:
+            bericht, rol = "Tot nu toe alles juist!", "goed"
+        elif goed == totaal:
             bericht, rol = f"Perfect{', ' + naam if naam else ''}! Alles juist!", "goed"
         elif goed >= 0.8 * totaal:
             bericht, rol = "Heel goed gedaan!", "goed"
@@ -576,6 +581,8 @@ class Eenheden:
         if self.verdiend:
             regels.insert(3, (f"★ Je verdiende {self.verdiend} punten. Je hebt er nu "
                               f"{self.app.opslag.punten_saldo(self.app.kind.id)}.", "accent"))
+        if gestopt:  # een onderbroken reeks: het resultaat van wat al gedaan is
+            regels.insert(0, (f"Je stopte na {totaal} van de {self.totaal} vragen.", "info"))
         regels += [(f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
         fouten = [(i, r) for i, r in enumerate(resultaten) if not r["goed"] or r["tabel"] is False]
         if not fouten:
@@ -646,8 +653,8 @@ class Eenheden:
                 res, gestopt = self.speel(kr + ["Fouten opnieuw"], soort,
                                           "fouten_opnieuw" if keuze == "fouten" else "gelijkaardig",
                                           jaar, lambda nr: vragen[nr], len(vragen), False)
-                if not gestopt:
-                    self.na_reeks("Vrij oefenen", soort, jaar, False, res)
+                if res:  # ook gestopt: het resultaat van wat al gedaan is
+                    self.na_reeks("Vrij oefenen", soort, jaar, False, res, gestopt)
 
     def herhalen(self, kr, items):
         """Vragen uit de herhaalbak (met nieuwe getallen), op het eigen leerjaar van het kind."""
