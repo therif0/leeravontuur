@@ -136,6 +136,8 @@ class Oefenaar:
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
         obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
+        if hasattr(obj, "plaatswaarden"):  # het rooster: de keuze van het kind (#18)
+            obj.plaatswaarden = self.app.inst.plaatswaarden
         digi = v.invoer == "klok"  # een tijdstip typ je op een digitaal klokje (#21)
         eigen = bool(obj and getattr(obj, "eigen_tekst", False))  # het object tekent zelf de vraag (vraagstuk)
         # de vaste werkwijze: klad (bij een gewoon antwoordvak), getrapte tips, een tweede kans
@@ -396,6 +398,9 @@ class Oefenaar:
                 continue
             if obj:
                 uit = obj.toets(k)
+                if getattr(obj, "plaatswaarden", None) not in (None, self.app.inst.plaatswaarden):
+                    self.app.inst.plaatswaarden = obj.plaatswaarden  # p: onthouden voor dit kind
+                    self.app.bewaar()
                 if uit is None:
                     kans_melding = ""
                     continue

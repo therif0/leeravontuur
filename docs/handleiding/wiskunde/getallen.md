@@ -135,6 +135,7 @@ PLAATSWAARDE
   M = miljoenen, HD = honderdduizendtallen, TD = tienduizendtallen,
   D = duizendtallen, H = honderdtallen, T = tientallen, E = eenheden,
   t = tienden, h = honderdsten, d = duizendsten
+  Nog groter dan M: TM = tienmiljoenen.
   In 3 405,7 is de 4 vierhonderd waard (4 H), de 7 zeven tienden (0,7).
 
 AFRONDEN

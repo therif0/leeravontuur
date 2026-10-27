@@ -385,7 +385,9 @@ class Ouderdeel:
                      ("Typrichting in tabellen", "→ naar rechts" if inst.typrichting == 1 else "← naar links"),
                      ("Avatar", "aan" if inst.avatar else "uit"),
                      ("Animaties", "aan" if inst.animaties else "uit"),
-                     ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)")]
+                     ("Klok in een eigen venster", "aan" if inst.klokvenster else "uit (de klok in de terminal)"),
+                     ("Plaatswaarden bij cijferen", "aan (E T H … boven de kolommen)" if inst.plaatswaarden else
+                      "uit (het kind zet ze aan met p)")]
             sel = self.lijst(kr, f"Weergave voor {kind.naam}", items, sel, melding)
             if sel is None:
                 return
@@ -401,6 +403,8 @@ class Ouderdeel:
                 inst.animaties = not inst.animaties
             elif sel == 5:
                 inst.klokvenster = not inst.klokvenster
+            elif sel == 6:
+                inst.plaatswaarden = not inst.plaatswaarden
             self.o.bewaar_instellingen(kind.id, inst)
             self.app.herlaad_kind()
 

@@ -41,6 +41,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   kommagetallen)
   - je typt van rechts naar links; bovenaan is een **onthouden-rij**; `Tab` gaat naar de volgende rij
   - met `?` krijg je **hulp bij het vakje** waar je staat (bv. *"7 + 5 = 12: schrijf 2 en onthoud 1"*)
+  - met `p` staan de **plaatswaarden** (E T H D TD … , t h d) boven de kolommen; het programma onthoudt dat per
+    kind (de ouder kan het ook aanzetten bij Weergave)
   - herkent denkfouten: onthouden vergeten, de kleinste van de grootste afgetrokken, de tweede rij niet
     opgeschoven, de komma op de verkeerde plaats
   - **staartdeling stap voor stap**: deel, vermenigvuldig, trek af, haal neer; de staartdeling groeit mee

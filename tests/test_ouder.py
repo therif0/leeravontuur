@@ -130,7 +130,8 @@ class TestKinderenBeheren(OuderBasis):
 
 class TestWeergave(OuderBasis):
     """Ouders › Kinderen › kind › Weergave (rij 4 + 2*2 = 8): de instellingen die vroeger in Opties stonden.
-    In de lijst: Eenvoudige tekens rij 4, Muis 6, Typrichting 8, Avatar 10, Animaties 12, Klokvenster 14."""
+    In de lijst: Eenvoudige tekens rij 4, Muis 6, Typrichting 8, Avatar 10, Animaties 12, Klokvenster 14,
+    Plaatswaarden 16."""
 
     def weergave(self, o, *klikken, start=(OK, "3"), voorrang=None):
         toetsen = [*start, *WW, OK, "2", "1", ("klik", 8, 10), *[("klik", y, 10) for y in klikken],
@@ -144,6 +145,15 @@ class TestWeergave(OuderBasis):
         self.assertEqual((inst.avatar, inst.animaties), (False, False))
         self.assertTrue(self.ergens(scherm, "Weergave voor Test"))
         self.assertTrue(self.ergens(scherm, "Klok in een eigen venster"))
+
+    def test_plaatswaarden_aanzetten(self):
+        """#18: de ouder zet de plaatswaarden bij cijferen aan (standaard uit)."""
+        o = self.met_wachtwoord(("Test", "5"))
+        self.assertFalse(o.instellingen_van(o.kinderen()[0].id).plaatswaarden)
+        scherm, _ = self.weergave(o, 16)
+        self.assertTrue(o.instellingen_van(o.kinderen()[0].id).plaatswaarden)
+        self.assertTrue(self.ergens(scherm, "Plaatswaarden bij cijferen"))
+        self.assertTrue(self.ergens(scherm, "aan (E T H … boven de kolommen)"))
 
     def test_alleen_voor_dat_kind(self):
         o = self.met_wachtwoord(("Ander", "4"), ("Test", "5"))

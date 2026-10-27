@@ -95,6 +95,8 @@ Gouden regels:
   `"rooster"` (cijferen onder elkaar) of `"staart"` (staartdeling stap voor stap) hebben, en een visueel
   `model` uit `kern/modellen.py` (alleen data: Getallenlijn, Rooster, Staartdeling). De terminal tekent het:
   `terminal/modellen.py` (getallenlijn) en `terminal/rooster.py` (invoer-objecten voor rooster en staartdeling).
+  `p` zet in het rooster de plaatswaarden aan (`Rooster.plaats_naam`, `PLAATSEN`; niet bij × met een komma), per
+  kind bewaard in `Instellingen.plaatswaarden` (de Oefenaar geeft de keuze door en bewaart ze).
   Hulp per vakje komt uit `Onderwerp.kolom_hulp`, diagnose uit alle rijen uit `Onderwerp.diagnose_rijen`.
   Verder: `"duur"` (typ `2 u 15 min`) en `"klok"` (typ `11.15`), beide in `kern/wiskunde/grootheden.py`; `"klok"`
   toont het getypte op een digitaal klokje (`terminal/digitaal.py`, wat erop staat komt uit `klok_cijfers`; compact

@@ -43,6 +43,11 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje. Onthouden: typ het
   laatste cijfer, ↑, typ wat je onthoudt (de cursor blijft in die kolom), ↓: je staat er recht onder.
   Nog eens `?` op hetzelfde vakje: de spiekbrief bij OPTELLEN; Esc = terug naar je som.
+- [ ] **Cijferen → Optellen, plaatswaarden:** druk `p`: boven de kolommen staat `TD  D  H  T  E` (bij kommagetallen
+  ook `t h`), de kolommen worden iets breder en rechts staat "◂ je staat bij de E (eenheden)". Typ een cijfer: de
+  T licht op. Bij de volgende vraag (en morgen) staan ze er nog; nog eens `p` = weg. Bij vermenigvuldigen met een
+  kommagetal zegt `p` dat het daar niet gaat. **Ouders › Kinderen › kind › Weergave › Plaatswaarden bij cijferen**
+  zet ze ook aan of uit.
 - [ ] **Cijferen → Staartdeling:** de deling groeit stap voor stap mee.
 - [ ] **Breuken en procenten → Herkennen:** bij "Arceer …" kleur je stukken met spatie of een klik.
 - [ ] **Breuken en procenten → Honderdveld:** `r` kleurt een hele rij; "35 van de 100" telt mee.
