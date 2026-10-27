@@ -2,6 +2,13 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.2 — Esc vraagt eerst
+- **Esc midden in een vraag stopt niet meer meteen.** Er komt eerst een kader "Wil je stoppen met deze vraag?" met
+  [Ja, stoppen] en [Nee, verder]; **Nee staat gekozen**. Enter (of nog eens Esc) = gewoon verder, met alles wat je al
+  typte en je klad. Echt stoppen: ← en Enter (of klik op "Ja, stoppen"). Na het nakijken stopt Esc meteen, zoals
+  vroeger. Zo ook bij Maten (vrij en de tabel), vraagstukken en snelrekenen; bij 60 seconden en 20 sommen staat de
+  klok stil zolang het kader openstaat. De tijd in het kader telt ook niet mee voor de vraag.
+
 ## 0.21.1 — je klad blijft staan
 - **Na het nakijken blijft je klad staan** in een kader "Jouw klad" rechtsonder, naast "Zo kan het:" (je laatste
   3 regels, met hun nummer). Elke regel krijgt ✔ of ✘, en een **!** op de regel waar je redenering afweek, ook als

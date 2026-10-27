@@ -1,3 +1,4 @@
+import curses
 import random
 import re
 import unittest
@@ -142,14 +143,25 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "Nog "))
         self.assertTrue(self.ergens(scherm, "Juist: 1 van 1"))
 
+    def test_snelrekenen_esc_vraagt_eerst(self):
+        """#33: Esc tijdens een ronde: eerst "Wil je stoppen met deze ronde?" (Nee = verder, ← + Enter = stoppen)."""
+        o = self.opslag(("Test", "5"))
+        vast = Vraag(H.TAFELS.id, f"{H.TAFELS.id}:t2:2x3", "2 × 3 =", Decimal(6), data={})
+        with mock.patch.object(SR, "vraag", return_value=(H.TAFELS, vast)):
+            scherm, app = self.speel([*naar(H.TAFELS, "z", niveau=None), "6", OK, ESC, OK, "6", OK,
+                                      ESC, curses.KEY_LEFT, OK, OK, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze ronde?"))
+        self.assertTrue(self.ergens(scherm, "De klok staat stil tot je kiest."))
+        self.assertTrue(self.ergens(scherm, "Juist: 2 van 2"))
+
     def test_zonder_timer_alleen_20_sommen(self):
         o = self.opslag(("Test", "5", {"timer_zichtbaar": False}))
         # op Tafels doet T niets en staat er geen [T] 60 s; Gemengd start met Enter 20 sommen
         scherm, _ = self.speel([*naar(H.TAFELS, "t", niveau=None), ESC, ESC, ESC], opslag=o)
         self.assertFalse(self.ergens(scherm, "[T]"))
         self.assertFalse(self.ergens(scherm, "60 seconden"))
-        scherm, _ = self.speel([*naar("wiskunde.hoofdrekenen.gemengd", "Enter", niveau=None), ESC, ESC, ESC],
-                               opslag=o)
+        scherm, _ = self.speel([*naar("wiskunde.hoofdrekenen.gemengd", "Enter", niveau=None),
+                                ESC, curses.KEY_LEFT, OK, ESC, ESC], opslag=o)  # Esc + ← + Enter = stoppen (#33)
         self.assertTrue(self.ergens(scherm, "[Enter] 20 sommen"))
         self.assertTrue(self.ergens(scherm, "Som 1 van 20"))
 

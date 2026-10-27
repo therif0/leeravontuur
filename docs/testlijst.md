@@ -104,6 +104,10 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Het venster kleiner maken dan 80×24 geeft een melding; weer groter maken werkt gewoon verder.
 
 ## 8. Stoppen en terugkomen
+- [ ] **Esc midden in een vraag** (typ eerst iets, en een regel in het klad): het kader "Wil je stoppen met deze
+  vraag?" met "Nee, verder" gekozen. Enter: je bent terug en alles staat er nog. Nog eens Esc, dan ← en Enter: je
+  bent terug in het menu. Probeer ook Maten (tabel), een vraagstuk en Tafels met T (60 seconden: de klok staat stil
+  zolang het kader openstaat). Na het nakijken stopt Esc meteen.
 - [ ] **Esc** gaat overal een stap terug; in het hoofdmenu stopt het programma met "Tot de volgende keer".
 - [ ] Opnieuw starten: "Vandaag: x/y juist" bovenaan klopt nog.
 - [ ] Het programma twee keer openen geeft een waarschuwing.

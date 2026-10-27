@@ -10,7 +10,7 @@ from ...kern import punten as P
 from .. import maatje
 from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
-from ..scherm import BACKSPACE, ENTER, ESC
+from ..scherm import BACKSPACE, ENTER, ESC, wil_stoppen
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -202,7 +202,9 @@ class Eenheden:
                 if k == ESC:
                     return buf, goed, True
                 continue
-            if k == ESC:
+            if k == ESC:  # midden in een vraag: eerst vragen (#33)
+                if not wil_stoppen(s, ses):
+                    continue
                 s.cursor(False)
                 return None
             if k == ord("?") and vrij:
@@ -398,7 +400,9 @@ class Eenheden:
                 if pos < n:
                     laatste_cel = pos
                 continue
-            if k == ESC:
+            if k == ESC:  # midden in een vraag: eerst vragen (#33)
+                if not wil_stoppen(s, ses):
+                    continue
                 s.cursor(False)
                 return None
             if k in (9, curses.KEY_RIGHT):

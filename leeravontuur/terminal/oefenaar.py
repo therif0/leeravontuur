@@ -23,7 +23,7 @@ from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
 from .kladblad import LEEG_ENTER, Kladblad
-from .scherm import ENTER, ESC, teken_van
+from .scherm import ENTER, ESC, teken_van, wil_stoppen
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -329,7 +329,9 @@ class Oefenaar:
                 if k == ESC:
                     return buf, goed, True
                 continue
-            if k == ESC:
+            if k == ESC:  # midden in een vraag: eerst vragen of het kind echt wil stoppen (#33)
+                if not wil_stoppen(s, ses):
+                    continue
                 s.cursor(False)
                 return None
             if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)):  # ook midden in een klad-regel
