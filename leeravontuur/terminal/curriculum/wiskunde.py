@@ -123,4 +123,4 @@ WISKUNDE = Vak("wiskunde", "Wiskunde", (
         oefenaar("vraagstukken.schatten_controleren", "Schatten en controleren", VS.SCHATTEN, VRAAGSTUKKEN,
                  "Vraagstukken"),
     ), "oplossen in 4 stappen, Speurneus, schatten"),
-), "rekenen, meten, meetkunde, vraagstukken")
+), "rekenen, meten en meetkunde")

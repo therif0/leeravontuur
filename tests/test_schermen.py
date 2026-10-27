@@ -503,6 +503,20 @@ class TestWerkwijze(Basis):
         scherm, app = self.speel(toetsen + [*"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertIn('"klad": ["47 + 100 = 147"]', o.antwoorden(app.kind.id)[-1]["extra"])
 
+    def test_hoofdmenu_uitleg_stopt_voor_de_avatar(self):
+        """De uitleg in het hoofdmenu liep onder de avatar door ("vraagst▄"); nu stopt ze ervoor (met … als het moet)."""
+        from leeravontuur.terminal import avatar as AV
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), *"146", OK, ESC, ESC, ESC, ESC], opslag=o)
+        menu = next(b for b in reversed(scherm.beelden) if "▶ Verder" in b).split("\n")
+        tot = 80 - AV.BREEDTE - 3
+        for regel in menu[5:13]:
+            self.assertEqual(regel[tot:tot + 2].strip(), "", regel)
+        verder = next(r for r in menu if "▶ Verder" in r)
+        self.assertTrue(verder.rstrip().endswith("…"), verder)
+        self.assertTrue(any("rekenen, meten en meetkunde" in r for r in menu))
+        self.assertTrue(any("winkel, kast en schermkleuren" in r for r in menu))
+
     def test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord(self):
         o = self.opslag(("Test", "5"))
         scherm, app = self.speel([*self.plusmin(), TAB, OK, *"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)

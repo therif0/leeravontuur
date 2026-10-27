@@ -195,19 +195,20 @@ class App:
                 if self.opslag.probleem:
                     info.append(self.opslag.probleem)
                 te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
-                keuzes = [("▶ Verder", self.voorstel()[0][:32], lambda: self.voorstel()[1]()),
+                keuzes = [("▶ Verder", self.voorstel()[0], lambda: self.voorstel()[1]()),
                           (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets",
                            self.herhalen),
                           *[(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN],
                           ("Spiekbrieven", "uitleg om terug te kijken", lambda: navigatie.spiekbrieven(
                               self, [HOOFD, "Spiekbrieven"])),
-                          ("Mijn avatar", "winkel, kast, punten en schermkleuren", self.mijn_avatar),
+                          ("Mijn avatar", "winkel, kast en schermkleuren", self.mijn_avatar),
                           ("Zeg het ons", "wat vind je leuk of moeilijk?", self.zeg_het_ons),
                           ("Wissel van kind", "iemand anders wil oefenen", self.wissel_van_kind),
                           ("Stoppen", "", None)]
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?",
                                 [(label, uitleg) for label, uitleg, _ in keuzes], info=info,
-                                onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu)
+                                onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu,
+                                uitleg_tot=self.avatar_links())
                 if k is None or keuzes[k][2] is None:
                     return
                 keuzes[k][2]()
@@ -252,6 +253,13 @@ class App:
         regels = ([("✔ Bedankt! Je opmerking is bewaard.", "goed")] if gelukt else
                   [("! Bewaren lukte niet, sorry. Zeg het gewoon aan je mama of papa.", "accent")])
         self.s.lezer(kr, regels, [("Enter", "ok", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
+
+    def avatar_links(self):
+        """De kolom waar de avatar in het hoofdmenu begint (de uitleg stopt ervoor), of None zonder avatar."""
+        if not self.inst.avatar:
+            return None
+        from . import avatar as AV
+        return self.s.maat()[1] - AV.BREEDTE - 3
 
     def teken_avatar_menu(self):
         """Rechts in het hoofdmenu: de avatar en de punten."""

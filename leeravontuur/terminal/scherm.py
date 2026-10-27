@@ -332,8 +332,9 @@ class Scherm:
         except curses.error:
             pass
 
-    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None):
+    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None, uitleg_tot=None):
         """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug.
+        uitleg_tot = de kolom waar de uitleg moet stoppen (bv. vóór de avatar); te lang = ingekort met '…'.
 
         toetsen (de aanroeper bepaalt ze per keuze): [[("Enter", uitleg), ("v", uitleg), …], …], de eerste is
         altijd Enter. Dan is de terugwaarde (index, toets): "Enter" bij Enter, een cijfer of een klik op de keuze,
@@ -362,6 +363,9 @@ class Scherm:
                 tekst = f" {(i + 1) % 10}. {label.ljust(breed)} "  # de 10de keuze heeft toets 0
                 self.put(y, 6, tekst, "cursor" if i == sel else "")
                 if uitleg:
+                    ruimte = (uitleg_tot or w) - 8 - len(tekst)
+                    if len(uitleg) > ruimte > 1:
+                        uitleg = uitleg[:ruimte - 1].rstrip(" ,·") + "…"
                     self.put(y, 8 + len(tekst), uitleg, "dim")
                 self.zones.voeg(y, 4, 1, w - 6, ("kies", i))
             for j, regel in enumerate(info):
