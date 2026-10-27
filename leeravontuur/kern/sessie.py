@@ -28,6 +28,11 @@ class Sessie:
         """Roep dit één keer op wanneer een nieuwe vraag verschijnt: daar start de tijdmeting."""
         self._start = time.monotonic()
 
+    def pauze(self, seconden):
+        """Zoveel seconden tellen niet mee voor de vraag (bv. het kader "Wil je stoppen?", #33)."""
+        if self._start is not None:
+            self._start += seconden
+
     def antwoord(self, sleutel, vraag, gegeven, juist, diagnose=None, hulp=False, extra=None, verwacht=None,
                  vaardigheid=None, leerjaar=None):
         """Bewaart een antwoord. vaardigheid/leerjaar: als ze per vraag verschillen (bv. snelrekenen gemengd)."""

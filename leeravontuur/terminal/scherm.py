@@ -436,6 +436,43 @@ class Scherm:
             elif k == curses.KEY_END:
                 top = len(lijnen)
 
+    def bevestig(self, vraag, uitleg="", ja="Ja, stoppen", nee="Nee, verder"):
+        """Een kader midden over het scherm met twee knoppen: [ja] links, [nee] rechts en al gekozen (#33).
+        ← → (of Tab) kiest, Enter of spatie bevestigt, Esc = nee; een klik op een knop kiest die. True = ja."""
+        sel = 1  # 0 = ja, 1 = nee
+        knoppen = [f"[ {ja} ]", f"[ {nee} ]"]
+        while True:
+            h, w = self.win.getmaxyx()
+            breed = max(len(vraag), len(uitleg), len(knoppen[0]) + len(knoppen[1]) + 3) + 6
+            y, x = max(1, h // 2 - 4), max(0, (w - breed) // 2)
+            self.zones.wis()
+            self.cursor(False)
+            self.put(y, x, "┌" + "─" * (breed - 2) + "┐", "accent")
+            for i in range(1, 6):
+                self.put(y + i, x, "│" + " " * (breed - 2) + "│", "accent")
+            self.put(y + 6, x, "└" + "─" * (breed - 2) + "┘", "accent")
+            self.put(y + 1, x + 3, vraag, "bold")
+            self.put(y + 2, x + 3, uitleg, "dim")
+            kx = x + (breed - len(knoppen[0]) - len(knoppen[1]) - 3) // 2
+            for i, tekst in enumerate(knoppen):
+                self.put(y + 4, kx, tekst, "cursor" if sel == i else "knop")
+                self.zones.voeg(y + 4, kx, 1, len(tekst), ("bevestig", i == 0))
+                kx += len(tekst) + 3
+            self.voet([("←→", "kiezen", None), ("Enter", "ok", 10), ("Esc", nee.split(",")[-1].strip(), ESC)])
+            k = self.toets()
+            if isinstance(k, tuple) and k[0] == "bevestig":
+                return k[1]
+            if k == curses.KEY_LEFT:
+                sel = 0
+            elif k == curses.KEY_RIGHT:
+                sel = 1
+            elif k in (9, curses.KEY_BTAB):
+                sel = 1 - sel
+            elif k in ENTER or k == ord(" "):
+                return sel == 0
+            elif k in (ESC, curses.KEY_RESIZE):
+                return False
+
     def invoer(self, kruimel, vraag, start="", max_lengte=20, verborgen=False, uitleg=(), cijfers=False,
                vrij=False):
         """Eén regel tekst laten typen (bv. een naam of wachtwoord). Geeft de tekst of None bij Esc.
@@ -471,3 +508,16 @@ class Scherm:
                     buf += ch
             elif verborgen or vrij or ch.isalnum() or ch in " -'":
                 buf += ch
+
+
+def wil_stoppen(s, ses=None, ronde=False):
+    """Esc midden in een vraag of een ronde (#33): eerst vragen of het kind echt wil stoppen (Nee staat gekozen).
+    De tijd in het kader telt niet mee voor de vraag (Sessie.pauze). True = stoppen."""
+    begin = time.monotonic()
+    if ronde:
+        ja = s.bevestig("Wil je stoppen met deze ronde?", "De klok staat stil tot je kiest.")
+    else:
+        ja = s.bevestig("Wil je stoppen met deze vraag?", "Ze is nog niet nagekeken.")
+    if ses is not None:
+        ses.pauze(time.monotonic() - begin)
+    return ja

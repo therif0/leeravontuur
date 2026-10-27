@@ -100,6 +100,17 @@ class TestAntwoorden(unittest.TestCase):
         self.assertEqual((rijen[1]["diagnose"], rijen[1]["hulp"], rijen[1]["juist"]), ("verkeerde_richting", 1, 0))
         self.assertIsNotNone(self.o.sessies(self.kind.id)[0]["einde"])
 
+    def test_sessie_pauze_telt_niet(self):
+        """#33: de tijd in het kader "Wil je stoppen?" telt niet mee voor de vraag."""
+        from unittest import mock
+        tijden = iter([100.0, 130.0])  # vraag getoond op 100 s, antwoord op 130 s, 25 s daarvan in het kader
+        with mock.patch("leeravontuur.kern.sessie.time.monotonic", side_effect=lambda: next(tijden)):
+            with Sessie(self.o, self.kind.id, "vrij", "wiskunde.eenheden.omzetten", "5") as ses:
+                ses.vraag_getoond()
+                ses.pauze(25)
+                ses.antwoord("k1", "1 m = ? cm", "100", True)
+        self.assertEqual(self.o.antwoorden(self.kind.id)[0]["tijd_ms"], 5000)
+
 
 class TestOpenen(unittest.TestCase):
     def setUp(self):

@@ -47,6 +47,12 @@ def naar(o, toets="v", niveau=OK, start=(OK, OK)):
     return [*start, hm(v.label), str(v.domeinen.index(d) + 1), *keuze, *([niveau] if niveau else [])]
 
 
+def na_het_kader(scherm):
+    """Het eerste beeld na het (laatste) kader "Wil je stoppen?" (#33)."""
+    i = max(i for i, b in enumerate(scherm.beelden) if "Wil je stoppen" in b)
+    return next(b for b in scherm.beelden[i + 1:] if "Wil je stoppen" not in b)
+
+
 def plek(scherm, tekst):
     """(rij, kolom) van tekst in het laatste beeld waarin hij staat (ook als het scherm daarna nog veranderde)."""
     for beeld in reversed(scherm.beelden):
@@ -202,6 +208,16 @@ class TestReeks(Basis):
                                   ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Dit oefen je pas vanaf het 6de leerjaar. Kies Moeilijk."))
         self.assertTrue(self.ergens(scherm, "Snelheid · Moeilijk (6de leerjaar)"))
+
+    def test_esc_bij_maten_vraagt_eerst(self):
+        """#33: ook bij Maten (vrij en de tabel-oefening)."""
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*naar("wiskunde.meten.massa"), ESC, OK, ESC, curses.KEY_LEFT, OK], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+        self.assertEqual(o.antwoorden(app.kind.id), [])
+        scherm, _ = self.speel([*naar("wiskunde.meten.lengte", "h"), "4", ESC, OK])
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+        self.assertNotIn("Wil je stoppen", scherm.beelden[-1])  # Nee: de tabel staat er weer
 
     def test_f1_is_ook_een_tip(self):
         """#14: op een AZERTY-klavier is ? Shift + komma; F1 geeft ook een tip (eigen scherm van de maten)."""
@@ -517,6 +533,38 @@ class TestWerkwijze(Basis):
         self.assertNotIn("typ hier je rekenregels", laatste)
         scherm, app = self.speel(toetsen + [*"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertIn('"klad": ["47 + 100 = 147"]', o.antwoorden(app.kind.id)[-1]["extra"])
+
+    def test_esc_vraagt_eerst_en_nee_houdt_alles(self):
+        """#33: Esc midden in een vraag vraagt eerst "Wil je stoppen?"; Nee (gekozen) houdt antwoord en klad."""
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), TAB, *"47 + 100 = 147", OK, TAB, *"14", ESC, OK, *"6", OK],
+                                 opslag=o)
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+        self.assertTrue(self.ergens(scherm, "[ Nee, verder ]"))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["gegeven"], rij["juist"]), ("146", 1))
+        self.assertIn('"klad": ["47 + 100 = 147"]', rij["extra"])
+
+    def test_esc_esc_blijft_en_links_enter_stopt(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), *"14", ESC, ESC, "6", OK], opslag=o)
+        na = na_het_kader(scherm)
+        self.assertIn("47 + 99 =", na)
+        self.assertEqual(o.antwoorden(app.kind.id)[-1]["gegeven"], "146")  # verder getypt: 14 + 6
+        scherm, app = self.speel([*self.plusmin(), *"14", ESC, curses.KEY_LEFT, OK], opslag=o)
+        self.assertEqual(len(o.antwoorden(app.kind.id)), 1)  # niets bijgekomen
+        self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
+
+    def test_esc_klik_op_ja(self):
+        scherm, _ = self.speel([*self.plusmin(), ESC])
+        y, x = plek(scherm, "[ Ja, stoppen ]")
+        scherm, _ = self.speel([*self.plusmin(), ESC, ("klik", y, x + 2)])
+        self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
+
+    def test_esc_na_het_nakijken_stopt_meteen(self):
+        scherm, _ = self.speel([*self.plusmin(), *"146", OK, ESC])
+        self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
+        self.assertTrue(self.ergens(scherm, "Hoofdrekenen: wat wil je oefenen?"))
 
     def test_klad_blijft_staan_na_het_nakijken(self):
         """#22: na het nakijken staat je klad in een kader "Jouw klad", met ! op de regel waar het misging."""

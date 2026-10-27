@@ -4,7 +4,7 @@ import time
 
 from ...kern import snelrekenen as SR
 from .. import maatje
-from ..scherm import BACKSPACE, ENTER, ESC, NIETS, teken_van
+from ..scherm import BACKSPACE, ENTER, ESC, NIETS, teken_van, wil_stoppen
 
 
 class Snelrekenen:
@@ -57,8 +57,13 @@ class Snelrekenen:
                 k = s.toets(wacht_ms=200)
                 if k == NIETS:
                     continue
-                if k == ESC:
-                    break
+                if k == ESC:  # eerst vragen (#33); de klok staat stil zolang het kader openstaat
+                    begin = self.klok()
+                    stoppen = wil_stoppen(s, ses, ronde=True)
+                    start += self.klok() - begin
+                    if stoppen:
+                        break
+                    continue
                 if k in ENTER and buf.strip():
                     getal = o.lees(buf)
                     goed = getal is not None and getal == v.antwoord
