@@ -46,7 +46,7 @@ class RoosterInvoer:
         return self.X0 + 2 * kol
 
     def knoppen(self):
-        k = [("Enter", "klaar", 10), ("?", "hulp", ord("?")), ("r", "richting", ord("r"))]
+        k = [("Enter", "klaar", 10), ("?/F1", "hulp", ord("?")), ("r", "richting", ord("r"))]
         if self.r.komma_zelf:
             k.append((",", "komma", ord(",")))
         return k + [("Esc", "stoppen", ESC)]
@@ -211,7 +211,7 @@ class StaartInvoer:
         return self.VENSTER + 2
 
     def knoppen(self):
-        return [("Enter", "ok", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         m = self.m

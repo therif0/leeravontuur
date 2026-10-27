@@ -145,11 +145,11 @@ class Oefenaar:
             elif obj:
                 knoppen = obj.knoppen()
             elif lijnen:
-                knoppen = [("←→", "pijl", None), ("+", "inzoomen", ord("+")), ("−", "uitzoomen", ord("-")),
-                           ("Enter", "hier!", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+                knoppen = [("←→", "pijl", None), ("+", "zoom in", ord("+")), ("−", "zoom uit", ord("-")),
+                           ("Enter", "hier!", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
             else:
                 knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
-                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?", "tip", ord("?")),
+                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?/F1", "tip", ord("?")),
                     ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             if vrij:
@@ -281,6 +281,8 @@ class Oefenaar:
                 spring = False
                 continue
             k = s.toets()
+            if k == curses.KEY_F1:  # F1 = ? (op een AZERTY-klavier is ? Shift + komma, #14)
+                k = ord("?")
             if goed is not None:
                 if k in ENTER or k == ord(" "):
                     return buf, goed, False
@@ -290,8 +292,7 @@ class Oefenaar:
             if k == ESC:
                 s.cursor(False)
                 return None
-            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)) and not (kb and focus == KLAD
-                                                                                         and kb.buf):
+            if k == ord("?") and not (obj and getattr(obj, "eigen_tip", False)):  # ook midden in een klad-regel
                 tip = tip_gebruikt = True
                 if not obj:
                     tip_nr += 1
@@ -389,19 +390,22 @@ class Oefenaar:
 
     @staticmethod
     def volgende_tip(o, v, tips, nr, kb):
-        """Tip nr (vanaf 1): eerst de vaste tips van het onderwerp (de aanpak, het begin van het klad), daarna hulp
-        bij het klad. Nooit het antwoord."""
-        if nr <= len(tips):
-            return f"Tip {nr}: {tips[nr - 1]}"
-        if kb is None:
-            return f"Tip {len(tips)}: {tips[-1]}" if tips else "Tip: lees de vraag nog eens rustig."
+        """Tip nr (vanaf 1): de vaste tips van het onderwerp (de aanpak, het begin van het klad), dan hulp bij het
+        klad, en daarna opnieuw van voren af aan (#15). Nooit het antwoord."""
+        aantal = len(tips) + (kb is not None)
+        if not aantal:
+            return "Tip: lees de vraag nog eens rustig."
+        i = (nr - 1) % aantal + 1
+        kop = f"Tip {i} van {aantal}" if aantal > 1 else "Tip"
+        if i <= len(tips):
+            return f"{kop}: {tips[i - 1]}"
         opl = o.oplossing_of_niets(v)
         if not kb.regels:
-            return f"Tip {nr}: schrijf je eerste stap in het klad (Tab)."
+            return f"{kop}: schrijf je eerste stap in het klad (Tab)."
         a = analyseer(opl.stappen, opl.paden, kb.gelezen) if opl else None
         if a and a["eerste"]:
-            return f"Tip {nr}: {a['eerste'][2]}"
-        return f"Tip {nr}: je klad ziet er goed uit. Reken verder, of vul je antwoord in (Tab)."
+            return f"{kop}: {a['eerste'][2]}"
+        return f"{kop}: je klad ziet er goed uit. Reken verder, of vul je antwoord in (Tab)."
 
     @staticmethod
     def uitwerking(o, v):

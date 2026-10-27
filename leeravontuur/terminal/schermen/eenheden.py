@@ -145,7 +145,7 @@ class Eenheden:
             if goed is None:
                 knoppen = [("Enter", "controleren", 10), ("Esc", "stoppen", ESC)]
                 if vrij:
-                    knoppen.insert(1, ("?", "tip", ord("?")))
+                    knoppen.insert(1, ("?/F1", "tip", ord("?")))
             else:
                 laatste = not vrij and nr == self.totaal - 1
                 knoppen = [("Enter", "naar je resultaat" if laatste else "volgende vraag", 10),
@@ -194,6 +194,8 @@ class Eenheden:
                 spring = False
                 continue
             k = s.toets()
+            if k == curses.KEY_F1:  # F1 = ? (#14)
+                k = ord("?")
             if goed is not None:
                 if k in ENTER or k == ord(" "):
                     return buf, goed, False
