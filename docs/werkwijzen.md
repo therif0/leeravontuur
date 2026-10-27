@@ -131,13 +131,13 @@ weg. Esc werkt nog wel, maar het kind ziet de knop niet.
 **Later, een eigen project: Maten volgens de vaste werkwijze** (§4: klad, tips in de reeks, tweede kans). Pas na
 een voorstel met mockups.
 
-## Wat de vader kiest
+## Wat de vader koos (27/10)
 
-1. Fase 1 zoals hierboven? (aanbevolen: ja)
-2. Esc in het hoofdmenu: een kader (aanbevolen) of zo laten?
-3. Ctrl-C: een kader, of zo laten (aanbevolen: zo laten; het kind drukt het zelden, en niets nagekeken gaat
-   verloren)?
-4. Een onderbroken reeks: het resultaat tonen van wat gedaan is (aanbevolen) of meteen naar het menu?
-5. Enter op het resultaat: zo laten (aanbevolen) of Enter = menu?
-6. De toets q: zo laten (aanbevolen)?
-7. Maten: `?` al in de reeks in fase 2 (aanbevolen), en de rest later als eigen project?
+1. **Fase 1: bouwen.** Esc is de natuurlijke manier om te stoppen. De te lange voetregels (§5) **blijven zoals ze
+   zijn**: als `[Esc] stoppen` er niet bij past, is dat geen probleem.
+2. **Esc in het hoofdmenu: eerst vragen** (fase 2).
+3. Ctrl-C: **geparkeerd**.
+4. **Een onderbroken reeks: het resultaat tonen** van wat gedaan is (fase 2).
+5. Enter op het resultaat: **geparkeerd**.
+6. De toets q: **geparkeerd**.
+7. Maten (`?` in de reeks, de vaste werkwijze): **geparkeerd**.
