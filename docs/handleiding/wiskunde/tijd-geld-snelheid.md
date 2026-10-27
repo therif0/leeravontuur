@@ -132,7 +132,7 @@ Zonder kleur of in ASCII ziet de klok er zo uit:
 - uurwijzer en minutenwijzer verwisseld
 - 'half vier' gelezen als 4.30 (half vier = 3.30)
 - het volgende uur genomen (de uurwijzer staat er nog maar bijna)
-- in 24 uur: 12 niet (of te veel) bij het uur opgeteld
+- 24-urennotatie: 12 niet (of te veel) bij het uur opgeteld
 - 60 minuten niet omgezet in een uur
 - later en vroeger verwisseld
 - gerekend alsof een uur 100 minuten heeft

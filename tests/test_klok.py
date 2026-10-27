@@ -66,6 +66,12 @@ class TestVragen(unittest.TestCase):
         self.assertFalse(O.nakijken(v, v.antwoord - 720))
         self.assertEqual(O.diagnose(v, v.antwoord - 720)[0], "klok_24")
 
+    def test_24_uur_vraag_is_duidelijk(self):
+        """#21: "Hoe laat is het in 24 uur?" leek te vragen wat het over een dag is (dan is het hetzelfde uur)."""
+        v = maak("5", "24uur", 3)
+        self.assertNotIn("in 24 uur", v.tekst)
+        self.assertIn("digitale klok (24-urennotatie)", v.tekst)
+
     def test_denkfouten(self):
         v = O.maak_met(O.parameters("5"), random.Random(1), {"soort": "lezen"})
         v.antwoord, v.data["t"] = Decimal(3 * 60 + 40), 3 * 60 + 40   # 3.40: de lange wijzer op 8, de korte bij 3
