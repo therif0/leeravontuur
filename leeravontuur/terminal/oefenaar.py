@@ -145,11 +145,11 @@ class Oefenaar:
             elif obj:
                 knoppen = obj.knoppen()
             elif lijnen:
-                knoppen = [("←→", "pijl", None), ("+", "inzoomen", ord("+")), ("−", "uitzoomen", ord("-")),
-                           ("Enter", "hier!", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+                knoppen = [("←→", "pijl", None), ("+", "zoom in", ord("+")), ("−", "zoom uit", ord("-")),
+                           ("Enter", "hier!", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
             else:
                 knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
-                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?", "tip", ord("?")),
+                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?/F1", "tip", ord("?")),
                     ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             if vrij:
@@ -281,6 +281,8 @@ class Oefenaar:
                 spring = False
                 continue
             k = s.toets()
+            if k == curses.KEY_F1:  # F1 = ? (op een AZERTY-klavier is ? Shift + komma, #14)
+                k = ord("?")
             if goed is not None:
                 if k in ENTER or k == ord(" "):
                     return buf, goed, False

@@ -81,7 +81,7 @@ class VraagstukInvoer:
         k = [("Tab", "volgende stap", TAB)]
         if self.fase == LEES:
             k.append(("Spatie", "aanduiden" if not self.onder else "kiezen", ord(" ")))
-        k.append(("?", f"tip ({max(0, 4 - self.tips)} over)", ord("?")))
+        k.append(("?/F1", f"tip ({max(0, 4 - self.tips)} over)", ord("?")))
         k.append(("Enter", "controleren" if self.fase == CONTROLE else "ok", 10))
         return k + [("Esc", "stoppen", ESC)]
 
@@ -555,7 +555,7 @@ class SpeurInvoer(_MetTip):
             (4 if self.regel and not nagekeken else 0) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
@@ -662,7 +662,7 @@ class KeuzeInvoer(_MetTip):
         return len(self.lijnen) + 2 + len(self.vraag) + 1 + len(self.m.opties) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
