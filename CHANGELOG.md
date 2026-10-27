@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.4 — plaatswaarden boven het rooster
+- **Cijferen onder elkaar: druk `p` en de plaatswaarden staan boven de kolommen** (`E T H D TD HD M`, en `t h d`
+  na de komma). De kolommen worden iets breder, de letter van de kolom waar je staat licht op, en ernaast staat
+  bv. "◂ je staat bij de T (tientallen)". Nog eens `p` = weg. Het programma onthoudt je keuze; de ouder kan het ook
+  aanzetten (Ouders › Kinderen › Weergave › Plaatswaarden bij cijferen). Bij optellen, aftrekken en
+  vermenigvuldigen; bij vermenigvuldigen met een kommagetal niet (daar staan de getallen niet onder de komma).
+- Spiekbrief Getallen: "TM = tienmiljoenen" erbij (dat zie je bij heel grote sommen).
+
 ## 0.21.3 — de spiekbrief erbij
 - **Na de laatste tip opent `?` (of F1) de spiekbrief**, meteen bij het stukje over je oefening (bv. "Compenseren"
   bij plus en min, "Later en vroeger" bij de klok). De laatste tip zegt het al: "Nog hulp nodig? Druk nog eens ?/F1:
