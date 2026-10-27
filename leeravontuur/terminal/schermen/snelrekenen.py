@@ -1,10 +1,11 @@
 """Snelrekenen: een klok die meeloopt, records en een verloop over de dagen."""
 
+import curses
 import time
 
 from ...kern import snelrekenen as SR
 from .. import maatje
-from ..scherm import BACKSPACE, ENTER, ESC, NIETS, teken_van, wil_stoppen
+from ..scherm import BACKSPACE, ENTER, ESC, NIETS, TerugNaar, teken_van
 
 
 class Snelrekenen:
@@ -16,15 +17,39 @@ class Snelrekenen:
         self.o = app.opslag
 
     def ronde(self, kr, soort, modus):
+        """Een ronde van 60 seconden of 20 sommen. Esc of de broodkruimel vragen eerst "Wil je stoppen?" (de klok
+        staat dan stil, Scherm.bewaak, #33); na Ja komt eerst de uitslag (met de bonus), ook via de broodkruimel."""
+        vorig_record = SR.record(self.o, self.app.kind.id, modus, soort)
+        weg = None
+        try:
+            self.speel(kr, soort, modus)
+        except TerugNaar as t:  # Ja op de broodkruimel: eerst de uitslag, dan naar dat menu
+            weg = t
+        self.s.cursor(False)
+        rondes = self.o.sessie_overzicht(self.app.kind.id, modus, SR.vaardigheid(soort))
+        if rondes and rondes[-1]["aantal"]:
+            ronde = rondes[-1]
+            bonussen = SR.beloon(self.o, self.app.kind.id, modus, soort, ronde, vorig_record)
+            self.uitslag(kr, modus, soort, ronde, vorig_record, bonussen)
+        if weg is not None:
+            raise weg
+
+    def speel(self, kr, soort, modus):
         s = self.s
         jaar = self.app.inst.leerjaar
         zichtbaar = self.app.inst.timer_zichtbaar
-        vorig_record = SR.record(self.o, self.app.kind.id, modus, soort)
         juist = fout = 0
         laatste = ""
         gezicht = "normaal"
         vermijd = set()
-        with self.app.sessie(modus, SR.vaardigheid(soort), jaar) as ses:
+        start = self.klok()
+
+        def pauze(seconden):  # de tijd in het kader "Wil je stoppen?" telt niet mee
+            nonlocal start
+            start += seconden
+
+        with self.app.sessie(modus, SR.vaardigheid(soort), jaar) as ses, \
+                s.bewaak(lambda: True, ses, ronde=True, pauze=pauze, klok=self.klok):
             start = self.klok()
             o, v = SR.vraag(soort, jaar, vermijd)
             ses.vraag_getoond()
@@ -55,15 +80,10 @@ class Snelrekenen:
                 maatje.teken(self.app, gezicht, ruim=True)
                 s.cursor(True, 7, vx + 1 + len(buf))
                 k = s.toets(wacht_ms=200)
-                if k == NIETS:
+                if k in (NIETS, curses.KEY_RESIZE):
                     continue
-                if k == ESC:  # eerst vragen (#33); de klok staat stil zolang het kader openstaat
-                    begin = self.klok()
-                    stoppen = wil_stoppen(s, ses, ronde=True)
-                    start += self.klok() - begin
-                    if stoppen:
-                        break
-                    continue
+                if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
+                    break
                 if k in ENTER and buf.strip():
                     getal = o.lees(buf)
                     goed = getal is not None and getal == v.antwoord
@@ -82,13 +102,6 @@ class Snelrekenen:
                         buf = buf[:-1]
                     elif (teken_van(k) or "x") in "0123456789,-−" and len(buf) < 10:
                         buf += teken_van(k)
-        s.cursor(False)
-        rondes = self.o.sessie_overzicht(self.app.kind.id, modus, SR.vaardigheid(soort))
-        if not rondes or rondes[-1]["aantal"] == 0:
-            return
-        ronde = rondes[-1]
-        bonussen = SR.beloon(self.o, self.app.kind.id, modus, soort, ronde, vorig_record)
-        self.uitslag(kr, modus, soort, ronde, vorig_record, bonussen)
 
     def uitslag(self, kr, modus, soort, ronde, vorig_record, bonussen):
         zichtbaar = self.app.inst.timer_zichtbaar

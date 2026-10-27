@@ -18,7 +18,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   onderwerp (bij Tafels: `[Enter] reeks  [V] vrij  [S] spiekbrief  [T] 60 s  [Z] 20 sommen  [Esc] terug`).
 - [ ] V, S, T en Z werken ook als kleine letter; een letter die er niet bij hoort, doet niets; een klik op een
   knop onderaan doet hetzelfde als de toets. Na de oefening sta je terug op hetzelfde onderwerp.
-- [ ] Een klik op de broodkruimel bovenaan (bv. "Wiskunde") midden in een oefening brengt je naar dat menu.
+- [ ] Een klik op de broodkruimel bovenaan (bv. "Wiskunde") midden in een vraag vraagt eerst "Wil je stoppen?"; ← en
+  Enter (Ja) brengt je naar dat menu. Na het nakijken gaat het meteen.
 - [ ] **Spiekbrieven** toont meteen de 8 domeinen (geen "Welk vak?" meer), met wat erin staat. **Getallen** opent
   meteen de spiekbrief; **Meten** vraagt eerst welke: Eenheden omzetten of Oppervlakte en formules.
 - [ ] **▶ Verder** start de vorige oefening (of eerst de herhaalvragen).
@@ -118,6 +119,9 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   vraag?" met "Nee, verder" gekozen. Enter: je bent terug en alles staat er nog. Nog eens Esc, dan ← en Enter: je
   bent terug in het menu. Probeer ook Maten (tabel), een vraagstuk en Tafels met T (60 seconden: de klok staat stil
   zolang het kader openstaat). Na het nakijken stopt Esc meteen.
+- [ ] **De broodkruimel midden in een vraag** (klik bv. op "Wiskunde" bovenaan): hetzelfde kader. Nee: alles staat er
+  nog. Ook in de spiekbrief die je met `?` vanuit een vraag opende (Esc daar = gewoon terug naar de vraag). Bij 60
+  seconden: na Ja eerst de uitslag, dan het menu.
 - [ ] **Esc** gaat overal een stap terug; in het hoofdmenu stopt het programma met "Tot de volgende keer".
 - [ ] Opnieuw starten: "Vandaag: x/y juist" bovenaan klopt nog.
 - [ ] Het programma twee keer openen geeft een waarschuwing.

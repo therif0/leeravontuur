@@ -1,9 +1,12 @@
 """De basis van elk scherm: tekenen met rollen, titel met broodkruimel, knoppen, muis en invoer."""
 
+import contextlib
 import curses
+import functools
 import sys
 import textwrap
 import time
+from dataclasses import dataclass
 
 from . import tekens, thema
 from .klikzones import Klikzones
@@ -76,6 +79,30 @@ class Vergrendeld(Exception):
     """Te lang niets gedaan in een beveiligd deel (bv. het ouderdeel)."""
 
 
+@dataclass
+class Bewaker:
+    """Een oefenscherm met iets dat nog niet nagekeken is (zie Scherm.bewaak)."""
+    actief: object        # () -> bool: is er nu iets te verliezen?
+    ses: object           # de Sessie (de tijd in het kader telt niet mee), of None
+    ronde: bool           # snelrekenen: "deze ronde" in plaats van "deze vraag"
+    pauze: object         # (seconden) -> None, bv. de klok van snelrekenen stilzetten, of None
+    klok: object          # waarmee de tijd in het kader gemeten wordt
+    diepte: int           # Esc hoort alleen op deze diepte bij de bewaker
+
+
+def deelscherm(f):
+    """Een scherm bovenop een ander (menu, lezer, invoer, kader): zijn Esc is van hemzelf, niet van de bewaker van
+    het oefenscherm eronder (bv. Esc in de spiekbrief vanuit een vraag = terug naar de vraag)."""
+    @functools.wraps(f)
+    def binnen(self, *args, **kwargs):
+        self._diepte += 1
+        try:
+            return f(self, *args, **kwargs)
+        finally:
+            self._diepte -= 1
+    return binnen
+
+
 class Scherm:
     def __init__(self, win, inst, kleuren=True):
         self.win = win
@@ -88,6 +115,9 @@ class Scherm:
         self.slot = None       # seconden zonder toets waarna Vergrendeld volgt (None = nooit)
         self.klokvenster = None  # terminal/venster.Klokvenster, of None (dan tekent de terminal de klok)
         self._laatste_toets = time.monotonic()
+        self._bewakers = []    # Scherm.bewaak: de oefenschermen die nu lopen
+        self._diepte = 0       # hoeveel deelschermen (menu, lezer …) er nu open zijn
+        self._in_kader = False
         try:
             win.keypad(True)
         except (curses.error, AttributeError):
@@ -197,12 +227,57 @@ class Scherm:
 
     # ---- invoer ----------------------------------------------------------
 
+    @contextlib.contextmanager
+    def bewaak(self, actief, ses=None, ronde=False, pauze=None, klok=time.monotonic):
+        """Zolang een oefenscherm loopt (#33): weggaan vraagt eerst "Wil je stoppen?" (Nee gekozen) als actief()
+        waar is, d.w.z. als er iets nog niet nagekeken is. Dat geldt voor een klik op de broodkruimel (ook vanuit een
+        deelscherm, bv. de spiekbrief in een vraag) en voor Esc in het oefenscherm zelf. Nee: toets() geeft
+        KEY_RESIZE (opnieuw tekenen, alles blijft staan); Ja: TerugNaar of ESC, zoals zonder bewaker.
+        De tijd in het kader telt niet mee (Sessie.pauze, en pauze(seconden) voor een eigen klok)."""
+        self._bewakers.append(Bewaker(actief, ses, ronde, pauze, klok, self._diepte))
+        try:
+            yield
+        finally:
+            self._bewakers.pop()
+
+    def _wil_weg(self, esc):
+        """True = weg (zonder vraag, of Ja in het kader), False = Nee: blijven."""
+        if not self._bewakers or self._in_kader:
+            return True
+        b = self._bewakers[-1]
+        if (esc and self._diepte != b.diepte) or not b.actief():
+            return True
+        self._in_kader = True
+        begin = b.klok()
+        try:
+            if b.ronde:
+                return self.bevestig("Wil je stoppen met deze ronde?", "De klok staat stil tot je kiest.")
+            return self.bevestig("Wil je stoppen met deze vraag?", "Ze is nog niet nagekeken.")
+        finally:
+            self._in_kader = False
+            duur = b.klok() - begin
+            if b.ses is not None:
+                b.ses.pauze(duur)
+            if b.pauze:
+                b.pauze(duur)
+
     def toets(self, wacht_ms=None):
         """Wacht op een toets of klik (met wacht_ms: hoogstens zo lang, en dan NIETS).
 
         Geeft een getal (toetscode; letters als ord(teken)) of een tuple-actie van een klikzone,
-        bv. ("kies", 2) of ("scroll", 1). Een klik op de broodkruimel geeft TerugNaar.
+        bv. ("kies", 2) of ("scroll", 1). Een klik op de broodkruimel geeft TerugNaar. Met een bewaker (bewaak)
+        vragen de broodkruimel en Esc eerst of het kind echt wil stoppen.
         """
+        k = self._toets(wacht_ms)
+        if isinstance(k, tuple) and k and k[0] == "kruimel":
+            if not self._wil_weg(esc=False):
+                return curses.KEY_RESIZE
+            raise TerugNaar(k[1])
+        if k == ESC and not self._wil_weg(esc=True):
+            return curses.KEY_RESIZE
+        return k
+
+    def _toets(self, wacht_ms=None):
         self.win.refresh()
         venster = self.klokvenster
         if venster:
@@ -258,8 +333,6 @@ class Scherm:
                     if venster:
                         venster.wissel()
                     return curses.KEY_RESIZE
-                if isinstance(actie, tuple) and actie[0] == "kruimel":
-                    raise TerugNaar(actie[1])
                 return actie
             return k
 
@@ -332,6 +405,7 @@ class Scherm:
         except curses.error:
             pass
 
+    @deelscherm
     def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None, uitleg_tot=None):
         """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug.
         uitleg_tot = de kolom waar de uitleg moet stoppen (bv. vóór de avatar); te lang = ingekort met '…'.
@@ -396,6 +470,7 @@ class Scherm:
             elif toetsen is not None and (teken_van(k) or "").lower() in {t for t, _ in toetsen[sel][1:]}:
                 return gekozen(sel, teken_van(k).lower())
 
+    @deelscherm
     def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen", begin=None):
         """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}.
         begin = de tekst van een regel (bv. een kopje) die bovenaan moet staan bij het openen."""
@@ -440,6 +515,7 @@ class Scherm:
             elif k == curses.KEY_END:
                 top = len(lijnen)
 
+    @deelscherm
     def bevestig(self, vraag, uitleg="", ja="Ja, stoppen", nee="Nee, verder"):
         """Een kader midden over het scherm met twee knoppen: [ja] links, [nee] rechts en al gekozen (#33).
         ← → (of Tab) kiest, Enter of spatie bevestigt, Esc = nee; een klik op een knop kiest die. True = ja."""
@@ -477,6 +553,7 @@ class Scherm:
             elif k in (ESC, curses.KEY_RESIZE):
                 return False
 
+    @deelscherm
     def invoer(self, kruimel, vraag, start="", max_lengte=20, verborgen=False, uitleg=(), cijfers=False,
                vrij=False):
         """Eén regel tekst laten typen (bv. een naam of wachtwoord). Geeft de tekst of None bij Esc.
@@ -513,15 +590,3 @@ class Scherm:
             elif verborgen or vrij or ch.isalnum() or ch in " -'":
                 buf += ch
 
-
-def wil_stoppen(s, ses=None, ronde=False):
-    """Esc midden in een vraag of een ronde (#33): eerst vragen of het kind echt wil stoppen (Nee staat gekozen).
-    De tijd in het kader telt niet mee voor de vraag (Sessie.pauze). True = stoppen."""
-    begin = time.monotonic()
-    if ronde:
-        ja = s.bevestig("Wil je stoppen met deze ronde?", "De klok staat stil tot je kiest.")
-    else:
-        ja = s.bevestig("Wil je stoppen met deze vraag?", "Ze is nog niet nagekeken.")
-    if ses is not None:
-        ses.pauze(time.monotonic() - begin)
-    return ja

@@ -154,6 +154,17 @@ class TestSchermen(Basis):
         self.assertTrue(self.ergens(scherm, "De klok staat stil tot je kiest."))
         self.assertTrue(self.ergens(scherm, "Juist: 2 van 2"))
 
+    def test_snelrekenen_kruimel_vraagt_eerst_en_toont_de_uitslag(self):
+        """#33 (opnieuw): de broodkruimel tijdens een ronde vraagt eerst; na Ja eerst de uitslag, dan het menu."""
+        o = self.opslag(("Test", "5"))
+        vast = Vraag(H.TAFELS.id, f"{H.TAFELS.id}:t2:2x3", "2 × 3 =", Decimal(6), data={})
+        with mock.patch.object(SR, "vraag", return_value=(H.TAFELS, vast)):
+            scherm, app = self.speel([*naar(H.TAFELS, "z", niveau=None), "6", OK, ("klik", 0, 17),
+                                      curses.KEY_LEFT, OK, OK], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze ronde?"))
+        uitslag = next(i for i, b in enumerate(scherm.beelden) if "Juist: 1 van 1" in b)
+        self.assertTrue(any("Welk onderwerp?" in b for b in scherm.beelden[uitslag:]))
+
     def test_zonder_timer_alleen_20_sommen(self):
         o = self.opslag(("Test", "5", {"timer_zichtbaar": False}))
         # op Tafels doet T niets en staat er geen [T] 60 s; Gemengd start met Enter 20 sommen

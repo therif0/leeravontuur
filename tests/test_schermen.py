@@ -221,6 +221,11 @@ class TestReeks(Basis):
         scherm, _ = self.speel([*naar("wiskunde.meten.lengte", "h"), "4", ESC, OK])
         self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
         self.assertNotIn("Wil je stoppen", scherm.beelden[-1])  # Nee: de tabel staat er weer
+        # en ook de broodkruimel (#33 opnieuw), vrij en in de tabel
+        for stappen in ([*naar("wiskunde.meten.massa"), "5"], [*naar("wiskunde.meten.lengte", "h"), "4"]):
+            scherm, app = self.speel([*stappen, ("klik", 0, 17), OK], opslag=o)
+            self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+            self.assertNotIn("Welk onderwerp?", na_het_kader(scherm))
 
     def test_f1_is_ook_een_tip(self):
         """#14: op een AZERTY-klavier is ? Shift + komma; F1 geeft ook een tip (eigen scherm van de maten)."""
@@ -615,6 +620,40 @@ class TestWerkwijze(Basis):
         y, x = plek(scherm, "[ Ja, stoppen ]")
         scherm, _ = self.speel([*self.plusmin(), ESC, ("klik", y, x + 2)])
         self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
+
+    KRUIMEL_WISKUNDE = ("klik", 0, 17)  # " Leeravontuur › Wiskunde › …": "Wiskunde" begint in kolom 16
+
+    def test_kruimel_vraagt_eerst_en_nee_houdt_alles(self):
+        """#33 (opnieuw): een klik op de broodkruimel midden in een vraag vraagt ook eerst "Wil je stoppen?"."""
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), TAB, *"47 + 100 = 147", OK, TAB, *"14", self.KRUIMEL_WISKUNDE,
+                                  OK, *"6", OK], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+        self.assertIn("47 + 99 =", na_het_kader(scherm))
+        rij = o.antwoorden(app.kind.id)[-1]
+        self.assertEqual((rij["gegeven"], rij["juist"]), ("146", 1))
+        self.assertIn('"klad": ["47 + 100 = 147"]', rij["extra"])
+
+    def test_kruimel_ja_gaat_naar_dat_menu(self):
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*self.plusmin(), *"14", self.KRUIMEL_WISKUNDE, curses.KEY_LEFT, OK], opslag=o)
+        self.assertIn("Welk onderwerp?", na_het_kader(scherm))
+        self.assertEqual(o.antwoorden(app.kind.id), [])
+
+    def test_kruimel_vanuit_de_spiekbrief_in_een_vraag(self):
+        """In de spiekbrief vanuit een vraag: de broodkruimel vraagt eerst; Esc gaat gewoon terug naar de vraag."""
+        scherm, _ = self.speel([*self.plusmin(), *"14", *["?"] * 4, self.KRUIMEL_WISKUNDE, OK])
+        self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
+        self.assertIn("› Spiekbrief", na_het_kader(scherm))  # Nee: terug in de spiekbrief
+        scherm, _ = self.speel([*self.plusmin(), *"14", *["?"] * 4, ESC])
+        self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
+        brief = max(i for i, b in enumerate(scherm.beelden) if "› Spiekbrief" in b)
+        self.assertIn("47 + 99 =", scherm.beelden[brief + 1])  # Esc: meteen terug naar de vraag
+
+    def test_kruimel_na_het_nakijken_meteen(self):
+        scherm, _ = self.speel([*self.plusmin(), *"146", OK, self.KRUIMEL_WISKUNDE])
+        self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
+        self.assertTrue(self.ergens(scherm, "Welk onderwerp?"))
 
     def test_esc_na_het_nakijken_stopt_meteen(self):
         scherm, _ = self.speel([*self.plusmin(), *"146", OK, ESC])
