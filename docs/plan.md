@@ -1,20 +1,18 @@
 # Plan: "Leeravontuur": rekenen en taal leren en oefenen in de terminal (Windows, macOS, Linux)
 
 ## Context
-Het huidige programma (`oefeningen.py`, ±900 regels, één bestand, curses) oefent lengte en massa.
-Imrane (**5de leerjaar**, Vlaanderen) vindt het superleuk. De vader wil het uitbreiden tot een volwaardig leerprogramma:
-- rekenen in de volle breedte, met een echt leerproces per onderwerp
+
+### Waar het begon
+Het eerste programma (`oefeningen.py`, ±900 regels, één bestand, curses) oefende lengte en massa. Imrane
+(**5de leerjaar**, Vlaanderen) vond het superleuk. De vader wilde er een volwaardig leerprogramma van maken:
+- rekenen in de volle breedte, met een echt leerproces per onderwerp, hoofdrekenen en snelrekenen
 - vraagstukken met een kladblad en grondige uitleg waarom iets juist of fout is
-- hoofdrekenen en snelrekenen
-- examens die de ouder samenstelt
-- kindaccounts
-- ouderrapporten op datum achter een wachtwoord
-- herhaling van fouten
+- kindaccounts, herhaling van fouten, en geen vragen die hij na een tijd van buiten kent
+- een ouderdeel achter een wachtwoord, met rapporten op datum en examens die de ouder samenstelt
 - **taal** (Nederlands) in dezelfde stijl, en **Frans** (woordenschat, vervoegen, korte zinnetjes, uit het hoofd leren)
 - dictees die **afgedrukt** worden en die de ouder voorleest (geen computerstem)
-- geen vragen die hij na een tijd van buiten kent
-- een **avatar** (blokje à la Geometry Dash) die hij met verdiende punten aankleedt in een **winkel**,
-  waar elke aankoop een kleine rekenchallenge is; de avatar is ook zijn oefenmaatje
+- een **avatar** (blokje à la Geometry Dash) die hij met verdiende punten aankleedt in een **winkel**, waar elke
+  aankoop een kleine rekenchallenge is; de avatar is ook zijn oefenmaatje
 - beveiliging die nu eenvoudig is, maar later kan meegroeien
 
 Alles in de terminal, licht, op Windows, macOS en alle Linuxen, met een requirements-lijst.
@@ -28,12 +26,53 @@ Nu (5de leerjaar) betekent dat: 4de lj · 5de lj · 6de lj · 1ste middelbaar. I
 
 Op het startscherm: **"Leeravontuur, een gratis leerprogramma van Solve It Now. Iedereen moet kunnen leren."**
 
+### Stand van zaken (versie 0.20.1, oktober 2026)
+Van één bestand naar ±16 000 regels Python in 22 versies (zie `CHANGELOG.md`), telkens getest. Wat er nu werkt:
+- **Wiskunde: 8 domeinen, 43 onderwerpen** (Getallen, Hoofdrekenen, Cijferen, Breuken en procenten, Meten,
+  Tijd, geld en snelheid, Meetkunde, Vraagstukken), elk met een leerlijn per leerjaar (3de leerjaar tot 1ste middelbaar),
+  denkfouten die het programma herkent, uitleg en een spiekbrief.
+- **De vaste werkwijze** in elke oefening: lees, klad (`Tab`, elke regel meteen nagekeken), antwoord; getrapte tips
+  met `?`, een tweede kans, en "Zo kan het:" in klad-regels.
+- **Interactieve modellen:** eenhedentabel, getallenlijn met zoom, cijferen in een rooster, staartdeling stap voor
+  stap, breukbalk, honderdveld, cm²-rooster, schatkaart, en een **wijzerklok in een eigen venster**.
+- **Vraagstukken** met een verhaalmachine (20 rekenstructuren × 22 werelden), 4 stappen, foute paden als denkfouten,
+  de **Speurneus** (zoek de fout in het klad van een ander kind) en **schatten en controleren**.
+- **Snelrekenen** (60 seconden, 20 sommen, records) in Hoofdrekenen.
+- **Herhalen:** fouten opnieuw, gelijkaardige vragen, een herhaalbak (1, 3, 7 dagen), "niet binnen 30 dagen",
+  en ▶ Verder.
+- **Punten, pixel-avatar en winkel** (aankoop = rekenvraag, "ben je zeker?", mini-lesje, pakje onderweg, kast).
+- **Ouderdeel:** kinderen beheren (leerjaar, timer, pincode, weergave), rapporten per periode en per vak › domein ›
+  onderwerp met kalender, denkfouten en status, export naar CSV, TXT en JSON, puntenlogboek, opmerkingen van het
+  kind ("Zeg het ons").
+- **Toegankelijk:** schermkleuren (ook kleurenblind en hoog contrast), eenvoudige tekens (ASCII), muis overal,
+  alles in 80 × 24.
+- **Stevig:** 371 automatische tests (CI op Windows, macOS en Linux), een aapjestest met duizenden willekeurige
+  toetsen, reservekopieën van de databank en een vangnet dat een fout nooit aan het kind toont.
+- **Handleiding** (`docs/handleiding/`, met schermafdrukken; nog van de menu's van 0.19, zie "Wat er nu komt").
+- **Een plan voor coaches en leerkrachten** (`docs/leerkracht-coach.md`, geparkeerd).
+
+Hoe we werken staat in `CLAUDE.md` ("Werkwijze met Claude"): de vader beslist over wat het kind ziet, grote
+veranderingen gaan in fasen met een stop na elke fase, en elke fout die hij vindt wordt een GitHub-issue met een
+eigen branch en pull request.
+
+### Wat er nu komt (voorstel; de vader beslist)
+1. **De issues uit de tests van de vader** (lopend). Taal wacht tot hij klaar is met testen.
+2. **Taal 1: werkwoordspelling** (fase 13), als stap B in fasen: B0 inventaris en beslissingen, B1 tekstantwoorden
+   nakijken, B2 werkwoord-regelmotor en een nagekeken woordenlijst, B3 de eerste onderwerpen (Taal staat dan in het
+   hoofdmenu), B4 't kofschip, B5 de werkwoordmachine en de foutenjager, B6 uitbrengen.
+3. De rest van **Taal** (spelling, zinsontleding, woordenschat en lezen, dictee), dan **Frans**.
+   Vóór Frans: beslissen hoe het hoofdmenu verder groeit (het zit dan vol, zie sectie L).
+4. **Examens** (fase 23), en de eerste stappen voor de **coach** (C1–C4 kunnen al eerder).
+5. **Leerjaar 2de middelbaar en de schooljaarwissel** (fase 26), klaar vóór september 2027.
+6. Het **handleidingproject**: een volledige test van alle functies en de handleiding voor kind, ouder en coach.
+7. **Avontuur** en **publicatie**.
+
 ---
 
 ## Eerlijke inschatting (ook wat minder goed is)
-- **De omvang is groot.** Alles samen is dit gerust 10× het huidige programma. Daarom bouw ik in fasen waarbij
-  **na elke fase iets bruikbaars werkt**. Ik start met het fundament (accounts, opslag, rapport, geschiedenis)
-  en zet daar onderwerp per onderwerp bovenop. Wat Imrane op school nodig heeft, kan voorgaan.
+- **De omvang is groot.** Het werd ruim 15× het eerste programma, gebouwd in 20+ kleine versies waarbij
+  **na elke versie iets bruikbaars werkt**: eerst het fundament (accounts, opslag, rapport, geschiedenis), dan
+  onderwerp per onderwerp. Dat blijft zo voor Taal en Frans. Wat Imrane op school nodig heeft, kan voorgaan.
 - **De terminal is een sterkte én een grens.** Rekenen, spelling, grammatica en woordenschat werken er uitstekend
   (snel, geen afleiding, toetsenbord). Zonder afbeeldingen en geluid zijn sommige dingen wel beperkt:
   - **Geen computerstem.** Robotstemmen zijn niet leuk voor een kind. **Dictees worden afgedrukt** en de ouder leest
@@ -362,17 +401,22 @@ oefenen. Dat gebeurt dus met de ouder (luistermodus), en natuurlijk in de klas.
 - **Snelrekenen:** 60 seconden zoveel mogelijk, of 20 sommen om het snelst. Per type een **persoonlijk record**,
   en een grafiekje over de dagen in het rapport.
 - Dit kan ook voor taal: **snel-spellen** met de tijd en d/t-flitsrondes.
+- *Gebouwd (0.8, sinds 0.20 in Hoofdrekenen): Tafels en Optellen en aftrekken met T (60 s) en Z (20 sommen),
+  Gemengd, records en een overzicht van de laatste rondes. Nog niet: het grafiekje in het rapport.*
 
 ## F. Herhaling na een reeks
 - Na **elke** reeks, en ook bij het stoppen in vrij oefenen: "**Fouten opnieuw**" (dezelfde vragen, direct).
 - Daarna: "**Gelijkaardige vragen**" (dezelfde vaardigheid, nieuwe parameters) om te controleren of de regel nu zit.
 - Fouten gaan ook automatisch in de herhaalbak voor volgende dagen (zie A.7).
-  Het hoofdmenu toont "Je hebt 7 vragen om te herhalen".
+  Het hoofdmenu toont "Herhalen (7)".
 
 ## G. Accounts, ouderdeel, rapporten en examens
+*Gebouwd (0.3 → 0.20): kindaccounts met pincode, het ouderdeel, kinderen beheren, rapporten met kalender, status
+en denkfouten, export. Nog niet: examens, eigen inhoud, het trendgrafiekje en open vakken per kind.*
+
 - **Kindaccounts:** bij de start kiest hij zijn naam (met een optionele kind-pincode). Elk kind heeft eigen vooruitgang,
   sterren, herhaalbak en instellingen.
-- **Ouderdeel:** via `python3 oefeningen.py --ouder` of het menu-item "Ouders" + wachtwoord.
+- **Ouderdeel:** via `python3 oefeningen.py --ouder` of "Ouders" bij "Wie ben jij?" + wachtwoord.
   Bij de eerste keer stel je een wachtwoord in. Na 10 minuten zonder toets wordt het ouderdeel automatisch afgesloten.
   - **Kinderen beheren.** Instellingen per kind: niveau, timer zichtbaar, open vakken/domeinen, avatar.
   - **Rapporten per dag, week of maand, of een zelf gekozen periode:**
@@ -502,115 +546,127 @@ maar als **pixel-art**:
 
 ---
 
-## L. Architectuur, menu's en opties
+## L. Architectuur, menu's en instellingen
 
 ### Lagen
 ```
- ┌───────────────────────────────────────────────────────────────────┐
+ ┌────────────────────────────────────────────────────────────────────┐
+ │  terminal/curriculum/  het leerplan: Vak › Domein › Onderwerp      │  ← de menu's (registry), wijst naar
+ │                        (modi, spiekbrieven, bewaarde ids)          │    kern-ids en schermen
+ ├────────────────────────────────────────────────────────────────────┤
  │  terminal/  (curses)                 later: gui/ (tkinter of web)  │  ← alleen tekenen + toetsen
- │  schermen · rooster · modellen · avatar · kladblad                 │
+ │  navigatie · oefenaar · kladblad · rooster · balk · vraagstuk ·    │
+ │  modellen · avatar · maatje · schermen/ (ouder, winkel, …)         │
+ │  venster/   klokvenster in een eigen proces (tkinter)              │
  └───────────────▲──────────────────────────────────▲─────────────────┘
                  │ vraagt: "geef volgende vraag",    │ krijgt: Vraag, Model, Feedback,
                  │ "controleer dit antwoord"         │ Rapport (gewone Python-objecten)
  ┌───────────────┴──────────────────────────────────┴─────────────────┐
  │  kern/                                                             │
- │  sessie ── selectie ── vaardigheden ──► wiskunde/ taal/ frans/     │
- │     │          │            │              (generator, controle,  │
- │     │          │            └── leerlijnen  diagnose, uitleg)      │
+ │  sessie ── selectie ── onderwerpen (catalogus) ──► wiskunde/       │
+ │     │          │            │        later: taal/ frans/           │
+ │     │          │            └── leerlijnen (generator, nakijken,   │
+ │     │          │                 diagnose, uitleg, klad-oplossing) │
  │     │          └── herhaling (herhaalbak)                          │
- │     └── punten · avatar · winkel · avontuur · rapporten · afdrukken│
+ │     └── punten · avatar · winkel · rapporten · klad · verhaal      │
  └───────────────────────────────▲────────────────────────────────────┘
-                                 │ één opslag-interface
+                                 │ één opslag-interface (kern/opslag.py)
  ┌───────────────────────────────┴────────────────────────────────────┐
- │  opslag: SQLite (nu)  ·  later: versleuteld of server              │
+ │  opslag: SQLite met migraties en reservekopieën · later: server    │
  └────────────────────────────────────────────────────────────────────┘
- inhoud/ (JSON): leerlijnen, woordenlijsten, vraagstuk-sjablonen, avatar-onderdelen, thema's
+ inhoud/ (JSON): leerlijnen, vraagstukwerelden en zinnen, avatar-onderdelen en winkel
 ```
 **De vaste lus voor elke oefening (in elk vak hetzelfde):**
-1. `sessie` vraagt aan `selectie` welke vaardigheid nu komt (adaptief, herhaalbak, niet binnen 30 dagen).
-2. De vaardigheid maakt een `Vraag` met het niveau uit de **leerlijn** van het juiste leerjaar.
-3. De terminal toont de vraag en het model, en geeft het antwoord terug.
-4. `controle()` → juist? Zo niet: `diagnose()` → denkfoutcode → uitleg.
-5. `sessie` bewaart het antwoord, `punten` en `avatar` reageren en `herhaling` werkt de herhaalbak bij.
-6. Na de reeks: rapport, fouten opnieuw, gelijkaardige vragen.
+1. `sessie` vraagt aan `selectie` welke vraag nu komt (adaptief, herhaalbak, niet binnen 30 dagen).
+2. Het onderwerp maakt een `Vraag` met de parameters uit de **leerlijn** van het juiste leerjaar.
+3. De terminal toont de vraag en het model; het kind leest, maakt klad en antwoordt.
+4. Nakijken → juist? Zo niet: `diagnose()` → denkfoutcode → hulpje, tweede kans, "Zo kan het:".
+5. `sessie` bewaart het antwoord, `punten` en de avatar reageren en `herhaling` werkt de herhaalbak bij.
+6. Na de reeks: score, fouten opnieuw, gelijkaardige vragen.
 
-Een nieuw onderwerp maken betekent dus: **één vaardigheidsbestand** (generator, controle, diagnose, uitleg) +
-**leerlijn-data**. Menu's, opslag, rapporten, herhaling, punten en examens werken dan automatisch mee.
+Een nieuw onderwerp maken betekent dus: **één onderwerp in de kern** (generator, nakijken, diagnose, uitleg,
+oplossing) + **leerlijn-data** + **één regel in het leerplan** (`terminal/curriculum/`). Menu's, opslag, rapporten,
+herhaling en punten werken dan automatisch mee. De regels staan in `CLAUDE.md`.
 
-### Menu's (boom)
+### Menu's (boom, zoals in 0.20)
 ```
-Startscherm  (logo Leeravontuur · "een gratis leerprogramma van Solve It Now" · "Iedereen moet kunnen leren")
-└─ Wie ben jij?  [Imrane] [+ nieuw kind] [Ouders 🔒]
-   └─ Hoofdmenu van het kind  (avatar groot links, punten ★ rechts, meldingen: "7 vragen te herhalen", "Examen klaar")
-      ├─ ▶ Verder waar je was          (voorstel: volgende stap in de leerladder)
-      ├─ Avontuur                       → kaart → wereld → opdracht
-      ├─ Leren & oefenen
-      │   ├─ Wiskunde → domein (Getallen, Hoofdrekenen, Cijferen, Breuken, Procenten, Eenheden, Meetkunde, Vraagstukken)
-      │   ├─ Taal     → domein (Werkwoordspelling, Spelling, Zinsontleding, Woordenschat, Lezen)
-      │   └─ Frans    → domein (Woordenschat, Vervoegen, Zinnetjes, Uit het hoofd)
-      │        └─ vaardigheid → [Ontdekken] [Oefenen met hulp] [Oefenen alleen] [Reeks van 10] [Vrij oefenen]
-      │                          → niveau (Makkelijk/Normaal/Moeilijk/Heel moeilijk)
-      ├─ Snelrekenen                    (60 seconden / 20 sommen, records)
-      ├─ Herhalen  (n)                  (herhaalbak van vandaag)
-      ├─ Examen    (als de ouder er een klaarzette)
-      ├─ Mijn avatar                    → Paskamer · Winkel · Badges
-      ├─ Spiekbrieven                   (per domein)
-      ├─ Opties
-      └─ Wissel van kind / Stoppen
-Ouders 🔒 (wachtwoord, of --ouder)
-├─ Rapporten       → kind → periode (dag/week/maand/eigen) → overzicht · kalender · per vaardigheid · denkfouten · export
-├─ Examens         → nieuw · sjablonen · toewijzen · resultaten
-├─ Kinderen        → toevoegen · leerjaar · instellingen (timer zichtbaar, open vakken, avatar, penaliteit winkel)
-├─ Eigen inhoud    → woordenlijsten (NL/FR) · teksten om uit het hoofd te leren · leesteksten
-├─ Dictee afdrukken→ kies inhoud → ouderblad + kindblad (browser) → achteraf overtypen
-├─ Punten          → bonus geven · factoren
-├─ Schooljaar      → leerjaren bevestigen bij de schooljaarwissel
-└─ Wachtwoord · gegevens exporteren · alles wissen per kind
+Startscherm  (Leeravontuur · "een gratis leerprogramma van Solve It Now" · "Iedereen moet kunnen leren")
+└─ Wie ben jij?  [Imrane] [+ Nieuw kind] [Ouders]
+   └─ Hoofdmenu van het kind  (avatar en punten rechts)
+      ├─ 1 ▶ Verder                     (eerst de herhaalvragen, anders de vorige oefening)
+      ├─ 2 Herhalen (n)                 (de herhaalbak van vandaag)
+      ├─ 3 Wiskunde → domein → onderwerp, met toetsen per onderwerp:
+      │       Enter reeks · V vrij · S spiekbrief · T 60 s · Z 20 sommen · H tabel-oefening
+      │       (alleen de toetsen die gelden; daarna terug op hetzelfde onderwerp)
+      │     Getallen · Hoofdrekenen · Cijferen · Breuken en procenten · Meten ·
+      │     Tijd, geld en snelheid · Meetkunde · Vraagstukken
+      ├─   Taal  (later) → Werkwoordspelling · Spelling · Zinsontleding · Woordenschat · Lezen
+      ├─   Frans (later) → Woordenschat · Vervoegen · Zinnetjes · Uit het hoofd
+      ├─ 4 Spiekbrieven → vak → domein → spiekbrief
+      ├─ 5 Mijn avatar                  → W winkel · K kast · L schermkleuren
+      ├─ 6 Zeg het ons                  (opmerking voor de ouder)
+      ├─ 7 Wissel van kind
+      └─ 8 Stoppen
+Ouders (wachtwoord, of --ouder)
+├─ Rapporten       → kind → periode → overzicht per vak › domein › onderwerp · kalender · denkfouten · status · export
+├─ Kinderen        → naam · leerjaar · Weergave · timer zichtbaar · pincode · winkel-straf · gegevens exporteren · wissen
+├─ Punten          → logboek · bonus geven
+├─ Wachtwoord wijzigen
+└─ Opmerkingen     (uit "Zeg het ons")
+Later in het ouderdeel: Examens · Eigen inhoud · Dictee afdrukken · Schooljaar (de wissel op 1 september)
 ```
+- **Hoogstens 10 items per menu** (de cijfertoetsen 1–9 en 0). Het hoofdmenu heeft er nu 8: met Taal en Frans zit
+  het vol. Vóór er nog iets bijkomt (Examen, Avontuur), kiest de vader een oplossing.
+- Weg sinds 0.20: "Leren & oefenen", het menu Snelrekenen (nu T/Z in Hoofdrekenen) en het menu Opties.
+
 ### Muis (alles kan ook met het toetsenbord)
 Wie snel naar de muis grijpt, kan **overal klikken**, net als in btop:
-- **Menu's:** klik op een keuze. De knoppen in de voettekst (`[Enter ok]`, `[Esc terug]`, `[? hulp]`) zijn klikbaar.
-  Klik op de broodkruimel om terug te springen naar een hoger niveau.
-- **Rooster** (eenhedentabel, cijferen, vervoegingstabel): klik op een vakje om het te selecteren en typ dan.
+- **Menu's:** klik op een keuze. De knoppen in de voetregel (`[Enter] reeks`, `[V] vrij`, `[Esc] terug` …) zijn
+  klikbaar. Klik op de broodkruimel om terug te springen naar een hoger niveau.
+- **Rooster** (eenhedentabel, cijferen): klik op een vakje om het te selecteren en typ dan.
   Klik tussen twee vakjes om de **komma** daar te zetten.
-- **Breukbalk:** klik op een stuk om het te **arceren**. Klik op `[−]`/`[+]` bij de noemer.
+- **Breukbalk en honderdveld:** klik op een stuk of vakje om het te kleuren.
 - **Getallenlijn:** klik op een plek om de pijl daar te zetten. Het scrollwiel zoomt in en uit.
-- **Zinsontleder:** klik een woord aan (sleep over meerdere woorden voor een groep) en klik daarna het label.
-- **Meerkeuze, winkel en paskamer:** klik op een antwoord, item of kledingstuk.
+- **Schatkaart en klok:** klik waar het kruisje moet; in het klokvenster sleep je de wijzer.
+- **Klad en antwoord:** klik om te wisselen. **Meerkeuze, winkel en kast:** klik op een antwoord of item.
 - **Lange teksten en rapporten:** scrollen met het wiel.
+- Later: de **zinsontleder** (klik een woord of sleep over een groep, klik dan het label).
 
 **Techniek:**
 - Elk scherm registreert tijdens het tekenen zijn **klikzones** (rechthoek → actie). Eén centrale verdeler zet een klik om
   in dezelfde actie als de bijhorende toets. Muis en toetsenbord delen dus dezelfde logica, en er is maar één pad
   om te testen.
-- **Optie "Muis aan/uit"** (`--geen-muis`). Als de muis aan staat, kun je tekst niet meer gewoon selecteren om te kopiëren.
-  In de meeste terminals werkt dat dan nog met Shift ingedrukt; dat staat in de hulp.
-- Geen "hover"-effecten: die werken niet betrouwbaar in alle terminals. Wel licht een vakje kort op als je erop klikt.
+- **Muis aan/uit** per kind (Ouders › Kinderen › Weergave, of `--geen-muis`). Als de muis aan staat, kun je tekst niet
+  meer gewoon selecteren; in de meeste terminals lukt dat dan met Shift ingedrukt.
+- Geen "hover"-effecten: die werken niet betrouwbaar in alle terminals.
 
 **Navigatie overal hetzelfde:**
-- ↑/↓ + Enter om te kiezen, of het cijfer van de keuze
-- Esc = terug, `?` = hulp bij dit scherm
-- de voettekst toont altijd de toetsen
-- een broodkruimel bovenaan: `Leren › Wiskunde › Breuken › Vereenvoudigen`
+- ↑/↓ + Enter om te kiezen, of het cijfer van de keuze (ook het numeriek klavier)
+- Esc = terug; in een oefening: `Tab` = klad, `?` = een volgende tip
+- de voetregel toont altijd de toetsen die gelden
+- een broodkruimel bovenaan: `Leeravontuur › Wiskunde › Breuken en procenten › Vereenvoudigen`
 
 ### Schetsen (80×24)
 ```
-┌ Leeravontuur ─────────────────────────────── Imrane · 340 punten · ★ 12 ┐
-│  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄     Hallo Imrane!                                     │
-│  █ (pixel-avatar) █   ▶ Verder: Breuken vereenvoudigen (oefenen alleen) │
-│  █   16×8 tekens  █     Avontuur                                        │
-│  █                █     Leren & oefenen                                 │
-│  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀      Snelrekenen                                     │
-│                         Herhalen (7)                                    │
-│  "Nog 3 juiste         Examen ● klaar                                   │
-│   antwoorden voor je   Mijn avatar                                      │
-│   pakje!"              Spiekbrieven · Opties                            │
-│                                                                         │
-│  Solve It Now · gratis · iedereen moet kunnen leren                     │
-└ ↑/↓ kiezen · Enter ok · Esc terug · ? hulp ─────────────────────────────┘
+ Leeravontuur
+
+    Hallo Imrane! Wat wil je doen?
+
+       1. ▶ Verder          breuken vereenvoudigen               ▄▄▄▄▄▄▄▄▄▄
+       2. Herhalen (7)      wat je moeilijk vond                ▀▀▀▀▀▀▀▀▀▀▀▀
+       3. Wiskunde          rekenen, meten, meetkunde, vraagst▄▀▀▀▀▀▀▀▀▀▀▀▀▀▀▄
+       4. Spiekbrieven      uitleg om terug te kijken         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+       5. Mijn avatar       winkel, kast, punten en schermkleure▀▀▀▀▀▀▀▀▀▀▀▀
+       6. Zeg het ons       wat vind je leuk of moeilijk?       ▀▀▀▀▀▀▀▀▀▀▀▀
+       7. Wissel van kind   iemand anders wil oefenen            ▀▀▀▀▀▀▀▀▀▀
+       8. Stoppen
+                                                              ★ 340 punten
+
+    Solve It Now · gratis · iedereen moet kunnen leren
+ [↑↓] kiezen  [Enter] ok  [Esc] terug
 ```
 ```
-┌ Leren › Wiskunde › Breuken › Vereenvoudigen ─────── vraag 4/10 · 2:13 ─┐
+┌ Leeravontuur › Wiskunde › Breuken en procenten › Vereenvoudigen ── 4/10 ┐
 │  Vereenvoudig zo ver als je kan:   6/8                                  │
 │                                                                         │
 │   ┌──┬──┬──┬──┬──┬──┬──┬──┐                                             │
@@ -622,25 +678,26 @@ Wie snel naar de muis grijpt, kan **overal klikken**, net als in btop:
 │  ✔ Juist! 6/8 → deel teller en noemer door 2 → 3/4         ▀▀▀▀         │
 └ Enter volgende · Esc stoppen ───────────────────────────────────────────┘
 ```
-(De echte schermen worden gebouwd en als afbeelding gecontroleerd; dit zijn schetsen van de indeling.)
+(De eerste schets is het echte hoofdmenu van 0.20; de tweede is een schets van de indeling.)
 
-### Opties (menu Opties, of argumenten bij het starten)
-| Optie | Argument | Uitleg |
+### Instellingen (waar ze nu staan)
+| Instelling | Waar | Argument bij het starten |
 |---|---|---|
-| **Kleurenblind** | `--kleurenblind` | een palet dat veilig is bij rood-groen-kleurenblindheid: **blauw = juist, oranje = fout**. Daarnaast **altijd** symbolen (✔ ✘, `+`/`!` in vakjes), zodat kleur nooit de enige aanwijzing is. Varianten voor deuteranopie/protanopie en voor tritanopie |
-| Hoog contrast | `--contrast` | alleen zwart/wit + vet/omgekeerd, geen kleurvlakken |
-| Geen kleur | `--geen-kleur` | voor oude terminals |
-| ASCII | `--ascii` | geen Unicode (kaders, pixel-avatar → tekstgezichtje) |
-| Muis | `--geen-muis` | klikken en scrollen aan/uit (uit = tekst selecteren werkt gewoon) |
-| Avatar | – | aan/uit, mini of zijpaneel |
-| Animaties | – | aan/uit (bv. het vereenvoudigen van de breukbalk, juichende avatar) |
-| Accent-snelcodes | – | aan/uit (`e'` → é) |
-| Standaard typrichting | – | ← of → in roosters |
-| Taal van de menu's | – | nu Nederlands; de teksten staan apart, zodat een vertaling later kan |
+| **Schermkleuren**: standaard, kleurenblind (rood-groen, blauw-geel), hoog contrast, geen kleur | het kind: Mijn avatar › L | `--kleurenblind [blauw-geel]`, `--contrast`, `--geen-kleur` |
+| Eenvoudige tekens (ASCII) | de ouder: Kinderen › Weergave | `--ascii` |
+| Muis | de ouder: Kinderen › Weergave | `--geen-muis` |
+| Typrichting in tabellen | de ouder: Kinderen › Weergave | – |
+| Avatar, animaties | de ouder: Kinderen › Weergave | – |
+| Klok in een eigen venster | de ouder: Kinderen › Weergave | `--zonder-klokvenster` |
+| Leerjaar, timer zichtbaar, pincode, winkel-straf | de ouder: Kinderen | – |
+| Accent-snelcodes (`e'` → é) | later (Frans) | – |
+| Taal van de menu's | nu Nederlands; de teksten staan apart, zodat een vertaling later kan | – |
 
-- De opties worden **per kind** bewaard. Het argument bij het starten gaat voor (handig op een andere computer).
-- Het kleurenpalet zit op **één plek** (`terminal/thema.py`). Alle schermen vragen "kleur voor *juist*" in plaats van "groen",
-  zodat elk thema overal werkt. Ook de avatar-paletten hebben een kleurenblind-variant.
+- De instellingen worden **per kind** bewaard. Een argument bij het starten gaat voor zolang het programma loopt en
+  wordt niet bewaard (handig op een andere computer).
+- **Kleurenblind:** blauw = juist, oranje = fout, en **altijd** ook een symbool (✔ ✘ !), zodat kleur nooit de enige
+  aanwijzing is. Het palet zit op **één plek** (`terminal/thema.py`): schermen vragen "kleur voor *juist*", niet
+  "groen". Ook de avatar heeft kleurenblind-paletten.
 
 ## M. Volgend schooljaar: niveaus schuiven mee
 **Ja: als Imrane in het 6de zit, wordt Heel moeilijk het 2de middelbaar.**
@@ -725,87 +782,125 @@ vaardigheidsbestand.
 *Nog niet ingepland.* De volledige brainstorm (coach eerst, deelpakket van de ouder, focusplan, klad terugzien,
 opdrachten en toetsen, klasschaal, en de vragen voor de sponsor) staat in [leerkracht-coach.md](leerkracht-coach.md).
 
-## Structuur
+## Beslissingen van de vader (logboek)
+Wat beslist is, staat hier op één plek; de uitwerking staat in de code, `CLAUDE.md` en de CHANGELOG.
+- **Werkwijze:** de vader beslist over alles wat het kind of de ouder ziet; grote veranderingen eerst als inventaris
+  en plan in fasen, met een stop na elke fase; samenvoegen pas na groene CI en zijn akkoord (merge-commit). Elke fout
+  die hij vindt, wordt een GitHub-issue.
+- **Licentie:** CC BY-NC-SA 4.0, "Solve It Now · Iedereen moet kunnen leren" (zie N).
+- **Dictee:** afgedrukt en voorgelezen door de ouder, geen computerstem.
+- **Menu's (0.20):** één leerplan Vak › Domein › Onderwerp; toetsen per onderwerp (ook kleine letters, klikbaar);
+  hoogstens 10 items per menu; Tijd, geld en snelheid is een eigen domein na Meten; snelrekenen zit in Hoofdrekenen
+  (T/Z, Gemengd); Opties is verhuisd (Schermkleuren bij het kind, Weergave per kind bij de ouder); de spiekbrief bij
+  Meten heet "Oppervlakte en formules".
+- **Rapport:** per vak › domein; snelrekenen staat apart onder zijn onderwerp, niets samengeteld, ook in de status
+  (twee regels); de export houdt alle oude kolommen en krijgt vak en domein erbij.
+- **Handleiding:** niet meer per versie; één handleidingproject op het einde (volledige test + handleiding voor kind,
+  ouder en coach). Tot dan houdt `NOG_TE_BESCHRIJVEN` bij wat er nog in moet.
+- **Coach en leerkracht:** eerst de coach, offline, de ouder blijft eigenaar van de gegevens
+  (`docs/leerkracht-coach.md`); nog niet ingepland.
+- **Taal** begint pas als de vader klaar is met testen en de issues opgelost zijn.
+
+## Structuur (zoals in 0.20)
 ```
-oefeningen.py                 starter: python3 oefeningen.py [--ouder] [--ascii]
+oefeningen.py                 starter: python3 oefeningen.py [--ouder] [--ascii] … (zie --help)
 requirements.txt              windows-curses (alleen Windows)
-CLAUDE.md                     architectuurregels: kern zonder UI, GUI later, vak→domein→vaardigheid
+CLAUDE.md                     afspraken: architectuur, menu's, werkwijze met Claude, uitbrengen
+CHANGELOG.md · README.md      wat er nieuw is (gewone taal) · installeren en starten
 leeravontuur/
-  kern/
-    leerjaren.py              leerjaar van het kind + schooljaarwissel; niveau = leerjaar + verschuiving
-    leerlijnen.py             laadt en valideert de leerlijn-data per vaardigheid (bereiken per leerjaar)
-    vaardigheden.py           register: vak → domein → vaardigheid (id, niveau, leerplanomschrijving)
-    vraag.py                  Vraag: tekst, invoertype, vraagsleutel, juist, controle(), diagnose(), uitleg[], model
-    diagnose.py               gedeelde denkfout-detectie (factor 10, eenheid, afronding …)
-    modellen.py               data: Breukbalk, Getallenlijn, Rooster, Honderdveld, Figuur, Zinsblokken, Kofschip
-    selectie.py               adaptieve keuze + "niet herhalen binnen 30 dagen" + verse examenvragen
-    herhaling.py              herhaalbak (Leitner)
-    sessie.py                 modi + tijdmeting + opslaan van antwoorden
-    opslag.py                 SQLite, migraties, profielen, wachtwoord
-    rapporten.py              overzichten per periode, export CSV/TXT
-    avontuur.py               werelden, sterren, badges (data)
-    punten.py                 verdienen (factoren, anti-farm), puntenlogboek
-    avatar.py                 lagen samenstellen tot een pixelraster (data) + uitdrukkingen
-    winkel.py                 catalogus, kopen, aankoop-challenge, levering ("pakje onderweg")
-    klad.py                   parser voor kladregels (getallen, komma's, eenheden, breuken, %, =)
-    afdrukken.py              HTML-bladen (dictee ouder/kind, oefenblad, rapport) → openen in de browser om af te drukken
-    wiskunde/                 eenheden, getallen, hoofdrekenen, cijferen, breuken, procenten, meetkunde
-    wiskunde/vraagstukken/    sjablonen per thema met stappen, foute paden en verwoordingen
-    taal/                     werkwoorden.py (regelmotor), spelling.py, zinsontleding.py, woordenschat.py, lezen.py, dictee.py
-    frans/                    woordenschat.py (met lidwoord/geslacht), vervoegen.py (regelmotor + onregelmatige ww),
-                              zinnen.py (zinsbouw, vertalen), accenten.py (invoer + "bijna juist"), uitHetHoofd.py
-  inhoud/                     JSON: werkwoorden, naamwoorden, zinnen, uitdrukkingen, leesteksten
-  inhoud/leerlijnen/          JSON per vaardigheid: parameters per leerjaar (3 … m2) + code van het officiële doel
-  inhoud/avatar/              JSON: palet, vormen + ankerpunten, onderdelen per laag (pixelpatronen), winkelcatalogus
-  terminal/
-    thema.py                  kleurenpaletten: standaard, kleurenblind (2 varianten), hoog contrast, geen kleur
-    scherm.py                 put, kader, menu, broodkruimel, lezer, tekstvak, ASCII-terugval (uit de huidige App)
-    klikzones.py              klikzones per scherm + verdeler muis → actie (dezelfde acties als de toetsen)
-    rooster.py                invoer per vakje: Tab, typrichting r, komma ,, groen/rood (uit tabel_vraag)
-    modellen.py               tekent de modellen en maakt ze interactief (breukbalk, getallenlijn, zinsontleder …)
-    kladblad.py               vraagstuk-scherm
-    avatar.py                 pixelraster tekenen met ▀ (256/8 kleuren, tekstterugval), mini-avatar, zijpaneel
-    schermen/winkel.py        winkel, kast/paskamer, aankoop-challenge
-    schermen/                 kind kiezen, hoofdmenu, leren, oefenen, snel, examen, ouder, rapporten, avontuurkaart
-tests/                        unittest (stdlib)
-.github/workflows/test.yml    ubuntu/macos/windows × Python 3.10 en 3.14
+  __main__.py                 startargumenten
+  kern/                       alle logica en opslag, zonder curses
+    onderwerp.py              Onderwerp en Vraag: maken, nakijken, diagnose, uitleg, tips, klad-oplossing
+    catalogus.py              alle onderwerpen en denkfouten (namen voor rapporten)
+    vaardigheden.py           register: vak → domein → vaardigheid
+    leerjaren.py · leerlijnen.py   leerjaar van het kind, relatieve niveaus · leerlijnen laden per leerjaar
+    selectie.py · herhaling.py     slimme keuze, niet binnen 30 dagen · herhaalbak en status per vaardigheid
+    sessie.py                 elke oefening: tijd, vraagsleutel, diagnose, punten
+    opslag.py                 SQLite, migraties, reservekopieën; het enige dat bewaart
+    rapporten.py              rapport per periode en per vak › domein, export CSV/TXT/JSON
+    klad.py · verhaal.py      kladregels lezen en nakijken · sjablonen voor de verhaalmachine
+    getal.py · modellen.py    getallen met komma · modellen als data (getallenlijn, rooster, breukbalk, klok …)
+    punten.py · avatar.py · winkel.py   punten met anti-farm · pixel-avatar · winkel en aankoop-challenge
+    snelrekenen.py            60 seconden, 20 sommen, records
+    instellingen.py · wachtwoord.py · paden.py · klok.py · slot.py · foutlog.py · feedback.py
+    wiskunde/                 getallen, hoofdrekenen, cijferen, breuken, procenten, eenheden, grootheden
+                              (tijd, geld, snelheid), klok, meetkunde, vraagstukken
+  terminal/                   alleen weergave en invoer (curses)
+    curriculum/               het leerplan: __init__ (Vak, Domein, Onderwerp), modi, wiskunde
+    app.py · navigatie.py     hoofdmenu, Verder, Herhalen · Vak › Domein › Onderwerp + toetsen
+    scherm.py · klikzones.py  tekenen, menu, voetregel, broodkruimel, toetsen (ook het numeriek klavier) · muis
+    thema.py · tekens.py      kleurrollen en thema's · ASCII-vervanging
+    oefenaar.py               het scherm voor elke oefening (vrij, reeks, tips, tweede kans, punten)
+    kladblad.py · rooster.py · balk.py · vraagstuk.py · modellen.py   klad · cijferen en staartdeling ·
+                              breukbalk, honderdveld, schatkaart, klok zetten · vraagstuk in 4 stappen · tekenen
+    avatar.py · maatje.py     pixel-avatar · het oefenmaatje
+    venster.py                praat met het klokvenster
+    nepscherm.py              een scherm zonder terminal, voor de tests
+    schermen/                 eenheden (tabel), kinderen (Wie ben jij?), ouder, snelrekenen, winkel (avatar, kast)
+  venster/                    klokbeeld.py (de klok als vormen) · klokvenster.py (tkinter, eigen proces)
+  inhoud/
+    leerlijnen/               JSON per vaardigheid: parameters per leerjaar
+    vraagstukken/             werelden.json · zinnen.json
+    avatar/                   onderdelen.json · winkel.json
+tests/                        unittest (stdlib), ook de aapjestest
+docs/                         plan.md · testlijst.md · leerkracht-coach.md · menu-inventaris.md ·
+                              handleiding/ · tools/ (handleiding.py, schermafdrukken.py, scenarios.py)
+.github/workflows/            tests op ubuntu/macos/windows × Python 3.10 en 3.14
 ```
+**Later** (gepland, nog niet gebouwd): `kern/taal/` (werkwoorden met regelmotor, spelling, zinsontleding,
+woordenschat, lezen, dictee), `kern/frans/` (woordenschat, vervoegen, zinnen, accenten, uit het hoofd),
+`terminal/curriculum/taal.py` en `frans.py`, `kern/afdrukken.py` (dictee- en oefenbladen als HTML),
+`kern/avontuur.py`, examens, en `inhoud/` met woordenlijsten en leesteksten.
 
 ## Fasen (elk apart getest, gedemonstreerd en gepusht; na elke fase werkt alles)
-Kleine fasen, zodat Imrane snel nieuwe dingen krijgt en jij tussendoor kunt bijsturen.
+Kleine fasen, zodat Imrane snel nieuwe dingen krijgt en de vader tussendoor kan bijsturen. De volgorde schoof
+onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met versie) · **▶** nu of volgende ·
+**·** gepland · **◐** deels.
 
-| # | Fase | Wat er daarna werkt |
-|---|---|---|
-| 1 | **Fundament** | kern/terminal-scheiding, `CLAUDE.md`, starter + requirements, leerlijnen + relatieve niveaus, startscherm met Solve It Now, ASCII-terugval, **muis/klikzones**, NepScherm, CI op 3 systemen; eenheden (lengte/massa) werken zoals nu |
-| 2 | **Opslag + kindaccounts** | SQLite met migraties en UUID's; kind kiezen bij de start; elk antwoord met tijd, vraagsleutel en diagnosecode; vaardighedenregister; diagnoses voor eenheden |
-| 3 | **Ouderdeel + rapporten** | wachtwoord (versioned hash), kinderen beheren, instellingen (timer zichtbaar, avatar aan/uit), rapporten per periode met kalender, export, alles wissen per kind |
-| 4 | **Opties + thema's** | menu Opties en argumenten: kleurenblind (2 varianten), hoog contrast, geen kleur, ASCII, avatar, animaties, typrichting; alle schermen via `thema.py` |
-| 5 | **Herhaling + slimme selectie** | fouten opnieuw, gelijkaardige vragen, herhaalbak (Leitner), "niet binnen 30 dagen", adaptieve keuze, status per vaardigheid in het rapport |
-| 6 | **Punten + avatar (basis)** | puntenlogboek met anti-farm; pixel-avatar-motor (lagen, ankers, uitdrukkingen, ▀-weergave, terugval); standaardblokje; mini-avatar als oefenmaatje met reacties |
-| 7 | **Winkel** | catalogus (±40 items om te starten), kopen, aankoop-challenge met "ben je zeker?", mini-lesje, pakje onderweg, kast/paskamer |
-| 8 | **Hoofdrekenen + snelrekenen** | strategieën met uitleg, timer zichtbaar/verborgen, records + grafiekje |
-| 9 | **Getallen + getallenlijn** | plaatswaarde, afronden, deelbaarheid, getallenlijn met zoom, negatieve getallen, thermometer, sprongen |
-| 10 | **Cijferen** | +, −, × onder elkaar in het rooster met onthouden-rij; staartdeling stap voor stap |
-| 11 | **Breuken** | breukbalk (noemer, arceren, vereenvoudigen, vergelijken, gelijknamig), breuk van een getal |
-| 12 | **Procenten** | honderdveld, procentstrook, korting/btw |
-| 13 | **Taal 1: werkwoordspelling** | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-flitsrondes, foutenjager |
-| 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
-| 15 | **Meer eenheden** | inhoud, oppervlakte (2 vakjes/kolom), dm³ ↔ l, tijd, geld, snelheid |
-| 16a | **Vraagstukken met kladblad** (0.16.0) | 4 stappen met Gegeven/Gevraagd/Oplossing/Antwoord, kladparser, verhaalmachine (13 structuren × 16 werelden), foute paden automatisch, getrapte tips, tweede kans |
-| 16b | **Vraagstukken 2** (0.17.0) | 19 structuren × 20 werelden (+ gemiddelde, snelheid, tegels, schaal, lint, regel van drie), Speurneus (zoek de fout), Schatten & controleren |
-| 16d | **Eén vaste werkwijze** (0.19.0) | elke oefening: lees, klad (`Tab`, elke regel nagekeken), antwoord; getrapte tips, tweede kans, "Zo kan het:" in klad-regels; elk rekenonderwerp kent zijn oplossing (`oplossing(v)`); nieuw: slim × en : met splitsen (klad verplicht) |
-| 16c | **De klok + tijd in vraagstukken** (0.18.0) | wijzerklok in een eigen venster (tkinter, eigen proces; terugval in de terminal) lezen en zetten, tijden in Vlaamse woorden, 24 uur, later/vroeger; kloktijden in het klad; vraagstukken met tijdsduur, aankomst- en vertrekuur (20 structuren × 22 werelden) |
-| 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
-| 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |
-| 19 | **Dictee (afdrukken)** | afdrukbaar ouder- en kindblad, woordpakket van de week, overtypen + diagnose achteraf, flitsdictee |
-| 20 | **Frans 1** | woordenschat FR↔NL met lidwoordkleuren, accentinvoer en "bijna juist"; eigen thema's invoeren; basispakketten; *être*/*avoir* in de vervoegingstabel |
-| 21 | **Frans 2** | -er-werkwoorden en andere tijden per niveau, zinnen bouwen, vertalen, vraag-antwoord, uit het hoofd leren + luistermodus voor de ouder |
-| 22 | **Meetkunde & rooster** | figuren met cm²-rooster, omtrek/oppervlakte, hoeken, coördinaten-schatzoeken, schaal |
-| 23 | **Examens** | ouder stelt samen (ook als sjabloon), kind start zonder hulp, verse vragen, resultaten in het rapport |
-| 24 | **Avontuur** | kaart, 7 werelden die rekenen, taal en Frans mengen, sterren, eindbazen, badges (+ zeldzame winkelitems) |
-| 25 | **Afwerking** | README per systeem, handleiding voor ouders, prestatie op trage pc's, toegankelijkheid (kleurenblind-palet) |
-| 26 | **Leerjaar 2de middelbaar + schooljaarwissel** | leerlijnen tot m2, letterrekenen, vergelijkingen, uitbreiding taal en Frans; de vraag bij de wissel op 1 september (klaar vóór september) |
-| 27 | **Publicatie** | licentie (CC BY-NC-SA 4.0), `pipx`-pakket, kant-en-klare programma's via GitHub Actions, dekkingsrapport, inhoudspakketten met versies, "Over"-scherm |
+### Klaar (in de volgorde waarin het uitkwam)
+| Versie | # | Fase | Wat er daarna werkt |
+|---|---|---|---|
+| ✔ 0.1 | 1 | **Fundament** | kern/terminal-scheiding, `CLAUDE.md`, starter + requirements, leerlijnen + relatieve niveaus, startscherm met Solve It Now, ASCII-terugval, **muis/klikzones**, NepScherm, CI op 3 systemen; eenheden (lengte/massa) |
+| ✔ 0.2 | 2 | **Opslag + kindaccounts** | SQLite met migraties en UUID's; kind kiezen bij de start; elk antwoord met tijd, vraagsleutel en diagnosecode; vaardighedenregister |
+| ✔ 0.3 | 3 | **Ouderdeel + rapporten** | wachtwoord (versioned hash), kinderen beheren, rapporten per periode met kalender, export, alles wissen per kind |
+| ✔ 0.4 | 4 | **Opties + thema's** | kleurenblind (2 varianten), hoog contrast, geen kleur, ASCII, avatar, animaties, typrichting; alle schermen via `thema.py` (in 0.20 verhuisd naar Schermkleuren en Weergave) |
+| ✔ 0.5 | 5 | **Herhaling + slimme selectie** | fouten opnieuw, gelijkaardige vragen, herhaalbak (Leitner), "niet binnen 30 dagen", adaptieve keuze, status per vaardigheid in het rapport |
+| ✔ 0.6 | 6 | **Punten + avatar (basis)** | puntenlogboek met anti-farm; pixel-avatar (lagen, ankers, uitdrukkingen, ▀-weergave, terugval); oefenmaatje met reacties |
+| ✔ 0.7 | 7 | **Winkel** | een 30-tal items, kopen, aankoop-challenge met "ben je zeker?", mini-lesje, pakje onderweg, kast |
+| ✔ 0.8 | 8 | **Hoofdrekenen + snelrekenen** | strategieën met uitleg, timer zichtbaar/verborgen, records |
+| ✔ 0.9 | 9 | **Getallen + getallenlijn** | plaatswaarde, afronden, deelbaarheid, getallenlijn met zoom, negatieve getallen, thermometer, sprongen |
+| ✔ 0.10 | 10 | **Cijferen** | +, −, × onder elkaar in het rooster met onthouden-rij; staartdeling stap voor stap |
+| ✔ 0.11 | 11 | **Breuken** | breukbalk (noemer, arceren, vereenvoudigen, vergelijken, gelijknamig), breuk van een getal |
+| ✔ 0.12 | 12 | **Procenten** | honderdveld, procentstrook, korting/btw |
+| ✔ 0.12.1 | – | **Stabiliteit** | vangnet met een vriendelijke melding en `fouten.log`, dagelijkse reservekopie en herstel, waarschuwing bij twee keer openen |
+| ✔ 0.13 | – | **Eerste bèta** | "Zeg het ons", de testlijst voor de ouder |
+| ✔ 0.14 | 15 | **Meer eenheden** | inhoud, oppervlakte (2 vakjes/kolom), volume (3 vakjes), dm³ ↔ l; nieuw domein Tijd, geld en snelheid |
+| ✔ 0.15 | 22 | **Meetkunde & rooster** + handleiding | cm²-rooster (omtrek/oppervlakte), formules, hoeken, schatkaart, schaal; de handleiding `docs/handleiding/` (uitleg per onderwerp, tabellen per leerjaar, denkfouten, schermafdrukken) |
+| ✔ 0.16 | 16a | **Vraagstukken met kladblad** | 4 stappen met Gegeven/Gevraagd/Oplossing/Antwoord, kladparser, verhaalmachine, foute paden automatisch, getrapte tips, tweede kans |
+| ✔ 0.17 | 16b | **Vraagstukken 2** | meer structuren en werelden, Speurneus (zoek de fout), Schatten & controleren |
+| ✔ 0.18 | 16c | **De klok + tijd in vraagstukken** | wijzerklok in een eigen venster (tkinter, eigen proces; terugval in de terminal), tijden in Vlaamse woorden, 24 uur; vraagstukken met tijd (20 structuren × 22 werelden) |
+| ✔ 0.19 | 16d | **Eén vaste werkwijze** | elke oefening: lees, klad (`Tab`, elke regel nagekeken), antwoord; getrapte tips, tweede kans, "Zo kan het:"; slim × en : met splitsen |
+| ✔ 0.20 | A | **Nieuwe menu's** | het leerplan (`terminal/curriculum/`): Vak › Domein › Onderwerp met toetsen per onderwerp; snelrekenen in Hoofdrekenen; Opties verhuisd; rapport per vak › domein, snelrekenen apart; CSV met vak en domein |
+| ✔ 0.20.1 | – | **Numeriek klavier** (#11) | / * - + en Enter van het numeriek klavier op Windows en Linux |
+
+### Nog te doen (voorstel voor de volgorde; de vader beslist)
+| Status | # | Fase | Wat er daarna werkt |
+|---|---|---|---|
+| ▶ | – | **Issues uit de tests van de vader** | elke fout een issue, een branch en een PR ("Fixes #n") |
+| ▶ | 13 | **Taal 1: werkwoordspelling** (stap B, B0–B6) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager; Taal in het hoofdmenu |
+| · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
+| · | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
+| · | 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |
+| · | 19 | **Dictee (afdrukken)** | afdrukbaar ouder- en kindblad, woordpakket van de week, overtypen + diagnose achteraf, flitsdictee |
+| · | 20 | **Frans 1** | woordenschat FR↔NL met lidwoordkleuren, accentinvoer en "bijna juist"; eigen thema's; basispakketten; *être*/*avoir* |
+| · | 21 | **Frans 2** | -er-werkwoorden en andere tijden per niveau, zinnen bouwen, vertalen, vraag-antwoord, uit het hoofd leren + luistermodus voor de ouder |
+| · | 23 | **Examens** | ouder stelt samen (ook als sjabloon), kind start zonder hulp, verse vragen, resultaten in het rapport |
+| · | C | **Coach** (geparkeerd) | C1–C4 uit `docs/leerkracht-coach.md` (deelpakket, coachmodus, focusplan, klad terugzien); C5+ na fase 23 |
+| · | 26 | **Leerjaar 2de middelbaar + schooljaarwissel** | leerlijnen tot m2, letterrekenen, vergelijkingen, uitbreiding taal en Frans; de vraag bij de wissel op 1 september (klaar vóór september 2027) |
+| · | H | **Handleidingproject** | een volledige test van alle functies + de handleiding voor kind, ouder en coach; nieuwe schermafdrukken |
+| · | 24 | **Avontuur** | kaart, 7 werelden die rekenen, taal en Frans mengen, sterren, eindbazen, badges (+ zeldzame winkelitems) |
+| ◐ | 25 | **Afwerking** | README per systeem en de handleiding zijn er; nog: prestatie op trage pc's, toegankelijkheid nakijken |
+| ◐ | 27 | **Publicatie** | de licentie (CC BY-NC-SA 4.0) is er; nog: `pipx`-pakket, kant-en-klare programma's via GitHub Actions, dekkingsrapport, inhoudspakketten met versies, "Over"-scherm |
 
 Elke nieuwe fase voegt ook passende **winkelitems en avatar-reacties** toe (bv. een rekenmachine-bril na Cijferen).
 De volgorde kan verschuiven als Imrane iets dringend nodig heeft voor school.
