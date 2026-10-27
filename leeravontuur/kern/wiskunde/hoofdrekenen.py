@@ -144,8 +144,12 @@ class PlusMin(Onderwerp):
             rond, verschil = D(d["rond"]) / d["schaal"], D(d["verschil"]) / d["schaal"]
             tussen = a + rond if op == "+" else a - rond
             terug = "−" if op == "+" else "+"
+            fout = tussen + verschil if op == "+" else tussen - verschil  # de verkeerde richting
+            wat = "aftrekken" if op == "+" else "erbij tellen"
+            pad = fout_pad("compenseren_verkeerd", f"Bij compenseren moest je {fmt(verschil)} {wat}, niet omgekeerd.",
+                           f"{fmt(a)} {op} {fmt(rond)} = {fmt(tussen)}", f"{fmt(tussen)} {op} {fmt(verschil)} = {fmt(fout)}")
             return oplossing_van(f"{fmt(a)} {op} {fmt(rond)} = {fmt(tussen)}",
-                                 f"{fmt(tussen)} {terug} {fmt(verschil)} = {fmt(v.antwoord)}")
+                                 f"{fmt(tussen)} {terug} {fmt(verschil)} = {fmt(v.antwoord)}", paden=[pad])
         x, regels = a, []
         for deel in _splits(b):
             nieuw = x + deel if op == "+" else x - deel

@@ -75,6 +75,33 @@ class Kladblad:
             self.buf += ch
         return None
 
+    def teken_kader(self, s, y, x, breed, n, status=None):
+        """Na het nakijken: de laatste n regels in een kader "Jouw klad" (#22), elk met zijn nummer en ✔ / ✘ / ! / ·.
+        status = per regel uit kern/klad.analyseer ('goed', 'ok', 'reken', 'denk' of None); zonder status telt alleen
+        of de som klopt. Neemt n + 2 rijen."""
+        s.put(y, x, "┌ Jouw klad " + "─" * (breed - 13) + "┐", "dim")
+        eerste = len(self.regels) - n
+        for i, (tekst, regel) in enumerate(self.regels[eerste:]):
+            nr = eerste + i
+            st = status[nr] if status and nr < len(status) else None
+            if st == "denk":
+                teken, rol = "!", "accent"
+            elif st == "reken" or regel.juist is False:
+                teken, rol = "✘", "fout"
+            elif st in ("goed", "ok") or regel.juist:
+                teken, rol = "✔", "goed"
+            else:
+                teken, rol = "·", "dim"
+            inhoud = f"{nr + 1} {regel.netjes or tekst}"
+            if len(inhoud) > breed - 6:
+                inhoud = inhoud[:breed - 7] + "…"
+            s.put(y + 1 + i, x, "│ " + inhoud.ljust(breed - 6), "dim")
+            s.put(y + 1 + i, x + 2, inhoud[:len(str(nr + 1))], "dim")
+            s.put(y + 1 + i, x + 2 + len(str(nr + 1)) + 1, inhoud[len(str(nr + 1)) + 1:], "")
+            s.put(y + 1 + i, x + breed - 4, f" {teken} │", "dim")
+            s.put(y + 1 + i, x + breed - 3, teken, rol)
+        s.put(y + 1 + n, x, "└" + "─" * (breed - 2) + "┘", "dim")
+
     def rond_af(self):
         """Het kind gaat weg uit het klad (Tab, een klik): een getypte regel zonder Enter niet laten verdwijnen,
         maar nakijken zoals bij Enter (#22)."""

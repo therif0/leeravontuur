@@ -518,6 +518,59 @@ class TestWerkwijze(Basis):
         scherm, app = self.speel(toetsen + [*"146", OK, ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertIn('"klad": ["47 + 100 = 147"]', o.antwoorden(app.kind.id)[-1]["extra"])
 
+    def test_klad_blijft_staan_na_het_nakijken(self):
+        """#22: na het nakijken staat je klad in een kader "Jouw klad", met ! op de regel waar het misging."""
+        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 100 = 147", OK, *"147 + 1 = 148", OK, TAB,
+                                *"148", OK, *"148", OK])
+        beeld = next(b for b in reversed(scherm.beelden) if "Zo kan het" in b)
+        self.assertIn("Jouw klad", beeld)
+        regel = next(r for r in beeld.split("\n") if "147 + 1 = 148" in r)
+        self.assertIn("!", regel)
+        self.assertIn("Dat zie je in je klad, regel 2 (!).", beeld)
+
+    def test_klad_kader_ook_bij_juist_en_niet_zonder_klad(self):
+        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 100 = 147", OK, *"147 - 1 = 146", OK, TAB, *"146", OK])
+        beeld = next(b for b in reversed(scherm.beelden) if "Jouw klad" in b)
+        self.assertIn("✔", next(r for r in beeld.split("\n") if "│ 2 147 − 1 = 146" in r))
+        scherm, _ = self.speel([*self.plusmin(), *"146", OK])
+        self.assertFalse(self.ergens(scherm, "Jouw klad"))
+
+    def test_klad_kader_past_overal(self):
+        """Na twee foute antwoorden met 6 klad-regels: het kader staat heel (niets schrijft erover), binnen 80 × 24."""
+        import random
+        from leeravontuur.kern.leerjaren import LEERJAREN
+        from leeravontuur.kern.onderwerp import ONDERWERPEN
+        for oid, o in ONDERWERPEN.items():
+            if not o.klad:
+                continue
+            for jaar in LEERJAREN[:-1]:
+                if not o.aangeboden(jaar):
+                    continue
+                v = next((v for v in (o.maak(jaar, rng=random.Random(z)) for z in range(40)) if o.klad_voor(v)), None)
+                if v is None or v.invoer in INVOER_OBJECTEN or v.invoer == "janee":
+                    continue
+                with self.subTest(oid=oid, jaar=jaar, vraag=v.tekst):
+                    from unittest import mock
+                    with mock.patch.object(o, "maak", return_value=v):
+                        regels = [k for _ in range(6) for k in [*"12 + 3 = 15", OK]]
+                        fout = "1" if v.invoer != "breuk" else "1/7"
+                        toetsen = [*naar(o)] + ([] if o.klad_voor(v) == "verplicht" else [TAB])
+                        scherm, _ = self.speel([*toetsen, *regels, TAB, *fout, OK, *fout, OK])
+                    beeld = next((b for b in reversed(scherm.beelden) if "Niet juist" in b), None)
+                    if beeld is None:  # bv. "verplicht" klad dat dit klad niet aanvaardt: geen nakijken
+                        continue
+                    rijen = beeld.split("\n")
+                    self.assertEqual(len(rijen), 24)
+                    self.assertTrue(rijen[-1].startswith(" [Enter]"), rijen[-1])
+                    boven = [i for i, r in enumerate(rijen) if "┌ Jouw klad" in r]
+                    if not boven:
+                        continue  # geen plaats (bv. naast de wijzerklok): dan geen kader
+                    y, x = boven[0], rijen[boven[0]].index("┌")
+                    breed = rijen[y].index("┐") - x + 1
+                    for r in rijen[y + 1:y + 4]:
+                        self.assertEqual((r[x], r[x + breed - 1]), ("│", "│"), r)
+                    self.assertEqual(rijen[y + 4][x:x + breed], "└" + "─" * (breed - 2) + "┘")
+
     def test_hoofdmenu_uitleg_stopt_voor_de_avatar(self):
         """De uitleg in het hoofdmenu liep onder de avatar door ("vraagst▄"); nu stopt ze ervoor (met … als het moet)."""
         from leeravontuur.terminal import avatar as AV
