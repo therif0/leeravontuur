@@ -188,6 +188,21 @@ class TestReeks(Basis):
         rijen = o.antwoorden(app.kind.id)
         self.assertEqual((len(rijen), rijen[0]["hulp"], rijen[0]["modus"]), (1, 1, "vrij"))
 
+    def test_niveau_dat_nog_niet_bestaat(self):
+        """#27: Snelheid bestaat pas vanaf het 6de. Voor een kind van het 5de staat "Hoe moeilijk?" op Moeilijk
+        (Enter werkt meteen); Makkelijk kiezen zegt waarom het niet gaat en zet de keuze op Moeilijk."""
+        from leeravontuur.kern.onderwerp import ONDERWERPEN
+        snel = ONDERWERPEN["wiskunde.eenheden.snelheid"]
+        o = self.opslag(("Test", "5"))
+        scherm, app = self.speel([*naar(snel, toets="Enter", niveau=None), OK,
+                                  ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Snelheid · Moeilijk (6de leerjaar)"))
+        self.assertTrue(self.ergens(scherm, "pas vanaf het 6de leerjaar"))
+        scherm, app = self.speel([*naar(snel, toets="Enter", niveau=None), "1", OK,
+                                  ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Dit oefen je pas vanaf het 6de leerjaar. Kies Moeilijk."))
+        self.assertTrue(self.ergens(scherm, "Snelheid · Moeilijk (6de leerjaar)"))
+
     def test_f1_is_ook_een_tip(self):
         """#14: op een AZERTY-klavier is ? Shift + komma; F1 geeft ook een tip (eigen scherm van de maten)."""
         o = self.opslag(("Test", "5"))
