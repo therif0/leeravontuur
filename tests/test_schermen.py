@@ -506,9 +506,21 @@ class TestWerkwijze(Basis):
 
     def test_tips_getrapt(self):
         scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", ESC, ESC, ESC, ESC, ESC])
-        self.assertTrue(self.ergens(scherm, "Tip 1: Maak er eerst een rond getal van"))
-        self.assertTrue(self.ergens(scherm, "Tip 2: Begin je klad zo: 47 + 100 = …"))
-        self.assertTrue(self.ergens(scherm, "Tip 3: schrijf je eerste stap in het klad"))
+        self.assertTrue(self.ergens(scherm, "Tip 1 van 3: Maak er eerst een rond getal van"))
+        self.assertTrue(self.ergens(scherm, "Tip 2 van 3: Begin je klad zo: 47 + 100 = …"))
+        self.assertTrue(self.ergens(scherm, "Tip 3 van 3: schrijf je eerste stap in het klad"))
+
+    def test_tips_draaien_rond(self):
+        """#15: na de laatste tip begint ? opnieuw bij de eerste (niet telkens "schrijf je eerste stap")."""
+        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", "?", ESC, ESC, ESC, ESC, ESC])
+        tips = [b for b in scherm.beelden if "Tip " in b]
+        self.assertIn("Tip 1 van 3: Maak er eerst een rond getal van", tips[-1].replace("\n", " "))
+
+    def test_tip_terwijl_je_in_het_klad_typt(self):
+        """#15: ? midden in een klad-regel geeft een tip, en de regel blijft staan."""
+        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 1", "?", ESC, ESC, ESC, ESC, ESC])
+        laatste = next(b for b in reversed(scherm.beelden) if "47 + 1" in b)
+        self.assertIn("Tip 1 van 3", laatste)
 
     def test_klik_op_het_klad(self):
         toetsen = self.plusmin()
