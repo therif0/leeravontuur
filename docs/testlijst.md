@@ -65,6 +65,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Reeks van 10** (Enter op eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.
 - [ ] Met `F` krijg je dezelfde foute vragen opnieuw, met `G` gelijkaardige.
 - [ ] De volgende dag staat bij **Herhalen** een getal tussen haakjes (de vragen die fout waren).
+- [ ] **Tijd, geld en snelheid → Snelheid, Enter** (kind van het 5de): "Hoe moeilijk?" staat op Moeilijk en Enter
+  start meteen. Makkelijk kiezen zegt "Dit oefen je pas vanaf het 6de leerjaar. Kies Moeilijk."
 - [ ] **Hoofdrekenen → Tafels, toets T (60 seconden):** de klok loopt, op het einde een overzicht met je records.
 - [ ] Zet bij de ouder de timer uit (Ouders › Kinderen › Timer zichtbaar): nergens nog `[T]`, en Enter bij
   Hoofdrekenen › Gemengd start 20 sommen. Zet hem daarna terug.
