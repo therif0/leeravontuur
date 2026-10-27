@@ -12,7 +12,7 @@ na 3 keer fout stopt het. Het wachtwoord wordt veilig bewaard (niet als gewone t
 
 ![Het ouderwachtwoord](beelden/ouder-wachtwoord.svg)
 
-Vergeten? Start het programma met `python3 oefeningen.py --wachtwoord-vergeten` en typ `JA`: het wachtwoord wordt
+Vergeten? Start het programma met `python3 leeravontuur.py --wachtwoord-vergeten` en typ `JA`: het wachtwoord wordt
 gewist, de gegevens van de kinderen blijven bewaard. De volgende keer kies je een nieuw.
 
 ![Het ouderdeel](beelden/ouder-menu.svg)

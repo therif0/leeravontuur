@@ -244,7 +244,7 @@ class Draai:
         tmux("kill-session", "-t", SESSIE)
         omgeving = (f"LEERAVONTUUR_DATA={self.map} LEERAVONTUUR_ZAAD={zaad} LEERAVONTUUR_KLOKVENSTER=0 ESCDELAY=300 "
                     f"LEERAVONTUUR_DOCUMENTEN={self.map / 'Documenten'}")
-        opdracht = f"cd {WORTEL} && {omgeving} {sys.executable} oefeningen.py {' '.join(argumenten)}"
+        opdracht = f"cd {WORTEL} && {omgeving} {sys.executable} leeravontuur.py {' '.join(argumenten)}"
         tmux("new-session", "-d", "-s", SESSIE, "-x", str(BREED), "-y", str(HOOG), opdracht)
         self.wacht("Leeravontuur")
         if kind:  # startscherm → Imrane

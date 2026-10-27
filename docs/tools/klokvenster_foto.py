@@ -36,7 +36,7 @@ def main(python):
     term = subprocess.Popen(
         ["xterm", "-maximized", "-bg", "#1e1e1e", "-fg", "#d4d4d4", "-fa", "DejaVu Sans Mono", "-fs", "11",
          "-title", "terminal", "-e",
-         f"cd {WORTEL} && {python} oefeningen.py"],
+         f"cd {WORTEL} && {python} leeravontuur.py"],
         env=dict(env, LEERAVONTUUR_DATA=str(data), LEERAVONTUUR_ZAAD="klokvenster-scherm"))
     try:
         time.sleep(3)
