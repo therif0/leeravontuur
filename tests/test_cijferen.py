@@ -128,6 +128,22 @@ class TestRooster(unittest.TestCase):
         self.assertEqual(r.lees({1: "7", 2: "5"}, komma=1), ("7,5", None))
         self.assertEqual(r.plaats("2,5"), ({1: "2", 2: "5"}, 1))
 
+    def test_onthouden_blijft_in_de_kolom(self):
+        """#16: een cijfer in de onthouden-rij schuift niet op; ↓ gaat terug naar dezelfde kolom eronder."""
+        ri = RoosterInvoer(optel_vraag(), C.OPTELLEN)
+        for k in (ord("2"), curses.KEY_UP, ord("1"), curses.KEY_DOWN, ord("3")):
+            ri.toets(k)
+        self.assertEqual(ri.onth, {2: "1"})
+        self.assertEqual(ri.cellen[0], {3: "2", 2: "3"})
+
+    def test_onthouden_en_terug_naar_dezelfde_rij(self):
+        """#16: in rij 2 van een vermenigvuldiging getypt, naar de onthouden-rij en met ↓ terug naar rij 2."""
+        ri = RoosterInvoer(maal_vraag(), C.VERMENIGVULDIGEN)
+        ri.rij, ri.kol = 1, 3
+        for k in (ord("0"), curses.KEY_UP, curses.KEY_UP, ord("1"), curses.KEY_DOWN):
+            ri.toets(k)
+        self.assertEqual((ri.rij, ri.kol, ri.onth), (1, 2, {2: "1"}))
+
 
 def staart_vraag():
     g, st, q, r = C.staart_stappen(D(452), 7, 0)

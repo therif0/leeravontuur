@@ -23,6 +23,7 @@ class RoosterInvoer:
         self.onth = {}
         self.komma = None
         self.rij = 0
+        self.typ_rij = None  # de laatste rij waarin het kind typte: ↓ uit de onthouden-rij gaat daarheen (#16)
         self.kol = self.r.breedte - 1
         self.links = True  # typrichting: van rechts naar links
         self.melding, self.melding_rol = "", "fout"
@@ -143,6 +144,8 @@ class RoosterInvoer:
             self.kol = max(0, self.kol - 1)
         elif k == curses.KEY_RIGHT:
             self.kol = min(r.breedte - 1, self.kol + 1)
+        elif k == curses.KEY_DOWN and self.rij == -1 and self.typ_rij is not None:
+            self.rij = self.typ_rij
         elif k in (curses.KEY_UP, curses.KEY_DOWN):
             lijst = self.rijen_lijst()
             i = lijst.index(self.rij) + (-1 if k == curses.KEY_UP else 1)
@@ -173,6 +176,10 @@ class RoosterInvoer:
                 return None
         elif isinstance(k, int) and 48 <= k <= 57:
             rij_cellen[self.kol] = chr(k)
+            if self.rij == -1:  # onthouden: blijf in deze kolom, ↓ = het cijfer eronder (#16)
+                self.melding = ""
+                return None
+            self.typ_rij = self.rij
             self.stap(1)
         else:
             return None
