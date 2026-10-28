@@ -17,9 +17,12 @@ ESC = "\x1b"
 OK = "\n"
 F1 = curses.KEY_F1  # de hulp-toets (tip, hulp, spiekbrief); ? typt gewoon een vraagteken (0.21.7)
 
-# keuzes in het hoofdmenu (als toets)
-HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Zeg het ons",
-             "Wissel van kind", "Stoppen"]
+# keuzes in het hoofdmenu (als toets), in groepen (0.23): Verder, Herhalen · VAKKEN · JIJ · FEEDBACK · Stoppen
+HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], *[label for label, _ in CU.BINNENKORT],
+             "Leerstof", "Mijn avatar", "Winkel", "Zeg het ons", "Stoppen"]
+# de rijen op het scherm (met de kopjes VAKKEN, JIJ, FEEDBACK en de lege regels ertussen)
+HOOFDMENU_RIJEN = [5, 6, *range(9, 9 + len(CU.VAKKEN) + len(CU.BINNENKORT) + 1)]
+HOOFDMENU_RIJEN += [HOOFDMENU_RIJEN[-1] + 3, HOOFDMENU_RIJEN[-1] + 4, HOOFDMENU_RIJEN[-1] + 7, HOOFDMENU_RIJEN[-1] + 9]
 
 
 def hm(keuze):
@@ -29,7 +32,7 @@ def hm(keuze):
 
 def hm_rij(keuze):
     """De schermrij van een keuze in het hoofdmenu (voor een muisklik)."""
-    return 5 + HOOFDMENU.index(keuze) * (2 if 5 + 2 * len(HOOFDMENU) < 20 else 1)
+    return HOOFDMENU_RIJEN[HOOFDMENU.index(keuze)]
 
 
 def menu_onderwerp(o):
@@ -64,13 +67,13 @@ def plek(scherm, tekst):
 
 
 def naar_spiekbrief(domein, nr=1):
-    """Hoofdmenu › Spiekbrieven › domein (label): heeft het domein één spiekbrief, dan staat die meteen open;
+    """Hoofdmenu › Leerstof › domein (label): heeft het domein één spiekbrief, dan staat die meteen open;
     anders de nr-de (#20: "Welk vak?" valt weg zolang er één vak is)."""
     v = CU.VAKKEN[0]
     d = next(x for x in v.domeinen if x.label == domein)
     i = [x for x in v.domeinen if any(o.spiek for o in x.onderwerpen)].index(d) + 1
     titels = {o.spiek.titel for o in d.onderwerpen if o.spiek}
-    return [OK, OK, hm("Spiekbrieven"), str(i)] + ([str(nr)] if len(titels) > 1 else [])
+    return [OK, OK, hm("Leerstof"), str(i)] + ([str(nr)] if len(titels) > 1 else [])
 
 
 class Basis(unittest.TestCase):
@@ -107,7 +110,7 @@ class Basis(unittest.TestCase):
         app.s.klokvenster = klokvenster
         try:
             app.start()
-        except ToetsenOp:
+        except (ToetsenOp, SystemExit):  # SystemExit: Esc op het titelscherm sluit het programma
             pass
         return scherm, app
 
@@ -138,8 +141,9 @@ class TestStart(Basis):
         self.assertTrue(self.ergens(scherm, "Er is al iemand die imrane heet"))
 
     def test_wissel_van_kind_met_eigen_instellingen(self):
+        """Wisselen gaat via Stoppen → het titelscherm → Wie ben jij? (0.23: geen "Wissel van kind" meer)."""
         o = self.opslag(("Amira", "3", {"thema": "rood-groen"}), ("Imrane", "5"))
-        scherm, app = self.speel([OK, "1", hm("Wissel van kind"), "2", ESC], opslag=o)  # Amira, dan wisselen naar Imrane
+        scherm, app = self.speel([OK, "1", hm("Stoppen"), OK, "2"], opslag=o)  # Amira, dan Imrane
         self.assertTrue(self.ergens(scherm, "Hallo Amira!"))
         self.assertEqual(app.kind.naam, "Imrane")
         self.assertEqual(app.inst.thema, "standaard")
@@ -178,8 +182,8 @@ class TestReeks(Basis):
         self.assertIsNotNone(sessies[0]["einde"])
         self.assertEqual(app.vandaag()[0], 10)
         # na een herstart staat de telling van vandaag er nog
-        scherm2, _ = self.speel([OK, OK, ESC], opslag=o)
-        self.assertTrue(self.ergens(scherm2, "Vandaag al 10 vragen geoefend"))
+        scherm2, _ = self.speel([OK, OK], opslag=o)
+        self.assertTrue(self.ergens(scherm2, "Vandaag: 0/10 juist"))  # in de titelbalk
 
     def test_zelf_kiezen_met_het_toetsenbord(self):
         # Meten → Maten zelf kiezen (V): met → naar de 5de kolom (volume), m³ en dm³ aanvinken
@@ -271,24 +275,86 @@ class TestMuis(Basis):
     def test_knop_in_voetbalk(self):
         scherm, _ = self.speel([OK, OK, hm("Wiskunde")])
         y, x = scherm.zoek("[Esc]")
-        scherm2, _ = self.speel([OK, OK, hm("Wiskunde"), ("klik", y, x + 1), ESC])
+        scherm2, _ = self.speel([OK, OK, hm("Wiskunde"), ("klik", y, x + 1)])
         # na de klik op [Esc] staan we terug in het hoofdmenu
         self.assertIn("Wat wil je doen?", scherm2.beelden[-1])
 
-    def test_esc_in_het_hoofdmenu_vraagt_eerst(self):
-        """Werkwijzen fase 2: Esc in het hoofdmenu vraagt eerst "Wil je stoppen met Leeravontuur?" (Nee gekozen)."""
-        scherm, _ = self.speel([OK, OK, ESC, OK, "x"])
-        self.assertTrue(self.ergens(scherm, "Wil je stoppen met Leeravontuur?"))
-        self.assertIn("Wat wil je doen?", na_het_kader(scherm))  # Nee: terug in het hoofdmenu
-        self.assertEqual(scherm.toetsen, [])  # het programma liep verder (ook "x" is gelezen)
-        scherm, _ = self.speel([OK, OK, ESC, curses.KEY_LEFT, OK, "x"])
-        self.assertEqual(scherm.toetsen, ["x"])  # Ja: het programma stopte
-        scherm, _ = self.speel([OK, OK, hm("Stoppen"), "x"])
-        self.assertFalse(self.ergens(scherm, "Wil je stoppen"))  # "Stoppen" kiezen: meteen
-        self.assertEqual(scherm.toetsen, ["x"])
+    def verder_klaar(self, af):
+        """Een kind met een vorige oefening (af of niet) en een herhaalvraag die vandaag aan de beurt is."""
+        import json
+        from leeravontuur.kern.wiskunde import hoofdrekenen as H
+        o = self.opslag(("Test", "5"))
+        kind = o.kinderen()[0]
+        o.zet_algemeen(f"laatste_oefening:{kind.id}", json.dumps(
+            {"onderwerp": "oefenaar", "vaardigheid": H.TAFELS.id, "vorm": "reeks", "niveau": 1,
+             "domein": "Hoofdrekenen", "af": af}))
+        o.herhaal_zet(kind.id, H.TAFELS.id, "tafel 7", {"onderwerp": "tafel 7", "tafel": 7}, 1, "2000-01-01")
+        return o
+
+    def test_verder_na_een_afgewerkte_oefening(self):
+        """0.23: was de vorige oefening af en staan er herhaalvragen klaar, dan vraagt Verder eerst, met Verder
+        gekozen (Enter = verder met de oefening, ← Enter = eerst herhalen)."""
+        o = self.verder_klaar(af=True)
+        scherm, _ = self.speel([OK, OK, hm("▶ Verder"), OK], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Je vorige oefening is af. Goed zo!"))
+        self.assertTrue(self.ergens(scherm, "[ Eerst herhalen ]   [ Verder ]"))
+        def erna(scherm):
+            i = max(i for i, b in enumerate(scherm.beelden) if "Je vorige oefening is af" in b)
+            return next(b for b in scherm.beelden[i + 1:] if "Je vorige oefening is af" not in b).split("\n")[0]
+        self.assertIn("Reeks van 10", erna(scherm))
+        self.open[-1].sluit()
+        self.open.pop()
+        self.tearDown()
+        self.setUp()  # nieuwe gegevens: de reeks hierboven is opnieuw begonnen (dus niet meer af)
+        scherm, _ = self.speel([OK, OK, hm("▶ Verder"), curses.KEY_LEFT, OK], opslag=self.verder_klaar(af=True))
+        self.assertIn("Herhalen", erna(scherm))
+
+    def test_verder_zonder_kader_als_de_oefening_niet_af_was(self):
+        o = self.verder_klaar(af=False)
+        scherm, _ = self.speel([OK, OK, hm("▶ Verder")], opslag=o)
+        self.assertFalse(self.ergens(scherm, "Je vorige oefening is af"))
+        self.assertTrue(self.ergens(scherm, "Reeks van 10"))
+
+    def test_een_volle_reeks_is_af(self):
+        """Een reeks tot het resultaat = af; vrij oefenen nooit (dat bepaalt of Verder eerst herhalen voorstelt)."""
+        from leeravontuur.terminal.app import App
+        o = self.verder_klaar(af=False)
+        scherm, app = self.speel([*naar("wiskunde.meten.massa", "Enter"), *[k for _ in range(10) for k in ("1", OK, OK)]],
+                                 opslag=o)
+        self.assertTrue(app.laatste_oefening().get("af"))
+        scherm, app = self.speel([*naar("wiskunde.meten.massa"), "1", OK, OK], opslag=o)
+        self.assertFalse(app.laatste_oefening().get("af"))
+
+    def test_stoppen_en_esc_naar_het_titelscherm(self):
+        """0.23: Stoppen en Esc in het hoofdmenu brengen je naar het titelscherm (zonder kader). Daar is Enter =
+        "Wie ben jij?" en Esc = het programma sluiten."""
+        for stoppen in (hm("Stoppen"), ESC):
+            with self.subTest(stoppen=stoppen):
+                scherm, _ = self.speel([OK, OK, stoppen, OK, ESC, ESC, "x"])
+                self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
+                titel = [i for i, b in enumerate(scherm.beelden) if "Druk op een toets om te beginnen" in b]
+                self.assertGreaterEqual(len(titel), 3)  # bij de start, na Stoppen, na Esc in "Wie ben jij?"
+                self.assertIn("Wie ben jij?", scherm.beelden[titel[1] + 1])
+                self.assertEqual(scherm.toetsen, ["x"])  # Esc op het titelscherm: het programma stopte
+
+    def test_hoofdmenu_in_groepen(self):
+        """0.23: kopjes VAKKEN, JIJ, FEEDBACK; Taal staat grijs (↑↓ slaan het over, 4 = "Taal komt binnenkort.");
+        Winkel en Leerstof rechtstreeks."""
+        scherm, _ = self.speel([OK, OK])
+        menu = next(b for b in scherm.beelden if "Wat wil je doen?" in b).split("\n")
+        for kop, rij in (("VAKKEN", 8), ("JIJ", 13), ("FEEDBACK", 17)):
+            self.assertEqual(menu[rij][:40].strip(), kop)  # (rechts staan de avatar en de punten)
+        self.assertEqual(len(menu), 24)
+        self.assertTrue(menu[20].strip().startswith("9. Stoppen"))
+        scherm, _ = self.speel([OK, OK, hm("Taal")])
+        self.assertTrue(self.ergens(scherm, "Taal komt binnenkort."))
+        scherm, app = self.speel([OK, OK, *[curses.KEY_DOWN] * 3, OK])  # Verder, Herhalen, Wiskunde, (Taal), Leerstof
+        self.assertTrue(self.ergens(scherm, "Leeravontuur › Leerstof"))
+        scherm, _ = self.speel([OK, OK, hm("Winkel")])
+        self.assertTrue(self.ergens(scherm, "Leeravontuur › Winkel"))
 
     def test_broodkruimel_terug_naar_hoofdmenu(self):
-        scherm, _ = self.speel([OK, OK, hm("Wiskunde"), "1", ("klik", 0, 2), ESC])
+        scherm, _ = self.speel([OK, OK, hm("Wiskunde"), "1", ("klik", 0, 2)])
         self.assertIn("Wat wil je doen?", scherm.beelden[-1])
 
     def test_scrollwiel_in_spiekbrief(self):
@@ -760,10 +826,8 @@ class TestWerkwijze(Basis):
         tot = 80 - AV.BREEDTE - 3
         for regel in menu[5:13]:
             self.assertEqual(regel[tot:tot + 2].strip(), "", regel)
-        verder = next(r for r in menu if "▶ Verder" in r)
-        self.assertTrue(verder.rstrip().endswith("…"), verder)
         self.assertTrue(any("rekenen, meten en meetkunde" in r for r in menu))
-        self.assertTrue(any("winkel, kast en schermkleuren" in r for r in menu))
+        self.assertTrue(any("kast en schermkleuren" in r for r in menu))
 
     def test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord(self):
         o = self.opslag(("Test", "5"))
@@ -978,7 +1042,7 @@ class TestMenuToetsen(unittest.TestCase):
         try:
             return s.menu(["Leeravontuur", "Hoofdrekenen"], "Wat wil je oefenen?", self.OPTIES,
                           toetsen=self.TOETSEN if met_toetsen else None), win
-        except ToetsenOp:
+        except (ToetsenOp, SystemExit):  # SystemExit: Esc op het titelscherm sluit het programma
             return "op", win
 
     def test_hoofdletter_en_kleine_letter(self):

@@ -111,8 +111,9 @@ class AvatarSchermen:
 
     # ---- de winkel --------------------------------------------------------------------
 
-    def winkel(self):
-        kr = [HOOFD, "Mijn avatar", "Winkel"]
+    def winkel(self, kr=None):
+        """De winkel; ook rechtstreeks vanuit het hoofdmenu (dan met kr = [Leeravontuur, Winkel])."""
+        kr = kr or [HOOFD, "Mijn avatar", "Winkel"]
         lagen = list(W.LAGEN)
         while True:
             k = self.s.menu(kr, f"Wat wil je bekijken? (je hebt {self.saldo()} punten)",

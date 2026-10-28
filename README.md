@@ -94,7 +94,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - een **herhaalbak**: wat fout ging, komt de volgende dagen terug met nieuwe getallen (na 1, 3 en 7 dagen);
     na 3 keer juist is het beheerst
   - vragen die het kind de laatste 30 dagen al kreeg, komen niet opnieuw; wat vaak fout gaat, komt vaker
-  - **▶ Verder** in het hoofdmenu: eerst de herhaalvragen, anders verder met de vorige oefening
+  - **▶ Verder** in het hoofdmenu: verder met de vorige oefening; was die af, dan stelt het eerst de herhaalvragen voor
 - **Punten en een avatar:**
   - punten voor elk juist antwoord (meer op een moeilijker niveau), bonussen voor 5 op rij, een reeks zonder fout
     en een onderwerp dat beheerst is; een vraag die al eens juist was, levert niets meer op

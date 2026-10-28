@@ -529,8 +529,10 @@ class Eenheden:
     def reeks(self, gekozen, jaar, soort, tabel):
         naam = "Tabel-oefening" if tabel else "Reeks van 10"
         while True:
+            self.app.oefening_af(False)
             res, gestopt = self.speel(self.kruimel + [naam], soort, "tabel" if tabel else "reeks", jaar,
                                       self.nieuwe_vragen(gekozen, jaar, tabel), REEKS, tabel)
+            self.app.oefening_af(not gestopt)  # helemaal af: Verder stelt daarna eerst herhalen voor
             if gestopt and not res:
                 return
             if not self.na_reeks(naam, soort, jaar, tabel, res, gestopt):
@@ -617,6 +619,7 @@ class Eenheden:
 
     def vrij_oefenen(self, gekozen, jaar, soort):
         kr = self.kruimel + ["Vrij oefenen"]
+        self.app.oefening_af(False)  # vrij oefenen is nooit "af"
         self.vrij_goed = self.vrij_aantal = 0
         fouten = []
         vermijd = selectie.recent_gezien(self.app.opslag, self.app.kind.id, E.OMZETTEN.id)

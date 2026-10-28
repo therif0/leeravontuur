@@ -105,6 +105,13 @@ class App:
         """Voor 'Verder waar je was'."""
         self.opslag.zet_algemeen(f"laatste_oefening:{self.kind.id}", json.dumps(data, ensure_ascii=False))
 
+    def oefening_af(self, af=True):
+        """De vorige oefening (voor Verder) is af (een reeks tot het resultaat) of nog bezig/vrij oefenen."""
+        data = self.laatste_oefening()
+        if isinstance(data, dict) and bool(data.get("af")) != af:
+            data["af"] = af
+            self.onthoud_oefening(data)
+
     def laatste_oefening(self):
         try:
             return json.loads(self.opslag.algemeen(f"laatste_oefening:{self.kind.id}") or "null")
@@ -126,16 +133,12 @@ class App:
             from .schermen.ouder import Ouderdeel
             Ouderdeel(self).open()
             return
-        kind = kies_kind(self)
-        if kind is None:
-            return
-        self.activeer(kind)
-        self.hoofdmenu()
-
-    def wissel_van_kind(self):
-        kind = kies_kind(self)
-        if kind is not None:
-            self.activeer(kind)
+        while True:  # titelscherm → Wie ben jij? → hoofdmenu; Stoppen = terug naar het titelscherm
+            kind = kies_kind(self)
+            if kind is not None:
+                self.activeer(kind)
+                self.hoofdmenu()
+            self.startscherm()  # Esc op het titelscherm sluit het programma
 
     def startscherm(self):
         s = self.s
@@ -184,36 +187,35 @@ class App:
                 self.activeer(kind)
             try:
                 naam = self.inst.naam
-                n, j = self.vandaag()
                 info = []
                 from ..kern import winkel as W
                 for item in W.lever_pakjes(self.opslag, self.kind.id):
                     info.append(f"Je pakje is aangekomen: {item.naam}! Kijk in je kast.")
-                if n:
-                    lof = " Goed bezig!" if j >= 0.6 * n else ""
-                    info.append(f"Vandaag al {n} {'vraag' if n == 1 else 'vragen'} geoefend, {j} juist.{lof}")
                 if self.opslag.probleem:
                     info.append(self.opslag.probleem)
                 te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
+                # in groepen, zoals in een spel (de vader, 0.23): kopjes vóór de vakken, "jij" en feedback
                 keuzes = [("▶ Verder", self.voorstel()[0], lambda: self.voorstel()[1]()),
                           (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets",
-                           self.herhalen),
-                          *[(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN],
-                          ("Spiekbrieven", "uitleg om terug te kijken", lambda: navigatie.spiekbrieven(
-                              self, [HOOFD, "Spiekbrieven"])),
-                          ("Mijn avatar", "winkel, kast en schermkleuren", self.mijn_avatar),
-                          ("Zeg het ons", "wat vind je leuk of moeilijk?", self.zeg_het_ons),
-                          ("Wissel van kind", "iemand anders wil oefenen", self.wissel_van_kind),
-                          ("Stoppen", "", None)]
+                           self.herhalen)]
+                koppen = {len(keuzes): "VAKKEN"}
+                keuzes += [(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN]
+                grijs = {len(keuzes) + i: f"{label} komt binnenkort." for i, (label, _) in enumerate(CU.BINNENKORT)}
+                keuzes += [(label, uitleg, None) for label, uitleg in CU.BINNENKORT]
+                keuzes.append(("Leerstof", "uitleg om terug te kijken",
+                               lambda: navigatie.spiekbrieven(self, [HOOFD, "Leerstof"])))
+                koppen[len(keuzes)] = "JIJ"
+                keuzes += [("Mijn avatar", "kast en schermkleuren", self.mijn_avatar),
+                           ("Winkel", "iets kopen met je punten", self.winkel)]
+                koppen[len(keuzes)] = "FEEDBACK"
+                keuzes.append(("Zeg het ons", "wat vind je leuk of moeilijk?", self.zeg_het_ons))
+                koppen[len(keuzes)] = ""
+                keuzes.append(("Stoppen", "terug naar het beginscherm", None))
                 k = self.s.menu([HOOFD], f"Hallo{' ' + naam if naam else ''}! Wat wil je doen?",
                                 [(label, uitleg) for label, uitleg, _ in keuzes], info=info,
                                 onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu,
-                                uitleg_tot=self.avatar_links())
-                if k is None:  # Esc: eerst vragen (werkwijzen, fase 2); "Stoppen" kiezen stopt meteen
-                    if self.s.bevestig("Wil je stoppen met Leeravontuur?", "Je antwoorden en punten zijn bewaard."):
-                        return
-                    continue
-                if keuzes[k][2] is None:
+                                uitleg_tot=self.avatar_links(), koppen=koppen, grijs=grijs, esc="stoppen")
+                if k is None or keuzes[k][2] is None:  # Esc of Stoppen: naar het titelscherm
                     return
                 keuzes[k][2]()
             except TerugNaar:
@@ -279,15 +281,33 @@ class App:
         from .schermen.winkel import AvatarSchermen
         AvatarSchermen(self).hub()
 
+    def winkel(self):
+        from .schermen.winkel import AvatarSchermen
+        AvatarSchermen(self).winkel([HOOFD, "Winkel"])
+
     def voorstel(self):
-        """(uitleg, actie) voor 'Verder': eerst herhalen, anders de vorige oefening, anders kiezen."""
+        """(uitleg, actie) voor 'Verder': de vorige oefening. Was die af en staan er herhaalvragen klaar, dan vraagt
+        Verder eerst of het kind wil herhalen (Verder gekozen). Geen vorige oefening: herhalen, anders kiezen."""
         n = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
-        if n:
-            return f"eerst je {n} herhaalvragen", self.herhalen
         try:
-            return self._vorige_voorstel()
+            vorige = self._vorige_voorstel()
         except (KeyError, IndexError, TypeError, ValueError, AttributeError, StopIteration):  # oude of vreemde gegevens
-            return self.kiezen()
+            vorige = None
+        if vorige is None:
+            return (f"eerst je {n} herhaalvragen", self.herhalen) if n else self.kiezen()
+        uitleg, actie = vorige
+        if n and (self.laatste_oefening() or {}).get("af"):
+            return uitleg, lambda: self.herhalen_of_verder(actie, n)
+        return uitleg, actie
+
+    def herhalen_of_verder(self, verder, n):
+        """De vorige oefening is af: eerst herhalen voorstellen, maar Verder staat gekozen (0.23)."""
+        if self.s.bevestig("Je vorige oefening is af. Goed zo!",
+                           f"Je hebt {n} {'herhaalvraag' if n == 1 else 'herhaalvragen'} klaarstaan.",
+                           ja="Eerst herhalen", nee="Verder"):
+            self.herhalen()
+        else:
+            verder()
 
     def kiezen(self):
         """Geen vorige oefening: het eerste vak openen."""
@@ -303,9 +323,9 @@ class App:
         """De vorige oefening (ook een die nog door een oudere versie bewaard is: het leerplan vindt ze via opslag)."""
         vorige = self.laatste_oefening()
         if not isinstance(vorige, dict):
-            return self.kiezen()
+            return None
         if vorige.get("onderwerp") == "oefenaar" and not 0 <= vorige["niveau"] < len(leerjaren.NIVEAUS):
-            return self.kiezen()
+            return None
         if vorige.get("onderwerp") == "oefenaar":
             from ..kern import catalogus
             o = catalogus.ONDERWERPEN.get(vorige["vaardigheid"])
@@ -318,7 +338,7 @@ class App:
             vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
             kr = self.kruimel_van(OMZETTEN.id)[0][:-1]
             return f"eenheden · {vorm} · {vorige['soort'].lower()}", lambda: Eenheden(self, kr).hervat(vorige)
-        return self.kiezen()
+        return None
 
     def herhalen(self):
         kr = [HOOFD, "Herhalen"]
