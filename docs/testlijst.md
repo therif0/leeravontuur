@@ -6,13 +6,16 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 ## 1. Starten en kind
 - [ ] Dubbelklik op **leeravontuur-win.bat** (Windows) of **leeravontuur-mac.command** (macOS): het programma start.
   `py oefeningen.py` (de oude naam) start ook nog.
-- [ ] Het startscherm toont "Leeravontuur" en "Solve It Now"; Enter gaat verder.
+- [ ] Het startscherm toont "Leeravontuur" en "Solve It Now"; Enter gaat verder, Esc sluit het programma.
 - [ ] "Wie ben jij?" toont je kind(eren). Kies je kind: het hoofdmenu zegt "Hallo …!".
 - [ ] Rechts staat de avatar met het aantal punten.
 
 ## 2. De menu's
-- [ ] Het hoofdmenu: ▶ Verder · Herhalen (n) · Wiskunde · Spiekbrieven · Mijn avatar · Zeg het ons · Wissel van
-  kind · Stoppen.
+- [ ] Het hoofdmenu staat in groepen: ▶ Verder · Herhalen (n), dan **VAKKEN** (Wiskunde · Taal in het grijs ·
+  Leerstof), **JIJ** (Mijn avatar · Winkel), **FEEDBACK** (Zeg het ons) en Stoppen. Met ↑↓ sla je Taal over; toets
+  4 zegt "Taal komt binnenkort.". **Winkel** opent meteen de winkel.
+- [ ] **Stoppen** (of Esc) brengt je naar het titelscherm; Enter = "Wie ben jij?" (daar wissel je van kind), Esc =
+  het programma sluiten.
 - [ ] **Wiskunde** toont 8 domeinen. Breuken en procenten heeft 10 onderwerpen: toets **0** kiest het tiende.
 - [ ] Loop met ↑↓ door de onderwerpen van Hoofdrekenen: onderaan staan alleen de toetsen van het gemarkeerde
   onderwerp (bij Tafels: `[Enter] reeks  [V] vrij  [S] spiekbrief  [T] 60 s  [Z] 20 sommen  [Esc] terug`).
@@ -20,9 +23,10 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   knop onderaan doet hetzelfde als de toets. Na de oefening sta je terug op hetzelfde onderwerp.
 - [ ] Een klik op de broodkruimel bovenaan (bv. "Wiskunde") midden in een vraag vraagt eerst "Wil je stoppen?"; ← en
   Enter (Ja) brengt je naar dat menu. Na het nakijken gaat het meteen.
-- [ ] **Spiekbrieven** toont meteen de 8 domeinen (geen "Welk vak?" meer), met wat erin staat. **Getallen** opent
+- [ ] **Leerstof** (vroeger Spiekbrieven) toont meteen de 8 domeinen (geen "Welk vak?" meer), met wat erin staat. **Getallen** opent
   meteen de spiekbrief; **Meten** vraagt eerst welke: Eenheden omzetten of Oppervlakte en formules.
-- [ ] **▶ Verder** start de vorige oefening (of eerst de herhaalvragen).
+- [ ] **▶ Verder** start de vorige oefening. Was die af (een reeks tot het resultaat) en staan er herhaalvragen
+  klaar, dan vraagt Verder eerst: [Eerst herhalen] [Verder], met Verder gekozen.
 
 ## 3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)
 - [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
@@ -128,8 +132,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **De broodkruimel midden in een vraag** (klik bv. op "Wiskunde" bovenaan): hetzelfde kader. Nee: alles staat er
   nog. Ook in de spiekbrief die je met F1 vanuit een vraag opende (Esc daar = gewoon terug naar de vraag). Bij 60
   seconden: na Ja eerst de uitslag, dan het menu.
-- [ ] **Esc** gaat overal een stap terug. In het hoofdmenu vraagt Esc eerst "Wil je stoppen met Leeravontuur?" (Nee
-  gekozen); Ja (← Enter) of de keuze **Stoppen** stopt met "Tot de volgende keer".
+- [ ] **Esc** gaat overal een stap terug. In het hoofdmenu: naar het titelscherm; daar sluit Esc het programma met
+  "Tot de volgende keer".
 - [ ] **Een reeks halverwege stoppen** (bv. Tafels › Enter, 2 vragen beantwoorden, dan Esc): het resultaat toont "Je
   stopte na 2 van de 10 vragen.", je score, je punten en de uitleg bij je fouten (F = fouten opnieuw). Esc meteen bij
   de eerste vraag: gewoon terug naar het menu.

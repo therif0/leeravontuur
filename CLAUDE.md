@@ -89,7 +89,8 @@ Gouden regels:
   (`Scherm.bevestig`, "Nee" gekozen; Nee = `KEY_RESIZE`, de tijd erin telt niet mee via `Sessie.pauze`). Esc in een
   deelscherm (`@deelscherm`: menu, lezer, invoer, kader) is van dat deelscherm. Een nieuw oefenscherm doet hetzelfde.
   Een gestopte reeks met al minstens één antwoord toont het resultaat van wat gedaan is (`na_reeks(..., gestopt)`:
-  "Je stopte na 2 van de 10 vragen."); Esc in het hoofdmenu vraagt eerst (`App.hoofdmenu`).
+  "Je stopte na 2 van de 10 vragen."). Esc of Stoppen in het hoofdmenu = het titelscherm (`App.start` is een lus:
+  titelscherm → Wie ben jij? → hoofdmenu); Esc op het titelscherm sluit het programma.
 - **Nieuwe onderwerpen** maak je als subklasse van `kern/onderwerp.Onderwerp` (maak_met, uitleg, tip, diagnose,
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
   (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan
@@ -149,8 +150,11 @@ Gouden regels:
   **V** vrij, **S** spiekbrief, **T** 60 s (alleen als de timer zichtbaar is), **Z** 20 sommen, **H** tabel-oefening;
   ook als kleine letter; een letter die niet geldt, doet niets. De voetregel toont alleen de toetsen van het
   gemarkeerde onderwerp en is klikbaar. Na een oefening of spiekbrief sta je terug op hetzelfde onderwerp.
-- Hoogstens **10 items per menu** (cijfertoetsen 1–9 en 0; test). Het hoofdmenu heeft er nu 8: met Taal en Frans
-  zit het vol, dus vóór er iets bijkomt (Examens, Avontuur) eerst met de vader een oplossing kiezen.
+- Hoogstens **10 items per menu** (cijfertoetsen 1–9 en 0; test). Het hoofdmenu (0.23, de vader) staat in groepen
+  met kopjes (`Scherm.menu(koppen=, grijs=)`): ▶ Verder, Herhalen · VAKKEN (de vakken, grijs wat `CU.BINNENKORT` is,
+  Leerstof = de spiekbrieven) · JIJ (Mijn avatar, Winkel) · FEEDBACK (Zeg het ons) · Stoppen: 9 keuzes. Er is nog
+  plaats voor één (Frans); vóór er meer bijkomt (Examens, Avontuur) eerst met de vader een oplossing kiezen.
+  Verder: een reeks die tot het resultaat komt, is "af" (`App.oefening_af`); dan stelt Verder eerst herhalen voor.
 - Spiekbrieven met dezelfde titel binnen een domein worden één keer getoond, dus dezelfde titel = dezelfde
   spiekbrief (test).
 - Instellingen: het kind kiest in Mijn avatar › **Schermkleuren** (L); de rest staat per kind bij de ouder

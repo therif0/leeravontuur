@@ -185,11 +185,11 @@ class TestVangnet(Basis):
         from leeravontuur.terminal.oefenaar import Oefenaar
         o = self.opslag(("Test", "5"))
         with mock.patch.object(Oefenaar, "spiekbrief", side_effect=RuntimeError("expres")):
-            # Esc in het hoofdmenu vraagt eerst (werkwijzen, fase 2): ← Enter = Ja, stoppen
-            scherm, app = self.speel([*naar_spiekbrief("Hoofdrekenen"), OK, ESC, curses.KEY_LEFT, OK], opslag=o)
+            # Esc in het hoofdmenu = het titelscherm, Esc daar = stoppen (0.23)
+            scherm, app = self.speel([*naar_spiekbrief("Hoofdrekenen"), OK, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Oei, er ging iets mis."))
         self.assertIn("RuntimeError: expres", foutlog.meldingen()[-1])
-        self.assertIn("Spiekbrieven", foutlog.meldingen()[-1])  # waar het gebeurde
+        self.assertIn("Leerstof", foutlog.meldingen()[-1])  # waar het gebeurde
         laatste = [b for b in scherm.beelden if "Wat wil je doen?" in b]
         self.assertTrue(laatste)  # terug in het hoofdmenu
 
@@ -207,7 +207,7 @@ class TestVangnet(Basis):
         from leeravontuur.terminal import navigatie
         with mock.patch.object(navigatie, "spiekbrieven", side_effect=RuntimeError("expres")):
             with self.assertRaises(RuntimeError):
-                self.speel([OK, OK, *[hm("Spiekbrieven"), OK] * 3, ESC])
+                self.speel([OK, OK, *[hm("Leerstof"), OK] * 3, ESC])
 
 
 class TestAapjes(Basis):

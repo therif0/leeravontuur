@@ -599,7 +599,9 @@ class Oefenaar:
     def reeks(self, o, jaar, soort):
         kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + ["Reeks van 10"]
         while True:
+            self.app.oefening_af(False)
             res, gestopt = self.speel(kr, soort, "reeks", jaar, self.nieuwe_vragen(o, jaar))
+            self.app.oefening_af(not gestopt)  # helemaal af: Verder stelt daarna eerst herhalen voor
             if (gestopt and not res) or not self.na_reeks(kr, soort, jaar, res, gestopt):
                 return
 
@@ -673,6 +675,7 @@ class Oefenaar:
 
     def vrij_oefenen(self, o, jaar, soort):
         kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + ["Vrij oefenen"]
+        self.app.oefening_af(False)  # vrij oefenen is nooit "af"
         self.vrij_goed = self.vrij_aantal = 0
         fouten = []
         vermijd = selectie.recent_gezien(self.app.opslag, self.app.kind.id, o.id)

@@ -2,6 +2,18 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.23.0 — een nieuw hoofdmenu
+- **Het hoofdmenu staat in groepen**, zoals in een spel: bovenaan ▶ Verder en Herhalen, dan **VAKKEN** (Wiskunde,
+  Taal en Leerstof), **JIJ** (Mijn avatar en de Winkel) en **FEEDBACK** (Zeg het ons), en onderaan Stoppen.
+  - **Taal** staat er al, in het grijs: "Taal komt binnenkort.".
+  - **Leerstof** is de nieuwe naam van de Spiekbrieven.
+  - De **Winkel** opent meteen (ook nog via Mijn avatar).
+- **Stoppen** (of Esc) brengt je naar het titelscherm. Daar kies je met Enter wie er oefent; Esc sluit het programma.
+  "Wissel van kind" is weg: wisselen gaat via Stoppen.
+- **Verder** gaat verder met je vorige oefening. Was die af en staan er herhaalvragen klaar, dan vraagt het eerst of
+  je wil herhalen (Verder staat gekozen).
+- "Vandaag al … vragen geoefend" staat niet meer onder het menu: het staat al rechtsboven ("Vandaag: 2/3 juist").
+
 ## 0.22.0 — het logboek voor de ouder
 - **Nieuw in het ouderdeel: Antwoorden.** Kies je kind en je ziet de laatste antwoorden, nieuwste eerst: ✔ of ✘, de
   vraag met het antwoord van je kind en bij een fout het juiste antwoord. Met Enter zie je de details (de vraag, het

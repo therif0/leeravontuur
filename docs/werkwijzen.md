@@ -138,6 +138,8 @@ een voorstel met mockups.
 - **Fase 2** (0.21.6): Esc in het hoofdmenu vraagt eerst; een gestopte reeks (ook fouten opnieuw, gelijkaardige
   vragen en Maten) toont het resultaat van wat al gedaan is ("Je stopte na 2 van de 10 vragen.", met de punten).
   Meteen gestopt (nog niets beantwoord): gewoon terug naar het menu. ✔
+- **0.23.0** (het nieuwe hoofdmenu van de vader): Esc of Stoppen in het hoofdmenu = het titelscherm (dit vervangt het
+  kader van fase 2); Esc op het titelscherm sluit het programma.
 - Geparkeerd: Ctrl-C, Enter op het resultaat, de toets q, Maten volgens de vaste werkwijze, de voetregels, de tip
   bij "Hoe laat kom je aan?".
 

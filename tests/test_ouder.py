@@ -174,7 +174,7 @@ class TestWeergave(OuderBasis):
     def test_ascii_startargument_blijft_voorgaan(self):
         """Met --ascii gestart, het actieve kind krijgt in Weergave 'Eenvoudige tekens uit': het scherm blijft ASCII."""
         o = self.met_wachtwoord(("Test", "5"))
-        scherm, app = self.weergave(o, 4, 4, start=(OK, OK, hm("Wissel van kind"), "3"), voorrang={"ascii": True})
+        scherm, app = self.weergave(o, 4, 4, start=(OK, OK, hm("Stoppen"), OK, "3"), voorrang={"ascii": True})
         self.assertIs(o.instellingen_van(app.kind.id).ascii, False)
         self.assertTrue(app.inst.ascii)
         for beeld in scherm.beelden:
@@ -212,10 +212,10 @@ class TestZegHetOns(OuderBasis):
     def test_leeg_bewaart_niets_en_stoppen_met_een_cijfer(self):
         from leeravontuur.kern import feedback
         o = self.opslag(("Test", "5"))
-        scherm, app = self.speel([OK, OK, hm("Zeg het ons"), OK, hm("Stoppen"), "x"], opslag=o)
+        scherm, app = self.speel([OK, OK, hm("Zeg het ons"), OK, hm("Stoppen"), ESC, "x"], opslag=o)
         self.assertEqual(feedback.lees(), [])
         self.assertEqual(hm("Stoppen"), str(len(HOOFDMENU) % 10))  # de laatste keuze
-        self.assertEqual(scherm.toetsen, ["x"])  # met dat cijfer gestopt: de volgende toets werd niet meer gelezen
+        self.assertEqual(scherm.toetsen, ["x"])  # Stoppen → titelscherm, Esc: gestopt (x niet meer gelezen)
 
 
 class TestAntwoorden(OuderBasis):

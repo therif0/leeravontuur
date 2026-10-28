@@ -19,8 +19,8 @@ from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 PAKKET = Path(__file__).resolve().parent.parent / "leeravontuur"
 OK = "\n"
 # het hoofdmenu: vaste keuzes, vaste volgorde (de vakken uit het leerplan op de derde plaats)
-HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Zeg het ons",
-             "Wissel van kind", "Stoppen"]
+HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], *[label for label, _ in CU.BINNENKORT],
+             "Leerstof", "Mijn avatar", "Winkel", "Zeg het ons", "Stoppen"]
 MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
@@ -150,7 +150,7 @@ class TestModiStarten(unittest.TestCase):
         app.activeer(self.kind)
         try:
             f(app, ["Leeravontuur", "Test"])
-        except ToetsenOp:
+        except (ToetsenOp, SystemExit):  # SystemExit: Esc op het titelscherm sluit het programma
             pass
         return scherm.beelden
 
@@ -184,7 +184,7 @@ class TestNavigatie(TestModiStarten):
         with mock.patch.dict(os.environ, {"LEERAVONTUUR_DEBUG": "1"}):  # geen vangnet: stoppen waar de toetsen op zijn
             try:
                 app.start()
-            except ToetsenOp:
+            except (ToetsenOp, SystemExit):  # SystemExit: Esc op het titelscherm sluit het programma
                 pass
         self.app = app
         return scherm.beelden
@@ -223,14 +223,14 @@ class TestNavigatie(TestModiStarten):
             {"onderwerp": "oefenaar", "vaardigheid": "wiskunde.procenten.van", "vorm": "vrij", "niveau": 1,
              "domein": "Procenten"}))
         beelden = self.speel([OK, OK, "1"])
-        self.assertTrue(any("▶ Verder          procent van een getal" in b for b in beelden))
+        self.assertTrue(any(re.search(r"▶ Verder +procent van een getal", b) for b in beelden))
         self.assertIn("Breuken en procenten", self.app.s.kruimel)
         self.assertIn("Procent van een getal", self.app.s.kruimel)
 
     def test_spiekbrieven_kort(self):
         """#20: zolang er één vak is, geen "Welk vak?"; een domein met één spiekbrief opent die meteen, bij meer staat
         in de uitleg welke er zijn."""
-        spiek = str(HOOFDMENU.index("Spiekbrieven") + 1)
+        spiek = str(HOOFDMENU.index("Leerstof") + 1)
         beeld = self.speel([OK, OK, spiek])[-1]
         self.assertIn("Welke spiekbrief?", beeld)
         self.assertIn("1. Getallen", beeld)
@@ -238,11 +238,11 @@ class TestNavigatie(TestModiStarten):
         getallen = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.getallen")
         beeld = self.speel([OK, OK, spiek, str(getallen)])[-1]
         self.assertIn("PLAATSWAARDE", beeld)
-        self.assertEqual(self.app.s.kruimel[-2:], ["Spiekbrieven", "Getallen"])
+        self.assertEqual(self.app.s.kruimel[-2:], ["Leerstof", "Getallen"])
 
     def test_gedeelde_spiekbrief_een_keer(self):
         meten = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.meten")
-        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Spiekbrieven") + 1), str(meten)])[-1]
+        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Leerstof") + 1), str(meten)])[-1]
         self.assertEqual(beeld.count("Eenheden omzetten"), 1)
         self.assertIn("2. Oppervlakte en formules", beeld)
         self.assertNotIn("3. ", beeld)

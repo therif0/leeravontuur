@@ -408,20 +408,35 @@ class Scherm:
             pass
 
     @deelscherm
-    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None, uitleg_tot=None):
+    def menu(self, kruimel, vraag, opties, info=(), onder="", start=0, extra=None, toetsen=None, uitleg_tot=None,
+             koppen=None, grijs=None, esc="terug"):
         """Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug.
         uitleg_tot = de kolom waar de uitleg moet stoppen (bv. vóór de avatar); te lang = ingekort met '…'.
+        koppen = {index: "VAKKEN"}: een kopje vóór die keuze ("" = alleen een lege regel), zoals in een spel.
+        grijs = {index: melding}: een keuze die je ziet maar niet kan kiezen (↑↓ slaan ze over; het cijfer of een
+        klik toont de melding, bv. "Taal komt binnenkort."). esc = wat er bij [Esc] in de voetregel staat.
 
         toetsen (de aanroeper bepaalt ze per keuze): [[("Enter", uitleg), ("v", uitleg), …], …], de eerste is
         altijd Enter. Dan is de terugwaarde (index, toets): "Enter" bij Enter, een cijfer of een klik op de keuze,
         anders de kleine letter (ook met Shift). Een letter die niet bij de gemarkeerde keuze hoort, doet niets.
         De voetregel toont de toetsen van de gemarkeerde keuze; elke knop is klikbaar."""
+        koppen, grijs = koppen or {}, grijs or {}
         sel = start
+        while sel in grijs and len(grijs) < len(opties):
+            sel = (sel + 1) % len(opties)
         breed = max(len(o[0]) for o in opties)
-        knoppen = [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("Esc", "terug", ESC)]
+        knoppen = [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("Esc", esc, ESC)]
+        melding = ""
 
         def gekozen(i, toets="Enter"):
             return i if toetsen is None else (i, toets)
+
+        def stap_naar(i, richting):
+            for _ in range(len(opties)):
+                i = (i + richting) % len(opties)
+                if i not in grijs:
+                    return i
+            return i
 
         while True:
             if self.te_klein():
@@ -429,38 +444,62 @@ class Scherm:
             self.cursor(False)
             if toetsen is not None:
                 knoppen = [("Enter", uitleg, 10) if t == "Enter" else (t.upper(), uitleg, ord(t))
-                           for t, uitleg in toetsen[sel]] + [("Esc", "terug", ESC)]
+                           for t, uitleg in toetsen[sel]] + [("Esc", esc, ESC)]
             self.nieuw(kruimel, knoppen)
             h, w = self.win.getmaxyx()
             self.put(3, 4, vraag, "bold")
-            stap = 2 if 5 + 2 * len(opties) < h - 4 else 1
+            regels = list(info)
+            if koppen:  # groepen: elke keuze één rij, een kopje (en een lege regel als er plaats is)
+                nodig = 5 + len(opties) + sum(1 for t in koppen.values() if t) + len([i for i in koppen if i])
+                ruim = nodig + (len(regels) + 1 if regels else 0) <= h - 3  # anders zonder lege regels
+                rijen, y = [], 5
+                for i in range(len(opties)):
+                    if i in koppen:
+                        y += 1 if ruim and i else 0
+                        if koppen[i]:
+                            self.put(y, 4, koppen[i], "accent")
+                            y += 1
+                    rijen.append(y)
+                    y += 1
+                info_y = y + (1 if ruim else 0)
+            else:
+                stap = 2 if 5 + 2 * len(opties) < h - 4 else 1
+                rijen = [5 + stap * i for i in range(len(opties))]
+                info_y = 6 + stap * len(opties)
             for i, (label, uitleg) in enumerate(opties):
-                y = 5 + stap * i
+                y = rijen[i]
                 tekst = f" {(i + 1) % 10}. {label.ljust(breed)} "  # de 10de keuze heeft toets 0
-                self.put(y, 6, tekst, "cursor" if i == sel else "")
+                self.put(y, 6, tekst, "cursor" if i == sel else "dim" if i in grijs else "")
                 if uitleg:
                     ruimte = (uitleg_tot or w) - 8 - len(tekst)
                     if len(uitleg) > ruimte > 1:
                         uitleg = uitleg[:ruimte - 1].rstrip(" ,·") + "…"
                     self.put(y, 8 + len(tekst), uitleg, "dim")
                 self.zones.voeg(y, 4, 1, w - 6, ("kies", i))
-            for j, regel in enumerate(info):
-                self.put(6 + stap * len(opties) + j, 4, regel, "info")
-            if onder:
+            for j, regel in enumerate(regels):
+                self.put(info_y + j, 4, regel, "info")
+            if melding:  # een grijze keuze gekozen: onderaan, zodat het menu niet verspringt
+                self.put(h - 3, 4, melding, "info")
+            elif onder:
                 self.put(h - 3, 4, onder, "dim")
             if extra:
                 extra()
             k = self.toets()
+            melding = ""
             if isinstance(k, tuple):
-                if k[0] == "kies":
+                if k[0] == "kies" and k[1] in grijs:
+                    melding = grijs[k[1]]
+                elif k[0] == "kies":
                     return gekozen(k[1])
-                if k[0] == "scroll":
-                    sel = (sel + k[1]) % len(opties)
+                elif k[0] == "scroll":
+                    sel = stap_naar(sel, k[1])
                 continue
             if k in (curses.KEY_UP, ord("k")):
-                sel = (sel - 1) % len(opties)
+                sel = stap_naar(sel, -1)
             elif k in (curses.KEY_DOWN, ord("j"), 9):
-                sel = (sel + 1) % len(opties)
+                sel = stap_naar(sel, 1)
+            elif isinstance(k, int) and ord("0") <= k <= ord("9") and (k - ord("1")) % 10 in grijs:
+                melding = grijs[(k - ord("1")) % 10]
             elif ord("1") <= k < ord("1") + min(len(opties), 9):
                 return gekozen(k - ord("1"))
             elif k == ord("0") and len(opties) >= 10:

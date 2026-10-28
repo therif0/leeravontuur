@@ -55,6 +55,8 @@ def _vakken():
 
 
 VAKKEN, GROEPEN = _vakken()  # VAKKEN: volgorde = volgorde in het hoofdmenu
+# vakken die er nog niet zijn maar al grijs in het hoofdmenu staan (label, uitleg); weg zodra het vak in VAKKEN staat
+BINNENKORT = tuple(v for v in (("Taal", "binnenkort"),) if v[0] not in {x.label for x in VAKKEN})
 # GROEPEN: bewaarde id die bij meer onderwerpen hoort -> één naam in de rapporten (de zeven maten: "Maten")
 
 
