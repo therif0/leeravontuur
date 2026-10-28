@@ -8,7 +8,7 @@ Backspace op een lege regel haalt de vorige terug; een klik op een regel ook. He
 from ..kern.klad import lees_regel
 from .scherm import BACKSPACE, ENTER
 
-KLAD_TEKENS = set("0123456789,.+-−*xX×:/()=%€ ") | set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ²³")
+KLAD_TEKENS = set("0123456789,.+-−*xX×:/()=%€? ") | set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ²³")
 LEEG = "typ hier je rekenregels: 3 x 4 = 12"
 LEEG_ENTER = "leeg"  # Enter op een lege regel: het scherm gaat verder (bv. naar het antwoord)
 
@@ -62,7 +62,9 @@ class Kladblad:
             regel = lees_regel(self.buf)
             self.regels.append((self.buf, regel))
             self.buf = ""
-            if regel.juist:
+            if regel.vraag:  # een vraag aan zichzelf (bv. 45 x 3 = ?): geen ✘ en geen !
+                self.melding, self.melding_rol = "Een vraag voor jezelf. Reken ze uit op een volgende regel.", "info"
+            elif regel.juist:
                 self.melding, self.melding_rol = "✔ Deze regel klopt." + (f" {regel.melding}" if regel.melding
                                                                           else ""), "goed"
             elif regel.juist is False:

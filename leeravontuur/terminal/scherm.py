@@ -16,9 +16,11 @@ ENTER = (10, 13, curses.KEY_ENTER)
 BACKSPACE = (curses.KEY_BACKSPACE, 127, 8)
 ESC = 27
 NIETS = -1
+HULP = curses.KEY_F1  # de hulp-toets (tip, hulp, spiekbrief). Niet ?: dat typt het kind in zijn klad (#14, 0.21.7)
 # toetsen die het klokvenster doorgeeft (terminal/venster.py)
 VENSTER_TOETSEN = {"Enter": 10, "Escape": 27, "Left": curses.KEY_LEFT, "Right": curses.KEY_RIGHT,
-                   "Up": curses.KEY_UP, "Down": curses.KEY_DOWN, "BackSpace": curses.KEY_BACKSPACE, "Tab": 9}
+                   "Up": curses.KEY_UP, "Down": curses.KEY_DOWN, "BackSpace": curses.KEY_BACKSPACE, "Tab": 9,
+                   "F1": curses.KEY_F1}
 
 # het numeriek klavier (#11) geeft soms een eigen toetscode in plaats van het teken:
 # - Windows (PDCurses): vaste codes voor / * - + . en Enter (ncurses gebruikt die codes niet);

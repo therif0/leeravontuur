@@ -15,7 +15,7 @@ from ..kern import verhaal as V
 from ..kern.wiskunde import vraagstukken as VS
 from ..kern.wiskunde.grootheden import klok_cijfers
 from .kladblad import LEEG_ENTER, Kladblad
-from .scherm import BACKSPACE, ENTER, ESC, teken_van
+from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
 
 TAB = 9
 X = 2                       # linkerrand
@@ -82,7 +82,7 @@ class VraagstukInvoer:
         k = [("Tab", "volgende stap", TAB)]
         if self.fase == LEES:
             k.append(("Spatie", "aanduiden" if not self.onder else "kiezen", ord(" ")))
-        k.append(("?/F1", "spiekbrief" if self.tips_op else f"tip ({max(0, 4 - self.tips)} over)", ord("?")))
+        k.append(("F1", "spiekbrief" if self.tips_op else f"tip ({max(0, 4 - self.tips)} over)", HULP))
         k.append(("Enter", "controleren" if self.fase == CONTROLE else "ok", 10))
         return k + [("Esc", "stoppen", ESC)]
 
@@ -263,7 +263,7 @@ class VraagstukInvoer:
     def toets(self, k):
         if isinstance(k, tuple):
             return self.klik(k)
-        if k == ord("?"):
+        if k == HULP:
             self.volgende_tip()
             return None
         if k == TAB:
@@ -497,8 +497,8 @@ class VraagstukInvoer:
                 ontbreekt = [st.naam for st in m.stappen if st.id not in analyse["gedekt"]]
                 self.tiptekst = ("Tip 4: je klad ziet er goed uit. Nog uit te rekenen: " + ", ".join(ontbreekt) + "."
                                  if ontbreekt else "Tip 4: je klad is klaar. Schrijf je antwoord in stap 4.")
-        if len(textwrap.wrap(self.tiptekst + " Nog eens ?/F1: je spiekbrief.", 76)) <= 2:
-            self.tiptekst += " Nog eens ?/F1: je spiekbrief."
+        if len(textwrap.wrap(self.tiptekst + " Nog eens F1: je spiekbrief.", 76)) <= 2:
+            self.tiptekst += " Nog eens F1: je spiekbrief."
 
     @property
     def tips_op(self):
@@ -583,7 +583,7 @@ class SpeurInvoer(_MetTip):
             (4 if self.regel and not nagekeken else 0) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "spiekbrief" if self.tip_aan else "tip", ord("?")),
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("F1", "spiekbrief" if self.tip_aan else "tip", HULP),
                 ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
@@ -617,7 +617,7 @@ class SpeurInvoer(_MetTip):
             self.teken_tip(s, yy + 1)
 
     def toets(self, k):
-        if k == ord("?"):
+        if k == HULP:
             self.tip_aan = True
             return None
         if isinstance(k, tuple):
@@ -691,7 +691,7 @@ class KeuzeInvoer(_MetTip):
         return len(self.lijnen) + 2 + len(self.vraag) + 1 + len(self.m.opties) + (0 if nagekeken else self.tip_h())
 
     def knoppen(self):
-        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("?/F1", "spiekbrief" if self.tip_aan else "tip", ord("?")),
+        return [("↑↓", "kiezen", None), ("Enter", "ok", 10), ("F1", "spiekbrief" if self.tip_aan else "tip", HULP),
                 ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
@@ -714,7 +714,7 @@ class KeuzeInvoer(_MetTip):
             self.teken_tip(s, r + len(self.m.opties))
 
     def toets(self, k):
-        if k == ord("?"):
+        if k == HULP:
             self.tip_aan = True
             return None
         if isinstance(k, tuple):

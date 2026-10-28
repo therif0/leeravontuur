@@ -73,7 +73,8 @@ Gouden regels:
   Het oefenmaatje (`terminal/maatje.py`) gebruikt de pixel-avatar waar plaats is, anders een tekstgezichtje.
   Nieuwe onderdelen: test `test_avatar.py` controleert dat gezicht en ankers op het lijf staan.
 - **De vaste werkwijze** (elke oefening dezelfde, zodat het kind niet verloren loopt): lees, klad (`Tab`), antwoord;
-  `?` = getrapte tips (`Onderwerp.tips`), na de laatste tip de spiekbrief bij het kopje van de vraag
+  **F1** (`scherm.HULP`; niet `?`: dat typt het kind in zijn klad als vraag aan zichzelf, `KladRegel.vraag`) =
+  getrapte tips (`Onderwerp.tips`), na de laatste tip de spiekbrief bij het kopje van de vraag
   (`Onderwerp.spiek_kop`/`kop_op_spiekbrief`; een test kijkt na dat elk kopje bestaat; Esc = terug naar de vraag),
   daarna weer tip 1; fout = één tweede kans (niet bij janee/vergelijk/keuze en objecten met een
   eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`), daarna "Zo kan het:" in klad-regels, met het
@@ -123,7 +124,7 @@ Gouden regels:
   (`getal`, `klok`, `duur`) zegt hoe het antwoord gelezen wordt; tijd rekent in minuten, en het klad kent
   tijdstippen (`9.45 u`, `9:45`). Invoer
   `"vraagstuk"` = `terminal/vraagstuk.py` (4 stappen). Haakjes in de Oefenaar voor zo'n invoer-object: `eigen_tekst`
-  (tekent zelf de vraag), `eigen_tip` (`?` gaat naar het object), `extra` (bewaard bij het antwoord en gebruikt
+  (tekent zelf de vraag), `eigen_tip` (F1 gaat naar het object), `extra` (bewaard bij het antwoord en gebruikt
   voor de punten) en `uitleg_na`. `tests/test_vraagstukken.py` maakt elke structuur in elk leerjaar en kijkt na
   dat het verhaal klopt, past (4 × 56 tekens) en mooi uitkomt. De Speurneus (invoer `"speur"`, model `Speur`)
   maakt van een fout pad (of een rekenfout) het klad van een ander kind; Schatten (invoer `"keuze"`, model

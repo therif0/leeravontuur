@@ -15,6 +15,7 @@ from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 
 ESC = "\x1b"
 OK = "\n"
+F1 = curses.KEY_F1  # de hulp-toets (tip, hulp, spiekbrief); ? typt gewoon een vraagteken (0.21.7)
 
 # keuzes in het hoofdmenu (als toets)
 HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], "Spiekbrieven", "Mijn avatar", "Zeg het ons",
@@ -191,7 +192,7 @@ class TestReeks(Basis):
 
     def test_vrij_oefenen_tip(self):
         o = self.opslag(("Test", "5"))
-        toetsen = [*naar("wiskunde.meten.massa"), "?", "5", OK, ESC, ESC, ESC, ESC, ESC]
+        toetsen = [*naar("wiskunde.meten.massa"), F1, "5", OK, ESC, ESC, ESC, ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertTrue(self.ergens(scherm, "Tip:"))
         rijen = o.antwoorden(app.kind.id)
@@ -228,12 +229,12 @@ class TestReeks(Basis):
             self.assertNotIn("Welk onderwerp?", na_het_kader(scherm))
 
     def test_f1_is_ook_een_tip(self):
-        """#14: op een AZERTY-klavier is ? Shift + komma; F1 geeft ook een tip (eigen scherm van de maten)."""
+        """#14: F1 geeft een tip (eigen scherm van de maten); ? doet niets meer (0.21.7)."""
         o = self.opslag(("Test", "5"))
         scherm, app = self.speel([*naar("wiskunde.meten.massa"), curses.KEY_F1, "5", OK, ESC, ESC, ESC, ESC, ESC],
                                  opslag=o)
         self.assertTrue(self.ergens(scherm, "Tip:"))
-        self.assertTrue(self.ergens(scherm, "[?/F1] tip"))
+        self.assertTrue(self.ergens(scherm, "[F1] tip"))
         self.assertEqual(o.antwoorden(app.kind.id)[0]["hulp"], 1)
 
 
@@ -329,7 +330,7 @@ class TestVraagstuk(Basis):
     def test_tweede_kans_en_tips(self):
         o = self.opslag(("Test", "5"))
         fout = self.v.model.stappen[0].uitkomst  # de tussenuitkomst
-        toetsen = [*self.start(), "?", "?", "a", *self.antwoord(fout), OK]
+        toetsen = [*self.start(), F1, F1, "a", *self.antwoord(fout), OK]
         scherm, _ = self.speel(toetsen + [ESC, ESC, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "nog niet klaar"))
         self.assertTrue(self.ergens(scherm, "Tip 2: gevraagd is het wisselgeld"))
@@ -564,10 +565,10 @@ class TestWerkwijze(Basis):
         antwoord = str(v.antwoord)
         o = self.opslag(("Test", "5"))
         aantal = max(1, len(H.TAFELS.tips(v)) + bool(H.TAFELS.klad_voor(v)))
-        toetsen = [*self.vast(H.TAFELS, v), antwoord[0], *["?"] * aantal]
+        toetsen = [*self.vast(H.TAFELS, v), antwoord[0], *[F1] * aantal]
         scherm, _ = self.speel(toetsen, opslag=o)
-        self.assertIn("[?/F1] spiekbrief", next(b for b in reversed(scherm.beelden) if v.tekst in b))
-        scherm, app = self.speel([*toetsen, "?", ESC, "?", *antwoord[1:], OK], opslag=o)
+        self.assertIn("[F1] spiekbrief", next(b for b in reversed(scherm.beelden) if v.tekst in b))
+        scherm, app = self.speel([*toetsen, F1, ESC, F1, *antwoord[1:], OK], opslag=o)
         brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
         self.assertIn("TAFELS", [r.strip() for r in brief.split("\n")[2:5]], brief)  # meteen bij het kopje
         self.assertIn("[Esc] terug naar je vraag", brief)
@@ -584,12 +585,12 @@ class TestWerkwijze(Basis):
         for o, n, kop in ((ONDERWERPEN["wiskunde.cijferen.optellen"], 2, "OPTELLEN"),
                           (ONDERWERPEN["wiskunde.vraagstukken.oplossen"], 5, "EEN VRAAGSTUK IN 4 STAPPEN")):
             with self.subTest(o.id):
-                scherm, _ = self.speel([*naar(o), *["?"] * n, ESC])
+                scherm, _ = self.speel([*naar(o), *[F1] * n, ESC])
                 brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
                 self.assertIn(kop, [r.strip() for r in brief.split("\n")[2:5]])
                 self.assertFalse(any("› Spiekbrief" in b for b in scherm.beelden[:scherm.beelden.index(brief)]))
-        scherm, _ = self.speel([*naar("wiskunde.meten.massa"), "?", "?", ESC])
-        self.assertTrue(self.ergens(scherm, "Nog hulp nodig? Druk nog eens ?/F1: je spiekbrief."))
+        scherm, _ = self.speel([*naar("wiskunde.meten.massa"), F1, F1, ESC])
+        self.assertTrue(self.ergens(scherm, "Nog hulp nodig? Druk nog eens F1: je spiekbrief."))
         brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
         self.assertIn("[Esc] terug naar je vraag", brief)
 
@@ -654,10 +655,10 @@ class TestWerkwijze(Basis):
 
     def test_kruimel_vanuit_de_spiekbrief_in_een_vraag(self):
         """In de spiekbrief vanuit een vraag: de broodkruimel vraagt eerst; Esc gaat gewoon terug naar de vraag."""
-        scherm, _ = self.speel([*self.plusmin(), *"14", *["?"] * 4, self.KRUIMEL_WISKUNDE, OK])
+        scherm, _ = self.speel([*self.plusmin(), *"14", *[F1] * 4, self.KRUIMEL_WISKUNDE, OK])
         self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
         self.assertIn("› Spiekbrief", na_het_kader(scherm))  # Nee: terug in de spiekbrief
-        scherm, _ = self.speel([*self.plusmin(), *"14", *["?"] * 4, ESC])
+        scherm, _ = self.speel([*self.plusmin(), *"14", *[F1] * 4, ESC])
         self.assertFalse(self.ergens(scherm, "Wil je stoppen"))
         brief = max(i for i, b in enumerate(scherm.beelden) if "› Spiekbrief" in b)
         self.assertIn("47 + 99 =", scherm.beelden[brief + 1])  # Esc: meteen terug naar de vraag
@@ -787,26 +788,36 @@ class TestWerkwijze(Basis):
         self.assertIn("147 − 1 = 146", beeld)
 
     def test_tips_getrapt(self):
-        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", ESC, ESC, ESC, ESC, ESC])
+        scherm, _ = self.speel([*self.plusmin(), F1, F1, F1, ESC, ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Tip 1 van 3: Maak er eerst een rond getal van"))
         self.assertTrue(self.ergens(scherm, "Tip 2 van 3: Begin je klad zo: 47 + 100 = …"))
         self.assertTrue(self.ergens(scherm, "Tip 3 van 3: schrijf je eerste stap in het klad"))
 
     def test_tips_draaien_rond(self):
         """#15: na de laatste tip (en de spiekbrief, #20) begint ? opnieuw bij de eerste."""
-        scherm, _ = self.speel([*self.plusmin(), "?", "?", "?", "?", ESC, "?"])
+        scherm, _ = self.speel([*self.plusmin(), F1, F1, F1, F1, ESC, F1])
         tips = [b for b in scherm.beelden if "Tip " in b]
         self.assertIn("Tip 1 van 3: Maak er eerst een rond getal van", tips[-1].replace("\n", " "))
 
     def test_f1_geeft_de_volgende_tip(self):
-        """#14: F1 doet hetzelfde als ?, ook in het klad (en typt daar niets)."""
+        """#14: F1 geeft de volgende tip, ook in het klad (en typt daar niets)."""
         scherm, _ = self.speel([*self.plusmin(), curses.KEY_F1, TAB, curses.KEY_F1, ESC, ESC, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Tip 2 van 3"))
-        self.assertTrue(self.ergens(scherm, "[?/F1] tip"))
+        self.assertTrue(self.ergens(scherm, "[F1] tip"))
+
+    def test_vraagteken_in_het_klad_is_gewoon_een_teken(self):
+        """0.21.7: het kind schrijft ? in zijn klad als vraag aan zichzelf: geen tip, geen ✘ of !."""
+        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 99 = ?", OK, ESC, ESC, ESC, ESC, ESC])
+        self.assertFalse(self.ergens(scherm, "Tip 1 van 3"))
+        laatste = next(b for b in reversed(scherm.beelden) if "47 + 99 = ?" in b)
+        self.assertIn("Een vraag voor jezelf. Reken ze uit op een volgende regel.", laatste)
+        self.assertNotIn("Dit kan ik niet lezen", laatste)
+        scherm, _ = self.speel([*self.plusmin(), *"14?", ESC, ESC, ESC])  # in het antwoordvak: niets
+        self.assertFalse(self.ergens(scherm, "Tip 1 van 3"))
 
     def test_tip_terwijl_je_in_het_klad_typt(self):
-        """#15: ? midden in een klad-regel geeft een tip, en de regel blijft staan."""
-        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 1", "?", ESC, ESC, ESC, ESC, ESC])
+        """#15: F1 midden in een klad-regel geeft een tip, en de regel blijft staan."""
+        scherm, _ = self.speel([*self.plusmin(), TAB, *"47 + 1", F1, ESC, ESC, ESC, ESC, ESC])
         laatste = next(b for b in reversed(scherm.beelden) if "47 + 1" in b)
         self.assertIn("Tip 1 van 3", laatste)
 
@@ -866,7 +877,7 @@ class TestWerkwijze(Basis):
                     with mock.patch.object(o, "maak", return_value=v):
                         regels = [k for _ in range(6) for k in [*"12 + 3 = 15", OK]]
                         toetsen = [*naar(o)] + ([] if o.klad_voor(v) == "verplicht" else [TAB])
-                        scherm, _ = self.speel([*toetsen, *regels, "?", "?", "?"])
+                        scherm, _ = self.speel([*toetsen, *regels, F1, F1, F1])
                     beeld = next(b for b in reversed(scherm.beelden) if "Klad" in b).split("\n")
                     self.assertEqual(len(beeld), 24)
                     self.assertTrue(beeld[-1].startswith(" [Tab]"), beeld[-1])

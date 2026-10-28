@@ -9,7 +9,7 @@ Beide zijn 'invoer-objecten' voor terminal/oefenaar.py:
 import curses
 
 from ..kern.getal import lees_getal
-from .scherm import BACKSPACE, ENTER, ESC
+from .scherm import BACKSPACE, ENTER, ESC, HULP
 
 TAB = 9
 MAATJE_X, MAATJE_ONDER = 60, 9  # tot rij 9 staat rechts het maatje (vanaf kolom 60)
@@ -52,7 +52,7 @@ class RoosterInvoer:
         return self.X0 + (3 if self.toont_plaatswaarden() else 2) * kol  # met plaatswaarden iets breder (TD, HD)
 
     def knoppen(self):
-        k = [("Enter", "klaar", 10), ("?/F1", "hulp", ord("?")), ("r", "richting", ord("r"))]
+        k = [("Enter", "klaar", 10), ("F1", "hulp", HULP), ("r", "richting", ord("r"))]
         if self.r.komma_zelf:
             k.append((",", "komma", ord(",")))
         if self.r.plaatswaarden_kloppen():  # naast [,] komma past "plaatswaarden" niet in 80 tekens
@@ -246,7 +246,7 @@ class StaartInvoer:
         return self.VENSTER + 2
 
     def knoppen(self):
-        return [("Enter", "ok", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("Enter", "ok", 10), ("F1", "tip", HULP), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         m = self.m

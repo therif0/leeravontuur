@@ -23,7 +23,7 @@ from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
 from .kladblad import LEEG_ENTER, Kladblad
-from .scherm import ENTER, ESC, teken_van
+from .scherm import ENTER, ESC, HULP, teken_van
 
 REEKS = 10
 LOF = ["Goed zo!", "Super!", "Knap gedaan!", "Prima!", "Helemaal juist!", "Top!"]
@@ -52,8 +52,8 @@ GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagst
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
 KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
-MEER_HULP = " Nog hulp nodig? Druk nog eens ?/F1: je spiekbrief."  # na de laatste tip (#20)
-KORT_HULP = " Nog eens ?/F1: je spiekbrief."  # na de hulp van een invoer-object
+MEER_HULP = " Nog hulp nodig? Druk nog eens F1: je spiekbrief."  # na de laatste tip (#20)
+KORT_HULP = " Nog eens F1: je spiekbrief."  # na de hulp van een invoer-object
 
 
 def vraagtekst(v):
@@ -172,10 +172,10 @@ class Oefenaar:
                 knoppen = obj.knoppen()
             elif lijnen:
                 knoppen = [("←→", "pijl", None), ("+", "zoom in", ord("+")), ("−", "zoom uit", ord("-")),
-                           ("Enter", "hier!", 10), ("?/F1", tip_knop, ord("?")), ("Esc", "stoppen", ESC)]
+                           ("Enter", "hier!", 10), ("F1", tip_knop, HULP), ("Esc", "stoppen", ESC)]
             else:
                 knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
-                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("?/F1", tip_knop, ord("?")),
+                    ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("F1", tip_knop, HULP),
                     ("Esc", "stoppen", ESC)]
             s.nieuw(kr, knoppen)
             if vrij:
@@ -349,8 +349,6 @@ class Oefenaar:
             k = s.toets()
             if k == curses.KEY_RESIZE:  # opnieuw tekenen (ook na "Nee, verder" in het kader)
                 continue
-            if k == curses.KEY_F1:  # F1 = ? (op een AZERTY-klavier is ? Shift + komma, #14)
-                k = ord("?")
             if goed is not None:
                 if k in ENTER or k == ord(" "):
                     return buf, goed, False
@@ -361,7 +359,7 @@ class Oefenaar:
                 s.cursor(False)
                 return None
             eigen_tip = obj is not None and getattr(obj, "eigen_tip", False)
-            if k == ord("?") and (not eigen_tip or (spiek and getattr(obj, "tips_op", False))):  # ook in het klad
+            if k == HULP and (not eigen_tip or (spiek and getattr(obj, "tips_op", False))):  # ook in het klad
                 tip = tip_gebruikt = True
                 if eigen_tip:  # het object gaf al zijn tips: nu de spiekbrief
                     getattr(obj, "spiekbrief_bekeken", lambda: None)()
