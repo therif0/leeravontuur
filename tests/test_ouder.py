@@ -94,7 +94,7 @@ class TestRapportenScherm(OuderBasis):
 class TestKinderenBeheren(OuderBasis):
     def beheer(self, o, *toetsen):
         """Ouderdeel → Kinderen → eerste kind, dan de gegeven toetsen."""
-        return self.speel([OK, "3", *WW, OK, "2", "1", *toetsen, ESC, ESC, ESC, ESC, ESC], opslag=o)
+        return self.speel([OK, "3", *WW, OK, "3", "1", *toetsen, ESC, ESC, ESC, ESC, ESC], opslag=o)
 
     def test_leerjaar_wijzigen(self):
         o = self.met_wachtwoord(("Test", "5"))
@@ -118,7 +118,7 @@ class TestKinderenBeheren(OuderBasis):
     def test_wissen_vraagt_de_naam(self):
         o = self.met_wachtwoord(("Test", "5"), ("Ander", "4"))
         # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*7 = 18
-        self.speel([OK, "4", *WW, OK, "2", "1", ("klik", 18, 10), *"Fout", OK, OK, ("klik", 18, 10),
+        self.speel([OK, "4", *WW, OK, "3", "1", ("klik", 18, 10), *"Fout", OK, OK, ("klik", 18, 10),
                     *"Ander", OK, OK, ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual([k.naam for k in o.kinderen()], ["Test"])
 
@@ -134,7 +134,7 @@ class TestWeergave(OuderBasis):
     Plaatswaarden 16."""
 
     def weergave(self, o, *klikken, start=(OK, "3"), voorrang=None):
-        toetsen = [*start, *WW, OK, "2", "1", ("klik", 8, 10), *[("klik", y, 10) for y in klikken],
+        toetsen = [*start, *WW, OK, "3", "1", ("klik", 8, 10), *[("klik", y, 10) for y in klikken],
                    ESC, ESC, ESC, ESC, ESC, ESC]
         return self.speel(toetsen, opslag=o, voorrang=voorrang)
 
@@ -204,8 +204,8 @@ class TestZegHetOns(OuderBasis):
         self.assertTrue(self.ergens(scherm, "Bedankt!"))
         lijst = feedback.lees()
         self.assertEqual([(m["naam"], m["tekst"]) for m in lijst], [("Imrane", tekst)])
-        # in het ouderdeel: Wie ben jij? → 3 Ouders, wachtwoord, 5 Opmerkingen
-        scherm, _ = self.speel([OK, "3", *WW, OK, "5", ESC, ESC], opslag=o)
+        # in het ouderdeel: Wie ben jij? → 3 Ouders, wachtwoord, 6 Opmerkingen
+        scherm, _ = self.speel([OK, "3", *WW, OK, "6", ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Opmerkingen (1)"))
         self.assertTrue(self.ergens(scherm, "7/8 vs. 5/6"))
 
@@ -216,3 +216,41 @@ class TestZegHetOns(OuderBasis):
         self.assertEqual(feedback.lees(), [])
         self.assertEqual(hm("Stoppen"), str(len(HOOFDMENU) % 10))  # de laatste keuze
         self.assertEqual(scherm.toetsen, ["x"])  # met dat cijfer gestopt: de volgende toets werd niet meer gelezen
+
+
+class TestAntwoorden(OuderBasis):
+    """#24: Ouders › Antwoorden › kind: elke vraag met het antwoord; Enter = details, H = in de herhaalbak."""
+
+    def met_antwoorden(self):
+        from leeravontuur.kern.sessie import Sessie
+        o = self.met_wachtwoord(("Test", "5"))
+        kind = o.kinderen()[0]
+        with Sessie(o, kind.id, "reeks", "wiskunde.hoofdrekenen.tafels", "5") as ses:
+            for i, (gegeven, juist) in enumerate([("56", True), ("54", False)]):
+                ses.vraag_getoond()
+                ses.antwoord(f"wiskunde.hoofdrekenen.tafels:t7:{i}", "7 × 8 = ?", gegeven, juist,
+                             None if juist else "tafel_te_weinig", verwacht="56")
+        return o, kind
+
+    def test_lijst_details_en_herhaalbak(self):
+        o, kind = self.met_antwoorden()
+        scherm, _ = self.speel([OK, "3", *WW, OK, "2", "1", "h", OK, "h", ESC, ESC, ESC, ESC, ESC], opslag=o)
+        lijst = next(b for b in scherm.beelden if "Laatste antwoorden van Test" in b)
+        self.assertIn("✘  Maal- en deeltafels · 7 × 8 = 54  (juist: 56)", lijst)
+        self.assertIn("✔  Maal- en deeltafels · 7 × 8 = 56", lijst)
+        self.assertTrue(self.ergens(scherm, "✔ Deze vraag komt morgen terug bij Herhalen (met nieuwe getallen)."))
+        details = next(b for b in scherm.beelden if "Vraag:     7 × 8 = ?" in b)
+        self.assertIn("✘  (juist: 56)", details)
+        self.assertIn("In de herhaalbak: ja", details)
+        self.assertTrue(self.ergens(scherm, "Deze soort vraag staat al in de herhaalbak."))
+        self.assertEqual([i["vaardigheid"] for i in o.herhaalbak(kind.id)], ["wiskunde.hoofdrekenen.tafels"])
+
+    def test_punten_tonen_de_vraag(self):
+        o, _ = self.met_antwoorden()
+        scherm, _ = self.speel([OK, "3", *WW, OK, "4", "1", ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "juist antwoord · 7 × 8 = 56"))
+
+    def test_zonder_antwoorden(self):
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, _ = self.speel([OK, "3", *WW, OK, "2", "1", "h", OK, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "Nog geen antwoorden."))

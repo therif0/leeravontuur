@@ -147,24 +147,27 @@ class Ouderdeel:
         while True:
             k = self.s.menu(KR, "Ouderdeel", [
                 ("Rapporten", "per dag, week, maand · kalender · export"),
+                ("Antwoorden", "elke vraag en wat je kind antwoordde"),
                 ("Kinderen", "leerjaar, timer, pincode, naam, gegevens, wissen"),
                 ("Punten", "logboek bekijken, bonuspunten geven"),
                 ("Wachtwoord wijzigen", ""),
                 (f"Opmerkingen ({len(feedback.lees())})", "wat er via 'Zeg het ons' geschreven werd"),
                 ("Sluiten", "")],
                 info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."] + self.fouten_info())
-            if k is None or k == 5:
+            if k is None or k == 6:
                 return
-            if k == 4:
-                self.opmerkingen()
             if k == 0:
                 self.rapporten()
             elif k == 1:
-                self.kinderen()
+                self.antwoorden()
             elif k == 2:
-                self.punten()
+                self.kinderen()
             elif k == 3:
+                self.punten()
+            elif k == 4:
                 self.wachtwoord_wijzigen()
+            elif k == 5:
+                self.opmerkingen()
 
     def opmerkingen(self):
         kr = KR + ["Opmerkingen"]
@@ -275,6 +278,104 @@ class Ouderdeel:
             elif k == curses.KEY_RIGHT:
                 jaar, maand = (jaar + 1, 1) if maand == 12 else (jaar, maand + 1)
 
+    # ---- antwoorden (#24) ----------------------------------------------------------------
+
+    def antwoorden(self):
+        kr = KR + ["Antwoorden"]
+        while True:
+            kind = self.kies_kind(kr, "Van welk kind?")
+            if kind is None:
+                return
+            self.antwoorden_van(kr + [kind.naam], kind)
+
+    def antwoorden_van(self, kr, kind):
+        """De laatste antwoorden (nieuwste eerst): ↑↓ kiezen, Enter = details, H = in de herhaalbak."""
+        s = self.s
+        knoppen = [("↑↓", "kiezen", None), ("Enter", "details", 10), ("H", "in de herhaalbak", ord("h")),
+                   ("Esc", "terug", ESC)]
+        sel = top = 0
+        melding = ""
+        lijst = rapporten.antwoorden_lijst(self.o, kind.id)
+        while True:
+            if s.te_klein():
+                continue
+            s.cursor(False)
+            s.nieuw(kr, knoppen)
+            h, w = s.maat()
+            s.put(2, 4, f"Laatste antwoorden van {kind.naam} (nieuwste eerst)", "bold")
+            if not lijst:
+                s.put(4, 4, "Nog geen antwoorden.", "dim")
+            zicht = h - 8
+            sel = max(0, min(sel, len(lijst) - 1))
+            top = min(max(top, sel - zicht + 1), sel)
+            for i, a in enumerate(lijst[top:top + zicht]):
+                nr, y = top + i, 4 + i
+                tekst = rapporten.antwoord_tekst(a, w - 23)
+                s.put(y, 4, f" {a['wanneer']}  ", "cursor" if nr == sel else "dim")
+                s.put(y, 18, "✔" if a["juist"] else "✘",
+                      "cursor" if nr == sel else ("goed" if a["juist"] else "fout"))
+                s.put(y, 19, f"  {tekst} ", "cursor" if nr == sel else "")
+                s.zones.voeg(y, 4, 1, w - 6, ("kies", nr))
+            if top + zicht < len(lijst):
+                s.put(4 + zicht, 4, f"▼ nog {len(lijst) - top - zicht} (↓ of het wieltje)", "dim")
+            s.put(h - 3, 4, melding, "goed" if melding.startswith("✔") else "info")
+            k = s.toets()
+            melding = ""
+            if isinstance(k, tuple):
+                if k[0] == "kies" and lijst:
+                    sel = k[1]
+                    self.antwoord_details(kr, kind, lijst[sel])
+                elif k[0] == "scroll":
+                    sel += k[1]
+                continue
+            if k == curses.KEY_UP:
+                sel -= 1
+            elif k == curses.KEY_DOWN:
+                sel += 1
+            elif k == curses.KEY_PPAGE:
+                sel -= zicht
+            elif k == curses.KEY_NPAGE:
+                sel += zicht
+            elif k in ENTER and lijst:
+                self.antwoord_details(kr, kind, lijst[sel])
+            elif k in (ord("h"), ord("H")) and lijst:
+                melding = self.herhaal(kind, lijst[sel])
+            elif k == ESC:
+                return
+
+    def herhaal(self, kind, a):
+        """H: de vraag in de herhaalbak. Geeft de melding."""
+        if rapporten.in_herhaalbak(self.o, kind.id, a["vaardigheid"], a["sleutel"]):
+            return "Deze soort vraag staat al in de herhaalbak."
+        if rapporten.zet_in_herhaalbak(self.o, kind.id, a["vaardigheid"], a["sleutel"]):
+            return "✔ Deze vraag komt morgen terug bij Herhalen (met nieuwe getallen)."
+        return "Deze vraag kan niet in de herhaalbak."
+
+    def antwoord_details(self, kr, kind, a):
+        toetsen = {ord("h"): "h", ord("H"): "h", ("h",): "h", ESC: None, ("terug",): None, **{k: None for k in ENTER}}
+        melding = ""
+        while True:
+            regels = [(f"{a['naam']} · {leerjaren.NAMEN.get(a['leerjaar'], a['leerjaar'])} · {a['modus']}", "dim"),
+                      ("", ""), (f"Vraag:     {a['vraag']}", "bold"),
+                      (f"Antwoord:  {a['gegeven']}   " + ("✔ juist" if a["juist"] else
+                                                        "✘" + (f"  (juist: {a['verwacht']})" if a["verwacht"] else "")),
+                       "goed" if a["juist"] else "fout")]
+            if a["denkfout"]:
+                regels.append((f"Denkfout:  {a['denkfout']}", "accent"))
+            regels.append((f"Tijd:      {a['tijd_s']} {'seconde' if a['tijd_s'] == 1 else 'seconden'}" +
+                           (", met een tip" if a["hulp"] else ""), ""))
+            if a["klad"]:
+                regels += [("", ""), ("Klad:", "")] + [(f"  {r}", "") for r in a["klad"]]
+            in_bak = rapporten.in_herhaalbak(self.o, kind.id, a["vaardigheid"], a["sleutel"])
+            regels += [("", ""), (f"In de herhaalbak: {'ja' if in_bak else 'nee'}", "info")]
+            if melding:
+                regels.append((melding, "goed" if melding.startswith("✔") else "info"))
+            keuze = self.s.lezer(kr + [a["wanneer"]], regels,
+                                 [("H", "in de herhaalbak", ("h",)), ("Esc", "terug", ("terug",))], toetsen)
+            if keuze is None:
+                return
+            melding = self.herhaal(kind, a)
+
     # ---- punten ----------------------------------------------------------------------
 
     def punten(self):
@@ -286,10 +387,7 @@ class Ouderdeel:
             while True:
                 regels = [(f"{kind.naam} heeft {self.o.punten_saldo(kind.id)} punten.", "accent"), ("", ""),
                           ("LAATSTE WIJZIGINGEN", "accent")]
-                for p in self.o.punten_log(kind.id, 30):
-                    t = p["tijdstip"]
-                    regels.append((f"  {t[8:10]}/{t[5:7]} {t[11:16]}  {p['punten']:+5d}  {p['reden']}",
-                                   "goed" if p["punten"] > 0 else "fout"))
+                regels += rapporten.punten_regels(self.o, kind.id, 30)  # met de vraag en het antwoord (#24)
                 if len(regels) == 3:
                     regels.append(("  Nog geen punten.", "dim"))
                 keuze = self.s.lezer(kr + [kind.naam], regels,

@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.22.0 — het logboek voor de ouder
+- **Nieuw in het ouderdeel: Antwoorden.** Kies je kind en je ziet de laatste antwoorden, nieuwste eerst: ✔ of ✘, de
+  vraag met het antwoord van je kind en bij een fout het juiste antwoord. Met Enter zie je de details (de vraag, het
+  antwoord, de denkfout, de tijd, een tip en het klad). Met **H** steek je een vraag in de herhaalbak: je kind krijgt
+  ze morgen terug bij Herhalen, met nieuwe getallen.
+- **Punten:** bij elk punt voor een antwoord staat nu ook de vraag (bv. "juist antwoord · 7 × 8 = 56").
+- Oudere antwoorden met twee vraagtekens ("…figuur? ?") worden met één getoond.
+
 ## 0.21.7 — hulp met F1, een ? mag in je klad
 - **Een tip, hulp of de spiekbrief vraag je nu alleen met F1** (onderaan staat `[F1] tip`). De `?` geeft geen tip meer:
   in je klad typt hij gewoon een vraagteken. Schrijf je in je klad een vraag aan jezelf, bv. `47 + 99 = ?`, dan zegt

@@ -359,3 +359,114 @@ def exporteer_alles(opslag, kind, map_):
             "sessies": opslag.sessies(kind.id), "antwoorden": opslag.antwoorden(kind.id)}
     pad.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     return pad
+
+
+# ---- het logboek voor de ouder (#24): elk antwoord, en een vraag terug in de herhaalbak -------------------
+
+def vraag_netjes(vraag):
+    """Een bewaarde vraag zoals de ouder ze leest. Bij het bewaren kwam er soms nog ' ?' achter een vraag die er al
+    een had ('…figuur? ?', '195 min = ? u ? min ?'): dan valt die weg."""
+    vraag = (vraag or "").strip()
+    if vraag.endswith(" ?") and "?" in vraag[:-2]:
+        vraag = vraag[:-2].rstrip()
+    return vraag
+
+
+def vraag_kort(vraag, gegeven):
+    """De vraag met het antwoord van het kind erin: '7 × 8 = ?' + '54' -> '7 × 8 = 54', anders 'vraag → 54'."""
+    vraag = vraag_netjes(vraag)
+    gegeven = (gegeven or "").strip()
+    if vraag.endswith("= ?"):
+        return vraag[:-1] + gegeven
+    return f"{vraag} → {gegeven}" if gegeven else vraag
+
+
+def _wanneer(tijdstip):
+    """'2026-10-24T18:02:11+00:00' -> '24/10 18:02' (zoals het overal in het ouderdeel staat)."""
+    return f"{tijdstip[8:10]}/{tijdstip[5:7]} {tijdstip[11:16]}"
+
+
+def antwoorden_lijst(opslag, kind_id, aantal=50):
+    """De laatste antwoorden, nieuwste eerst, klaar om te tonen: [{wanneer, juist, naam, vraag, gegeven, verwacht,
+    denkfout, klad, tijd_s, hulp, modus, leerjaar, vaardigheid, sleutel}]."""
+    uit = []
+    for a in opslag.laatste_antwoorden(kind_id, aantal):
+        extra = _json_veilig(a.get("extra"))
+        uit.append(dict(
+            wanneer=_wanneer(a["tijdstip"]), juist=bool(a["juist"]), naam=naam(a["vaardigheid"]),
+            vraag=vraag_netjes(a["vraag"]), gegeven=(a["gegeven"] or "").strip(),
+            verwacht=(a.get("verwacht") or "").strip(),
+            denkfout=catalogus.denkfout(a["diagnose"]) if a["diagnose"] else "",
+            klad=[r for r in extra.get("klad", []) if isinstance(r, str)] if isinstance(extra, dict) else [],
+            tijd_s=round((a["tijd_ms"] or 0) / 1000), hulp=bool(a["hulp"]),
+            modus=MODI_RAPPORT.get(a["modus"], a["modus"]), leerjaar=a["leerjaar"],
+            vaardigheid=a["vaardigheid"], sleutel=a["sleutel"]))
+    return uit
+
+
+def antwoord_tekst(a, breedte):
+    """Eén regel in de lijst Antwoorden: 'naam · vraag met antwoord  (juist: …)'. Is ze te lang, dan wordt alleen de
+    vraag ingekort: het antwoord van het kind en het juiste antwoord blijven altijd staan."""
+    juist = f"  (juist: {a['verwacht']})" if not a["juist"] and a["verwacht"] else ""
+    tekst = f"{a['naam']} · {vraag_kort(a['vraag'], a['gegeven'])}{juist}"
+    if len(tekst) <= breedte:
+        return tekst
+    ingevuld = a["vraag"].endswith("= ?")  # '7 × 8 = 54': het antwoord staat in de vraag
+    hoofd = f"{a['naam']} · " + (vraag_kort(a["vraag"], a["gegeven"]) if ingevuld else a["vraag"])
+    staart = juist if ingevuld else f" → {a['gegeven']}{juist}"
+    ruimte = max(10, breedte - len(staart))
+    return (hoofd[:ruimte - 1] + "…" if len(hoofd) > ruimte else hoofd) + staart
+
+
+def _json_veilig(tekst):
+    try:
+        return json.loads(tekst) if tekst else {}
+    except (TypeError, ValueError):
+        return {}
+
+
+def punten_regels(opslag, kind_id, aantal=30):
+    """Het puntenlogboek met bij elk punt voor een antwoord ook de vraag en het antwoord (#24): [(tekst, rol)]."""
+    uit = []
+    for p in opslag.punten_log(kind_id, aantal):
+        tekst = f"  {_wanneer(p['tijdstip'])}  {p['punten']:+5d}  {p['reden']}"
+        a = opslag.antwoord_met_sleutel(kind_id, p["sleutel"], p["tijdstip"]) if p.get("sleutel") else None
+        if a:
+            tekst += " · " + vraag_kort(a["vraag"], a["gegeven"])
+        if len(tekst) > LEZER:
+            tekst = tekst[:LEZER - 1] + "…"
+        uit.append((tekst, "goed" if p["punten"] > 0 else "fout"))
+    return uit
+
+
+def herhaal_onderwerp(vaardigheid, sleutel):
+    """(onderwerp, data) om een bewaarde vraag in de herhaalbak te steken, of None als dat niet kan."""
+    from .wiskunde import eenheden as E
+    if vaardigheid == E.OMZETTEN.id:
+        paar = E.onderwerp_van_sleutel(sleutel)
+        if not paar or ">" not in paar:
+            return None
+        van, naar = paar.split(">", 1)
+        return paar, {"van": van, "naar": naar, "tabel": False}
+    o = catalogus.ONDERWERPEN.get(vaardigheid)
+    if o is None:
+        return None
+    onderwerp = o.onderwerp_van_sleutel(sleutel) or sleutel.split(":", 1)[-1]
+    return onderwerp, {"onderwerp": onderwerp}
+
+
+def in_herhaalbak(opslag, kind_id, vaardigheid, sleutel):
+    """Staat deze vraag (haar onderwerp) al in de herhaalbak?"""
+    h = herhaal_onderwerp(vaardigheid, sleutel)
+    return bool(h) and any(i["vaardigheid"] == vaardigheid and i["onderwerp"] == h[0]
+                           for i in opslag.herhaalbak(kind_id))
+
+
+def zet_in_herhaalbak(opslag, kind_id, vaardigheid, sleutel):
+    """De ouder steekt een vraag in de herhaalbak (H): morgen komt een gelijkaardige vraag terug (met nieuwe
+    getallen). True als het lukte."""
+    h = herhaal_onderwerp(vaardigheid, sleutel)
+    if not h:
+        return False
+    herhaling.fout(opslag, kind_id, vaardigheid, h[0], h[1])
+    return True

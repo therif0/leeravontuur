@@ -131,7 +131,8 @@ Gouden regels:
   `Keuze`) gebruikt de controle-regel van het vraagstuk. Beide bouwen op `VRAAGSTUKKEN.maak_met`.
 - Punten: regels in `kern/punten.py`; een `Sessie` kent de punten per antwoord toe; elk punt staat in het logboek.
 - Wachtwoorden en pincodes alleen via `kern/wachtwoord.py` (pbkdf2, formaat met methode en iteraties).
-  Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug); het ouderdeel in
+  Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug; ook het logboek:
+  `antwoorden_lijst`, `punten_regels`, `zet_in_herhaalbak` voor Ouders › Antwoorden, #24); het ouderdeel in
   `terminal/schermen/ouder.py` zet `Scherm.slot` (vergrendelen na inactiviteit).
 
 ## Menu's (Vak › Domein › Onderwerp)
