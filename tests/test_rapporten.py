@@ -148,6 +148,17 @@ class TestLogboek(unittest.TestCase):
         self.assertEqual(rapporten.vraag_kort("Hoe groot is de omtrek? ?", "1"), "Hoe groot is de omtrek? → 1")
         self.assertEqual(rapporten.vraag_kort("9,7 ha = ? m²", "9700"), "9,7 ha = ? m² → 9700")
 
+    def test_vraag_netjes_en_te_lang(self):
+        self.assertEqual(rapporten.vraag_netjes("195 min = ? u ? min ?"), "195 min = ? u ? min")
+        self.assertEqual(rapporten.vraag_netjes("7 × 8 = ?"), "7 × 8 = ?")
+        a = dict(naam="Oppervlakte en omtrek", vraag="Hoe groot is de oppervlakte van de figuur?", gegeven="1",
+                 verwacht="12 cm²", juist=False)
+        tekst = rapporten.antwoord_tekst(a, 50)
+        self.assertLessEqual(len(tekst), 50)
+        self.assertTrue(tekst.endswith("… → 1  (juist: 12 cm²)"), tekst)  # het antwoord blijft altijd staan
+        a = dict(naam="Maal- en deeltafels", vraag="7 × 8 = ?", gegeven="54", verwacht="56", juist=False)
+        self.assertEqual(rapporten.antwoord_tekst(a, 60), "Maal- en deeltafels · 7 × 8 = 54  (juist: 56)")
+
     def test_antwoorden_nieuwste_eerst(self):
         lijst = rapporten.antwoorden_lijst(self.o, self.kind.id)
         self.assertEqual([a["vraag"] for a in lijst], ["Hoe groot is de omtrek van de figuur?", "9,7 ha = ? m²",
