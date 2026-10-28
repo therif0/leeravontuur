@@ -102,6 +102,11 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Rapporten:** kies je kind en "Vandaag": je ziet wat er geoefend werd per vak › domein, met de denkfouten.
   Snelrekenen staat apart onder zijn onderwerp (ook in de status). Exporteren (E): de CSV heeft achteraan vak
   en domein.
+- [ ] **Antwoorden** (nieuw, tweede keuze): kies je kind. Je ziet de laatste antwoorden, nieuwste eerst, met ✔ of
+  ✘, de vraag met het antwoord van je kind en bij een fout het juiste antwoord. Enter = de details (vraag,
+  antwoord, denkfout, tijd, klad). **H** = in de herhaalbak: "Deze vraag komt morgen terug bij Herhalen". Kijk
+  morgen bij Herhalen of ze er is.
+- [ ] **Punten:** bij elk punt voor een antwoord staat nu ook de vraag (bv. "juist antwoord · 7 × 8 = 56").
 - [ ] **Kinderen:** het leerjaar en de timer (zichtbaar of niet) zijn aan te passen.
 - [ ] **Kinderen › kind › Weergave:** eenvoudige tekens, muis, typrichting, avatar, animaties en het
   klokvenster veranderen meteen, alleen voor dat kind.

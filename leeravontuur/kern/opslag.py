@@ -466,6 +466,18 @@ class Opslag:
                                "ORDER BY tijdstip, rowid", (kind_id, str(van), str(tot or van)))
         return [dict(r) for r in rijen]
 
+    def laatste_antwoorden(self, kind_id, aantal=50):
+        """De laatste antwoorden van een kind, nieuwste eerst (het logboek voor de ouder, #24)."""
+        rijen = self._lees("SELECT * FROM antwoorden WHERE kind_id = ? ORDER BY tijdstip DESC, rowid DESC LIMIT ?",
+                           (kind_id, aantal))
+        return [dict(r) for r in rijen]
+
+    def antwoord_met_sleutel(self, kind_id, sleutel, tot):
+        """Het laatste antwoord op deze vraag tot en met dit tijdstip (bv. bij een punt in het logboek), of None."""
+        r = self._een("SELECT * FROM antwoorden WHERE kind_id = ? AND sleutel = ? AND tijdstip <= ? "
+                      "ORDER BY tijdstip DESC, rowid DESC LIMIT 1", (kind_id, sleutel, tot))
+        return dict(r) if r else None
+
     def sessie_overzicht(self, kind_id, modus, vaardigheid):
         """Afgesloten sessies van één soort: [{start, aantal, juist, tijd_ms}], oudste eerst."""
         rijen = self._lees(

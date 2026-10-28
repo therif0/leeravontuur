@@ -101,7 +101,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - een **pixel-avatar** (een blokje à la Geometry Dash) staat in het hoofdmenu en naast de oefeningen, en reageert:
     blij, trots, denken, oeps … met een kort tekstje ("Psst… Tel de kolommen!")
   - zonder kleuren of in ASCII-modus wordt het een tekstgezichtje zoals `[^_^]`
-  - ouders zien het puntenlogboek en kunnen bonuspunten geven
+  - ouders zien het puntenlogboek (met de vraag bij elk punt) en kunnen bonuspunten geven
 - **De winkel** (Mijn avatar → Winkel): een 30-tal items (vormen, kleuren, ogen, oren, haar, hoeden, accessoires)
   - eerst passen ("zo zie je eruit"), dan kopen met punten
   - bij elke aankoop een **rekenvraag**: *"Je hebt 200 punten, dit kost 70. Hoeveel heb je over?"*,
@@ -115,6 +115,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - **rapporten** per dag, week, maand, schooljaar of zelf gekozen periode: score, tijd, per dag, per vak › domein ›
     onderwerp (snelrekenen apart), meest gemaakte denkfouten en de laatste fouten met het juiste antwoord
   - een **kalender** met de dagen waarop geoefend werd
+  - **antwoorden:** elke vraag met wat het kind antwoordde (ook de foute), met de details (denkfout, tijd, klad);
+    met **H** steek je een vraag in de herhaalbak: het kind krijgt ze morgen terug, met nieuwe getallen
   - **export** naar CSV (Excel/LibreOffice, met vak en domein) en TXT, in de map Documenten/Leeravontuur
   - **kinderen beheren:** naam, leerjaar, weergave, timer zichtbaar of niet, pincode, alle gegevens exporteren,
     alles wissen

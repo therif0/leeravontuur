@@ -118,6 +118,83 @@ class TestRapport(unittest.TestCase):
         self.assertIsNone(self.o.algemeen("laatste_kind"))
 
 
+class TestLogboek(unittest.TestCase):
+    """#24: het logboek voor de ouder: elk antwoord met de vraag, en een vraag terug in de herhaalbak."""
+
+    def setUp(self):
+        from leeravontuur.kern.sessie import Sessie
+        self.o = Opslag()
+        self.kind = self.o.nieuw_kind("Imrane", "5")
+        ses = Sessie(self.o, self.kind.id, "reeks", "wiskunde.hoofdrekenen.tafels", "5")
+        for i, (vraag, gegeven, juist) in enumerate([("7 × 8 = ?", "54", False), ("6 × 9 = ?", "54", True)]):
+            klok.zet(datetime(2026, 10, 24, 18, i, tzinfo=CET))
+            ses.vraag_getoond()
+            ses.antwoord(f"wiskunde.hoofdrekenen.tafels:t7:{i}", vraag, gegeven, juist,
+                         "tafel_te_weinig" if not juist else None, extra={"klad": ["7 × 7 = 49", "49 + 5 = 54"]},
+                         verwacht="56" if not juist else "54")
+        ses.sluit()
+        s = self.o.start_sessie(self.kind.id, "vrij", "wiskunde.eenheden.omzetten", "5")
+        klok.zet(datetime(2026, 10, 24, 18, 5, tzinfo=CET))
+        self.o.bewaar_antwoord(s, self.kind.id, "wiskunde.eenheden.omzetten", "5", "vrij",
+                               "wiskunde.eenheden.omzetten:ha>m²:9,7", "9,7 ha = ? m²", "9700", False, None, 3000,
+                               verwacht="97 000")
+        self.o.bewaar_antwoord(s, self.kind.id, "wiskunde.meetkunde.rooster", "5", "vrij",
+                               "wiskunde.meetkunde.rooster:omtrek:x", "Hoe groot is de omtrek van de figuur? ?", "1",
+                               False, None, 3000)
+        klok.zet(None)
+
+    def test_vraag_kort(self):
+        self.assertEqual(rapporten.vraag_kort("7 × 8 = ?", "54"), "7 × 8 = 54")
+        self.assertEqual(rapporten.vraag_kort("Hoe groot is de omtrek? ?", "1"), "Hoe groot is de omtrek? → 1")
+        self.assertEqual(rapporten.vraag_kort("9,7 ha = ? m²", "9700"), "9,7 ha = ? m² → 9700")
+
+    def test_vraag_netjes_en_te_lang(self):
+        self.assertEqual(rapporten.vraag_netjes("195 min = ? u ? min ?"), "195 min = ? u ? min")
+        self.assertEqual(rapporten.vraag_netjes("7 × 8 = ?"), "7 × 8 = ?")
+        a = dict(naam="Oppervlakte en omtrek", vraag="Hoe groot is de oppervlakte van de figuur?", gegeven="1",
+                 verwacht="12 cm²", juist=False)
+        tekst = rapporten.antwoord_tekst(a, 50)
+        self.assertLessEqual(len(tekst), 50)
+        self.assertTrue(tekst.endswith("… → 1  (juist: 12 cm²)"), tekst)  # het antwoord blijft altijd staan
+        a = dict(naam="Maal- en deeltafels", vraag="7 × 8 = ?", gegeven="54", verwacht="56", juist=False)
+        self.assertEqual(rapporten.antwoord_tekst(a, 60), "Maal- en deeltafels · 7 × 8 = 54  (juist: 56)")
+
+    def test_antwoorden_nieuwste_eerst(self):
+        lijst = rapporten.antwoorden_lijst(self.o, self.kind.id)
+        self.assertEqual([a["vraag"] for a in lijst], ["Hoe groot is de omtrek van de figuur?", "9,7 ha = ? m²",
+                                                         "6 × 9 = ?", "7 × 8 = ?"])
+        fout = lijst[-1]
+        self.assertEqual((fout["wanneer"], fout["juist"], fout["gegeven"], fout["verwacht"]),
+                         ("24/10 18:00", False, "54", "56"))
+        self.assertEqual(fout["klad"], ["7 × 7 = 49", "49 + 5 = 54"])
+        self.assertEqual(fout["naam"], "Maal- en deeltafels")
+
+    def test_punten_met_de_vraag(self):
+        regels = [t for t, _ in rapporten.punten_regels(self.o, self.kind.id)]
+        self.assertTrue(any("juist antwoord · 6 × 9 = 54" in r for r in regels), regels)
+        self.assertTrue(all(len(r) <= rapporten.LEZER for r in regels))
+
+    def test_in_de_herhaalbak(self):
+        from leeravontuur.kern import catalogus
+        a = rapporten.antwoorden_lijst(self.o, self.kind.id)[-1]
+        self.assertFalse(rapporten.in_herhaalbak(self.o, self.kind.id, a["vaardigheid"], a["sleutel"]))
+        for a in rapporten.antwoorden_lijst(self.o, self.kind.id):
+            with self.subTest(a["sleutel"]):  # (de twee tafelvragen hebben hetzelfde onderwerp: tafel 7)
+                self.assertTrue(rapporten.zet_in_herhaalbak(self.o, self.kind.id, a["vaardigheid"], a["sleutel"]))
+                self.assertTrue(rapporten.in_herhaalbak(self.o, self.kind.id, a["vaardigheid"], a["sleutel"]))
+        bak = self.o.herhaalbak(self.kind.id)
+        self.assertEqual({i["vaardigheid"] for i in bak}, {"wiskunde.hoofdrekenen.tafels",
+                                                           "wiskunde.eenheden.omzetten", "wiskunde.meetkunde.rooster"})
+        # en er komt echt een gelijkaardige vraag van (nooit een crash)
+        from leeravontuur.kern.wiskunde import eenheden as E
+        for i in bak:
+            if i["vaardigheid"] == E.OMZETTEN.id:
+                v = E.maak_herhaling(i["data"], "5")
+                self.assertEqual((v.van, v.naar), ("ha", "m²"))
+            else:
+                self.assertIsNotNone(catalogus.ONDERWERPEN[i["vaardigheid"]].maak_herhaling(i["data"], "5"))
+
+
 class TestIndeling(unittest.TestCase):
     """Het rapport per vak › domein › onderwerp (uit het leerplan); snelrekenen apart onder zijn onderwerp."""
     T, PM, DH, E = ("wiskunde.hoofdrekenen.tafels", "wiskunde.hoofdrekenen.plusmin", "wiskunde.hoofdrekenen.dubbelhelft",
