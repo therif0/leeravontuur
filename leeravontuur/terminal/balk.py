@@ -13,7 +13,7 @@ from dataclasses import replace
 from ..kern.modellen import Breukbalk, Wijzerklok
 from ..kern.wiskunde.grootheden import klok_tekst
 from . import modellen as M
-from .scherm import ENTER, ESC
+from .scherm import ENTER, ESC, HULP
 
 NOEMER_MAX = 20
 
@@ -37,7 +37,7 @@ class BalkInvoer:
 
     def knoppen(self):
         if self.vast:
-            return [("spatie", "arceer", ord(" ")), ("Enter", "klaar", 10), ("?/F1", "tip", ord("?")),
+            return [("spatie", "arceer", ord(" ")), ("Enter", "klaar", 10), ("F1", "tip", HULP),
                     ("Esc", "stoppen", ESC)]
         return [("spatie", "arceer", ord(" ")), ("↑", "", curses.KEY_UP), ("↓", "noemer", curses.KEY_DOWN),
                 ("v", "vereenvoudig", ord("v")), ("Enter", "ok", 10), ("Esc", "stop", ESC)]
@@ -119,7 +119,7 @@ class VeldInvoer:
 
     def knoppen(self):
         return [("spatie", "kleur", ord(" ")), ("r", "hele rij", ord("r")), ("Enter", "klaar", 10),
-                ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+                ("F1", "tip", HULP), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
@@ -184,7 +184,7 @@ class CoordInvoer:
         return len(self.kaart.ys()) + 1
 
     def knoppen(self):
-        return [("←→↑↓", "verplaats", None), ("Enter", "hier!", 10), ("?/F1", "tip", ord("?")), ("Esc", "stoppen", ESC)]
+        return [("←→↑↓", "verplaats", None), ("Enter", "hier!", 10), ("F1", "tip", HULP), ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
@@ -248,7 +248,7 @@ class KlokInvoer:
         return self.h
 
     def knoppen(self):
-        return [("←→↑↓", "draaien", None), ("Enter", "zo staat hij goed", 10), ("?/F1", "tip", ord("?")),
+        return [("←→↑↓", "draaien", None), ("Enter", "zo staat hij goed", 10), ("F1", "tip", HULP),
                 ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):

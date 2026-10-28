@@ -13,7 +13,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   **H** = tabel-oefening. Onderaan staat welke toetsen er zijn; je kunt er ook op klikken.
 - **Eenheden omzetten:** lengte (km … mm), massa (t … mg), inhoud (hl … ml), oppervlakte (km² … mm², ha, a,
   ca; vanaf het 5de leerjaar) en volume (m³, dm³, cm³ en de liter; vanaf het 6de), of alles **door elkaar**
-  - **Vrij oefenen:** zoveel vragen als je wil, met een tip (`?`) en uitleg na elk antwoord.
+  - **Vrij oefenen:** zoveel vragen als je wil, met een tip (**F1**) en uitleg na elk antwoord.
   - **Reeks van 10:** daarna je score en uitleg bij elke fout. Het programma herkent typische denkfouten,
     bv. *"je schoof de komma de verkeerde kant op"*.
   - **Tabel-oefening:** je vult de eenhedentabel in, één cijfer per vakje.
@@ -23,8 +23,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     - Bij oppervlakte heeft elke eenheid 2 vakjes, bij volume 3; ha, a, ca en de liters staan eronder.
   - **Spiekbrief** met uitleg en voorbeelden.
 - **Elke oefening op dezelfde manier:** lees de vraag, reken in het **klad** (`Tab`; elke regel wordt meteen
-  nagekeken), typ je antwoord. `?` geeft telkens een volgende tip (nooit het antwoord), na de laatste tip
-  opent `?` de **spiekbrief** bij het juiste kopje (Esc = terug naar je vraag), een fout antwoord krijgt een
+  nagekeken), typ je antwoord. **F1** geeft telkens een volgende tip (nooit het antwoord), na de laatste tip
+  opent F1 de **spiekbrief** bij het juiste kopje (Esc = terug naar je vraag), een fout antwoord krijgt een
   **tweede kans**, en na het nakijken staat "Zo kan het:" in klad-regels, met je eigen klad ernaast (! = daar
   week je af).
 - **Hoofdrekenen:** maal- en deeltafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren,
@@ -40,7 +40,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Cijferen** onder elkaar in een rooster: optellen, aftrekken en vermenigvuldigen (ook met 2 cijfers en
   kommagetallen)
   - je typt van rechts naar links; bovenaan is een **onthouden-rij**; `Tab` gaat naar de volgende rij
-  - met `?` krijg je **hulp bij het vakje** waar je staat (bv. *"7 + 5 = 12: schrijf 2 en onthoud 1"*)
+  - met **F1** krijg je **hulp bij het vakje** waar je staat (bv. *"7 + 5 = 12: schrijf 2 en onthoud 1"*)
   - met `p` staan de **plaatswaarden** (E T H D TD … , t h d) boven de kolommen; het programma onthoudt dat per
     kind (de ouder kan het ook aanzetten bij Weergave)
   - herkent denkfouten: onthouden vergeten, de kleinste van de grootste afgetrokken, de tweede rij niet
@@ -76,7 +76,7 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Vraagstukken:**
   - verhaaltjes in **4 stappen**: lees (gegevens aanduiden, kiezen wat er gevraagd wordt), plan, reken in het
     **klad** (typ `0,75 x 3,20 = 2,40`; elke regel wordt nagekeken) en controleer (kan het kloppen?)
-  - meteen antwoorden mag; fout = één tweede kans met een hulpje; tips met `?`, nooit het antwoord
+  - meteen antwoorden mag; fout = één tweede kans met een hulpje; tips met F1, nooit het antwoord
   - een verhaalmachine mengt rekenstructuren met werelden (bakker, metselaar, boer …): duizenden verhalen,
     soms met een overbodig gegeven of een omgekeerde vraag
   - herkent denkfouten: een andere bewerking, gestopt na een tussenstap, niet omgezet, een overbodig gegeven …

@@ -77,6 +77,7 @@ class KladRegel:
     schakels: list = field(default_factory=list)
     melding: str = ""          # wat er mis is (zonder het antwoord te verklappen)
     leesbaar: bool = True
+    vraag: bool = False        # een vraag die het kind zichzelf stelt (met ?): niet nakijken
 
     @property
     def juist(self):
@@ -362,6 +363,9 @@ def lees_regel(tekst):
     t = (tekst or "").strip()
     if not t:
         regel.leesbaar = False
+        return regel
+    if "?" in t:  # een vraag aan zichzelf, bv. "45 x 3 = ?": niets om na te kijken
+        regel.leesbaar, regel.vraag = False, True
         return regel
     m = re.match(r"\s*([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ ]*?)\s*:\s*(?=\S)", t)
     if m and not re.search(r"\d", m.group(1)):

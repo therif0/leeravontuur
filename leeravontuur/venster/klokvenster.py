@@ -30,7 +30,7 @@ from leeravontuur.venster.klokbeeld import KLEUR, vormen
 
 TITEL = "Leeravontuur · de klok"
 TOETSEN = {"Return": "Enter", "KP_Enter": "Enter", "Escape": "Escape", "Left": "Left", "Right": "Right",
-           "Up": "Up", "Down": "Down", "BackSpace": "BackSpace", "Tab": "Tab", "Delete": "BackSpace"}
+           "Up": "Up", "Down": "Down", "BackSpace": "BackSpace", "Tab": "Tab", "Delete": "BackSpace", "F1": "F1"}
 MARGE = 16
 BREED, MIN_BREED = 320, 220
 

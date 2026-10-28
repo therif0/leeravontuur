@@ -2,6 +2,12 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.21.7 — hulp met F1, een ? mag in je klad
+- **Een tip, hulp of de spiekbrief vraag je nu alleen met F1** (onderaan staat `[F1] tip`). De `?` geeft geen tip meer:
+  in je klad typt hij gewoon een vraagteken. Schrijf je in je klad een vraag aan jezelf, bv. `47 + 99 = ?`, dan zegt
+  het programma "Een vraag voor jezelf. Reken ze uit op een volgende regel." (geen ✘ en geen !).
+- Ook in het klokvenster werkt F1.
+
 ## 0.21.6 — stoppen zonder verrassingen
 - **Esc in het hoofdmenu vraagt eerst "Wil je stoppen met Leeravontuur?"** (Nee staat gekozen). Wie een paar keer te
   veel Esc drukt, zit niet meer plots buiten het programma. "Stoppen" kiezen in het menu stopt meteen.

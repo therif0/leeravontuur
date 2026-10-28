@@ -15,10 +15,10 @@ from leeravontuur.terminal.rooster import MAATJE_ONDER, MAATJE_X, RoosterInvoer
 from leeravontuur.terminal.scherm import Scherm
 
 try:
-    from .test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from .test_schermen import ESC, F1, OK, Basis, naar_spiekbrief
     from .test_schermen import naar as naar_onderwerp
 except ImportError:
-    from test_schermen import ESC, OK, Basis, naar_spiekbrief
+    from test_schermen import ESC, F1, OK, Basis, naar_spiekbrief
     from test_schermen import naar as naar_onderwerp
 
 D = Decimal
@@ -268,7 +268,7 @@ class TestSchermen(Basis):
     def test_optellen_in_rooster(self):
         o = self.opslag(("Test", "5"))
         with mock.patch.object(C.OPTELLEN, "maak", side_effect=[optel_vraag(), optel_vraag()]):
-            scherm, app = self.speel([*naar(1), "?", *"234", OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(1), F1, *"234", OK, *STOP], opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertTrue(rij["juist"])
         self.assertEqual(rij["gegeven"], "432")

@@ -260,7 +260,7 @@ class TestInvoer(unittest.TestCase):
 
     def test_tips_en_aanduiden(self):
         for _ in range(5):
-            self.obj.toets(ord("?"))
+            self.obj.toets(curses.KEY_F1)
         self.assertEqual(self.obj.tips, 4)
         self.assertIn("Meer tips zijn er niet", self.obj.tiptekst)
         nodig = [k for k, g in self.v.model.gegevens.items() if g.nodig]
@@ -276,7 +276,7 @@ class TestInvoer(unittest.TestCase):
 
     def test_tip_verklapt_de_uitkomst_niet(self):
         for _ in range(4):
-            self.obj.toets(ord("?"))
+            self.obj.toets(curses.KEY_F1)
             self.assertNotIn(r(self.v.antwoord), self.obj.tiptekst)
 
     def test_een_getal_typen_gaat_naar_het_klad(self):
@@ -380,7 +380,7 @@ class TestSchatten(unittest.TestCase):
     def test_invoer(self):
         v = VS.SCHATTEN.maak("5", rng=random.Random(2))
         obj = KeuzeInvoer(v, VS.SCHATTEN)
-        obj.toets(ord("?"))
+        obj.toets(curses.KEY_F1)
         self.assertTrue(obj.tip_aan)
         uit = obj.toets(ord(v.antwoord))
         self.assertEqual(uit[1], v.antwoord)

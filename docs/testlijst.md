@@ -26,10 +26,11 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 
 ## 3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)
 - [ ] **De vaste werkwijze** (bv. Hoofdrekenen → Optellen en aftrekken): `Tab` gaat naar het klad, typ
-  `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. `?` drie keer: de aanpak, het
-  begin van het klad, hulp bij je klad ("Tip 1 van 3" …, bij de laatste: "Nog hulp nodig? Druk nog eens ?/F1: je
+  `47 + 100 = 147` en Enter (✔); een lege regel + Enter gaat terug naar het antwoord. **F1** drie keer: de aanpak, het
+  begin van het klad, hulp bij je klad ("Tip 1 van 3" …, bij de laatste: "Nog hulp nodig? Druk nog eens F1: je
   spiekbrief."); een vierde keer: de **spiekbrief**, bij het kopje over compenseren. Esc: terug naar je vraag (je
-  antwoord en klad staan er nog); nog eens `?`: weer tip 1. **F1** doet hetzelfde als `?`.
+  antwoord en klad staan er nog); nog eens F1: weer tip 1. Een `?` in het klad
+  (bv. `47 + 99 = ?`) is gewoon een vraag aan jezelf: geen tip en geen ✘.
   Typ een fout antwoord: een hulpje en een tweede kans. Nog eens fout: het antwoord en "Zo kan het:".
 - [ ] **Het klad en Tab** (bv. Breuken en procenten → Optellen en aftrekken): typ in het klad een regel **zonder**
   Enter en druk Tab: de regel blijft staan (met ✔ of ✘) en je staat in je antwoord.
@@ -41,9 +42,9 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Meten → Lengte (m):** een vraag als "3 km = … m". Een fout antwoord geeft ✘ en uitleg ("je schoof de komma …").
 - [ ] **Hoofdrekenen → Tafels:** een juist antwoord geeft ✔, punten en een blije avatar.
 - [ ] **Getallen → Getallenlijn:** bij "Duid … aan" beweegt de pijl met ← →, `+` zoomt in, een klik zet de pijl.
-- [ ] **Cijferen → Optellen:** je typt van rechts naar links; `?` geeft hulp bij het vakje. Onthouden: typ het
+- [ ] **Cijferen → Optellen:** je typt van rechts naar links; F1 geeft hulp bij het vakje. Onthouden: typ het
   laatste cijfer, ↑, typ wat je onthoudt (de cursor blijft in die kolom), ↓: je staat er recht onder.
-  Nog eens `?` op hetzelfde vakje: de spiekbrief bij OPTELLEN; Esc = terug naar je som.
+  Nog eens F1 op hetzelfde vakje: de spiekbrief bij OPTELLEN; Esc = terug naar je som.
 - [ ] **Cijferen → Optellen, plaatswaarden:** druk `p`: boven de kolommen staat `TD  D  H  T  E` (bij kommagetallen
   ook `t h`), de kolommen worden iets breder en rechts staat "◂ je staat bij de E (eenheden)". Typ een cijfer: de
   T licht op. Bij de volgende vraag (en morgen) staan ze er nog; nog eens `p` = weg. Bij vermenigvuldigen met een
@@ -73,8 +74,8 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Meten → Oppervlakte en omtrek:** de vakjes zijn vierkant; na een vraag over de omtrek is de rand aangeduid.
 - [ ] **Meetkunde → Schatkaart:** bij "Zet een kruisje op …" verplaats je het kruisje met de pijltjes of een klik.
 - [ ] **Vraagstukken:** duid met ← → en spatie de getallen aan, kies met ↓ wat er gevraagd wordt, ga met Tab naar
-  het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk `?`: de belangrijke woorden lichten op. Na de
-  4 tips zegt de knop onderaan "spiekbrief": nog eens `?` opent "Een vraagstuk in 4 stappen".
+  het klad en typ bv. `3 x 2,15 = 6,45` (✔ of ✘ ernaast). Druk F1: de belangrijke woorden lichten op. Na de
+  4 tips zegt de knop onderaan "spiekbrief": nog eens F1 opent "Een vraagstuk in 4 stappen".
 - [ ] **Vraagstukken:** druk `a` en typ meteen een fout antwoord: je krijgt een hulpje en een tweede kans.
 - [ ] **Vraagstukken → Speurneus:** kies met ↑↓ de foute regel (of "Alles is juist!") en dan de reden (a, b of c).
 - [ ] **Vraagstukken** met tijd (bv. "Hoe laat komt de trein aan?"): typ in het klad `9.45 u + 35 min = 10.20 u`
@@ -120,7 +121,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   bent terug in het menu. Probeer ook Maten (tabel), een vraagstuk en Tafels met T (60 seconden: de klok staat stil
   zolang het kader openstaat). Na het nakijken stopt Esc meteen.
 - [ ] **De broodkruimel midden in een vraag** (klik bv. op "Wiskunde" bovenaan): hetzelfde kader. Nee: alles staat er
-  nog. Ook in de spiekbrief die je met `?` vanuit een vraag opende (Esc daar = gewoon terug naar de vraag). Bij 60
+  nog. Ook in de spiekbrief die je met F1 vanuit een vraag opende (Esc daar = gewoon terug naar de vraag). Bij 60
   seconden: na Ja eerst de uitslag, dan het menu.
 - [ ] **Esc** gaat overal een stap terug. In het hoofdmenu vraagt Esc eerst "Wil je stoppen met Leeravontuur?" (Nee
   gekozen); Ja (← Enter) of de keuze **Stoppen** stopt met "Tot de volgende keer".
