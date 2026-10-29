@@ -200,6 +200,54 @@ class TestKlad(unittest.TestCase):
         self.assertTrue(a["compleet"])
 
 
+class TestWatOverblijft(unittest.TestCase):
+    """samen/rest: een totaal min twee delen (het appelvraagstuk: 4620 appels, 2320 rood, 1680 groen, hoeveel rot?)."""
+
+    def test_de_juiste_wegen(self):
+        for zaad in range(30):
+            m = maak("5", "samen", "rest", zaad).model
+            t, a, b = (m.gegevens[k].waarde for k in "tab")
+            r_ = t - a - b
+            with self.subTest(zaad=zaad):
+                self.assertEqual(m.stappen[-1].uitkomst, r_)
+                for klad in ([f"{a} + {b} = {a + b}", f"{t} - {a + b} = {r_}"],
+                             [f"{t} - {a} - {b} = {r_}"],
+                             [f"{t} - {a} = {t - a}", f"{t - a} - {b} = {r_}"]):
+                    uit = VS.analyseer_klad(m, klad)
+                    self.assertIsNone(uit["eerste"], klad)
+                    self.assertTrue(uit["compleet"], klad)
+
+    def test_de_twee_delen_van_elkaar_aftrekken(self):
+        for zaad in range(30):
+            m = maak("5", "samen", "rest", zaad).model
+            a, b = m.gegevens["a"].waarde, m.gegevens["b"].waarde
+            with self.subTest(zaad=zaad):
+                self.assertGreater(a, b)
+                uit = VS.analyseer_klad(m, [f"{a} - {b} = {a - b}"])
+                self.assertEqual(uit["eerste"][:2], (1, "vs_min_ipv_plus"))
+                self.assertIn("samen", uit["eerste"][2])
+
+    def test_een_deel_vergeten(self):
+        v = maak("5", "samen", "rest", 4)
+        t, a, b = (v.model.gegevens[k].waarde for k in "tab")
+        self.assertEqual(O.diagnose(v, t - a)[0], "vs_stap_vergeten")
+        self.assertEqual(O.diagnose(v, a + b)[0], "vs_tussenstap")
+
+    def test_de_antwoordzin_past(self):
+        from leeravontuur.terminal.vraagstuk import KOP
+        for jaar in ("4", "5", "6", "m1"):
+            for zaad in range(40):
+                voor, na = maak(jaar, "samen", "rest", zaad).model.antwoordzin
+                self.assertLessEqual(KOP + len(voor) + 12 + len(na), 80, (voor, na))  # 12 = het antwoordvak
+
+    def test_alleen_met_een_derde_moment(self):
+        derde = {i["rest"][1] for w in VS.WERELDEN["werelden"] for i in w.get("tel", []) if "rest" in i}
+        self.assertGreaterEqual(len(derde), 4)
+        for zaad in range(40):
+            v = maak("6", "samen", "rest", zaad)
+            self.assertTrue(any(v.model.gevraagd.endswith(m) for m in derde), v.model.gevraagd)
+
+
 class TestPunten(unittest.TestCase):
     def test_punten_voor_een_vraagstuk(self):
         basis = {"vraagstuk": 1, "tips": 0, "eerste_fout": None, "klad_ok": False}

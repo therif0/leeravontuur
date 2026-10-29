@@ -1,5 +1,5 @@
 {
- "uitleg": "Werelden voor de verhaalmachine (kern/wiskunde/vraagstukken.py). Een woord is 'enkelvoud|meervoud|lidwoord'. '@naam' = een naam uit 'namen'. Elk soort item hoort bij een rekenstructuur: groep (×, :, rest, eerlijk verdelen), tel (samen, verschil), koop (wisselgeld, twee soorten), kg (prijs per kg), duur (korting, sparen), recept, deel (breuk van), tuin (omtrek), rit (snelheid), kaart (schaal), vloer (tegels), lint (in stukken), agenda (tijdstippen en tijdsduur). Bereiken zijn [min, max]; prijzen in euro.",
+ "uitleg": "Werelden voor de verhaalmachine (kern/wiskunde/vraagstukken.py). Een woord is 'enkelvoud|meervoud|lidwoord'. '@naam' = een naam uit 'namen'. Elk soort item hoort bij een rekenstructuur: groep (×, :, rest, eerlijk verdelen), tel (samen, verschil; 'rest' = [het geheel, het derde moment] voor 'wat overblijft', bv. ['deze week', 'op de andere dagen']), koop (wisselgeld, twee soorten), kg (prijs per kg), duur (korting, sparen), recept, deel (breuk van), tuin (omtrek), rit (snelheid), kaart (schaal), vloer (tegels), lint (in stukken), agenda (tijdstippen en tijdsduur). Bereiken zijn [min, max]; prijzen in euro.",
  "namen": [
   "Lotte",
   "Bram",
@@ -118,6 +118,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     },
     {
@@ -133,6 +137,10 @@
      "momenten": [
       "'s morgens",
       "'s middags"
+     ],
+     "rest": [
+      "vandaag",
+      "'s avonds"
      ]
     }
    ],
@@ -296,6 +304,10 @@
      "momenten": [
       "op maandag",
       "op dinsdag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     },
     {
@@ -311,6 +323,10 @@
      "momenten": [
       "'s morgens",
       "'s middags"
+     ],
+     "rest": [
+      "vandaag",
+      "'s avonds"
      ]
     }
    ],
@@ -531,6 +547,10 @@
      "momenten": [
       "op vrijdag",
       "op zaterdag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     },
     {
@@ -546,6 +566,10 @@
      "momenten": [
       "'s morgens",
       "'s avonds"
+     ],
+     "rest": [
+      "vandaag",
+      "'s middags"
      ]
     }
    ],
@@ -719,6 +743,10 @@
      "momenten": [
       "in januari",
       "in februari"
+     ],
+     "rest": [
+      "dit jaar",
+      "in de andere maanden"
      ]
     },
     {
@@ -734,6 +762,10 @@
      "momenten": [
       "op maandag",
       "op dinsdag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -1001,6 +1033,10 @@
      "momenten": [
       "op woensdag",
       "op zaterdag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -1172,6 +1208,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     },
     {
@@ -1585,6 +1625,10 @@
      "momenten": [
       "in juli",
       "in augustus"
+     ],
+     "rest": [
+      "dit jaar",
+      "in de andere maanden"
      ]
     }
    ],
@@ -2095,6 +2139,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -2351,6 +2399,10 @@
      "momenten": [
       "op vrijdag",
       "op zaterdag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -2472,6 +2524,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -2660,6 +2716,10 @@
      "momenten": [
       "in de eerste week",
       "in de tweede week"
+     ],
+     "rest": [
+      "deze maand",
+      "in de andere weken"
      ]
     }
    ],
@@ -2848,6 +2908,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     },
     {
@@ -2989,6 +3053,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],
@@ -3133,6 +3201,10 @@
      "momenten": [
       "op zaterdag",
       "op zondag"
+     ],
+     "rest": [
+      "deze week",
+      "op de andere dagen"
      ]
     }
    ],

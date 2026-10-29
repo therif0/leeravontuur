@@ -62,6 +62,25 @@
     ],
     "antwoord": "{m2} {werkt} {wie} {?} {ding.mv}.",
     "gevraagd": "het aantal {ding.mv} {m2}"
+   },
+   "rest": {
+    "schud": false,
+    "zinnen": [
+     [
+      "{m0} {werkt} {wie} {t ding}.",
+      "{wie} {werkt} {m0} *in totaal* {t ding}."
+     ],
+     [
+      "{m1} {werkt} {wie} er {a}, {m2} {b}.",
+      "Daarvan {werkt} {wie} er {a} {m1} en {b} {m2}."
+     ]
+    ],
+    "vraag": [
+     "Hoeveel {ding.mv} {werkt} {wie} {m3}?",
+     "Hoeveel {ding.mv} zijn het {m3}?"
+    ],
+    "antwoord": "{m3} zijn het {?} {ding.mv}.",
+    "gevraagd": "het aantal {ding.mv} {m3}"
    }
   },
   "verschil": {

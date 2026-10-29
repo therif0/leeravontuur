@@ -40,6 +40,7 @@
    "structuren": [
     "samen/samen",
     "samen/deel",
+    "samen/rest",
     "verschil/meer",
     "verschil/erbij",
     "groepen/totaal",
@@ -77,6 +78,7 @@
   "5": {
    "structuren": [
     "samen/deel",
+    "samen/rest",
     "verschil/meer",
     "verschil/erbij",
     "verschil/minder",
@@ -130,6 +132,7 @@
   "6": {
    "structuren": [
     "samen/deel",
+    "samen/rest",
     "verschil/erbij",
     "verschil/minder",
     "groepen/per",
@@ -190,6 +193,7 @@
   },
   "m1": {
    "structuren": [
+    "samen/rest",
     "verschil/minder",
     "groepen/aantal",
     "rest/nodig",

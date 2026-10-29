@@ -114,6 +114,7 @@ class Bouw:
         self.w = {}        # id → Fraction (gegevens en stappen)
         self.stappen = []
         self.extra = []    # structuur-eigen foute paden: (code, waarde, tekst)
+        self.ook_juist = set()  # tussenuitkomsten van een andere juiste weg: in het klad nooit een denkfout
         self.controle = None
 
     # getallen kiezen
@@ -209,6 +210,8 @@ def _woorden(item, b):
             b.ctx[k] = item[k]
     if "momenten" in item:
         b.ctx["m1"], b.ctx["m2"] = item["momenten"]
+    if "rest" in item:
+        b.ctx["m0"], b.ctx["m3"] = item["rest"]  # het geheel en het derde moment
 
 
 class Samen(Structuur):
@@ -224,6 +227,25 @@ class Samen(Structuur):
             b.stap("+", ["a", "b"], "s", "het aantal {ding.mv} samen",
                    "Je zoekt hoeveel het er samen zijn: tel op.", "{m1} {a} en {m2} {b}: samen is dat {a} + {b}.")
             b.kan(max(a, x), None, "Samen zijn het er meer dan {m1} of {m2} alleen.")
+        elif variant == "rest":
+            if "rest" not in item:
+                raise Opnieuw("geen derde moment")
+            hi = min(item["bereik"][1], b.p["max"] // 3)
+            a, x, r = (b.getal(max(1, lo // 3), hi) for _ in range(3))
+            if a == x:
+                raise Opnieuw("twee keer hetzelfde")
+            # het grootste eerst: dan is "de twee delen van elkaar afgetrokken" (a − b) een fout pad dat het klad kent
+            a, x = max(a, x), min(a, x)
+            b.ook_juist |= {F(x + r), F(a + r)}  # eerst één deel aftrekken (t − a of t − b), dan het andere
+            b.geg("t", a + x + r, "het aantal {ding.mv} {m0}")
+            b.geg("a", a, "het aantal {ding.mv} {m1}")
+            b.geg("b", x, "het aantal {ding.mv} {m2}")
+            b.stap("+", ["a", "b"], "s", "het aantal {ding.mv} samen",  # kort: past naast de rekenregel
+                   "Tel eerst op wat je al kent: {m1} en {m2} samen.", "{m1} {a} en {m2} {b}: samen {a} + {b}.")
+            b.stap("−", ["t", "s"], "r", "het aantal {m3}",
+                   "Trek dat af van het totaal: wat overblijft, is {m3}.",
+                   "{m0} {t}, waarvan {s} {m1} en {m2}: {m3} is dat {t} − {s}.")
+            b.kan(0, a + x + r, "Er kunnen {m3} niet meer {ding.mv} zijn dan {m0} in totaal.")
         else:
             b.geg("t", a + x, "het aantal {ding.mv} samen")
             b.geg("a", a, "het aantal {ding.mv} {m1}")
@@ -835,7 +857,7 @@ def foute_paden(b, gevraagd):
     def voeg(code, tekst, w):
         if w is None or w[eind] == juist:
             return
-        sig = [x for x in w.get("_sig", []) if x not in juiste_sig]
+        sig = [x for x in w.get("_sig", []) if x not in juiste_sig and x[2] not in b.ook_juist]
         paden.append((code, tekst, w[eind], w, sig))
 
     for code, waarde, tekst in b.extra:
@@ -948,9 +970,14 @@ def stel_samen(structuur, variant, wereld, item, p, rng, zin_keuze=None):
     if set(b.g) - in_verhaal:
         raise Opnieuw(f"gegeven ontbreekt: {set(b.g) - in_verhaal}")
     gevraagd = V.vul_tekst(sjabloon(tpl["gevraagd"]), ctx)
-    andere = [V.vul_tekst(sjabloon(t["gevraagd"]), ctx) for k, t in ZINNEN["structuren"][structuur].items()
-              if k != variant]
-    andere += [st.naam for st in b.stappen[:-1]] + [g.naam for g in b.g.values() if g.nodig]
+    andere = []
+    for k, t in ZINNEN["structuren"][structuur].items():
+        try:
+            if k != variant:
+                andere.append(V.vul_tekst(sjabloon(t["gevraagd"]), ctx))
+        except V.SjabloonFout:  # een variant die dit item niet kent (bv. 'rest' zonder derde moment)
+            pass
+    andere +=[st.naam for st in b.stappen[:-1]] + [g.naam for g in b.g.values() if g.nodig]
     opties = [gevraagd]
     for o in andere:
         if o not in opties and len(opties) < 3:
