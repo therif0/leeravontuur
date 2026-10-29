@@ -183,7 +183,8 @@ class TestReeks(Basis):
         self.assertEqual(app.vandaag()[0], 10)
         # na een herstart staat de telling van vandaag er nog
         scherm2, _ = self.speel([OK, OK], opslag=o)
-        self.assertTrue(self.ergens(scherm2, "Vandaag: 0/10 juist"))  # in de titelbalk
+        juist = sum(1 for r in rijen if r["juist"])  # meestal 0, maar soms is "1" echt juist (10 hm = 1 km)
+        self.assertTrue(self.ergens(scherm2, f"Vandaag: {juist}/10 juist"))  # in de titelbalk
 
     def test_zelf_kiezen_met_het_toetsenbord(self):
         # Meten → Maten zelf kiezen (V): met → naar de 5de kolom (volume), m³ en dm³ aanvinken
