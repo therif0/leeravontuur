@@ -812,6 +812,7 @@ DENKFOUTEN = {
     "vs_oppervlakte": "de oppervlakte berekend in plaats van de omtrek",
     "vs_signaalwoord": "'minder' gelezen als aftrekken (het verhaal zegt iets anders)",
     "vs_rekenfout": "een rekenfout in het klad",
+    "vs_herkomst": "een getal in de bewerking dat nergens vandaan komt",
     "vs_kan_niet": "een antwoord dat niet kan kloppen",
     "vs_gemiddelde_aantal": "gedeeld door het verkeerde aantal",
     "vs_omtrek": "de omtrek berekend in plaats van de oppervlakte",
@@ -996,10 +997,16 @@ def stel_samen(structuur, variant, wereld, item, p, rng, zin_keuze=None):
 
 # ---- het klad nakijken --------------------------------------------------------------------------------------
 
+OMREKENEN = {F(10), F(100), F(1000), F(60)}  # tussen eenheden, procenten en uren mag het kind die altijd gebruiken
+
+
 def analyseer_klad(model, regels):
     """Kijkt het klad na tegenover de stappen en de foute paden (kern/klad.analyseer)."""
     overbodig = {F(g.waarde) for g in model.gegevens.values() if not g.nodig}
-    return analyseer(model.stappen, model.paden, regels, overbodig, rekenfout="vs_rekenfout")
+    # waar een bewerking van mag vertrekken: de gegevens, de vaste getallen en uitkomsten van de stappen, omrekenen
+    bekend = {F(g.waarde) for g in model.gegevens.values()} | {F(st.uitkomst) for st in model.stappen}
+    bekend |= {F(o) for st in model.stappen for o in st.operanden if not isinstance(o, str)} | OMREKENEN
+    return analyseer(model.stappen, model.paden, regels, overbodig, rekenfout="vs_rekenfout", bekend=bekend)
 
 
 # ---- het onderwerp -----------------------------------------------------------------------------------------

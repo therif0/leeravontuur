@@ -170,6 +170,7 @@ verhaal.
 - de oppervlakte berekend in plaats van de omtrek
 - 'minder' gelezen als aftrekken (het verhaal zegt iets anders)
 - een rekenfout in het klad
+- een getal in de bewerking dat nergens vandaan komt
 - een antwoord dat niet kan kloppen
 - gedeeld door het verkeerde aantal
 - de omtrek berekend in plaats van de oppervlakte
