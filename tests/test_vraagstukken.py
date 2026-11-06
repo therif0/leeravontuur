@@ -51,6 +51,18 @@ class TestVerhaalmachine(unittest.TestCase):
                         self.assertIsNone(O.diagnose(v, v.antwoord))
                         self.assertTrue(O.nakijken(v, O.lees_vraag(v, v.verwacht)))
 
+    def test_antwoordzin_en_oplossing_passen_in_80_kolommen(self):
+        from leeravontuur.terminal.vraagstuk import KOP
+        for jaar in JAREN:
+            for keuze in O.parameters(jaar)["structuren"]:
+                for zaad in range(40):
+                    m = maak(jaar, *keuze.split("/"), zaad).model
+                    voor, na = m.antwoordzin
+                    with self.subTest(jaar=jaar, keuze=keuze, zaad=zaad):
+                        self.assertLessEqual(KOP + len(voor) + 12 + len(na), 80, (voor, na))  # 12 = het antwoordvak
+                        for st in m.stappen:  # de uitwerking: "rekenregel   ← naam" (teken_uitwerking knipt op 78)
+                            self.assertLessEqual(KOP + len(st.reken) + 3 + len(f"← {st.naam}"), 78, st.naam)
+
     def test_veel_verschillende_verhalen(self):
         p = O.parameters("5")
         rng = random.Random(3)

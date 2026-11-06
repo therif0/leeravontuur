@@ -570,7 +570,7 @@ class Omtrek(Structuur):
         b.geg("l", l, "de lengte", "m")
         b.geg("b", br, "de breedte", "m")
         b.ctx["doel"] = item["doel"]
-        b.stap("+", ["l", "b"], "h", "de lengte en de breedte samen (de helft van de omtrek)",
+        b.stap("+", ["l", "b"], "h", "de halve omtrek (lengte + breedte)",
                "Rondom = alle 4 de zijden. Tel eerst een lengte en een breedte op.",
                "Eén lengte en één breedte: {l} + {b}.", "m")
         b.stap("×", ["h", 2], "o", "de omtrek", "Er zijn 2 lengtes en 2 breedtes: neem dat 2 keer.",

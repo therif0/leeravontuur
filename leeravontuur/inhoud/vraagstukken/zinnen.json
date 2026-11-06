@@ -551,7 +551,7 @@
     "vraag": [
      "Hoeveel {ding.mv} {werkt} {wie} *gemiddeld* per dag?"
     ],
-    "antwoord": "{wie} {werkt} gemiddeld {?} {ding.mv} per dag.",
+    "antwoord": "Dat is gemiddeld {?} {ding.mv} per dag.",
     "gevraagd": "het gemiddelde per dag"
    },
    "vier": {
@@ -565,7 +565,7 @@
      "Hoeveel {ding.mv} is dat *gemiddeld* per dag?",
      "Hoeveel {ding.mv} {werkt} {wie} *gemiddeld* per dag?"
     ],
-    "antwoord": "{wie} {werkt} gemiddeld {?} {ding.mv} per dag.",
+    "antwoord": "Dat is gemiddeld {?} {ding.mv} per dag.",
     "gevraagd": "het gemiddelde per dag"
    }
   },
