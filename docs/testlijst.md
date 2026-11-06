@@ -84,6 +84,12 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Vraagstukken → Speurneus:** kies met ↑↓ de foute regel (of "Alles is juist!") en dan de reden (a, b of c).
 - [ ] **Vraagstukken** met tijd (bv. "Hoe laat komt de trein aan?"): typ in het klad `9.45 u + 35 min = 10.20 u`
   (✔), en eens `9.50 + 20 = 9.70` (✘: een uur heeft 60 minuten).
+- [ ] **Vraagstukken, het appelvraagstuk** (een totaal en twee delen, bv. "… 392 bloemkolen. Op woensdag 150, op
+  zaterdag 131. Hoeveel op de andere dagen?"; het komt af en toe in Oplossen). Met de getallen van dat voorbeeld:
+  - typ in het klad `150 - 131 = 19` en antwoord juist: "Juist antwoord! Maar kijk nog eens naar je klad. Regel 1:
+    … afgetrokken in plaats van opgeteld …";
+  - typ `150 + 131 = 281` en `281 - 170 = 111`: "Regel 2: waar komt 170 vandaan?";
+  - splitsen (`392 - 100 - 50 - 131 = 111`) en eerst het ene deel aftrekken en dan het andere geven geen opmerking.
 - [ ] **Vraagstukken → Schatten en controleren:** kies a, b of c; na het nakijken staat ✔ bij het goede antwoord.
 
 ## 4. Reeks, herhalen en punten
