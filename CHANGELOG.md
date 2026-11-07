@@ -2,6 +2,18 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.23.2 — het slot op Stoppen
+- **Stoppen op slot** (Ouders › Kinderen › kind): de ouder kan per kind Stoppen op slot zetten, ook vooraf (bv.
+  voor de examens). Dan:
+  - start het programma meteen bij dat kind (geen titelscherm, geen "Wie ben jij?");
+  - vragen Stoppen en Esc in het hoofdmenu de **ouderpin**: "Stoppen staat op slot. Vraag een ouder of leerkracht."
+    De juiste pin brengt je naar het titelscherm; Esc of 3 keer fout = terug naar het hoofdmenu;
+  - doen Ctrl-C (en op macOS/Linux ook Ctrl-\ en Ctrl-Z) niets.
+- **De ouderpin** (4 cijfers) kies je bij Ouders › **Wachtwoord en ouderpin**. Zonder ouderpin staat geen enkel kind
+  op slot: zo zit niemand ooit vast. De ouderpin weghalen zet ook elk slot af.
+- In de lijst van de kinderen staat "op slot" bij een kind met het slot.
+- Het slot openen kan altijd met `--ouder` (het ouderwachtwoord) of met de ouderpin.
+
 ## 0.23.1 — wat overblijft, en waar komt dat getal vandaan?
 - **Een nieuw soort vraagstuk: wat overblijft na twee delen** (4de leerjaar tot 1ste middelbaar). Bv. "Deze week
   verkoopt de groenteboer 392 bloemkolen. Op woensdag 150, op zaterdag 131. Hoeveel zijn het op de andere dagen?"

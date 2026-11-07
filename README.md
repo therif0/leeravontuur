@@ -121,8 +121,11 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - **antwoorden:** elke vraag met wat het kind antwoordde (ook de foute), met de details (denkfout, tijd, klad);
     met **H** steek je een vraag in de herhaalbak: het kind krijgt ze morgen terug, met nieuwe getallen
   - **export** naar CSV (Excel/LibreOffice, met vak en domein) en TXT, in de map Documenten/Leeravontuur
-  - **kinderen beheren:** naam, leerjaar, weergave, timer zichtbaar of niet, pincode, alle gegevens exporteren,
-    alles wissen
+  - **kinderen beheren:** naam, leerjaar, weergave, timer zichtbaar of niet, pincode, Stoppen op slot, alle
+    gegevens exporteren, alles wissen
+  - **Stoppen op slot** (per kind, ook vooraf): het programma start meteen bij dat kind, en stoppen kan alleen met
+    de **ouderpin** (4 cijfers, bij "Wachtwoord en ouderpin"); Ctrl-C doet dan niets. Openen: met de pin of
+    `--ouder`
   - het ouderdeel sluit vanzelf na 10 minuten zonder toets
 - **Instellingen:** het kind kiest zelf de **schermkleuren** (Mijn avatar › Schermkleuren: ook voor
   **kleurenblindheid**, hoog contrast of zonder kleur). De ouder zet per kind de **weergave** (Ouders › Kinderen ›
@@ -194,7 +197,7 @@ elke optie, wat er per leerjaar aan bod komt, de herkende denkfouten, het ouderd
 | `--contrast` | hoog contrast (zwart-wit) |
 | `--geen-kleur` | geen kleuren |
 | `--ascii` | alleen eenvoudige tekens (voor oude terminals) |
-| `--ouder` | meteen naar het ouderdeel |
+| `--ouder` | meteen naar het ouderdeel (ook om Stoppen op slot te openen) |
 | `--geen-muis` | muis uit, zodat je tekst gewoon kunt selecteren (met de muis aan lukt dat meestal met Shift ingedrukt) |
 | `--versie` | versie tonen |
 | `--fouten` | de laatste onverwachte fouten tonen (uit `fouten.log`, om door te sturen als er iets misloopt) |

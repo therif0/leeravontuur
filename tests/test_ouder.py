@@ -283,6 +283,15 @@ class TestStoppenOpSlot(OuderBasis):
         stopslot.zet_alle_sloten_af(o)
         self.assertIsNone(stopslot.vergrendeld_kind(o))
 
+    def als_ouder(self, o, *toetsen):
+        """Starten met --ouder (titelscherm, dan meteen het wachtwoord)."""
+        scherm = NepScherm(list(toetsen))
+        try:
+            App(scherm, o, kleuren=False).start(ouder=True)
+        except (ToetsenOp, SystemExit):
+            pass
+        return scherm
+
     def test_aanzetten_vraagt_eerst_een_ouderpin(self):
         o = self.met_wachtwoord(("Test", "5"))
         # Kinderen › Test › "Stoppen op slot" (rij 4 + 5) → uitleg (Enter) → de pin twee keer
@@ -293,8 +302,8 @@ class TestStoppenOpSlot(OuderBasis):
         self.assertTrue(self.ergens(scherm, "kies je eerst een ouderpin"))
         self.assertTrue(self.ergens(scherm, "opent Leeravontuur meteen bij Test"))
         self.assertTrue(self.ergens(scherm, "ja: start meteen bij dit kind"))
-        # in de lijst van de kinderen staat "op slot"
-        scherm, _ = self.speel([OK, "3", *WW, OK, "3", ESC, ESC, ESC], opslag=o)
+        # in de lijst van de kinderen staat "op slot" (met een slot start het bij het kind: de ouder via --ouder)
+        scherm = self.als_ouder(o, OK, *WW, OK, "3", ESC, ESC, ESC)
         self.assertTrue(self.ergens(scherm, "5de leerjaar · op slot"))
 
     def test_zonder_pin_verandert_er_niets(self):
@@ -311,11 +320,11 @@ class TestStoppenOpSlot(OuderBasis):
             stopslot.zet_slot(o, k.id, True)
         ander, test = o.kinderen()
         # Kinderen › Ander › Stoppen op slot: uit
-        self.speel([OK, "4", *WW, OK, "3", "1", ("klik", 9, 10), ESC, ESC, ESC, ESC, ESC], opslag=o)
+        self.als_ouder(o, OK, *WW, OK, "3", "1", ("klik", 9, 10), ESC, ESC, ESC, ESC)
         self.assertFalse(stopslot.heeft_slot(o, ander.id))
         self.assertTrue(stopslot.heeft_slot(o, test.id))
         # Wachtwoord en ouderpin › Ouderpin weghalen: ook elk slot af
-        scherm, _ = self.speel([OK, "4", *WW, OK, "5", "3", OK, ESC, ESC, ESC, ESC], opslag=o)
+        scherm = self.als_ouder(o, OK, *WW, OK, "5", "3", OK, ESC, ESC, ESC)
         self.assertIsNone(o.ouder_pin())
         self.assertFalse(o.instellingen_van(test.id).stoppen_slot)
         self.assertTrue(self.ergens(scherm, "Geen enkel kind staat nog op slot"))

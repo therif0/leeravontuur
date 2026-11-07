@@ -139,6 +139,11 @@ Gouden regels:
   Rapporten en export zitten in `kern/rapporten.py` (geeft regels met rollen terug; ook het logboek:
   `antwoorden_lijst`, `punten_regels`, `zet_in_herhaalbak` voor Ouders › Antwoorden, #24); het ouderdeel in
   `terminal/schermen/ouder.py` zet `Scherm.slot` (vergrendelen na inactiviteit).
+- **Stoppen op slot** (0.23.2, `kern/stopslot.py`): per kind `Instellingen.stoppen_slot`, open te maken met de
+  ouderpin (`Opslag.ouder_pin`, 4 cijfers). Zonder ouderpin geldt geen slot (niemand zit vast). `App.start` gaat dan
+  meteen naar `vergrendeld_kind` (geen titelscherm, geen "Wie ben jij?"), Esc/Stoppen in het hoofdmenu =
+  `App.slotscherm` (Esc of 3× fout = terug), en `zonder_onderbreken` negeert Ctrl-C (ook Ctrl-\ en Ctrl-Z) zolang
+  dat kind actief is. Openen: de pin, of `--ouder` › Kinderen › kind › Stoppen op slot.
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =

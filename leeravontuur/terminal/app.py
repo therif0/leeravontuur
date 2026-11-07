@@ -3,11 +3,13 @@
 import curses
 import json
 import os
+import signal
 import time
+from contextlib import contextmanager
 from dataclasses import replace
 
 from .. import LICENTIE, MAKER, MOTTO, VERSIE
-from ..kern import feedback, foutlog, herhaling, klok, leerjaren
+from ..kern import feedback, foutlog, herhaling, klok, leerjaren, stopslot
 from ..kern.instellingen import Instellingen
 from ..kern.sessie import Sessie
 from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
@@ -20,6 +22,30 @@ from .schermen.kinderen import kies_kind
 from .venster import Klokvenster
 
 HOOFD = "Leeravontuur"
+
+# Ctrl-C (stoppen), Ctrl-\ (stoppen) en Ctrl-Z (stilzetten): niet zolang Stoppen op slot staat. Op Windows bestaat
+# alleen SIGINT.
+ONDERBREKERS = [getattr(signal, naam) for naam in ("SIGINT", "SIGQUIT", "SIGTSTP") if hasattr(signal, naam)]
+
+
+@contextmanager
+def zonder_onderbreken(aan=True):
+    """Zolang aan: de toetsen die het programma onderbreken doen niets. Daarna weer zoals ervoor."""
+    oud = {}
+    if aan:
+        for sig in ONDERBREKERS:
+            try:
+                oud[sig] = signal.signal(sig, signal.SIG_IGN)
+            except (ValueError, OSError):  # niet in de hoofdthread, of niet toegelaten: dan gewoon zonder
+                pass
+    try:
+        yield
+    finally:
+        for sig, handler in oud.items():
+            try:
+                signal.signal(sig, handler if handler is not None else signal.SIG_DFL)
+            except (ValueError, OSError):
+                pass
 
 
 class App:
@@ -125,7 +151,10 @@ class App:
     # ---- schermen ------------------------------------------------------------
 
     def start(self, ouder=False):
-        self.startscherm()
+        # Stoppen op slot (de ouder koos het kind al): meteen naar dat kind, zonder titelscherm of "Wie ben jij?"
+        vast = None if ouder else stopslot.vergrendeld_kind(self.opslag)
+        if vast is None:
+            self.startscherm()
         if self.opslag.probleem:  # bv. een teruggezette reservekopie: meteen zeggen, niet pas in het hoofdmenu
             self.s.lezer([HOOFD, "Let op"], [("! " + self.opslag.probleem, "accent")],
                          [("Enter", "verder", ("ok",))], {k: None for k in (*ENTER, ESC, ("ok",))})
@@ -134,10 +163,11 @@ class App:
             Ouderdeel(self).open()
             return
         while True:  # titelscherm → Wie ben jij? → hoofdmenu; Stoppen = terug naar het titelscherm
-            kind = kies_kind(self)
+            kind, vast = vast or kies_kind(self), None
             if kind is not None:
                 self.activeer(kind)
-                self.hoofdmenu()
+                with zonder_onderbreken(stopslot.heeft_slot(self.opslag, kind.id)):
+                    self.hoofdmenu()
             self.startscherm()  # Esc op het titelscherm sluit het programma
 
     def startscherm(self):
@@ -216,6 +246,8 @@ class App:
                                 onder=f"{MAKER} · gratis · {MOTTO.lower()}", extra=self.teken_avatar_menu,
                                 uitleg_tot=self.avatar_links(), koppen=koppen, grijs=grijs, esc="stoppen")
                 if k is None or keuzes[k][2] is None:  # Esc of Stoppen: naar het titelscherm
+                    if stopslot.heeft_slot(self.opslag, self.kind.id) and not self.slotscherm():
+                        continue  # op slot: terug naar het hoofdmenu
                     return
                 keuzes[k][2]()
             except TerugNaar:
@@ -224,6 +256,19 @@ class App:
                 raise
             except Exception as e:  # vangnet: een fout in een scherm sluit het programma niet af
                 self.oeps(e)
+
+    def slotscherm(self):
+        """Stoppen staat op slot: True als de ouder de ouderpin typt (Esc of 3 keer fout = False)."""
+        vraag = "Stoppen staat op slot. Vraag een ouder of leerkracht."
+        for _ in range(3):
+            pin = self.s.invoer([HOOFD, "Stoppen"], vraag, verborgen=True, max_lengte=4, cijfers=True,
+                                uitleg=["De ouderpin (4 cijfers)."])
+            if pin is None:
+                return False
+            if stopslot.pin_ok(self.opslag, pin):
+                return True
+            vraag = "Dat is niet de ouderpin. Probeer nog eens:"
+        return False
 
     def oeps(self, fout):
         """Een onverwachte fout: bewaren in fouten.log, het kind geruststellen en terug naar het menu.
