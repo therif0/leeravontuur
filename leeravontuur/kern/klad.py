@@ -11,9 +11,10 @@ klad kan vergelijken met de juiste stappen en de bekende foute paden.
 
 import re
 from dataclasses import dataclass, field
+from decimal import Decimal
 from fractions import Fraction
 
-from .getal import lees_getal
+from .getal import fmt, lees_getal
 from .wiskunde import eenheden as E
 
 PLUS, MIN, MAAL, DEEL, VAN = "+", "−", "×", ":", "van"
@@ -526,16 +527,42 @@ def handtekening(s):
     return op, sorted(s.operanden), s.gegeven.getal
 
 
-def analyseer(stappen, paden, regels, overbodig=frozenset(), rekenfout="rekenfout"):
+HERKOMST = "Elk getal in je bewerking komt uit het vraagstuk of uit een regel erboven."
+
+
+def _tekst(x):
+    """Een Fraction zoals het kind ze typt: 20, 2,5."""
+    return fmt(Decimal(x.numerator) / Decimal(x.denominator))
+
+
+def _vreemd(operanden, bekend, uitkomst):
+    """Het eerste getal dat nergens vandaan komt, of None. Splitsen mag: 2000 en 320 samen zijn 2320 (maar niet
+    samen de uitkomst van de regel zelf: 16 + 11 = 27 met twee verzonnen getallen is geen splitsen)."""
+    vreemd = [x for x in operanden if x not in bekend]
+    if not vreemd:
+        return None
+    andere = [x for x in operanden if x in bekend]
+    for i in range(2 ** min(len(andere), 6)):  # de verzonnen getallen, samen met (een paar) bekende: 100 + 30 = 130
+        som = sum(vreemd) + sum(x for j, x in enumerate(andere[:6]) if i >> j & 1)
+        if len(vreemd) + bin(i).count("1") > 1 and som in bekend and som != uitkomst:
+            return None
+    return vreemd[0]
+
+
+def analyseer(stappen, paden, regels, overbodig=frozenset(), rekenfout="rekenfout", bekend=None):
     """Kijkt het klad na tegenover de stappen van de oplossing en de bekende foute paden.
 
     stappen = Rekenstap's (id, uitkomst), paden = (code, tekst, uitkomst, waarden, handtekeningen), regels = teksten
     of KladRegel's, overbodig = getallen die er niet toe doen (een overbodig gegeven).
+    bekend = de getallen waar een bewerking van mag vertrekken (een vraagstuk: de gegevens, vaste getallen en
+    uitkomsten van stappen). Dan moet elk getal van een regel die op een stap uitkomt daar (of in een regel erboven)
+    vandaan komen; zo niet, dan is het een denkfout 'vs_herkomst' ("waar komt 20 vandaan?"). None = niet nakijken.
     Geeft {'status': [per regel 'goed'/'ok'/'reken'/'denk'/None], 'eerste': (regelnr, code, tekst) of None,
            'gedekt': ids van stappen die erin staan, 'compleet': staat de uitkomst in het klad?}.
     Een andere juiste weg is geen fout: een juiste regel is 'ok', ook als ze geen stap van de oplossing is."""
     juiste = {Fraction(st.uitkomst): st.id for st in stappen}
     overbodig = {Fraction(x) for x in overbodig}
+    gezien = set()  # de getallen uit de regels erboven (en uit de vorige schakels van deze regel)
     status, gedekt, eerste = [], set(), None
     for nr, tekst in enumerate(regels, 1):
         r = lees_regel(tekst) if isinstance(tekst, str) else tekst
@@ -549,7 +576,14 @@ def analyseer(stappen, paden, regels, overbodig=frozenset(), rekenfout="rekenfou
             for s in r.schakels:
                 waarden = [s.gegeven.getal] + ([s.gegeven.rest] if s.gegeven.rest is not None else [])
                 if any(w in juiste for w in waarden):
+                    x = None if bekend is None else _vreemd(s.operanden, bekend | gezien, s.gegeven.getal)
+                    if x is not None:
+                        st = "denk"
+                        if eerste is None:
+                            eerste = (nr, "vs_herkomst", f"Regel {nr}: waar komt {_tekst(x)} vandaan? {HERKOMST}")
+                        break
                     gedekt.update(juiste[w] for w in waarden if w in juiste)
+                    gezien.update(s.operanden + waarden)
                     st = "goed"
                     continue
                 sig = handtekening(s)
@@ -564,6 +598,9 @@ def analyseer(stappen, paden, regels, overbodig=frozenset(), rekenfout="rekenfou
                     if eerste is None:
                         eerste = (nr, pad[0], f"Regel {nr}: {pad[1]}")
                     break
+                gezien.update(s.operanden + waarden)  # `4620 − 2320 = 2300 − 1680 = 620`: 2300 komt van links
+        for s in (r.schakels if r.leesbaar else []):
+            gezien.update(s.operanden + [s.gegeven.getal])
         status.append(st)
     compleet = False
     if stappen:

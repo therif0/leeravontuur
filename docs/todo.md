@@ -1,12 +1,14 @@
-# Leeravontuur: to-do (stand 28/10, na 0.23.0)
+# Leeravontuur: to-do (stand 6/11, na 0.23.1)
 
 ## Voor de vader
-- [ ] Tags + releases maken: v0.22.0 (PR #42) en v0.23.0 (PR #43), tekst uit CHANGELOG.
-- [ ] 0.22.0 en 0.23.0 testen met `docs/testlijst.md` (op een kopie, `LEERAVONTUUR_DATA`).
+- [ ] Tags + releases maken, tekst uit CHANGELOG: op GitHub is de laatste tag 0.20.2, dus nog 0.20.3 tot en met
+      0.23.0 (en 0.23.1 na het samenvoegen).
+- [ ] 0.22.0, 0.23.0 en 0.23.1 testen met `docs/testlijst.md` (op een kopie, `LEERAVONTUUR_DATA`).
 - [ ] Issues #24 (logboek) en #18 (plaatswaarden) sluiten als ze goed zijn (gebouwd in 0.22.0 en 0.21.4).
 
 ## Volgende bouwstap (pas na akkoord)
-- [ ] 0.23.1: slot op Stoppen (het plan staat hieronder)
+- [x] 0.23.1: het appelvraagstuk (wat overblijft na twee delen) + "waar komt dit getal vandaan?" in het klad
+- [ ] 0.23.2: slot op Stoppen (het plan staat hieronder)
   - ouderpin 4 cijfers ("Wachtwoord en ouderpin"), per kind "Stoppen op slot" (ook vooraf), 🔒 in de lijst
   - slotscherm met pin; herstart meteen bij dat kind; Ctrl-C genegeerd; openen via `--ouder`
 
@@ -20,7 +22,7 @@
 
 ---
 
-## Plan voor 0.23.1: het slot op Stoppen
+## Plan voor 0.23.2: het slot op Stoppen
 Kinderen mogen niet zomaar van account wisselen, dus kan de ouder per kind een **slot op Stoppen** zetten, dat alleen
 open gaat met een **ouderpin van 4 cijfers**. Staat het slot op, dan start het programma meteen bij dat kind en doet
 Ctrl-C niets.
@@ -45,7 +47,7 @@ Ctrl-C niets.
 6. **Ctrl-C** doet niets zolang een kind met slot actief is (`signal.SIGINT` genegeerd, ook op Windows). Het
    venster sluiten kan het programma niet tegenhouden: daarom start het opnieuw bij hetzelfde kind.
 7. Tests (slotscherm, pin juist/fout/Esc, herstart bij het kind, vooraf op slot zetten en via `--ouder` openen,
-   🔒 in de lijst), testlijst, CHANGELOG, VERSIE 0.23.1. Het 🔒-teken (of een ander) komt in `terminal/tekens.py`.
+   🔒 in de lijst), testlijst, CHANGELOG, VERSIE 0.23.2. Het 🔒-teken (of een ander) komt in `terminal/tekens.py`.
 
 **Nakijken:** volledige suite + lange aapjestest (de aap mag niet vastlopen in het slotscherm: een test met slot
 aan); tmux 80×24 op een kopie van de gegevens: slot aan bij de ouder, Stoppen → pin, herstart → meteen het kind,

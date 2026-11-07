@@ -2,6 +2,19 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.23.1 — wat overblijft, en waar komt dat getal vandaan?
+- **Een nieuw soort vraagstuk: wat overblijft na twee delen** (4de leerjaar tot 1ste middelbaar). Bv. "Deze week
+  verkoopt de groenteboer 392 bloemkolen. Op woensdag 150, op zaterdag 131. Hoeveel zijn het op de andere dagen?"
+  Eerst samen (150 + 131), dan aftrekken van het totaal. Eerst het ene deel aftrekken en dan het andere mag ook.
+  Trek je de twee delen van elkaar af (150 − 131), dan zegt het klad meteen bij die regel dat het eerst samen moet.
+  Ook in de Speurneus (vanaf het 5de leerjaar).
+- **"Waar komt dit getal vandaan?"** In een vraagstuk moet elk getal in je klad uit het verhaal komen of uit een
+  regel erboven. Kom je op het juiste antwoord met een getal dat nergens vandaan komt (bv. `640 − 20 = 620`), dan
+  zegt het programma: "Juist antwoord! Maar kijk nog eens naar je klad. Regel 2: waar komt 20 vandaan?" Splitsen
+  mag gewoon (`4620 − 2000 − 320 − 1680`). In gewone oefeningen (zonder verhaal) verandert er niets.
+- Twee teksten in vraagstukken vielen buiten het scherm: bij het gemiddelde ("Dat is gemiddeld … per dag.") en bij
+  de omtrek ("de halve omtrek (lengte + breedte)").
+
 ## 0.23.0 — een nieuw hoofdmenu
 - **Het hoofdmenu staat in groepen**, zoals in een spel: bovenaan ▶ Verder en Herhalen, dan **VAKKEN** (Wiskunde,
   Taal en Leerstof), **JIJ** (Mijn avatar en de Winkel) en **FEEDBACK** (Zeg het ons), en onderaan Stoppen.

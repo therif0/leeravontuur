@@ -138,7 +138,8 @@ SOORTEN = {  # de interne namen van soorten vragen → leesbaar
     "assen_aanduiden": "assenstelsel: aanduiden", "naar_echt": "kaart → echt", "naar_kaart": "echt → kaart",
     "schaal_zoeken": "de schaal zoeken",
     # vraagstukken (structuur/variant)
-    "samen/samen": "samen (+)", "samen/deel": "het ontbrekende deel (−)", "verschil/meer": "hoeveel meer? (−)",
+    "samen/samen": "samen (+)", "samen/deel": "het ontbrekende deel (−)",
+    "samen/rest": "wat overblijft na twee delen (+ −)", "verschil/meer": "hoeveel meer? (−)",
     "verschil/erbij": "zoveel meer: hoeveel? (+)", "verschil/minder": "'minder dan' maar optellen (valkuil)",
     "groepen/totaal": "groepjes: hoeveel in totaal? (×)", "groepen/per": "eerlijk verdelen (:)",
     "groepen/aantal": "hoeveel groepjes? (:)", "rest/volle": "hoeveel volle? (: met rest)",

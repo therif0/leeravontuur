@@ -67,6 +67,7 @@
    ],
    "structuren": [
     "samen/deel",
+    "samen/rest",
     "verschil/meer",
     "verschil/erbij",
     "verschil/minder",
@@ -125,6 +126,7 @@
    ],
    "structuren": [
     "samen/deel",
+    "samen/rest",
     "verschil/erbij",
     "verschil/minder",
     "groepen/per",
@@ -190,6 +192,7 @@
     "denkfout"
    ],
    "structuren": [
+    "samen/rest",
     "verschil/minder",
     "groepen/aantal",
     "rest/nodig",

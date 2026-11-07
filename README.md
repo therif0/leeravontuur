@@ -80,6 +80,9 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   - een verhaalmachine mengt rekenstructuren met werelden (bakker, metselaar, boer …): duizenden verhalen,
     soms met een overbodig gegeven of een omgekeerde vraag
   - herkent denkfouten: een andere bewerking, gestopt na een tussenstap, niet omgezet, een overbodig gegeven …
+  - **waar komt dit getal vandaan?** Elk getal in het klad komt uit het verhaal of uit een regel erboven; een
+    juist antwoord via een verzonnen getal (`640 − 20 = 620`) wordt gemeld. Splitsen mag.
+  - ook "wat overblijft na twee delen": 392 bloemkolen, 150 op woensdag en 131 op zaterdag, hoeveel de andere dagen?
   - **Speurneus**: zoek de fout in het klad van een ander kind, en zeg waarom
   - **schatten en controleren**: ongeveer hoeveel? Kan dat antwoord kloppen?
   - ook met tijd: hoe lang duurt de film, hoe laat komt de trein aan? Het klad kent kloktijden (`9.45 u + 35 min`)

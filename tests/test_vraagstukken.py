@@ -51,6 +51,18 @@ class TestVerhaalmachine(unittest.TestCase):
                         self.assertIsNone(O.diagnose(v, v.antwoord))
                         self.assertTrue(O.nakijken(v, O.lees_vraag(v, v.verwacht)))
 
+    def test_antwoordzin_en_oplossing_passen_in_80_kolommen(self):
+        from leeravontuur.terminal.vraagstuk import KOP
+        for jaar in JAREN:
+            for keuze in O.parameters(jaar)["structuren"]:
+                for zaad in range(40):
+                    m = maak(jaar, *keuze.split("/"), zaad).model
+                    voor, na = m.antwoordzin
+                    with self.subTest(jaar=jaar, keuze=keuze, zaad=zaad):
+                        self.assertLessEqual(KOP + len(voor) + 12 + len(na), 80, (voor, na))  # 12 = het antwoordvak
+                        for st in m.stappen:  # de uitwerking: "rekenregel   ← naam" (teken_uitwerking knipt op 78)
+                            self.assertLessEqual(KOP + len(st.reken) + 3 + len(f"← {st.naam}"), 78, st.naam)
+
     def test_veel_verschillende_verhalen(self):
         p = O.parameters("5")
         rng = random.Random(3)
@@ -192,12 +204,110 @@ class TestKlad(unittest.TestCase):
         self.assertEqual(a["eerste"][:2], (2, "vs_rekenfout"))
         self.assertIn("komma", a["eerste"][2])
 
+    def test_de_juiste_oplossing_is_nooit_een_verzonnen_getal(self):
+        """De herkomstregel: de oplossing van elke structuur in elk leerjaar geeft geen vals alarm."""
+        for jaar in JAREN:
+            for keuze in O.parameters(jaar)["structuren"]:
+                for zaad in range(25):
+                    m = maak(jaar, *keuze.split("/"), zaad).model
+                    regels = [st.reken for st in m.stappen]
+                    with self.subTest(jaar=jaar, keuze=keuze, zaad=zaad, regels=regels):
+                        uit = VS.analyseer_klad(m, regels)
+                        self.assertIsNone(uit["eerste"])
+                        self.assertTrue(uit["compleet"])
+                        uit = VS.analyseer_klad(m, regels[-1:])  # alleen de laatste stap (de rest uit het hoofd)
+                        self.assertNotEqual((uit["eerste"] or (0, ""))[1], "vs_herkomst")
+
     def test_een_andere_juiste_weg_is_geen_fout(self):
         v = maak("5", "omtrek", "gewoon", 2)
         l, b = v.model.gegevens["l"].waarde, v.model.gegevens["b"].waarde
         a = VS.analyseer_klad(v.model, [f"{l} + {b} + {l} + {b} = {2 * (l + b)}"])
         self.assertIsNone(a["eerste"])
         self.assertTrue(a["compleet"])
+
+
+class TestWatOverblijft(unittest.TestCase):
+    """samen/rest: een totaal min twee delen (het appelvraagstuk: 4620 appels, 2320 rood, 1680 groen, hoeveel rot?)."""
+
+    def test_de_juiste_wegen(self):
+        for zaad in range(30):
+            m = maak("5", "samen", "rest", zaad).model
+            t, a, b = (m.gegevens[k].waarde for k in "tab")
+            r_ = t - a - b
+            with self.subTest(zaad=zaad):
+                self.assertEqual(m.stappen[-1].uitkomst, r_)
+                for klad in ([f"{a} + {b} = {a + b}", f"{t} - {a + b} = {r_}"],
+                             [f"{t} - {a} - {b} = {r_}"],
+                             [f"{t} - {a} = {t - a}", f"{t - a} - {b} = {r_}"]):
+                    uit = VS.analyseer_klad(m, klad)
+                    self.assertIsNone(uit["eerste"], klad)
+                    self.assertTrue(uit["compleet"], klad)
+
+    def test_de_twee_delen_van_elkaar_aftrekken(self):
+        for zaad in range(30):
+            m = maak("5", "samen", "rest", zaad).model
+            a, b = m.gegevens["a"].waarde, m.gegevens["b"].waarde
+            with self.subTest(zaad=zaad):
+                self.assertGreater(a, b)
+                uit = VS.analyseer_klad(m, [f"{a} - {b} = {a - b}"])
+                self.assertEqual(uit["eerste"][:2], (1, "vs_min_ipv_plus"))
+                self.assertIn("samen", uit["eerste"][2])
+
+    def test_een_deel_vergeten(self):
+        v = maak("5", "samen", "rest", 4)
+        t, a, b = (v.model.gegevens[k].waarde for k in "tab")
+        self.assertEqual(O.diagnose(v, t - a)[0], "vs_stap_vergeten")
+        self.assertEqual(O.diagnose(v, a + b)[0], "vs_tussenstap")
+
+    def test_waar_komt_dit_getal_vandaan(self):
+        """Het klad van de zoon: een juist antwoord, maar via een verzonnen getal (de 20)."""
+        m = maak("5", "samen", "rest", 4).model
+        t, a, b = (m.gegevens[k].waarde for k in "tab")
+        r_ = t - a - b
+        d = a - b
+        verzonnen = d - r_ if d > r_ else r_ - d
+        teken = "-" if d > r_ else "+"
+        klad = [f"{a} - {b} = {d}", f"{d} {teken} {verzonnen} = {r_}", f"{r_} + {b} + {a} = {t}"]
+        uit = VS.analyseer_klad(m, klad)
+        self.assertEqual(uit["status"][:2], ["denk", "denk"])
+        self.assertEqual(uit["eerste"][:2], (1, "vs_min_ipv_plus"))
+        uit = VS.analyseer_klad(m, klad[1:])  # zonder de eerste regel: dan komt ook d nergens vandaan
+        self.assertEqual(uit["eerste"][:2], (1, "vs_herkomst"))
+        self.assertIn(f"waar komt {d} vandaan?", uit["eerste"][2])
+        self.assertFalse(uit["compleet"])
+        x = a + b - r_  # eerst juist samengeteld, dan een verzonnen getal eraf
+        uit = VS.analyseer_klad(m, [f"{a} + {b} = {a + b}", f"{a + b} - {x} = {r_}"])
+        self.assertEqual(uit["eerste"][:2], (2, "vs_herkomst"))
+        self.assertIn(f"waar komt {x} vandaan?", uit["eerste"][2])
+
+    def test_splitsen_is_geen_verzonnen_getal(self):
+        m = next(m for m in (maak("5", "samen", "rest", z).model for z in range(50))
+                 if m.gegevens["a"].waarde > 100 and m.gegevens["a"].waarde % 100)
+        t, a, b = (m.gegevens[k].waarde for k in "tab")
+        r_ = t - a - b
+        ha, la = a // 100 * 100, a % 100  # 523 → 500 en 23
+        for klad in ([f"{t} - {ha} - {la} - {b} = {r_}"],                                  # in één regel
+                     [f"{t} - {ha} = {t - ha}", f"{t - ha} - {la} = {t - a}", f"{t - a} - {b} = {r_}"],
+                     [f"{t} - {a} = {t - a} - {b} = {r_}"],                                # een ketting
+                     [f"{t} - {a + b} = {r_}"]):                                           # a + b uit het hoofd
+            with self.subTest(klad=klad):
+                uit = VS.analyseer_klad(m, klad)
+                self.assertIsNone(uit["eerste"])
+                self.assertTrue(uit["compleet"])
+
+    def test_de_antwoordzin_past(self):
+        from leeravontuur.terminal.vraagstuk import KOP
+        for jaar in ("4", "5", "6", "m1"):
+            for zaad in range(40):
+                voor, na = maak(jaar, "samen", "rest", zaad).model.antwoordzin
+                self.assertLessEqual(KOP + len(voor) + 12 + len(na), 80, (voor, na))  # 12 = het antwoordvak
+
+    def test_alleen_met_een_derde_moment(self):
+        derde = {i["rest"][1] for w in VS.WERELDEN["werelden"] for i in w.get("tel", []) if "rest" in i}
+        self.assertGreaterEqual(len(derde), 4)
+        for zaad in range(40):
+            v = maak("6", "samen", "rest", zaad)
+            self.assertTrue(any(v.model.gevraagd.endswith(m) for m in derde), v.model.gevraagd)
 
 
 class TestPunten(unittest.TestCase):

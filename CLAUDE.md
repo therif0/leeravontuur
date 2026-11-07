@@ -83,7 +83,11 @@ Gouden regels:
   `klad = "ja"` (of `"verplicht"`, met `klad_klaar`) en geeft `oplossing(v)` in klad-regels (`kern/klad.stap`,
   `oplossing_van`, `fout_pad`); `tests/test_werkwijze.py` kijkt na dat elke regel klopt en op het antwoord eindigt.
   De terminal vraagt de oplossing altijd via `oplossing_of_niets` (een fout komt in het logboek, nooit bij het kind).
-  Het klad-nakijken tegenover een oplossing is `kern/klad.analyseer` (ook voor vraagstukken).
+  Het klad-nakijken tegenover een oplossing is `kern/klad.analyseer` (ook voor vraagstukken). In een vraagstuk
+  geldt ook de **herkomstregel** (`bekend`, via `analyseer_klad`): een regel die op een stap uitkomt, mag alleen
+  getallen gebruiken uit het verhaal, de stappen, een regel erboven of `OMREKENEN`; anders `vs_herkomst` ("waar
+  komt 20 vandaan?"). Splitsen mag (verzonnen getallen die samen een bekend getal maken). Een andere juiste weg
+  met eigen tussenuitkomsten zet een structuur in `Bouw.ook_juist` (geen fout pad).
   Weggaan midden in een vraag (nog niet nagekeken) of een snelrekenronde: een oefenscherm zet `with s.bewaak(actief,
   ses)`; dan vragen **Esc en de broodkruimel** (ook vanuit de spiekbrief) vanzelf eerst "Wil je stoppen?"
   (`Scherm.bevestig`, "Nee" gekozen; Nee = `KEY_RESIZE`, de tijd erin telt niet mee via `Sessie.pauze`). Esc in een
