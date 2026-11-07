@@ -1,0 +1,194 @@
+{
+ "uitleg": "De woordenlijst van de zinnenmachine (kern/taal/zinnenmachine.py). Een woordgroep schrijf je met de woordsoort na een schuine streep: 'de/lidw juf/zn'. Werkwoorden: tt = [enkelvoud, meervoud], vt = [enkelvoud, meervoud], vd = voltooid deelwoord, hulp = hebben of zijn. ow = welke onderwerpen passen (mens, dier, hond), lv = welke dingen het lijdend voorwerp kunnen zijn, mv = het voorzetsel bij de vraag naar het meewerkend voorwerp (aan, voor) als het werkwoord er een kan hebben, mv_nodig = alleen met een meewerkend voorwerp (geven), zonder_lv = het werkwoord kan ook zonder lijdend voorwerp.",
+ "onderwerpen": {
+  "mens": [
+   {"tekst": "de/lidw juf/zn", "getal": "ev"},
+   {"tekst": "de/lidw meester/zn", "getal": "ev"},
+   {"tekst": "oma/zn", "getal": "ev"},
+   {"tekst": "opa/zn", "getal": "ev"},
+   {"tekst": "mama/zn", "getal": "ev"},
+   {"tekst": "papa/zn", "getal": "ev"},
+   {"tekst": "de/lidw bakker/zn", "getal": "ev"},
+   {"tekst": "de/lidw dokter/zn", "getal": "ev"},
+   {"tekst": "Lotte/zn", "getal": "ev"},
+   {"tekst": "Sami/zn", "getal": "ev"},
+   {"tekst": "Noor/zn", "getal": "ev"},
+   {"tekst": "Tom/zn", "getal": "ev"},
+   {"tekst": "mijn/vnw broer/zn", "getal": "ev"},
+   {"tekst": "mijn/vnw zus/zn", "getal": "ev"},
+   {"tekst": "haar/vnw vriendin/zn", "getal": "ev"},
+   {"tekst": "onze/vnw buurman/zn", "getal": "ev"},
+   {"tekst": "de/lidw kinderen/zn", "getal": "mv"},
+   {"tekst": "de/lidw buren/zn", "getal": "mv"},
+   {"tekst": "mijn/vnw ouders/zn", "getal": "mv"},
+   {"tekst": "de/lidw leerlingen/zn", "getal": "mv"},
+   {"tekst": "Lotte/zn en/vw Noor/zn", "getal": "mv"}
+  ],
+  "dier": [
+   {"tekst": "de/lidw kat/zn", "getal": "ev"},
+   {"tekst": "het/lidw paard/zn", "getal": "ev"},
+   {"tekst": "de/lidw vogels/zn", "getal": "mv"},
+   {"tekst": "de/lidw koeien/zn", "getal": "mv"}
+  ],
+  "hond": [
+   {"tekst": "de/lidw hond/zn", "getal": "ev"},
+   {"tekst": "de/lidw honden/zn", "getal": "mv"}
+  ]
+ },
+ "meewerkend": [
+  "haar/vnw kleinzoon/zn",
+  "de/lidw kinderen/zn",
+  "de/lidw juf/zn",
+  "zijn/vnw vriend/zn",
+  "mijn/vnw zus/zn",
+  "de/lidw buren/zn",
+  "de/lidw klas/zn",
+  "de/lidw dokter/zn",
+  "onze/vnw buurvrouw/zn"
+ ],
+ "personen_lv": [
+  "de/lidw juf/zn",
+  "oma/zn",
+  "haar/vnw vriendin/zn",
+  "de/lidw buren/zn",
+  "de/lidw kinderen/zn",
+  "mijn/vnw broer/zn",
+  "Tom/zn"
+ ],
+ "bn": {
+  "groot": "grote", "nieuw": "nieuwe", "dik": "dikke", "mooi": "mooie", "rood": "rode", "blauw": "blauwe",
+  "moeilijk": "moeilijke", "zacht": "zachte", "duur": "dure", "lang": "lange", "zwaar": "zware", "oud": "oude",
+  "goed": "goede", "spannend": "spannende", "grappig": "grappige", "groen": "groene", "lekker": "lekkere",
+  "warm": "warme", "vers": "verse", "klein": "kleine", "vuil": "vuile", "hoog": "hoge", "wit": "witte",
+  "stevig": "stevige", "geel": "gele"
+ },
+ "dingen": {
+  "geschenk": [
+   {"zn": "boek", "lidw": "het", "mv": "boeken", "bn": ["dik", "nieuw", "mooi"]},
+   {"zn": "bal", "lidw": "de", "mv": "ballen", "bn": ["rood", "nieuw"]},
+   {"zn": "fiets", "lidw": "de", "mv": "fietsen", "bn": ["nieuw", "blauw"]},
+   {"zn": "puzzel", "lidw": "de", "mv": "puzzels", "bn": ["moeilijk", "groot"]},
+   {"zn": "knuffel", "lidw": "de", "mv": "knuffels", "bn": ["zacht"]},
+   {"zn": "horloge", "lidw": "het", "mv": "horloges", "bn": ["nieuw", "duur"]}
+  ],
+  "post": [
+   {"zn": "brief", "lidw": "de", "mv": "brieven", "bn": ["lang", "mooi"]},
+   {"zn": "kaartje", "lidw": "het", "mv": "kaartjes", "bn": ["mooi"]},
+   {"zn": "pakje", "lidw": "het", "mv": "pakjes", "bn": ["groot", "zwaar"]}
+  ],
+  "schrijfbaar": [
+   {"zn": "brief", "lidw": "de", "mv": "brieven", "bn": ["lang", "mooi"]},
+   {"zn": "kaartje", "lidw": "het", "mv": "kaartjes", "bn": ["mooi"]}
+  ],
+  "toonbaar": [
+   {"zn": "tekening", "lidw": "de", "mv": "tekeningen", "bn": ["mooi"]},
+   {"zn": "foto", "lidw": "de", "mv": "foto's", "bn": ["oud"]},
+   {"zn": "rapport", "lidw": "het", "mv": "rapporten", "bn": ["goed"]}
+  ],
+  "verhaal": [
+   {"zn": "verhaal", "lidw": "het", "mv": "verhalen", "bn": ["spannend", "grappig"]},
+   {"zn": "mop", "lidw": "de", "mv": "moppen", "bn": ["grappig"]},
+   {"zn": "geheim", "lidw": "het", "mv": "geheimen", "bn": ["groot"]}
+  ],
+  "eten": [
+   {"zn": "appel", "lidw": "de", "mv": "appels", "bn": ["groen", "rood"]},
+   {"zn": "boterham", "lidw": "de", "mv": "boterhammen", "bn": ["lekker"]},
+   {"zn": "soep", "lidw": "de", "mv": null, "bn": ["warm"]},
+   {"zn": "koekje", "lidw": "het", "mv": "koekjes", "bn": ["lekker"]},
+   {"zn": "banaan", "lidw": "de", "mv": "bananen", "bn": ["geel"]}
+  ],
+  "gebak": [
+   {"zn": "taart", "lidw": "de", "mv": "taarten", "bn": ["groot", "lekker"]},
+   {"zn": "cake", "lidw": "de", "mv": "cakes", "bn": ["lekker"]},
+   {"zn": "koekje", "lidw": "het", "mv": "koekjes", "bn": ["lekker"]}
+  ],
+  "koopbaar": [
+   {"zn": "fiets", "lidw": "de", "mv": "fietsen", "bn": ["nieuw", "blauw"]},
+   {"zn": "bal", "lidw": "de", "mv": "ballen", "bn": ["rood"]},
+   {"zn": "boek", "lidw": "het", "mv": "boeken", "bn": ["dik", "nieuw"]},
+   {"zn": "brood", "lidw": "het", "mv": "broden", "bn": ["vers"]},
+   {"zn": "schoen", "lidw": "de", "mv": "schoenen", "bn": ["nieuw"]}
+  ],
+  "leesbaar": [
+   {"zn": "boek", "lidw": "het", "mv": "boeken", "bn": ["dik", "spannend"]},
+   {"zn": "strip", "lidw": "de", "mv": "strips", "bn": ["grappig"]},
+   {"zn": "krant", "lidw": "de", "mv": "kranten", "bn": ["dik"]},
+   {"zn": "brief", "lidw": "de", "mv": "brieven", "bn": ["lang"]}
+  ],
+  "zoekbaar": [
+   {"zn": "sleutel", "lidw": "de", "mv": "sleutels", "bn": ["klein"]},
+   {"zn": "bal", "lidw": "de", "mv": "ballen", "bn": ["rood"]},
+   {"zn": "schoen", "lidw": "de", "mv": "schoenen", "bn": ["blauw"]},
+   {"zn": "pen", "lidw": "de", "mv": "pennen", "bn": ["blauw"]}
+  ],
+  "wasbaar": [
+   {"zn": "auto", "lidw": "de", "mv": "auto's", "bn": ["vuil"]},
+   {"zn": "fiets", "lidw": "de", "mv": "fietsen", "bn": ["vuil"]},
+   {"zn": "raam", "lidw": "het", "mv": "ramen", "bn": ["groot"]}
+  ],
+  "tekenbaar": [
+   {"zn": "huis", "lidw": "het", "mv": "huizen", "bn": ["groot"]},
+   {"zn": "boom", "lidw": "de", "mv": "bomen", "bn": ["hoog"]},
+   {"zn": "paard", "lidw": "het", "mv": "paarden", "bn": ["wit"]},
+   {"zn": "bloem", "lidw": "de", "mv": "bloemen", "bn": ["mooi"]}
+  ],
+  "bouwsel": [
+   {"zn": "hut", "lidw": "de", "mv": "hutten", "bn": ["stevig"]},
+   {"zn": "toren", "lidw": "de", "mv": "torens", "bn": ["hoog"]},
+   {"zn": "zandkasteel", "lidw": "het", "mv": "zandkastelen", "bn": ["groot"]}
+  ]
+ },
+ "werkwoorden": [
+  {"inf": "geven", "tt": ["geeft", "geven"], "vt": ["gaf", "gaven"], "vd": "gegeven", "hulp": "hebben", "ow": ["mens"], "lv": ["geschenk"], "mv": "aan", "mv_nodig": true},
+  {"inf": "sturen", "tt": ["stuurt", "sturen"], "vt": ["stuurde", "stuurden"], "vd": "gestuurd", "hulp": "hebben", "ow": ["mens"], "lv": ["post"], "mv": "aan"},
+  {"inf": "schenken", "tt": ["schenkt", "schenken"], "vt": ["schonk", "schonken"], "vd": "geschonken", "hulp": "hebben", "ow": ["mens"], "lv": ["geschenk"], "mv": "aan", "mv_nodig": true},
+  {"inf": "tonen", "tt": ["toont", "tonen"], "vt": ["toonde", "toonden"], "vd": "getoond", "hulp": "hebben", "ow": ["mens"], "lv": ["toonbaar"], "mv": "aan"},
+  {"inf": "vertellen", "tt": ["vertelt", "vertellen"], "vt": ["vertelde", "vertelden"], "vd": "verteld", "hulp": "hebben", "ow": ["mens"], "lv": ["verhaal"], "mv": "aan"},
+  {"inf": "brengen", "tt": ["brengt", "brengen"], "vt": ["bracht", "brachten"], "vd": "gebracht", "hulp": "hebben", "ow": ["mens"], "lv": ["eten", "post"], "mv": "aan"},
+  {"inf": "schrijven", "tt": ["schrijft", "schrijven"], "vt": ["schreef", "schreven"], "vd": "geschreven", "hulp": "hebben", "ow": ["mens"], "lv": ["schrijfbaar"], "mv": "aan"},
+  {"inf": "verkopen", "tt": ["verkoopt", "verkopen"], "vt": ["verkocht", "verkochten"], "vd": "verkocht", "hulp": "hebben", "ow": ["mens"], "lv": ["koopbaar"], "mv": "aan"},
+  {"inf": "kopen", "tt": ["koopt", "kopen"], "vt": ["kocht", "kochten"], "vd": "gekocht", "hulp": "hebben", "ow": ["mens"], "lv": ["koopbaar"], "mv": "voor"},
+  {"inf": "bakken", "tt": ["bakt", "bakken"], "vt": ["bakte", "bakten"], "vd": "gebakken", "hulp": "hebben", "ow": ["mens"], "lv": ["gebak"], "mv": "voor"},
+  {"inf": "lezen", "tt": ["leest", "lezen"], "vt": ["las", "lazen"], "vd": "gelezen", "hulp": "hebben", "ow": ["mens"], "lv": ["leesbaar"], "zonder_lv": true},
+  {"inf": "eten", "tt": ["eet", "eten"], "vt": ["at", "aten"], "vd": "gegeten", "hulp": "hebben", "ow": ["mens", "dier"], "lv": ["eten"], "zonder_lv": true},
+  {"inf": "zoeken", "tt": ["zoekt", "zoeken"], "vt": ["zocht", "zochten"], "vd": "gezocht", "hulp": "hebben", "ow": ["mens"], "lv": ["zoekbaar"]},
+  {"inf": "vinden", "tt": ["vindt", "vinden"], "vt": ["vond", "vonden"], "vd": "gevonden", "hulp": "hebben", "ow": ["mens"], "lv": ["zoekbaar"]},
+  {"inf": "wassen", "tt": ["wast", "wassen"], "vt": ["waste", "wasten"], "vd": "gewassen", "hulp": "hebben", "ow": ["mens"], "lv": ["wasbaar"]},
+  {"inf": "tekenen", "tt": ["tekent", "tekenen"], "vt": ["tekende", "tekenden"], "vd": "getekend", "hulp": "hebben", "ow": ["mens"], "lv": ["tekenbaar"], "zonder_lv": true},
+  {"inf": "bouwen", "tt": ["bouwt", "bouwen"], "vt": ["bouwde", "bouwden"], "vd": "gebouwd", "hulp": "hebben", "ow": ["mens"], "lv": ["bouwsel"]},
+  {"inf": "bezoeken", "tt": ["bezoekt", "bezoeken"], "vt": ["bezocht", "bezochten"], "vd": "bezocht", "hulp": "hebben", "ow": ["mens"], "lv": ["personen"]},
+  {"inf": "helpen", "tt": ["helpt", "helpen"], "vt": ["hielp", "hielpen"], "vd": "geholpen", "hulp": "hebben", "ow": ["mens"], "lv": ["personen"]},
+  {"inf": "slapen", "tt": ["slaapt", "slapen"], "vt": ["sliep", "sliepen"], "vd": "geslapen", "hulp": "hebben", "ow": ["mens", "dier", "hond"]},
+  {"inf": "lachen", "tt": ["lacht", "lachen"], "vt": ["lachte", "lachten"], "vd": "gelachen", "hulp": "hebben", "ow": ["mens"]},
+  {"inf": "fietsen", "tt": ["fietst", "fietsen"], "vt": ["fietste", "fietsten"], "vd": "gefietst", "hulp": "hebben", "ow": ["mens"]},
+  {"inf": "zwemmen", "tt": ["zwemt", "zwemmen"], "vt": ["zwom", "zwommen"], "vd": "gezwommen", "hulp": "hebben", "ow": ["mens", "hond"]},
+  {"inf": "blaffen", "tt": ["blaft", "blaffen"], "vt": ["blafte", "blaften"], "vd": "geblaft", "hulp": "hebben", "ow": ["hond"]},
+  {"inf": "spelen", "tt": ["speelt", "spelen"], "vt": ["speelde", "speelden"], "vd": "gespeeld", "hulp": "hebben", "ow": ["mens", "hond"]},
+  {"inf": "vertrekken", "tt": ["vertrekt", "vertrekken"], "vt": ["vertrok", "vertrokken"], "vd": "vertrokken", "hulp": "zijn", "ow": ["mens"]},
+  {"inf": "vallen", "tt": ["valt", "vallen"], "vt": ["viel", "vielen"], "vd": "gevallen", "hulp": "zijn", "ow": ["mens"]}
+ ],
+ "hulpwerkwoorden": {
+  "hebben": {"tt": ["heeft", "hebben"], "vt": ["had", "hadden"]},
+  "zijn": {"tt": ["is", "zijn"], "vt": ["was", "waren"]}
+ },
+ "koppelwerkwoorden": [
+  {"inf": "zijn", "tt": ["is", "zijn"], "vt": ["was", "waren"]},
+  {"inf": "worden", "tt": ["wordt", "worden"], "vt": ["werd", "werden"]},
+  {"inf": "blijven", "tt": ["blijft", "blijven"], "vt": ["bleef", "bleven"]}
+ ],
+ "naamwoordelijk": [
+  "moe/bn", "blij/bn", "ziek/bn", "boos/bn", "heel/bijw moe/bn", "erg/bijw blij/bn", "stil/bn", "rustig/bn"
+ ],
+ "bepalingen": [
+  {"tekst": "morgen/bijw", "tijd": "tt", "plek": "voor"},
+  {"tekst": "vandaag/bijw", "tijd": "tt", "plek": "voor"},
+  {"tekst": "straks/bijw", "tijd": "tt", "plek": "voor"},
+  {"tekst": "gisteren/bijw", "tijd": "vt", "plek": "voor"},
+  {"tekst": "vorige/bn week/zn", "tijd": "vt", "plek": "voor"},
+  {"tekst": "na/vz school/zn", "tijd": null, "plek": "beide"},
+  {"tekst": "op/vz zondag/zn", "tijd": null, "plek": "voor"},
+  {"tekst": "in/vz de/lidw tuin/zn", "tijd": null, "plek": "beide"},
+  {"tekst": "in/vz het/lidw park/zn", "tijd": null, "plek": "beide"},
+  {"tekst": "om/vz acht/telw uur/zn", "tijd": null, "plek": "voor"}
+ ]
+}
