@@ -620,6 +620,16 @@ class Opslag:
         else:
             self.zet_algemeen("ouder_wachtwoord", opgeslagen)
 
+    def ouder_pin(self):
+        """De ouderpin (4 cijfers, gehasht): opent het slot op Stoppen (kern/stopslot.py)."""
+        return self.algemeen("ouder_pin")
+
+    def zet_ouder_pin(self, opgeslagen):
+        if opgeslagen is None:
+            self._schrijf("DELETE FROM algemeen WHERE sleutel = 'ouder_pin'")
+        else:
+            self.zet_algemeen("ouder_pin", opgeslagen)
+
     def pincode(self, kind_id):
         r = self._een("SELECT pincode FROM kinderen WHERE id = ?", (kind_id,))
         return r[0] if r else None

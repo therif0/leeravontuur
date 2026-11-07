@@ -4,7 +4,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from leeravontuur.kern import wachtwoord
+from leeravontuur.kern import stopslot, wachtwoord
 from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepScherm, ToetsenOp
 from leeravontuur.terminal.schermen import ouder
@@ -98,17 +98,17 @@ class TestKinderenBeheren(OuderBasis):
 
     def test_leerjaar_wijzigen(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 6, 10), "4")  # Leerjaar staat op rij 4 + 2*1; "4" = 6de leerjaar
+        self.beheer(o, ("klik", 5, 10), "4")  # Leerjaar staat op rij 4 + 1 (9 items: 1 rij per item); "4" = 6de leerjaar
         self.assertEqual(o.kinderen()[0].leerjaar, "6")
 
     def test_timer_verbergen(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 10, 10))
+        self.beheer(o, ("klik", 7, 10))
         self.assertFalse(o.instellingen_van(o.kinderen()[0].id).timer_zichtbaar)
 
     def test_pincode_instellen_en_gebruiken(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 12, 10), *"1234", OK, *"1234", OK)
+        self.beheer(o, ("klik", 8, 10), *"1234", OK, *"1234", OK)
         self.assertTrue(o.pincode(o.kinderen()[0].id))
         scherm, app = self.speel([OK, OK, *"9999", OK, *"1234", OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Typ je pincode"))
@@ -117,14 +117,14 @@ class TestKinderenBeheren(OuderBasis):
 
     def test_wissen_vraagt_de_naam(self):
         o = self.met_wachtwoord(("Test", "5"), ("Ander", "4"))
-        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 2*7 = 18
-        self.speel([OK, "4", *WW, OK, "3", "1", ("klik", 18, 10), *"Fout", OK, OK, ("klik", 18, 10),
+        # Wie ben jij?: 1 Ander, 2 Test, 3 Nieuw kind, 4 Ouders; wissen staat op rij 4 + 8 = 12
+        self.speel([OK, "4", *WW, OK, "3", "1", ("klik", 12, 10), *"Fout", OK, OK, ("klik", 12, 10),
                     *"Ander", OK, OK, ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual([k.naam for k in o.kinderen()], ["Test"])
 
     def test_export_alles(self):
         o = self.met_wachtwoord(("Test", "5"))
-        self.beheer(o, ("klik", 16, 10), OK)
+        self.beheer(o, ("klik", 11, 10), OK)
         self.assertEqual(sorted(p.suffix for p in Path(self.docs.name).iterdir()), [".csv", ".json", ".txt"])
 
 
@@ -134,7 +134,7 @@ class TestWeergave(OuderBasis):
     Plaatswaarden 16."""
 
     def weergave(self, o, *klikken, start=(OK, "3"), voorrang=None):
-        toetsen = [*start, *WW, OK, "3", "1", ("klik", 8, 10), *[("klik", y, 10) for y in klikken],
+        toetsen = [*start, *WW, OK, "3", "1", ("klik", 6, 10), *[("klik", y, 10) for y in klikken],
                    ESC, ESC, ESC, ESC, ESC, ESC]
         return self.speel(toetsen, opslag=o, voorrang=voorrang)
 
@@ -254,3 +254,89 @@ class TestAntwoorden(OuderBasis):
         o = self.met_wachtwoord(("Test", "5"))
         scherm, _ = self.speel([OK, "3", *WW, OK, "2", "1", "h", OK, ESC, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Nog geen antwoorden."))
+
+
+class TestStoppenOpSlot(OuderBasis):
+    """Het slot op Stoppen (0.23.2): de ouderpin en "Stoppen op slot" per kind (kern/stopslot.py)."""
+
+    def test_geen_slot_zonder_ouderpin(self):
+        o = self.met_wachtwoord(("Test", "5", {"stoppen_slot": True}))
+        kind = o.kinderen()[0]
+        self.assertFalse(stopslot.heeft_slot(o, kind.id))  # anders zit iemand vast
+        self.assertIsNone(stopslot.vergrendeld_kind(o))
+        stopslot.zet_pin(o, "4321")
+        self.assertTrue(stopslot.heeft_slot(o, kind.id))
+        self.assertEqual(stopslot.vergrendeld_kind(o).id, kind.id)
+        self.assertTrue(stopslot.pin_ok(o, "4321"))
+        self.assertFalse(stopslot.pin_ok(o, "1234"))
+        self.assertFalse(stopslot.pin_ok(o, ""))
+
+    def test_het_laatst_gekozen_kind_met_slot(self):
+        o = self.met_wachtwoord(("Ander", "4", {"stoppen_slot": True}), ("Test", "5", {"stoppen_slot": True}),
+                                ("Vrij", "5"))
+        stopslot.zet_pin(o, "4321")
+        ander, test, vrij = o.kinderen()
+        o.zet_algemeen("laatste_kind", test.id)
+        self.assertEqual(stopslot.vergrendeld_kind(o).id, test.id)
+        o.zet_algemeen("laatste_kind", vrij.id)  # het laatste kind heeft geen slot: het eerste met een slot
+        self.assertEqual(stopslot.vergrendeld_kind(o).id, ander.id)
+        stopslot.zet_alle_sloten_af(o)
+        self.assertIsNone(stopslot.vergrendeld_kind(o))
+
+    def als_ouder(self, o, *toetsen):
+        """Starten met --ouder (titelscherm, dan meteen het wachtwoord)."""
+        scherm = NepScherm(list(toetsen))
+        try:
+            App(scherm, o, kleuren=False).start(ouder=True)
+        except (ToetsenOp, SystemExit):
+            pass
+        return scherm
+
+    def test_aanzetten_vraagt_eerst_een_ouderpin(self):
+        o = self.met_wachtwoord(("Test", "5"))
+        # Kinderen › Test › "Stoppen op slot" (rij 4 + 5) → uitleg (Enter) → de pin twee keer
+        scherm, _ = self.beheer_slot(o, ("klik", 9, 10), OK, *"4321", OK, *"4321", OK)
+        kind = o.kinderen()[0]
+        self.assertTrue(stopslot.pin_ok(o, "4321"))
+        self.assertTrue(stopslot.heeft_slot(o, kind.id))
+        self.assertTrue(self.ergens(scherm, "kies je eerst een ouderpin"))
+        self.assertTrue(self.ergens(scherm, "opent Leeravontuur meteen bij Test"))
+        self.assertTrue(self.ergens(scherm, "ja: start meteen bij dit kind"))
+        # in de lijst van de kinderen staat "op slot" (met een slot start het bij het kind: de ouder via --ouder)
+        scherm = self.als_ouder(o, OK, *WW, OK, "3", ESC, ESC, ESC)
+        self.assertTrue(self.ergens(scherm, "5de leerjaar · op slot"))
+
+    def test_zonder_pin_verandert_er_niets(self):
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, _ = self.beheer_slot(o, ("klik", 9, 10), OK, ESC)
+        self.assertIsNone(o.ouder_pin())
+        self.assertFalse(o.instellingen_van(o.kinderen()[0].id).stoppen_slot)
+        self.assertTrue(self.ergens(scherm, "Er is niets veranderd: er is geen ouderpin."))
+
+    def test_uitzetten_en_pin_weghalen(self):
+        o = self.met_wachtwoord(("Test", "5"), ("Ander", "4"))
+        stopslot.zet_pin(o, "4321")
+        for k in o.kinderen():
+            stopslot.zet_slot(o, k.id, True)
+        ander, test = o.kinderen()
+        # Kinderen › Ander › Stoppen op slot: uit
+        self.als_ouder(o, OK, *WW, OK, "3", "1", ("klik", 9, 10), ESC, ESC, ESC, ESC)
+        self.assertFalse(stopslot.heeft_slot(o, ander.id))
+        self.assertTrue(stopslot.heeft_slot(o, test.id))
+        # Wachtwoord en ouderpin › Ouderpin weghalen: ook elk slot af
+        scherm = self.als_ouder(o, OK, *WW, OK, "5", "3", OK, ESC, ESC, ESC)
+        self.assertIsNone(o.ouder_pin())
+        self.assertFalse(o.instellingen_van(test.id).stoppen_slot)
+        self.assertTrue(self.ergens(scherm, "Geen enkel kind staat nog op slot"))
+
+    def test_ouderpin_kiezen_en_wijzigen(self):
+        o = self.met_wachtwoord(("Test", "5"))
+        scherm, _ = self.speel([OK, "3", *WW, OK, "5", "2", *"12", OK, *"1111", OK, *"2222", OK,
+                                *"1111", OK, *"1111", OK, OK, ESC, ESC, ESC, ESC], opslag=o)
+        self.assertTrue(self.ergens(scherm, "precies 4 cijfers"))
+        self.assertTrue(self.ergens(scherm, "niet gelijk"))
+        self.assertTrue(stopslot.pin_ok(o, "1111"))
+
+    def beheer_slot(self, o, *toetsen):
+        """Ouderdeel → Kinderen → het eerste kind, dan de gegeven toetsen."""
+        return self.speel([OK, "3", *WW, OK, "3", "1", *toetsen, ESC, ESC, ESC, ESC, ESC], opslag=o)

@@ -23,7 +23,7 @@ def maak_parser():
     p.add_argument("--geen-muis", action="store_true", help="muis uitzetten (tekst selecteren werkt dan gewoon)")
     p.add_argument("--zonder-klokvenster", action="store_true",
                    help="de wijzerklok in de terminal tekenen, niet in een eigen venster")
-    p.add_argument("--ouder", action="store_true", help="meteen naar het ouderdeel (rapporten, kinderen)")
+    p.add_argument("--ouder", action="store_true", help="meteen naar het ouderdeel (rapporten, kinderen, Stoppen op slot openen)")
     p.add_argument("--wachtwoord-vergeten", action="store_true",
                    help="het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard)")
     p.add_argument("--snelkoppeling", action="store_true", help="menu-snelkoppeling maken (Linux)")

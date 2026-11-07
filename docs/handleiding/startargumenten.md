@@ -25,7 +25,7 @@ python3 leeravontuur.py --help
 | `--ascii` | alleen eenvoudige tekens (voor oude terminals) |
 | `--geen-muis` | muis uitzetten (tekst selecteren werkt dan gewoon) |
 | `--zonder-klokvenster` | de wijzerklok in de terminal tekenen, niet in een eigen venster |
-| `--ouder` | meteen naar het ouderdeel (rapporten, kinderen) |
+| `--ouder` | meteen naar het ouderdeel (rapporten, kinderen, Stoppen op slot openen) |
 | `--wachtwoord-vergeten` | het ouderwachtwoord wissen (de gegevens van de kinderen blijven bewaard) |
 | `--snelkoppeling` | menu-snelkoppeling maken (Linux) |
 | `--fouten` | de laatste fouten uit het foutenlogboek tonen |
@@ -61,7 +61,8 @@ Deze doen één ding in de terminal en starten het programma niet:
 | `--wachtwoord-vergeten` | Vraagt `JA` en wist dan het ouderwachtwoord (de gegevens blijven). |
 | `--snelkoppeling` | Linux: maakt "Leeravontuur" in het startmenu (bij Onderwijs/Education). |
 
-`--ouder` start wel het programma, maar gaat meteen naar het wachtwoord van het [ouderdeel](ouderdeel.md):
+`--ouder` start wel het programma, maar gaat meteen naar het wachtwoord van het [ouderdeel](ouderdeel.md). Zo
+opent de ouder ook Stoppen op slot (Ouders › Kinderen › kind › Stoppen op slot), ook als de ouderpin vergeten is:
 
 ![--ouder](beelden/start-ouder.svg)
 

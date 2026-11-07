@@ -121,6 +121,17 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Kinderen › kind › Weergave:** eenvoudige tekens, muis, typrichting, avatar, animaties en het
   klokvenster veranderen meteen, alleen voor dat kind.
 - [ ] **Opmerkingen:** wat via "Zeg het ons" geschreven werd, staat hier.
+- [ ] **Stoppen op slot** (nieuw, 0.23.2; doe dit op een kopie, `LEERAVONTUUR_DATA`):
+  - [ ] Kinderen › kind › **Stoppen op slot**: zonder ouderpin vraagt het eerst een ouderpin (4 cijfers, twee keer).
+    Daarna: "Bij de volgende start opent Leeravontuur meteen bij …". In de lijst van de kinderen staat "op slot".
+  - [ ] Herstart het programma: het opent meteen het hoofdmenu van dat kind (geen titelscherm, geen pincode).
+  - [ ] **Esc** (of Stoppen): "Stoppen staat op slot. Vraag een ouder of leerkracht." Esc = terug naar het
+    hoofdmenu; 3 keer een foute pin = terug; de juiste pin = het titelscherm.
+  - [ ] **Ctrl-C** in het hoofdmenu en in een oefening doet niets (ook op **Windows** nakijken: dat kon ik niet zelf
+    testen). Op macOS/Linux ook Ctrl-Z en Ctrl-\.
+  - [ ] `python3 leeravontuur.py --ouder` → Kinderen › kind › Stoppen op slot: "nee". De volgende start is weer
+    gewoon (het titelscherm).
+  - [ ] **Wachtwoord en ouderpin › Ouderpin weghalen**: geen enkel kind staat nog op slot.
 
 ## 7. Speciale standen
 - [ ] `python3 leeravontuur.py --kleurenblind`: juist en fout zijn nog altijd duidelijk (✔ ✘ en andere kleuren).
