@@ -218,4 +218,6 @@ dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.comman
   (ouderdeel → Opmerkingen).
 
 ## Plan
-Het volledige plan in 27 fasen staat in `docs/plan.md`.
+De richting en de volgorde staan op één pagina: `docs/koers.md` (het doel, de vaste datum 1 september 2027, de
+periodes en de regel voor nieuwe ideeën: een fout die het kind merkt = meteen, past in de periode = in de rij, al de
+rest = geparkeerd in `docs/todo.md`). De details en alle fasen staan in `docs/plan.md`.
