@@ -37,6 +37,7 @@ class Instellingen:
     winkel_straf: str = "pakje"  # bij 2x een foute som in de winkel: pakje / tijd / kosten / geen
     klokvenster: bool = True  # de wijzerklok in een eigen venster (tkinter), als dat kan
     plaatswaarden: bool = False  # bij cijferen: E T H … boven de kolommen (#18; het kind zet ze aan met p)
+    stoppen_slot: bool = False  # de ouder zette Stoppen op slot: start meteen bij dit kind (kern/stopslot.py)
 
     def gecontroleerd(self):
         """Zet ongeldige waarden terug op de standaard."""
@@ -56,7 +57,7 @@ class Instellingen:
             self.typrichting = std.typrichting
         if self.winkel_straf not in STRAFFEN:
             self.winkel_straf = std.winkel_straf
-        for veld in ("timer_zichtbaar", "avatar", "animaties", "klokvenster", "plaatswaarden"):
+        for veld in ("timer_zichtbaar", "avatar", "animaties", "klokvenster", "plaatswaarden", "stoppen_slot"):
             if not isinstance(getattr(self, veld), bool):
                 setattr(self, veld, getattr(std, veld))
         return self

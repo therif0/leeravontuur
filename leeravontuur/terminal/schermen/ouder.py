@@ -1,9 +1,10 @@
 """Het ouderdeel (achter een wachtwoord): rapporten, kalender, export, kinderen beheren."""
 
 import curses
+import textwrap
 from datetime import date
 
-from ...kern import feedback, foutlog, klok, leerjaren, rapporten, wachtwoord
+from ...kern import feedback, foutlog, klok, leerjaren, rapporten, stopslot, wachtwoord
 from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
 from .. import curriculum
@@ -88,6 +89,51 @@ class Ouderdeel:
         if self.nieuw_wachtwoord():
             self.melding("Wachtwoord", ["✔ Het nieuwe wachtwoord is bewaard."])
 
+    def wachtwoord_en_pin(self):
+        kr = KR + ["Wachtwoord en ouderpin"]
+        while True:
+            pin = bool(self.o.ouder_pin())
+            keuzes = [("Wachtwoord wijzigen", "voor het ouderdeel"),
+                      ("Ouderpin wijzigen" if pin else "Ouderpin kiezen", "4 cijfers: opent het slot op Stoppen")]
+            if pin:
+                keuzes.append(("Ouderpin weghalen", "zet ook elk slot op Stoppen af"))
+            k = self.s.menu(kr, "Wachtwoord en ouderpin", keuzes,
+                            info=["Met de ouderpin kan een kind stoppen als Stoppen op slot staat",
+                                  "(Kinderen › een kind › Stoppen op slot)."])
+            if k is None:
+                return
+            if k == 0:
+                self.wachtwoord_wijzigen()
+            elif k == 1:
+                if self.nieuwe_ouderpin(kr):
+                    self.melding("Ouderpin", ["✔ De nieuwe ouderpin is bewaard."])
+            else:
+                stopslot.zet_alle_sloten_af(self.o)
+                self.o.zet_ouder_pin(None)
+                self.app.herlaad_kind()
+                self.melding("Ouderpin", ["✔ De ouderpin is weggehaald. Geen enkel kind staat nog op slot."])
+
+    def nieuwe_ouderpin(self, kr):
+        """De ouderpin kiezen (twee keer typen). True als ze bewaard is."""
+        uitleg = ["Kies 4 cijfers die je kind niet kent."]
+        while True:
+            pin = self.s.invoer(kr + ["Ouderpin"], "Kies een ouderpin (4 cijfers):", verborgen=True, max_lengte=4,
+                                cijfers=True, uitleg=uitleg)
+            if pin is None:
+                return False
+            if len(pin) != 4:
+                uitleg = ["Een ouderpin heeft precies 4 cijfers."]
+                continue
+            nog = self.s.invoer(kr + ["Ouderpin"], "Typ de ouderpin nog eens:", verborgen=True, max_lengte=4,
+                                cijfers=True)
+            if nog is None:
+                return False
+            if nog != pin:
+                uitleg = ["De twee ouderpinnen waren niet gelijk. Probeer opnieuw."]
+                continue
+            stopslot.zet_pin(self.o, pin)
+            return True
+
     # ---- hulpjes -----------------------------------------------------------------
 
     def melding(self, titel, regels):
@@ -100,7 +146,9 @@ class Ouderdeel:
         if not kinderen:
             self.melding("Kinderen", ["Er zijn nog geen kinderen. Een kind maakt zijn account bij de start aan."])
             return None
-        k = self.s.menu(kr, vraag, [(k.naam, leerjaren.NAMEN[k.leerjaar]) for k in kinderen])
+        k = self.s.menu(kr, vraag, [(k.naam, leerjaren.NAMEN[k.leerjaar]
+                                     + (" · op slot" if stopslot.heeft_slot(self.o, k.id) else ""))
+                                    for k in kinderen])
         return None if k is None else kinderen[k]
 
     def lijst(self, kr, titel, items, sel=0, melding=""):
@@ -114,12 +162,14 @@ class Ouderdeel:
             s.nieuw(kr, knoppen)
             h, w = s.maat()
             s.put(2, 4, titel, "bold")
+            stap = 2 if 5 + 2 * len(items) <= h - 3 else 1  # veel items: dichter bij elkaar (alles in 80 × 24)
             for i, (label, waarde) in enumerate(items):
-                y = 4 + 2 * i
+                y = 4 + stap * i
                 s.put(y, 6, f" {label:<28} ", "cursor" if i == sel else "")
                 s.put(y, 37, waarde, "accent")
                 s.zones.voeg(y, 4, 1, w - 6, ("kies", i))
-            s.put(5 + 2 * len(items), 4, melding, "info")
+            for j, regel in enumerate(textwrap.wrap(melding, w - 8)[:3]):  # een lange melding past op 3 regels
+                s.put(5 + stap * len(items) + j, 4, regel, "info")
             k = s.toets()
             if isinstance(k, tuple):
                 if k[0] == "kies":
@@ -148,9 +198,9 @@ class Ouderdeel:
             k = self.s.menu(KR, "Ouderdeel", [
                 ("Rapporten", "per dag, week, maand · kalender · export"),
                 ("Antwoorden", "elke vraag en wat je kind antwoordde"),
-                ("Kinderen", "leerjaar, timer, pincode, naam, gegevens, wissen"),
+                ("Kinderen", "naam, leerjaar, timer, pincode, slot, wissen"),
                 ("Punten", "logboek bekijken, bonuspunten geven"),
-                ("Wachtwoord wijzigen", ""),
+                ("Wachtwoord en ouderpin", "ouderpin = Stoppen op slot openen"),
                 (f"Opmerkingen ({len(feedback.lees())})", "wat er via 'Zeg het ons' geschreven werd"),
                 ("Sluiten", "")],
                 info=["Het ouderdeel sluit vanzelf na 10 minuten zonder toets."] + self.fouten_info())
@@ -165,7 +215,7 @@ class Ouderdeel:
             elif k == 3:
                 self.punten()
             elif k == 4:
-                self.wachtwoord_wijzigen()
+                self.wachtwoord_en_pin()
             elif k == 5:
                 self.opmerkingen()
 
@@ -427,6 +477,8 @@ class Ouderdeel:
                      ("Weergave", "tekens, muis, avatar, klokvenster …"),
                      ("Timer zichtbaar voor het kind", "ja" if inst.timer_zichtbaar else "nee (alleen in rapport)"),
                      ("Pincode bij het starten", "ja" if heeft_pin else "nee"),
+                     ("Stoppen op slot", "ja: start meteen bij dit kind" if stopslot.heeft_slot(self.o, kind.id)
+                      else "nee"),
                      ("Winkel: 2x een foute som", STRAFFEN[inst.winkel_straf]),
                      ("Gegevens exporteren", "alle antwoorden (CSV + JSON)"),
                      ("Alles van dit kind wissen", "")]
@@ -459,13 +511,15 @@ class Ouderdeel:
             elif sel == 4:
                 melding = self.pincode(kr + [kind.naam], kind, heeft_pin)
             elif sel == 5:
+                melding = self.stoppen_op_slot(kr + [kind.naam], kind)
+            elif sel == 6:
                 straffen = list(STRAFFEN)
                 inst.winkel_straf = straffen[(straffen.index(inst.winkel_straf) + 1) % len(straffen)]
                 self.o.bewaar_instellingen(kind.id, inst)
                 melding = "Wat er gebeurt als je kind 2 keer een foute som maakt bij het kopen."
-            elif sel == 6:
-                melding = self.exporteer_alles(kind)
             elif sel == 7:
+                melding = self.exporteer_alles(kind)
+            elif sel == 8:
                 if self.wissen(kr + [kind.naam], kind):
                     return
             self.app.herlaad_kind()
@@ -525,6 +579,19 @@ class Ouderdeel:
             return "De twee pincodes waren niet gelijk. Er is niets veranderd."
         self.o.zet_pincode(kind.id, wachtwoord.maak(pin, PIN_ITERATIES))
         return f"{kind.naam} moet nu bij het starten de pincode typen."
+
+    def stoppen_op_slot(self, kr, kind):
+        """Aan of uit. Aanzetten zonder ouderpin vraagt eerst een ouderpin (zonder pin geldt geen slot)."""
+        if stopslot.heeft_slot(self.o, kind.id):
+            stopslot.zet_slot(self.o, kind.id, False)
+            return f"Stoppen staat niet meer op slot. {kind.naam} kan weer gewoon stoppen."
+        if not self.o.ouder_pin():
+            self.melding("Ouderpin", ["Om Stoppen op slot te zetten, kies je eerst een ouderpin (4 cijfers).",
+                                      "Daarmee kan je kind later stoppen."])
+            if not self.nieuwe_ouderpin(kr):
+                return "Er is niets veranderd: er is geen ouderpin."
+        stopslot.zet_slot(self.o, kind.id, True)
+        return f"Bij de volgende start opent Leeravontuur meteen bij {kind.naam}. Stoppen kan alleen met de ouderpin."
 
     def exporteer_alles(self, kind):
         try:
