@@ -447,6 +447,7 @@ def staart_fout(stap, gegeven, deler):
 class Delen(_Cijferen):
     id = "wiskunde.cijferen.delen"
     naam = "Staartdeling"
+    lang = True
     spiek_kop = "STAARTDELING"
     omschrijving = "stap voor stap: deel, maal, min, neer"
     denkfouten = {"staart_te_veel": "bij de staartdeling te veel keer geschat",

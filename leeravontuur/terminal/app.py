@@ -144,9 +144,9 @@ class App:
         except ValueError:
             return None
 
-    def sessie(self, modus, vaardigheid, leerjaar):
+    def sessie(self, modus, vaardigheid, leerjaar, punten=True):
         return Sessie(self.opslag, self.kind.id, modus, vaardigheid, leerjaar, na_antwoord=self.ververs_status,
-                      eigen_leerjaar=self.inst.leerjaar)
+                      eigen_leerjaar=self.inst.leerjaar, punten=punten)
 
     # ---- schermen ------------------------------------------------------------
 
@@ -226,8 +226,7 @@ class App:
                 te_herhalen = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
                 # in groepen, zoals in een spel (de vader, 0.23): kopjes vóór de vakken, "jij" en feedback
                 keuzes = [("▶ Verder", self.voorstel()[0], lambda: self.voorstel()[1]()),
-                          (f"Herhalen ({te_herhalen})", "wat je moeilijk vond" if te_herhalen else "vandaag niets",
-                           self.herhalen)]
+                          (f"Herhalen ({te_herhalen})", "herhaalvragen en gemengd oefenen", self.herhalen)]
                 koppen = {len(keuzes): "VAKKEN"}
                 keuzes += [(v.label, v.uitleg, lambda v=v: navigatie.vak(self, v, [HOOFD])) for v in CU.VAKKEN]
                 grijs = {len(keuzes) + i: f"{label} komt binnenkort." for i, (label, _) in enumerate(CU.BINNENKORT)}
@@ -339,7 +338,7 @@ class App:
         except (KeyError, IndexError, TypeError, ValueError, AttributeError, StopIteration):  # oude of vreemde gegevens
             vorige = None
         if vorige is None:
-            return (f"eerst je {n} herhaalvragen", self.herhalen) if n else self.kiezen()
+            return (f"eerst je {n} herhaalvragen", self.herhaalvragen) if n else self.kiezen()
         uitleg, actie = vorige
         if n and (self.laatste_oefening() or {}).get("af"):
             return uitleg, lambda: self.herhalen_of_verder(actie, n)
@@ -350,7 +349,7 @@ class App:
         if self.s.bevestig("Je vorige oefening is af. Goed zo!",
                            f"Je hebt {n} {'herhaalvraag' if n == 1 else 'herhaalvragen'} klaarstaan.",
                            ja="Eerst herhalen", nee="Verder"):
-            self.herhalen()
+            self.herhaalvragen()
         else:
             verder()
 
@@ -379,6 +378,9 @@ class App:
                 kr, d = self.kruimel_van(o.id)
                 return (f"{o.naam.lower()} · {vorm}",
                         lambda: Oefenaar(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
+        if vorige.get("onderwerp") == "gemengd":
+            from ..kern.reeks import GEMENGD_AANTAL
+            return f"gemengd oefenen · {GEMENGD_AANTAL} vragen", self.gemengd
         if vorige.get("onderwerp") == "eenheden":
             vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
             kr = self.kruimel_van(OMZETTEN.id)[0][:-1]
@@ -386,7 +388,26 @@ class App:
         return None
 
     def herhalen(self):
+        """Herhalen (0.24): de herhaalvragen, of Gemengd oefenen (zodat het kind niets vergeet)."""
         kr = [HOOFD, "Herhalen"]
+        while True:
+            n = len(herhaling.aan_de_beurt(self.opslag, self.kind.id))
+            k = self.s.menu(kr, "Wat wil je herhalen?", [
+                (f"Mijn herhaalvragen ({n})", "wat je moeilijk vond" if n else "vandaag niets"),
+                ("Gemengd oefenen", "door elkaar, zodat je niets vergeet")])
+            if k is None:
+                return
+            if k == 0:
+                self.herhaalvragen()
+            else:
+                self.gemengd()
+
+    def gemengd(self):
+        from .schermen.gemengd import TITEL, Gemengd
+        Gemengd(self, [HOOFD, "Herhalen", TITEL]).open()
+
+    def herhaalvragen(self):
+        kr = [HOOFD, "Herhalen", "Mijn herhaalvragen"]
         items = herhaling.aan_de_beurt(self.opslag, self.kind.id)[:10]
         if not items:
             self.s.lezer(kr, [("Vandaag is er niets te herhalen. Goed zo!", "goed"), ("", ""),

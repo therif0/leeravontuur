@@ -21,7 +21,7 @@ schooljaarwissel werken. Die datum verschuift niet; al de rest kan schuiven.
 ## De periodes
 | Periode | Voor | Wat |
 |---|---|---|
-| nu → Kerstmis 2026 | 🧒 | **0.23.2 het slot op Stoppen** → **Gemengd oefenen** (ook een status "fris houden" in het rapport) → wiskunde bevriezen: daarna alleen nog fouten die het kind merkt |
+| nu → Kerstmis 2026 | 🧒 | ✔ 0.23.2 het slot op Stoppen → ✔ 0.24.0 Gemengd oefenen (ook "fris houden" in het rapport) → **wiskunde bevriezen**: daarna alleen nog fouten die het kind merkt |
 | januari → Pasen 2027 | 🌍 | **Taal 1: werkwoordspelling** (stap B0–B6), met de woordenlijsten |
 | Pasen → juni 2027 | 🧒 | **Examens** (de ouder stelt samen, het kind maakt het zonder hulp), klaar vóór de examens van juni · **rekenpuzzels** ("lolly + lolly = ijsje …") |
 | juni → 1 juli 2027 | 🧒 | **Dagtaak / vakantiewerk**: elke dag een taak van 30 à 60 minuten met pauzes en een gekozen rustdag; gemengd met spelletjes (woordzoeker, foutenzoeker, rekenpuzzels) en **begrijpend lezen** (een tekst met meerkeuzevragen) |

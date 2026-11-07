@@ -894,12 +894,12 @@ onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met ve
 | ✔ 0.22.0 | – | **Logboek voor de ouder** (#24) | Ouders › Antwoorden (vraag, antwoord, details, H = herhaalbak); punten met de vraag |
 | ✔ 0.23.0 | – | **Nieuw hoofdmenu** | groepen met kopjes, Leerstof, Taal grijs, Winkel, Stoppen = titelscherm, Verder |
 | ✔ 0.23.1 | – | **Het appelvraagstuk** | wat overblijft na twee delen; "waar komt dit getal vandaan?" in het klad van een vraagstuk |
+| ✔ 0.23.2 | – | **Het slot op Stoppen** | ouderpin, per kind "Stoppen op slot" (ook vooraf), herstart bij dat kind, Ctrl-C genegeerd |
+| ✔ 0.24.0 | G | **Gemengd oefenen** | Herhalen › Gemengd oefenen: 20 vragen door elkaar (ook Maten), thema's door het kind of de ouder (vast/één keer), "fris houden" in het rapport; de gedeelde reeks (`kern/reeks.py`) voor de examens |
 
 ### Nog te doen (voorstel voor de volgorde; de vader beslist)
 | Status | # | Fase | Wat er daarna werkt |
 |---|---|---|---|
-| ▶ | – | **0.23.2 Het slot op Stoppen** | ouderpin, per kind "Stoppen op slot" (ook vooraf), herstart bij dat kind (plan in `todo.md`) |
-| ▶ | G | **Gemengd oefenen** (vóór Kerstmis) | korte reeksen uit alle of gekozen onderwerpen, meer gewicht voor wat lang niet geoefend werd ("fris houden"), Maten in het gedeelde oefenscherm; daarna wiskunde bevriezen |
 | · | 13 | **Taal 1: werkwoordspelling** (stap B, B0–B6; januari → Pasen) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager; Taal in het hoofdmenu |
 | · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
 | · | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |

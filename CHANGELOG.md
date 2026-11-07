@@ -2,6 +2,22 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.24.0 — Gemengd oefenen
+- **Herhalen › Gemengd oefenen:** 20 vragen door elkaar uit verschillende thema's, zodat je niet vergeet wat je al
+  kan. Herhalen is nu een klein menu: **Mijn herhaalvragen** (zoals vroeger) en **Gemengd oefenen**.
+  - Alleen wat je al eens oefende, komt erin. Wat je goed kende maar al 14 dagen niet meer deed ("fris houden"),
+    komt het vaakst; daarna wat je nog aan het leren bent.
+  - Boven elke vraag staat het thema en het onderwerp (bv. "Meten · Maten"). Ook Maten, vraagstukken en de
+    staartdeling doen mee (hoogstens 3 lange vragen per reeks, en nooit meer dan 2 na elkaar uit hetzelfde thema).
+  - Het resultaat toont ook de score **per thema** ("Per thema: Breuken en procenten 4/5 · Meten 3/4"). F en G
+    werken zoals bij een gewone reeks.
+  - Je kiest de thema's zelf (afvinken; je keuze wordt onthouden). ▶ Verder onthoudt Gemengd oefenen.
+- **De ouder kan de thema's kiezen** (Ouders › Kinderen › kind › Gemengd oefenen): het kind kiest, **vast** (altijd
+  deze thema's) of **één keer** (alleen de volgende reeks; daarna kiest het kind weer).
+- **Het rapport** toont bij "Status per vaardigheid" ook **fris houden**: beheerst, maar al 14 dagen niet geoefend.
+- Voor later (de examens): de hulp (tips, tweede kans, spiekbrief, uitleg, herhaalbak, punten) kan per reeks uit.
+  Dat is getest, maar het kind ziet het nog nergens.
+
 ## 0.23.2 — het slot op Stoppen
 - **Stoppen op slot** (Ouders › Kinderen › kind): de ouder kan per kind Stoppen op slot zetten, ook vooraf (bv.
   voor de examens). Dan:

@@ -18,7 +18,8 @@ from . import snelrekenen as SR
 DAGEN = ["ma", "di", "wo", "do", "vr", "za", "zo"]
 MAANDEN = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september",
            "oktober", "november", "december"]
-MODI = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}  # ook zo in de CSV (vast)
+MODI = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening",
+        "gemengd": "gemengd oefenen"}  # ook zo in de CSV (vast; alleen bijvoegen)
 MODI_RAPPORT = {**MODI, "snel60": "60 seconden", "snel20": "20 sommen"}
 SNEL = ("snel60", "snel20")
 LEZER = 72  # zoveel tekens toont de lezer per regel (80 breed); langer wordt afgebroken
@@ -275,7 +276,7 @@ def _status_regels(r, indeling=None):
         snel = bron.startswith("snelrekenen.")
         if snel and indeling is not None:
             label = f"{label}, snelrekenen"
-        rol = "goed" if st == herhaling.BEHEERST else "dim" if st == herhaling.NIET_GEZIEN else ""
+        rol = {herhaling.BEHEERST: "goed", herhaling.NIET_GEZIEN: "dim", herhaling.FRIS_HOUDEN: "accent"}.get(st, "")
         if not n:
             return [(f"{inspring}{label}: {st}", rol)]
         cijfers = f"{n} {'sommen' if snel else 'vragen'} · laatst {datum(laatst)} · laatste 20: {pct} % juist"
