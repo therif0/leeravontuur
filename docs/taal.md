@@ -8,7 +8,7 @@ bouwen in fasen (telkens melden en wachten op de go van de vader). De richting s
 |---|---|
 | School | **Katholiek onderwijs (ZILL)** |
 | Eerst nodig | **Zinsontleding en woordsoorten** (de fouten: van alles een beetje) |
-| Wat hij nu kent (5de) | zinsdelen **pv, ow, lv, mv**; woordsoorten **zn, lidw, bn, ww, telw, vz, bijw, vw** |
+| Wat hij nu kent (5de) | zinsdelen **pv, ow, lv, mv**; woordsoorten **zn, lidw, bn, ww, telw, vz, bijw, vw** (bijw: extra, niet in de minimumdoelen) |
 | Afkortingen en kleuren | de gangbare Vlaamse afkortingen, **één vaste kleur per label**, altijd met de afkorting erbij |
 | Aanduiden | **stap voor stap** (pv → ow → lv → mv); **Tab** wisselt naar **vrij kleuren** (Makkelijk, Normaal); Moeilijk = vrij kleuren |
 | Klad | **geen vrij klad**: de denkstappen (de proefjes) zitten in de oefening zelf |
@@ -22,16 +22,31 @@ bouwen in fasen (telkens melden en wachten op de go van de vader). De richting s
 **De nieuwe minimumdoelen Nederlands** voor het basisonderwijs gelden sinds 1 september 2025. Ze worden stap voor stap
 verplicht (eerst de lagere leerjaren) en moeten tegen 2031–2032 bereikt zijn. Voor Nederlands moet elke leerling ze
 halen, niet alleen de klas gemiddeld. Katholieke scholen werken ermee via het leerplan **ZILL**.
+Katholieke scholen volgen het nieuwe leerplan **Op.stap** (vervangt ZILL), voor Nederlands vanaf 2026-27.
+
+**Geen officiële doelen voor het 5de leerjaar.** Er zijn minimumdoelen voor het einde van het 4de (L4) en het einde
+van het 6de leerjaar (L6). **Normaal** (5de) ligt daartussen.
+
+De Steinerscholen vechten de nieuwe minimumdoelen aan bij het Grondwettelijk Hof (december 2025). Een aparte set
+voor het basisonderwijs is niet bevestigd.
 
 De doelen gaan over **lezen** (ook conclusies trekken uit wat niet letterlijk in de tekst staat), **schrijven** (met
 spelling en interpunctie), **spreken en luisteren**, **woordenschat** en **taalbeschouwing** (klanken, woordsoorten,
 zinsdelen, werkwoordtijden). Bij de werkwoordspelling: eerst de tegenwoordige tijd, daarna de verleden tijd van
 zwakke en sterke werkwoorden en het voltooid deelwoord.
 
-**Na te kijken.** De officiële teksten met de codes staan op `themis.vlaanderen.be`. Die site is niet bereikbaar vanuit
-de sessie van Claude. Staat ze open, dan komen de codes bij elke vaardigheid, zoals plan.md al voorziet ("elke
-vaardigheid verwijst naar de code van het minimumdoel"). De tabel hieronder volgt de doelen en de gangbare praktijk;
-de vader kijkt ze na met het schrift van zijn zoon.
+### De officiële doelen per domein (minimumdoelen Nederlands, Bijlage 6 bij het decreet basisonderwijs)
+| Domein | L4 (einde 4de leerjaar) | L6 (einde 6de leerjaar) |
+|---|---|---|
+| Zinsontleding | **1.4.10**: zin, onderwerp, persoonsvorm, zinsdeel, gezegde; mededelende, vragende en uitroepende zin | **1.4.8**: lijdend en meewerkend voorwerp, naamwoordelijk en werkwoordelijk gezegde, enkelvoudige en samengestelde zin, ontkennende zin, gebiedende wijs |
+| Woordsoorten | **1.4.9**: zn, bn, lidw, telw, vz, vw, ww; tegenwoordige en verleden tijd | **1.4.6**: voornaamwoord; toekomende tijd, voltooid deelwoord |
+| Werkwoordspelling | **1.2.6** (tegenwoordige tijd), **1.2.7** (zwakke en sterke ww in ovt/vtt) | **1.2.5** |
+| Spelling | **1.2.5** | **1.2.4** |
+| Woordopbouw | – | **1.4.7** |
+| Woordenschat | **1.4.1–1.4.6** | **1.4.1–1.4.4** |
+| Begrijpend lezen | **1.1.5–1.1.11** | **1.1.3–1.1.9** |
+
+De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, niet in de minimumdoelen**.
 
 ## De domeinen van Taal (het menu, 6 domeinen)
 | Domein | Wat het kind oefent | Wat hij bereikt | Denkstappen (geen vrij klad) |
@@ -46,8 +61,8 @@ de vader kijkt ze na met het schrift van zijn zoon.
 ### Per leerjaar (Makkelijk = 4de, Normaal = 5de, Moeilijk = 6de, Heel moeilijk = 1ste middelbaar)
 | Domein | Makkelijk | Normaal (hij nu) | Moeilijk | Heel moeilijk |
 |---|---|---|---|---|
-| Zinsontleding | pv, ow; korte zinnen | pv, ow, lv, mv; ook inversie ("Morgen gaat…") en vragen | + wwg, nwg, bwb; langere zinnen | + bijzinnen, "er", samengestelde zinnen |
-| Woordsoorten | zn, lidw, bn, ww | + telw, vz, bijw, vw | + voornaamwoorden | + soorten werkwoorden (hulp-, koppelww), soorten vnw |
+| Zinsontleding | pv, ow, in zinsdelen verdelen; korte zinnen | pv, ow, lv, mv; ook inversie ("Morgen gaat…") en vragen | + wwg, nwg, bwb (bwb: extra, niet in de minimumdoelen); langere zinnen | + bijzinnen, "er", samengestelde zinnen |
+| Woordsoorten | zn, lidw, bn, ww | + telw, vz, bijw (extra, niet in de minimumdoelen), vw | + voornaamwoorden | + soorten werkwoorden (hulp-, koppelww), soorten vnw |
 | Werkwoordspelling | tt: stam + t (ik, jij, hij) | + vt zwak ('t kofschip), vd | + sterke ww, bijvoeglijk vd, alle tijden | + gebiedende wijs, twijfelgevallen (*verhuisd/verhuist*) |
 | Spelling | meervoud, verkleinwoord, hoofdletters | open/gesloten lettergreep, ei/ij, au/ou, f/v, s/z | tussen-s/-(e)n, trema, koppelteken, apostrof | leenwoorden, samenstellingen |
 | Woordenschat | tegenstellingen, synoniemen | uitdrukkingen, betekenis uit de context | spreekwoorden, voor- en achtervoegsels | figuurlijk taalgebruik |
@@ -197,13 +212,13 @@ gewone tekst. Zo botst rood (pv) niet met "fout": juist en fout hebben altijd hu
 | **mv** meewerkend voorwerp | paars (magenta) | 129 | roodpaars (175) | label `mv` |
 | **wwg** werkwoordelijk gezegde (6de) | geel | 208 (oranje) | oranje (214) | label `wwg` |
 | **nwg** naamwoordelijk gezegde (6de) | geel | 226 | geel (227) | label `nwg` |
-| **bwb** bijwoordelijke bepaling (6de) | cyaan | 44 | hemelsblauw (117) | label `bwb` |
+| **bwb** bijwoordelijke bepaling (6de; extra, niet in de minimumdoelen) | cyaan | 44 | hemelsblauw (117) | label `bwb` |
 
 | Woordsoort | Kleur | Woordsoort | Kleur |
 |---|---|---|---|
 | **zn** zelfstandig naamwoord | blauw | **telw** telwoord | geel |
 | **ww** werkwoord | rood (zoals de pv: de pv is altijd een ww) | **vz** voorzetsel | cyaan |
-| **bn** bijvoeglijk naamwoord | groen | **bijw** bijwoord | oranje (8 kleuren: geel) |
+| **bn** bijvoeglijk naamwoord | groen | **bijw** bijwoord (extra, niet in de minimumdoelen) | oranje (8 kleuren: geel) |
 | **lidw** lidwoord | grijs | **vw** voegwoord | paars |
 
 - In de terminal met maar 8 kleuren delen een paar labels een kleur (wwg/nwg, telw/bijw). De afkorting maakt het
@@ -247,5 +262,8 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 
 ## Nog open (bij het verslag van T1.1)
 - [ ] De ZILL-termen en de afkortingen in zijn schrift nakijken (bv. *ow* of *OW*, *lv* of *LV*).
-- [ ] Laat de vader `themis.vlaanderen.be` toe in de sessie, dan komen de codes van de minimumdoelen erbij.
 - [ ] Hoe vaak eigen zinnen van de ouder in een reeks komen (bv. de helft).
+
+## Bronnen
+- [onderwijsdoelen.be](https://onderwijsdoelen.be): de minimumdoelen Nederlands (Bijlage 6 bij het decreet basisonderwijs)
+- [vlaanderen.be: Nieuwe minimumdoelen basisonderwijs](https://www.vlaanderen.be/onderwijsprofessionals/lesgeven-en-begeleiden/opleidingsinhouden/opleidingsinhouden-basisonderwijs/nieuwe-minimumdoelen-basisonderwijs)
