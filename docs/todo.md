@@ -1,4 +1,7 @@
-# Leeravontuur: to-do (stand 6/11, na 0.23.1)
+# Leeravontuur: to-do (stand 7/11, na 0.23.1)
+
+De richting en de volgorde staan in [koers.md](koers.md). Nieuwe ideeën: een fout die het kind merkt = meteen; past
+in de huidige periode = in de rij; al de rest = hier geparkeerd.
 
 ## Voor de vader
 - [ ] Tags + releases maken, tekst uit CHANGELOG: op GitHub is de laatste tag 0.20.2, dus nog 0.20.3 tot en met
@@ -11,14 +14,21 @@
 - [ ] 0.23.2: slot op Stoppen (het plan staat hieronder)
   - ouderpin 4 cijfers ("Wachtwoord en ouderpin"), per kind "Stoppen op slot" (ook vooraf), 🔒 in de lijst
   - slotscherm met pin; herstart meteen bij dat kind; Ctrl-C genegeerd; openen via `--ouder`
+- [ ] Gemengd oefenen: eerst een inventaris en een voorstel (wat het kind ziet, hoe er gekozen wordt, de status
+      "fris houden" in het rapport, Maten in het gedeelde oefenscherm); bouwen na akkoord. Daarna wiskunde bevriezen.
 
-## Daarna: wiskunde pauzeert (v2 met feedback)
+## Geparkeerd: vragen voor later
+- [ ] Dagtaak: ook in schoolweken, in een lichtere vorm (bv. 15 minuten), om de gewoonte te bouwen? Of alleen in de
+      vakanties?
+- [ ] Begrijpend lezen: wie schrijft de leesteksten? (Claude schrijft, de ouders kijken na; of teksten van school)
+
+## Geparkeerd: wiskunde v2 (met feedback, na de bevriezing)
 - [ ] Groep C wacht: #19 (QoL vermenigvuldigen), #20c (spiekbrieven, rest), #17 (staartdeling)
 - [ ] Geparkeerd (`docs/werkwijzen.md`): Ctrl-C, Enter op het resultaat, toets q, Maten volgens de vaste werkwijze,
       lange voetregels, de tip bij "Hoe laat kom je aan?"
-- [ ] Taal (stap B0–B6): Taal staat al grijs in het hoofdmenu
 - [ ] Handleidingproject (volledige test + handleiding kind, ouder, coach; schermafdrukken tonen nog 0.19)
-- [ ] Hoofdmenu: nog plaats voor 1 keuze (Frans); meer (Examens, Avontuur) = eerst samen een oplossing kiezen
+- [ ] Hoofdmenu: nog plaats voor 1 keuze; Gemengd, Examens, Dagtaak, Frans en Avontuur komen eraan = eerst samen een
+      oplossing kiezen (vóór Gemengd oefenen)
 
 ---
 

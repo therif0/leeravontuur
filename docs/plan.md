@@ -26,27 +26,30 @@ Nu (5de leerjaar) betekent dat: 4de lj · 5de lj · 6de lj · 1ste middelbaar. I
 
 Op het startscherm: **"Leeravontuur, een gratis leerprogramma van Solve It Now. Iedereen moet kunnen leren."**
 
-### Stand van zaken (versie 0.20.1, oktober 2026)
-Van één bestand naar ±16 000 regels Python in 22 versies (zie `CHANGELOG.md`), telkens getest. Wat er nu werkt:
+### Stand van zaken (versie 0.23.1, november 2026)
+Van één bestand naar ±24 600 regels Python in 36 versies (zie `CHANGELOG.md`), telkens getest. Wat er nu werkt:
 - **Wiskunde: 8 domeinen, 43 onderwerpen** (Getallen, Hoofdrekenen, Cijferen, Breuken en procenten, Meten,
   Tijd, geld en snelheid, Meetkunde, Vraagstukken), elk met een leerlijn per leerjaar (3de leerjaar tot 1ste middelbaar),
   denkfouten die het programma herkent, uitleg en een spiekbrief.
 - **De vaste werkwijze** in elke oefening: lees, klad (`Tab`, elke regel meteen nagekeken), antwoord; getrapte tips
-  met `?`, een tweede kans, en "Zo kan het:" in klad-regels.
+  met F1 en daarna de spiekbrief, een tweede kans, en "Zo kan het:" in klad-regels met het eigen klad ernaast. In
+  vraagstukken moet elk getal in het klad ergens vandaan komen ("waar komt 20 vandaan?").
 - **Interactieve modellen:** eenhedentabel, getallenlijn met zoom, cijferen in een rooster, staartdeling stap voor
   stap, breukbalk, honderdveld, cm²-rooster, schatkaart, en een **wijzerklok in een eigen venster**.
 - **Vraagstukken** met een verhaalmachine (20 rekenstructuren × 22 werelden), 4 stappen, foute paden als denkfouten,
   de **Speurneus** (zoek de fout in het klad van een ander kind) en **schatten en controleren**.
 - **Snelrekenen** (60 seconden, 20 sommen, records) in Hoofdrekenen.
 - **Herhalen:** fouten opnieuw, gelijkaardige vragen, een herhaalbak (1, 3, 7 dagen), "niet binnen 30 dagen",
-  en ▶ Verder.
+  en ▶ Verder (de vorige oefening, of eerst herhalen als ze af is).
+- **Hoofdmenu in groepen** (0.23): ▶ Verder, Herhalen · VAKKEN (Wiskunde, Taal grijs, Leerstof) · JIJ (Mijn avatar,
+  Winkel) · FEEDBACK · Stoppen = het titelscherm.
 - **Punten, pixel-avatar en winkel** (aankoop = rekenvraag, "ben je zeker?", mini-lesje, pakje onderweg, kast).
 - **Ouderdeel:** kinderen beheren (leerjaar, timer, pincode, weergave), rapporten per periode en per vak › domein ›
   onderwerp met kalender, denkfouten en status, export naar CSV, TXT en JSON, puntenlogboek, opmerkingen van het
-  kind ("Zeg het ons").
+  kind ("Zeg het ons"), en het logboek **Antwoorden** (elke vraag met het antwoord, H = in de herhaalbak).
 - **Toegankelijk:** schermkleuren (ook kleurenblind en hoog contrast), eenvoudige tekens (ASCII), muis overal,
   alles in 80 × 24.
-- **Stevig:** 371 automatische tests (CI op Windows, macOS en Linux), een aapjestest met duizenden willekeurige
+- **Stevig:** 443 automatische tests (CI op Windows, macOS en Linux), een aapjestest met duizenden willekeurige
   toetsen, reservekopieën van de databank en een vangnet dat een fout nooit aan het kind toont.
 - **Handleiding** (`docs/handleiding/`, met schermafdrukken; nog van de menu's van 0.19, zie "Wat er nu komt").
 - **Een plan voor coaches en leerkrachten** (`docs/leerkracht-coach.md`, geparkeerd).
@@ -55,17 +58,15 @@ Hoe we werken staat in `CLAUDE.md` ("Werkwijze met Claude"): de vader beslist ov
 veranderingen gaan in fasen met een stop na elke fase, en elke fout die hij vindt wordt een GitHub-issue met een
 eigen branch en pull request.
 
-### Wat er nu komt (voorstel; de vader beslist)
-1. **De issues uit de tests van de vader** (lopend). Taal wacht tot hij klaar is met testen.
-2. **Taal 1: werkwoordspelling** (fase 13), als stap B in fasen: B0 inventaris en beslissingen, B1 tekstantwoorden
-   nakijken, B2 werkwoord-regelmotor en een nagekeken woordenlijst, B3 de eerste onderwerpen (Taal staat dan in het
-   hoofdmenu), B4 't kofschip, B5 de werkwoordmachine en de foutenjager, B6 uitbrengen.
-3. De rest van **Taal** (spelling, zinsontleding, woordenschat en lezen, dictee), dan **Frans**.
-   Vóór Frans: beslissen hoe het hoofdmenu verder groeit (het zit dan vol, zie sectie L).
-4. **Examens** (fase 23), en de eerste stappen voor de **coach** (C1–C4 kunnen al eerder).
-5. **Leerjaar 2de middelbaar en de schooljaarwissel** (fase 26), klaar vóór september 2027.
-6. Het **handleidingproject**: een volledige test van alle functies en de handleiding voor kind, ouder en coach.
-7. **Avontuur** en **publicatie**.
+### Wat er nu komt
+De richting en de volgorde staan op één pagina: **[koers.md](koers.md)** (het doel, de vaste datum van 1 september
+2027, de periodes en de regel voor nieuwe ideeën). Kort:
+1. nu → Kerstmis: **0.23.2 het slot op Stoppen**, dan **Gemengd oefenen**, dan wiskunde bevriezen;
+2. januari → Pasen: **Taal 1** (werkwoordspelling);
+3. Pasen → juni: **Examens** (vóór de examens van juni) en **rekenpuzzels**;
+4. juni: **Dagtaak / vakantiewerk** (met spelletjes en begrijpend lezen);
+5. zomer: **schooljaarwissel + leerlijnen tot 2de middelbaar** (vóór 1 september 2027), wiskunde v2;
+6. later: de rest van Taal, dictee, Frans, coach, Avontuur, handleidingproject, publicatie.
 
 ---
 
@@ -800,6 +801,10 @@ Wat beslist is, staat hier op één plek; de uitwerking staat in de code, `CLAUD
 - **Coach en leerkracht:** eerst de coach, offline, de ouder blijft eigenaar van de gegevens
   (`docs/leerkracht-coach.md`); nog niet ingepland.
 - **Taal** begint pas als de vader klaar is met testen en de issues opgelost zijn.
+- **De koers (7/11/2026):** twee doelen even zwaar (de zoon en het product), om beurten per periode; gemengd oefenen
+  tegen het vergeten; examens vóór juni; het slot op Stoppen eerst; vakantiewerk (dagtaak met spelletjes en
+  begrijpend lezen) zodra de bouwstenen er zijn. De volgorde staat in [koers.md](koers.md), met de regel voor
+  nieuwe ideeën.
 
 ## Structuur (zoals in 0.20)
 ```
@@ -845,7 +850,7 @@ leeravontuur/
     vraagstukken/             werelden.json · zinnen.json
     avatar/                   onderdelen.json · winkel.json
 tests/                        unittest (stdlib), ook de aapjestest
-docs/                         plan.md · testlijst.md · leerkracht-coach.md · menu-inventaris.md ·
+docs/                         koers.md · plan.md · todo.md · testlijst.md · leerkracht-coach.md · menu-inventaris.md ·
                               handleiding/ · tools/ (handleiding.py, schermafdrukken.py, scenarios.py)
 .github/workflows/            tests op ubuntu/macos/windows × Python 3.10 en 3.14
 ```
@@ -884,19 +889,27 @@ onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met ve
 | ✔ 0.19 | 16d | **Eén vaste werkwijze** | elke oefening: lees, klad (`Tab`, elke regel nagekeken), antwoord; getrapte tips, tweede kans, "Zo kan het:"; slim × en : met splitsen |
 | ✔ 0.20 | A | **Nieuwe menu's** | het leerplan (`terminal/curriculum/`): Vak › Domein › Onderwerp met toetsen per onderwerp; snelrekenen in Hoofdrekenen; Opties verhuisd; rapport per vak › domein, snelrekenen apart; CSV met vak en domein |
 | ✔ 0.20.1 | – | **Numeriek klavier** (#11) | / * - + en Enter van het numeriek klavier op Windows en Linux |
+| ✔ 0.20.2–0.20.4 | – | **Issues uit de tests van de vader** | kleine verbeteringen, "Hoe moeilijk?" bij een hoger leerjaar, starten met een dubbelklik |
+| ✔ 0.21.0–0.21.7 | – | **Werkwijzen** | digitaal klokje, het klad blijft staan, Esc en de broodkruimel vragen eerst, spiekbrief vanuit de oefening, plaatswaarden boven het rooster, hulp met F1 |
+| ✔ 0.22.0 | – | **Logboek voor de ouder** (#24) | Ouders › Antwoorden (vraag, antwoord, details, H = herhaalbak); punten met de vraag |
+| ✔ 0.23.0 | – | **Nieuw hoofdmenu** | groepen met kopjes, Leerstof, Taal grijs, Winkel, Stoppen = titelscherm, Verder |
+| ✔ 0.23.1 | – | **Het appelvraagstuk** | wat overblijft na twee delen; "waar komt dit getal vandaan?" in het klad van een vraagstuk |
 
 ### Nog te doen (voorstel voor de volgorde; de vader beslist)
 | Status | # | Fase | Wat er daarna werkt |
 |---|---|---|---|
-| ▶ | – | **Issues uit de tests van de vader** | elke fout een issue, een branch en een PR ("Fixes #n") |
-| ▶ | 13 | **Taal 1: werkwoordspelling** (stap B, B0–B6) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager; Taal in het hoofdmenu |
+| ▶ | – | **0.23.2 Het slot op Stoppen** | ouderpin, per kind "Stoppen op slot" (ook vooraf), herstart bij dat kind (plan in `todo.md`) |
+| ▶ | G | **Gemengd oefenen** (vóór Kerstmis) | korte reeksen uit alle of gekozen onderwerpen, meer gewicht voor wat lang niet geoefend werd ("fris houden"), Maten in het gedeelde oefenscherm; daarna wiskunde bevriezen |
+| · | 13 | **Taal 1: werkwoordspelling** (stap B, B0–B6; januari → Pasen) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager; Taal in het hoofdmenu |
 | · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
 | · | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
 | · | 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |
 | · | 19 | **Dictee (afdrukken)** | afdrukbaar ouder- en kindblad, woordpakket van de week, overtypen + diagnose achteraf, flitsdictee |
 | · | 20 | **Frans 1** | woordenschat FR↔NL met lidwoordkleuren, accentinvoer en "bijna juist"; eigen thema's; basispakketten; *être*/*avoir* |
 | · | 21 | **Frans 2** | -er-werkwoorden en andere tijden per niveau, zinnen bouwen, vertalen, vraag-antwoord, uit het hoofd leren + luistermodus voor de ouder |
-| · | 23 | **Examens** | ouder stelt samen (ook als sjabloon), kind start zonder hulp, verse vragen, resultaten in het rapport |
+| · | 23 | **Examens** (Pasen → juni, vóór de examens) | bovenop Gemengd: ouder stelt samen (ook als sjabloon), kind start zonder hulp, verse vragen, resultaten in het rapport |
+| · | P | **Rekenpuzzels** (Pasen → juni) | "lolly + lolly = ijsje, ijsje − chocolade = snoep: hoeveel is …?" (stelsels met figuren, de eerste stap naar letterrekenen) |
+| · | V | **Dagtaak / vakantiewerk** (juni, voor de zomervakantie) | elke dag een taak van 30 à 60 minuten met pauzes en een gekozen rustdag, een kalender met ✔; gemengd + spelletjes (woordzoeker, foutenzoeker, rekenpuzzels) + begrijpend lezen (tekst met meerkeuzevragen) |
 | · | C | **Coach** (geparkeerd) | C1–C4 uit `docs/leerkracht-coach.md` (deelpakket, coachmodus, focusplan, klad terugzien); C5+ na fase 23 |
 | · | 26 | **Leerjaar 2de middelbaar + schooljaarwissel** | leerlijnen tot m2, letterrekenen, vergelijkingen, uitbreiding taal en Frans; de vraag bij de wissel op 1 september (klaar vóór september 2027) |
 | · | H | **Handleidingproject** | een volledige test van alle functies + de handleiding voor kind, ouder en coach; nieuwe schermafdrukken |
