@@ -16,7 +16,9 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
   - slotscherm met pin; herstart meteen bij dat kind; Ctrl-C genegeerd; openen via `--ouder`
 - [x] 0.24.0: Gemengd oefenen (Herhalen › Gemengd oefenen, 20 vragen, thema's door het kind of de ouder, "fris
       houden" in het rapport; de gedeelde reeks in `kern/reeks.py` voor de examens later)
-- [ ] Daarna: wiskunde bevriezen (alleen nog fouten die het kind merkt), dan Taal 1 (januari).
+- [x] Wiskunde bevroren (alleen nog fouten die het kind merkt).
+- [ ] **Taal**: het plan staat in [taal.md](taal.md) (de keuzes van de vader van 7/11). Eerst T1 Zinsontleding (T1.1 de
+      kern), pas na zijn go op het plan.
 
 ## Geparkeerd: vragen voor later
 - [ ] Dagtaak: ook in schoolweken, in een lichtere vorm (bv. 15 minuten), om de gewoonte te bouwen? Of alleen in de
