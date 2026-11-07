@@ -6,7 +6,8 @@ from . import punten as P
 
 
 class Sessie:
-    def __init__(self, opslag, kind_id, modus, vaardigheid, leerjaar, na_antwoord=None, eigen_leerjaar=None):
+    def __init__(self, opslag, kind_id, modus, vaardigheid, leerjaar, na_antwoord=None, eigen_leerjaar=None,
+                 punten=True):
         self.opslag = opslag
         self.kind_id = kind_id
         self.modus = modus
@@ -23,6 +24,7 @@ class Sessie:
         self.laatste_punten = 0   # punten voor het laatste antwoord (incl. bonus)
         self.op_rij = 0           # aantal juist na elkaar
         self.punten = 0           # totaal in deze sessie
+        self.met_punten = punten  # False: geen punten (later een examen, kern/reeks.Hulp)
 
     def vraag_getoond(self):
         """Roep dit één keer op wanneer een nieuwe vraag verschijnt: daar start de tijdmeting."""
@@ -47,10 +49,12 @@ class Sessie:
         self.aantal += 1
         self.juist += bool(juist)
         p, reden = P.voor_antwoord(juist, self.eigen_leerjaar, leerjaar, self.modus, al_juist, extra)
+        if not self.met_punten:
+            p = 0
         self.op_rij = self.op_rij + 1 if juist else 0
         if p:
             self.opslag.punten_bij(self.kind_id, p, reden, sleutel)
-        if juist and self.op_rij % P.OP_RIJ == 0:
+        if juist and self.met_punten and self.op_rij % P.OP_RIJ == 0:
             self.opslag.punten_bij(self.kind_id, P.BONUS_OP_RIJ, f"{self.op_rij} juist op rij")
             p += P.BONUS_OP_RIJ
         self.laatste_punten = p
@@ -59,6 +63,8 @@ class Sessie:
             self.na_antwoord()
 
     def bonus(self, punten, reden):
+        if not self.met_punten:
+            return
         self.opslag.punten_bij(self.kind_id, punten, reden)
         self.punten += punten
 

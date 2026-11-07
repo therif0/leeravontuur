@@ -8,6 +8,8 @@ from ...kern import avatar as A
 from ...kern import herhaling, leerjaren, selectie
 from ...kern import punten as P
 from .. import maatje
+from .. import voortgang as VG
+from ...kern.reeks import Hulp
 from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
 from ..scherm import BACKSPACE, ENTER, ESC, HULP
@@ -24,6 +26,7 @@ class Eenheden:
         self.kruimel = list(kruimel)  # tot en met het onderwerp (bv. Meten › Lengte (m))
         self.totaal = REEKS           # aantal vragen in de lopende reeks
         self.verdiend = 0             # punten in de laatste reeks
+        self.hulp = Hulp.ALLES        # in een gemengde reeks zet de Oefenaar ze (kern/reeks.py)
 
     # ---- keuzes --------------------------------------------------------
 
@@ -117,17 +120,7 @@ class Eenheden:
         return f"  ({round(ses.laatste_tijd_ms / 1000)} s)"
 
     def voortgang(self, y, nr, resultaten, soort):
-        s = self.s
-        totaal = self.totaal
-        s.put(y, 4, f"Vraag {nr + 1} van {totaal}", "bold")
-        for i in range(min(totaal, 10)):
-            if i < len(resultaten):
-                ch, rol = "●", "goed" if resultaten[i]["goed"] else "fout"
-            else:
-                ch, rol = ("◉", "accent") if i == nr else ("○", "dim")
-            s.put(y, 22 + 2 * i, ch, rol)
-        s.put(y, 46, f"Punten: {sum(r['goed'] for r in resultaten)}", "bold")
-        s.put(y + 1, 4, soort, "dim")
+        VG.teken(self.s, y, nr, self.totaal, resultaten, soort)
 
     # ---- een gewone vraag ----------------------------------------------
 
@@ -178,6 +171,9 @@ class Eenheden:
                     s.put(y + 4, x, "Nog hulp nodig? Druk nog eens F1: je spiekbrief.", "dim")
                 s.put(y + 6, x, "Kommagetal? Gebruik een komma: 0,25", "dim")
                 s.cursor(True, y, vx + 1 + len(buf))
+            elif not self.hulp.uitleg_na:  # zonder hulp (later een examen): niet zeggen of het juist was
+                s.cursor(False)
+                s.put(y + 3, x, "Je antwoord is bewaard.", "info")
             else:
                 s.cursor(False)
                 if goed:
@@ -226,11 +222,13 @@ class Eenheden:
                 goed = getal == v.antwoord
                 d = E.diagnose(v, getal)
                 ses.antwoord(v.sleutel, v.tekst, buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
-                             verwacht=f"{fmt(v.antwoord)} {v.naar}")
+                             verwacht=f"{fmt(v.antwoord)} {v.naar}", vaardigheid=E.OMZETTEN.id)
                 tijd = self.tijd_tekst(ses)
                 punten = f"  +{ses.laatste_punten} punten" if ses.laatste_punten else ""
                 gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
                 spring = goed and self.app.inst.animaties and self.app.inst.avatar
+                if not self.hulp.uitleg_na:
+                    gezicht, ballon, spring = "normaal", "", False
             else:
                 buf = s.bewerk(buf, k)
                 melding = ""

@@ -10,7 +10,7 @@ import textwrap
 from decimal import Decimal
 
 from ..kern import avatar as A
-from ..kern import herhaling, leerjaren, selectie
+from ..kern import herhaling, leerjaren, reeks, selectie
 from ..kern import punten as P
 from ..kern.getal import fmt
 from ..kern.klad import analyseer
@@ -18,6 +18,7 @@ from ..kern.modellen import Getallenlijn
 from ..kern.wiskunde.grootheden import klok_cijfers
 from . import digitaal as DG
 from . import maatje
+from . import voortgang as VG
 from . import modellen as M
 from . import balk as B
 from . import rooster as R
@@ -73,6 +74,8 @@ class Oefenaar:
         self.vrij_goed = self.vrij_aantal = 0
         self.laatste_d = None
         self.herkansing = False  # het laatste antwoord was pas juist na een tweede kans (telt als fout om te herhalen)
+        self.hulp = reeks.Hulp.ALLES  # welke hulp er is (een examen zet ze later uit: kern/reeks.py)
+        self.per_thema = ""  # Gemengd oefenen: "Per thema: …" in het resultaat
 
     # ---- niveau en start ------------------------------------------------------------
 
@@ -116,21 +119,22 @@ class Oefenaar:
     # ---- één vraag ------------------------------------------------------------------
 
     def voortgang(self, y, nr, resultaten, soort):
-        s = self.s
-        s.put(y, 4, f"Vraag {nr + 1} van {self.totaal}", "bold")
-        for i in range(min(self.totaal, 10)):
-            if i < len(resultaten):
-                ch, rol = "●", "goed" if resultaten[i]["goed"] else "fout"
-            else:
-                ch, rol = ("◉", "accent") if i == nr else ("○", "dim")
-            s.put(y, 22 + 2 * i, ch, rol)
-        s.put(y, 46, f"Punten: {sum(r['goed'] for r in resultaten)}", "bold")
-        s.put(y + 1, 4, soort, "dim")
+        VG.teken(self.s, y, nr, self.totaal, resultaten, soort)
 
     def stel_vraag(self, kr, o, v, soort, ses, nr=None, resultaten=None, vrij=False):
         """Eén vraag volgens de vaste werkwijze: lees, reken in het klad (Tab), antwoord. ? = de volgende tip,
         fout = één tweede kans. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc.
-        Zolang ze niet nagekeken is, vragen Esc en de broodkruimel eerst "Wil je stoppen?" (Scherm.bewaak, #33)."""
+        Zolang ze niet nagekeken is, vragen Esc en de broodkruimel eerst "Wil je stoppen?" (Scherm.bewaak, #33).
+        Een vraag van Maten (in een gemengde reeks) krijgt het scherm van de eenheden."""
+        if reeks.is_maten(o):
+            from .schermen.eenheden import Eenheden
+            scherm = Eenheden(self.app, self.kruimel)
+            scherm.totaal, scherm.hulp = self.totaal, self.hulp
+            self.laatste_d, self.herkansing = None, False
+            uit = scherm.stel_vraag(kr, v, soort, ses, nr, resultaten, vrij)
+            if uit is not None and not uit[1]:
+                self.laatste_d = o.diagnose(v, o.lees_vraag(v, uit[0]))
+            return uit
         self.open = True
         with self.s.bewaak(lambda: self.open, ses):
             return self._stel_vraag(kr, o, v, soort, ses, nr, resultaten, vrij)
@@ -152,10 +156,10 @@ class Oefenaar:
         focus = KLAD if verplicht else ANTWOORD
         tips, tip_nr, tiptekst = (o.tips(v) if not obj else []), 0, ""
         # na de laatste tip: de spiekbrief (#20); daarna begint het weer bij tip 1
-        spiek = bool(o.spiekbrief())
+        spiek = bool(o.spiekbrief()) and self.hulp.spiekbrief
         periode = max(1, len(tips) + (kb is not None)) + spiek
         laatste_hulp = None  # bij een invoer-object: nog eens ? op dezelfde plek = de spiekbrief
-        tweede = v.invoer not in GEEN_TWEEDE_KANS
+        tweede = v.invoer not in GEEN_TWEEDE_KANS and self.hulp.tweede_kans
         eerste_fout, kans_melding, klad_ok, analyse = None, "", False, None
         self.herkansing = False
         ses.vraag_getoond()
@@ -177,6 +181,8 @@ class Oefenaar:
                 knoppen = ([("Tab", "naar je antwoord" if focus == KLAD else "naar het klad", TAB)] if kb else []) + [
                     ("Enter", "regel nakijken" if focus == KLAD else "controleren", 10), ("F1", tip_knop, HULP),
                     ("Esc", "stoppen", ESC)]
+            if not self.hulp.tips:  # zonder hulp (een examen): geen F1
+                knoppen = [kn for kn in knoppen if kn[2] != HULP]
             s.nieuw(kr, knoppen)
             if vrij:
                 s.put(2, 4, f"Vrij oefenen: {self.vrij_goed + bool(goed)} van "
@@ -316,6 +322,8 @@ class Oefenaar:
                     uitleg = ([d[1]] if d else []) + in_klad + self.uitwerking(o, v)
                 # het klad blijft staan (#22): rechtsonder naast de uitleg, of eronder als rechts geen plaats is
                 n = min(3, len(kb.regels)) if kb and not eigen else 0
+                if not self.hulp.uitleg_na:  # zonder hulp (een examen): niet zeggen of het juist was
+                    kop, rol, uitleg, n = "Je antwoord is bewaard.", "info", [], 0
                 naast = n and not hoog and not (s.klokvenster is not None and s.klokvenster.toont())
                 kw = 38 if naast else min(38, 78 - fx)
                 kader = (s.maat()[0] - 4 - n, 78 - kw) if naast else None
@@ -358,6 +366,8 @@ class Oefenaar:
             if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
                 s.cursor(False)
                 return None
+            if k == HULP and not self.hulp.tips:  # zonder hulp: F1 doet niets (ook in een vraagstuk)
+                continue
             eigen_tip = obj is not None and getattr(obj, "eigen_tip", False)
             if k == HULP and (not eigen_tip or (spiek and getattr(obj, "tips_op", False))):  # ook in het klad
                 tip = tip_gebruikt = True
@@ -478,6 +488,8 @@ class Oefenaar:
             extra = self.tijd_tekst(ses) + (f"  +{ses.laatste_punten} punten" if ses.laatste_punten else "")
             gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
             spring = goed and self.app.inst.animaties and self.app.inst.avatar
+            if not self.hulp.uitleg_na:
+                gezicht, ballon, spring, extra = "normaal", "", False, ""
 
     @classmethod
     def volgende_tip(cls, o, v, tips, nr, kb, spiek=False):
@@ -550,6 +562,8 @@ class Oefenaar:
 
     def verwerk(self, o, v, goed, item=None):
         opslag, kind = self.app.opslag, self.app.kind
+        if not self.hulp.herhaalbak:
+            return
         if item is not None:
             if goed:
                 if herhaling.juist(opslag, item):
@@ -564,15 +578,16 @@ class Oefenaar:
         onderwerpen = {o.onderwerp_van_sleutel(a["sleutel"]) for a in recent} - {None}
         return selectie.gewichten(recent, o.onderwerp_van_sleutel, onderwerpen) if onderwerpen else None
 
-    def speel(self, kr, soort, modus, jaar, vragen, items=None, vaardigheid=None):
-        """vragen = [(onderwerp, vraag)]. Geeft (resultaten, gestopt?)."""
+    def speel(self, kr, soort, modus, jaar, vragen, items=None, vaardigheid=None, soorten=None):
+        """vragen = [(onderwerp, vraag)]; soorten = per vraag de regel onder de voortgang (anders soort).
+        Geeft (resultaten, gestopt?)."""
         resultaten = []
         self.totaal = len(vragen)
         self.verdiend = 0
-        with self.app.sessie(modus, vaardigheid or vragen[0][0].id, jaar) as ses:
+        with self.app.sessie(modus, vaardigheid or vragen[0][0].id, jaar, punten=self.hulp.punten) as ses:
             try:
                 for nr, (o, v) in enumerate(vragen):
-                    uit = self.stel_vraag(kr, o, v, soort, ses, nr, resultaten)
+                    uit = self.stel_vraag(kr, o, v, soorten[nr] if soorten else soort, ses, nr, resultaten)
                     if uit is None:
                         return resultaten, True
                     resultaten.append(dict(o=o, v=v, antw=uit[0], goed=uit[1], tijd=ses.laatste_tijd_ms,
@@ -580,8 +595,9 @@ class Oefenaar:
                     self.verwerk(o, v, uit[1] and not self.herkansing, items[nr] if items else None)
                     if uit[-1]:
                         return resultaten, True
-                if modus == "reeks" and len(vragen) == REEKS and all(r["goed"] for r in resultaten):
-                    ses.bonus(P.BONUS_PERFECT, "reeks van 10 zonder fout")
+                volledig = (modus, len(vragen)) in (("reeks", REEKS), ("gemengd", reeks.GEMENGD_AANTAL))
+                if volledig and self.hulp.punten and all(r["goed"] for r in resultaten):
+                    ses.bonus(P.BONUS_PERFECT, f"reeks van {len(vragen)} zonder fout")
             finally:
                 self.verdiend = ses.punten  # ook bij stoppen: de punten van wat al gedaan is
         return resultaten, False
@@ -639,6 +655,8 @@ class Oefenaar:
             bericht, rol = "Blijf oefenen, je kan het! Lees de uitleg hieronder rustig na.", "fout"
         n, j = self.app.vandaag()
         regels = [(f"Je score: {goed} / {totaal}", rol), (bericht, rol), (soort, "dim")]
+        if self.per_thema:  # Gemengd oefenen: wat zakt er weg?
+            regels.append((self.per_thema, "info"))
         if gestopt:  # een onderbroken reeks: het resultaat van wat al gedaan is
             regels.insert(0, (f"Je stopte na {totaal} van de {self.totaal} vragen.", "info"))
         if self.verdiend:
@@ -656,8 +674,9 @@ class Oefenaar:
                        ("Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen.", "dim"), ("", "")]
         for i, r in fouten:
             o, v = r["o"], r["v"]
-            regels.append((f"Vraag {i + 1}:  {vraagtekst(v)}", "bold"))
-            regels.append((f"   ✘ Jij schreef: {r['antw'].strip()}    Juist is: {v.verwacht}", "fout"))
+            regels.append((f"Vraag {i + 1}:  {v.tekst if reeks.is_maten(o) else vraagtekst(v)}", "bold"))
+            juist = getattr(v, "verwacht", None) or o.verwacht_tekst(v)
+            regels.append((f"   ✘ Jij schreef: {r['antw'].strip()}    Juist is: {juist}", "fout"))
             d = r.get("d") or o.diagnose(v, o.lees_vraag(v, r["antw"]))
             if d:
                 regels.append(("   " + d[1], "accent"))
@@ -706,6 +725,27 @@ class Oefenaar:
                                           jaar, vragen)
                 if res:  # ook gestopt: het resultaat van wat al gedaan is
                     self.na_reeks(kr, soort, jaar, res, gestopt)
+
+    def speel_plan(self, kr, plan, namen, labels=None):
+        """Een Reeksplan (kern/reeks.py) spelen: Gemengd oefenen (later ook een examen). namen = {thema: label},
+        labels = {vaardigheid: label in het menu} (anders de naam uit de kern).
+        Geeft (af?, nog een reeks?): af = tot het resultaat gekomen (niet gestopt)."""
+        self.hulp = plan.hulp
+        vragen = [(reeks.onderwerp_van(rv.vaardigheid), rv.vraag) for rv in plan.vragen]
+        labels = labels or {}
+        soorten = [f"{namen.get(rv.thema, rv.thema)} · {labels.get(rv.vaardigheid, o.naam)}"
+                   for rv, (o, _) in zip(plan.vragen, vragen)]
+        res, gestopt = self.speel(kr, plan.titel, plan.soort, plan.leerjaar, vragen, soorten=soorten,
+                                  vaardigheid=plan.soort)
+        if gestopt and not res:
+            return False, False
+        u = reeks.Uitslag.van([(rv, r["goed"], r["tijd"]) for rv, r in zip(plan.vragen, res)])
+        self.per_thema = "Per thema: " + " · ".join(f"{namen.get(t, t)} {g}/{n}" for t, (g, n) in u.per_thema.items())
+        try:
+            nog = self.na_reeks(kr, plan.titel, plan.leerjaar, res, gestopt)
+        finally:
+            self.per_thema = ""
+        return not gestopt, nog
 
     def herhalen(self, kr, items, onderwerp_van):
         """Herhaalbak-items (met nieuwe getallen), op het eigen leerjaar."""

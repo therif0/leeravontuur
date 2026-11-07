@@ -512,6 +512,64 @@ class Scherm:
                 return gekozen(sel, teken_van(k).lower())
 
     @deelscherm
+    def afvink(self, kruimel, vraag, items, aan, koppen=None, ok="starten", leeg="Kies minstens één."):
+        """Een afvinklijst. items = [(id, label, uitleg)], aan = de ids die aan staan, koppen = {index: "WISKUNDE"}.
+        Spatie, x of een klik = aan/uit, A = alles aan (of alles uit als alles al aan stond), Enter = ok.
+        Geeft de aangevinkte ids (in de volgorde van items), of None bij Esc. Leeg kan niet (dan de melding leeg)."""
+        koppen = koppen or {}
+        aan = {i for i, _, _ in items if i in set(aan)}
+        sel, melding = 0, ""
+        breed = max(len(label) for _, label, _ in items)
+        knoppen = [("Spatie", "aan/uit", ord(" ")), ("A", "alles", ord("a")), ("Enter", ok, 10),
+                   ("Esc", "terug", ESC)]
+        while True:
+            if self.te_klein():
+                continue
+            self.cursor(False)
+            self.nieuw(kruimel, knoppen)
+            h, w = self.win.getmaxyx()
+            self.put(3, 4, vraag, "bold")
+            y = 5
+            for i, (id_, label, uitleg) in enumerate(items):
+                if i in koppen:
+                    y += 1 if i else 0
+                    self.put(y, 4, koppen[i], "accent")
+                    y += 1
+                vak = "[x]" if id_ in aan else "[ ]"
+                tekst = f" {vak} {label.ljust(breed)} "
+                self.put(y, 6, tekst, "cursor" if i == sel else "")
+                if uitleg:
+                    self.put(y, 8 + len(tekst), uitleg[:max(0, w - 10 - len(tekst))], "dim")
+                self.zones.voeg(y, 4, 1, w - 6, ("vink", i))
+                y += 1
+            if melding:
+                self.put(min(y + 1, h - 3), 4, melding, "fout")
+            k = self.toets()
+            melding = ""
+            if isinstance(k, tuple):
+                if k[0] == "vink":
+                    sel = k[1]
+                    aan ^= {items[sel][0]}
+                elif k[0] == "scroll":
+                    sel = (sel + k[1]) % len(items)
+                continue
+            if k in (curses.KEY_UP, ord("k")):
+                sel = (sel - 1) % len(items)
+            elif k in (curses.KEY_DOWN, ord("j"), 9):
+                sel = (sel + 1) % len(items)
+            elif k in (ord(" "), ord("x"), ord("X")):
+                aan ^= {items[sel][0]}
+            elif k in (ord("a"), ord("A")):
+                alle = {i for i, _, _ in items}
+                aan = set() if aan == alle else alle
+            elif k in ENTER:
+                if aan:
+                    return [i for i, _, _ in items if i in aan]
+                melding = leeg
+            elif k in (ESC, ord("q")):
+                return None
+
+    @deelscherm
     def lezer(self, kruimel, regels, knoppen, toetsen, scroll_uitleg="scrollen", begin=None):
         """Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}.
         begin = de tekst van een regel (bv. een kopje) die bovenaan moet staan bij het openen."""

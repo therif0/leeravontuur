@@ -82,6 +82,57 @@ def gewicht(st):
     return {FRIS: GEWICHT_FRIS, herhaling.BEZIG: GEWICHT_BEZIG}.get(st, GEWICHT_BEHEERST)
 
 
+class _Maten:
+    """Maten (de eenheden omzetten) met dezelfde namen als een Onderwerp, zodat een gemengde reeks (herhaalbak,
+    fouten opnieuw, gelijkaardige vragen, het resultaat) er niets apart voor hoeft te doen. Het scherm blijft dat
+    van de eenheden (terminal/schermen/eenheden.py)."""
+    id = E.OMZETTEN.id
+    naam = "Maten"
+    lang = False
+
+    @staticmethod
+    def diagnose(v, gegeven):
+        return E.diagnose(v, gegeven) if gegeven is not None else None
+
+    @staticmethod
+    def uitleg(v):
+        return E.regel_uitleg(v)
+
+    @staticmethod
+    def lees_vraag(v, tekst):
+        from .getal import lees_getal
+        return lees_getal(tekst)
+
+    @staticmethod
+    def onderwerp(v):
+        return E.onderwerp(v)
+
+    @staticmethod
+    def herhaal_data(v):
+        return E.herhaal_data(v)
+
+    @staticmethod
+    def maak_herhaling(data, leerjaar, vermijd=()):
+        return E.maak_herhaling(data, leerjaar, vermijd)
+
+    @staticmethod
+    def verwacht_tekst(v):
+        from .getal import fmt
+        return f"{fmt(v.antwoord)} {v.naar}"
+
+
+MATEN = _Maten()
+
+
+def onderwerp_van(vaardigheid):
+    """Het Onderwerp van een vaardigheid (Maten: het object hierboven), of None."""
+    return MATEN if vaardigheid == E.OMZETTEN.id else ONDERWERPEN.get(vaardigheid)
+
+
+def is_maten(o):
+    return o is MATEN
+
+
 def is_lang(vaardigheid):
     o = ONDERWERPEN.get(vaardigheid)
     return bool(o and o.lang)

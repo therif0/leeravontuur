@@ -96,3 +96,15 @@ def indeling():
                 for i in o.opslag:
                     uit.setdefault(i, (v.label, d.label, GROEPEN.get(i, o.label)))
     return uit
+
+
+def gemengd_themas():
+    """De thema's van Gemengd oefenen (kern/reeks.py): elk domein met onderwerpen die een reeks hebben, per vak.
+    [(vak, domein, (bewaarde ids, ...))]. Een nieuw vak (Taal) komt er vanzelf bij."""
+    uit = []
+    for v in VAKKEN:
+        for d in v.domeinen:
+            ids = tuple(dict.fromkeys(i for o in d.onderwerpen if "reeks" in o.modi for i in o.opslag))
+            if ids:
+                uit.append((v, d, ids))
+    return uit

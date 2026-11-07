@@ -4,11 +4,12 @@ import curses
 import textwrap
 from datetime import date
 
-from ...kern import feedback, foutlog, klok, leerjaren, rapporten, stopslot, wachtwoord
+from ...kern import feedback, foutlog, klok, leerjaren, rapporten, reeks, stopslot, wachtwoord
 from ...kern.instellingen import STRAFFEN
 from ...kern.paden import documenten_map
 from .. import curriculum
 from ..scherm import ENTER, ESC, TerugNaar, Vergrendeld
+from .gemengd import namen_tekst
 
 HOOFD = "Leeravontuur"
 KR = [HOOFD, "Ouders"]
@@ -16,6 +17,18 @@ SLOT_SECONDEN = 600
 PIN_ITERATIES = 100_000  # een pincode van 4 cijfers is toch snel te raden; snel controleren is hier belangrijker
 VERGETEN = "Vergeten? Start dan met:  python3 leeravontuur.py --wachtwoord-vergeten"
 
+
+
+def gemengd_waarde(inst):
+    """Wat er bij Kinderen › kind › Gemengd oefenen staat: wie de thema's kiest."""
+    from .gemengd import themas
+    stand, gekozen = reeks.ouder_keuze(inst)
+    if stand == reeks.KIND:
+        return "het kind kiest"
+    namen = themas()[2]
+    gekozen = [t for t in gekozen if t in namen]
+    tekst = namen_tekst(namen, gekozen) if len(gekozen) <= 2 else f"{len(gekozen)} thema's"
+    return f"{reeks.STANDEN[stand]}: {tekst}"
 
 class Ouderdeel:
     def __init__(self, app):
@@ -479,6 +492,7 @@ class Ouderdeel:
                      ("Pincode bij het starten", "ja" if heeft_pin else "nee"),
                      ("Stoppen op slot", "ja: start meteen bij dit kind" if stopslot.heeft_slot(self.o, kind.id)
                       else "nee"),
+                     ("Gemengd oefenen", gemengd_waarde(inst)),
                      ("Winkel: 2x een foute som", STRAFFEN[inst.winkel_straf]),
                      ("Gegevens exporteren", "alle antwoorden (CSV + JSON)"),
                      ("Alles van dit kind wissen", "")]
@@ -513,16 +527,45 @@ class Ouderdeel:
             elif sel == 5:
                 melding = self.stoppen_op_slot(kr + [kind.naam], kind)
             elif sel == 6:
+                melding = self.gemengd_oefenen(kr + [kind.naam], kind)
+            elif sel == 7:
                 straffen = list(STRAFFEN)
                 inst.winkel_straf = straffen[(straffen.index(inst.winkel_straf) + 1) % len(straffen)]
                 self.o.bewaar_instellingen(kind.id, inst)
                 melding = "Wat er gebeurt als je kind 2 keer een foute som maakt bij het kopen."
-            elif sel == 7:
-                melding = self.exporteer_alles(kind)
             elif sel == 8:
+                melding = self.exporteer_alles(kind)
+            elif sel == 9:
                 if self.wissen(kr + [kind.naam], kind):
                     return
             self.app.herlaad_kind()
+
+    def gemengd_oefenen(self, kr, kind):
+        """Wie kiest de thema's van Gemengd oefenen: het kind, vast (de ouder), of één keer (de volgende reeks)."""
+        from .gemengd import themas
+        inst = self.o.instellingen_van(kind.id)
+        stand, gekozen = reeks.ouder_keuze(inst)
+        standen = list(reeks.STANDEN)
+        k = self.s.menu(kr + ["Gemengd oefenen"], f"Wie kiest de thema's van Gemengd oefenen voor {kind.naam}?", [
+            ("Het kind kiest", "standaard: het kind vinkt de thema's zelf aan"),
+            ("Vast", "altijd de thema's die jij kiest"),
+            ("Eén keer", "alleen de volgende reeks, daarna kiest het kind weer")], start=standen.index(stand))
+        if k is None:
+            return ""
+        if standen[k] == reeks.KIND:
+            inst.gemengd_ouder = {"stand": reeks.KIND, "themas": []}
+            self.o.bewaar_instellingen(kind.id, inst)
+            return f"{kind.naam} kiest de thema's zelf."
+        items, koppen, namen, _ = themas()
+        lijst = [(t, label, "") for t, label in items]
+        vink = self.s.afvink(kr + ["Gemengd oefenen"], f"Welke thema's oefent {kind.naam}?", lijst,
+                             gekozen or [t for t, _ in items], koppen, ok="kiezen", leeg="Kies minstens één thema.")
+        if vink is None:
+            return "Er is niets veranderd."
+        inst.gemengd_ouder = {"stand": standen[k], "themas": vink}
+        self.o.bewaar_instellingen(kind.id, inst)
+        wanneer = "Elke keer" if standen[k] == reeks.VAST else "De volgende keer"
+        return f"{wanneer} oefent {kind.naam}: {namen_tekst(namen, vink)}."
 
     def weergave(self, kr, kind):
         """Hoe het programma eruitziet voor dit kind (vroeger Opties bij het kind). Elke keuze wordt meteen bewaard

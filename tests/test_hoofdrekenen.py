@@ -183,7 +183,7 @@ class TestSchermen(Basis):
         vast = Vraag(H.TAFELS.id, "k", "7 × 3 =", Decimal(21), data={"a": 7, "b": 3, "delen": False,
                                                                      "veelvoud": False, "tafel": 7})
         with mock.patch.object(H.TAFELS, "maak_herhaling", return_value=vast):
-            scherm, _ = self.speel([OK, OK, hm("Herhalen"), *"21", OK, OK, OK, ESC], opslag=o)
+            scherm, _ = self.speel([OK, OK, hm("Herhalen"), "1", *"21", OK, OK, OK, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Je herhaalde 1 vraag: 1 juist."))
         self.assertEqual(o.herhaalbak(kind.id)[0]["bak"], 2)
         self.assertEqual(len(herhaling.aan_de_beurt(o, kind.id)), 0)
