@@ -65,6 +65,7 @@ class Onderwerp:
     omschrijving = ""
     denkfouten = {}
     klad = None  # de vaste werkwijze: None (niets te rekenen), "ja" (klad mag) of "verplicht" (klad moet)
+    lang = False  # een vraag duurt lang (vraagstuk, staartdeling): in een gemengde reeks er hoogstens een paar
 
     def __init__(self):
         self.vaardigheid = registreer(Vaardigheid(self.id, self.naam, self.omschrijving))

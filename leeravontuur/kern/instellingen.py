@@ -1,7 +1,7 @@
 """Instellingen van een kind (naam, leerjaar, kleuren, muis …). Ze worden bewaard via kern/opslag.py."""
 
 import json
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 
 from .leerjaren import LEERJAREN
 from .paden import data_map
@@ -38,6 +38,9 @@ class Instellingen:
     klokvenster: bool = True  # de wijzerklok in een eigen venster (tkinter), als dat kan
     plaatswaarden: bool = False  # bij cijferen: E T H … boven de kolommen (#18; het kind zet ze aan met p)
     stoppen_slot: bool = False  # de ouder zette Stoppen op slot: start meteen bij dit kind (kern/stopslot.py)
+    # Gemengd oefenen (kern/reeks.py): de thema's die het kind koos (None = alles), en wat de ouder koos
+    gemengd_themas: list | None = None
+    gemengd_ouder: dict = field(default_factory=lambda: {"stand": "kind", "themas": []})
 
     def gecontroleerd(self):
         """Zet ongeldige waarden terug op de standaard."""
@@ -57,6 +60,11 @@ class Instellingen:
             self.typrichting = std.typrichting
         if self.winkel_straf not in STRAFFEN:
             self.winkel_straf = std.winkel_straf
+        if self.gemengd_themas is not None and not (isinstance(self.gemengd_themas, list) and
+                                                     all(isinstance(t, str) for t in self.gemengd_themas)):
+            self.gemengd_themas = None
+        if not isinstance(self.gemengd_ouder, dict):
+            self.gemengd_ouder = Instellingen().gemengd_ouder
         for veld in ("timer_zichtbaar", "avatar", "animaties", "klokvenster", "plaatswaarden", "stoppen_slot"):
             if not isinstance(getattr(self, veld), bool):
                 setattr(self, veld, getattr(std, veld))

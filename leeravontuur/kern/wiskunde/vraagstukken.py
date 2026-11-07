@@ -1059,6 +1059,7 @@ SPIEKBRIEF = [
 
 class Vraagstukken(Onderwerp):
     id = "wiskunde.vraagstukken.oplossen"
+    lang = True
     naam = "Vraagstukken oplossen"
     spiek_kop = "EEN VRAAGSTUK IN 4 STAPPEN"
     omschrijving = "verhaaltjes lezen, plannen, rekenen in je klad en controleren"
@@ -1185,6 +1186,7 @@ def regel_tekst(model, st, op, ops, r):
 
 class Speurneus(Onderwerp):
     id = "wiskunde.vraagstukken.speurneus"
+    lang = True
     naam = "Speurneus: zoek de fout"
     spiek_kop = "IN HET KLAD"
     omschrijving = "een ander kind loste het op: zit er een fout in, en waarom?"
