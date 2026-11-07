@@ -98,6 +98,9 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
     na 3 keer juist is het beheerst
   - vragen die het kind de laatste 30 dagen al kreeg, komen niet opnieuw; wat vaak fout gaat, komt vaker
   - **▶ Verder** in het hoofdmenu: verder met de vorige oefening; was die af, dan stelt het eerst de herhaalvragen voor
+  - **Gemengd oefenen** (Herhalen › Gemengd oefenen): 20 vragen door elkaar uit de thema's die je kiest, met het
+    meeste gewicht voor wat lang niet geoefend werd ("fris houden"); het resultaat ook per thema. De ouder kan de
+    thema's vastleggen (altijd, of één keer)
 - **Punten en een avatar:**
   - punten voor elk juist antwoord (meer op een moeilijker niveau), bonussen voor 5 op rij, een reeks zonder fout
     en een onderwerp dat beheerst is; een vraag die al eens juist was, levert niets meer op

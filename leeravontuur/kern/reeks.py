@@ -12,6 +12,7 @@ wordt bewaard. Dezelfde keuze, hetzelfde plan, dezelfde speler.
 """
 
 import random
+from datetime import date
 from dataclasses import dataclass, field, replace
 
 from . import catalogus, herhaling, klok, selectie  # noqa: F401 (catalogus: alle onderwerpen geladen)
@@ -21,7 +22,7 @@ from .wiskunde import eenheden as E
 GEMENGD_AANTAL = 20  # de vader, 7/11
 MAX_LANG = 3  # hoogstens zoveel lange vragen (vraagstuk, staartdeling) in een reeks
 MAX_NA_ELKAAR = 2  # hoogstens zoveel vragen na elkaar uit hetzelfde thema
-FRIS_DAGEN = 14  # beheerst, maar zo lang niet meer geoefend: "fris houden"
+FRIS_DAGEN = herhaling.FRIS_DAGEN  # beheerst, maar zo lang niet meer geoefend: "fris houden"
 SNEL = ("snel60", "snel20")  # snelrekenen telt niet mee (dat staat apart)
 
 # gewicht per stand: wat wegzakt komt het vaakst
@@ -29,7 +30,7 @@ GEWICHT_FRIS = 4.0
 GEWICHT_BEZIG = 2.0
 GEWICHT_BEHEERST = 1.0
 
-FRIS = "fris houden"
+FRIS = herhaling.FRIS_HOUDEN
 
 
 @dataclass(frozen=True)
@@ -71,10 +72,10 @@ def stand(opslag, kind_id, vaardigheid, vandaag=None):
     rijen = opslag.recente_antwoorden(kind_id, vaardigheid, 200, SNEL)
     if not rijen:
         return None
-    st, _, laatst, _ = herhaling._beheersing(rijen)
-    dagen = ((vandaag or klok.nu().date()) - laatst).days if laatst else 0
+    st = herhaling.status(rijen)  # dezelfde regel als in het rapport (herhaling._beheersing)
+    dagen = ((vandaag or klok.nu().date()) - date.fromisoformat(rijen[0]["dag"])).days
     if st == herhaling.BEHEERST and dagen >= FRIS_DAGEN:
-        return FRIS, dagen
+        st = FRIS
     return st, dagen
 
 

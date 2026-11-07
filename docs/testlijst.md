@@ -102,6 +102,19 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Zet bij de ouder de timer uit (Ouders › Kinderen › Timer zichtbaar): nergens nog `[T]`, en Enter bij
   Hoofdrekenen › Gemengd start 20 sommen. Zet hem daarna terug.
 
+- [ ] **Herhalen** is een menu: "Mijn herhaalvragen (n)" doet wat Herhalen vroeger deed.
+- [ ] **Herhalen › Gemengd oefenen** (nieuw, 0.24.0; op een kopie, `LEERAVONTUUR_DATA`):
+  - [ ] De thema's staan in een afvinklijst; wat je nog nooit oefende, staat er met "nog niet geoefend". Spatie =
+    aan/uit, A = alles, Enter = starten. Alles uit + Enter: "Kies minstens één thema."
+  - [ ] "Vraag 1 van 20" met 20 bolletjes; boven elke vraag het thema en het onderwerp (bv. "Meten · Maten").
+    Maten, een vraagstuk of een staartdeling kunnen erbij zitten.
+  - [ ] Het resultaat: je score, "Per thema: …", F (fouten opnieuw) en G (gelijkaardig) werken.
+  - [ ] Daarna staat bij ▶ Verder "gemengd oefenen · 20 vragen". De volgende keer staan dezelfde thema's aangevinkt.
+  - [ ] Ouders › Kinderen › kind › **Gemengd oefenen** › Vast › kies Meten: het kind ziet "Vandaag oefen je: Meten.
+    Je ouder koos deze thema's." (geen afvinklijst). **Eén keer**: na één reeks tot het resultaat kiest het kind weer.
+- [ ] **Rapport** › Status per vaardigheid: iets dat beheerst is maar al 14 dagen niet geoefend werd, staat er als
+  "fris houden".
+
 ## 5. Avatar en winkel
 - [ ] **Mijn avatar → Winkel:** iets kopen stelt een rekenvraag ("hoeveel punten hou je over?").
 - [ ] Een fout antwoord geeft "Ben je zeker?" en een mini-lesje; het item komt later (een pakje).

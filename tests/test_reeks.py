@@ -56,6 +56,21 @@ class TestStand(Basis):
         self.assertIsNone(reeks.stand(self.o, self.kind.id, TAFELS))
 
 
+class TestFrisInHetRapport(Basis):
+    def test_status_per_vaardigheid(self):
+        from leeravontuur.kern import rapporten
+        self.geoefend(TAFELS, dagen_geleden=reeks.FRIS_DAGEN)
+        self.geoefend(PLUSMIN, dagen_geleden=reeks.FRIS_DAGEN - 1)
+        r = rapporten.maak_rapport(self.o, self.kind, rapporten.periodes()[0])
+        stand = {v.id: st for v, st, *_ in r.status}
+        self.assertEqual(stand[TAFELS], herhaling.FRIS_HOUDEN)
+        self.assertEqual(stand[PLUSMIN], herhaling.BEHEERST)
+        regels = rapporten.regels(r)
+        fris = [(t, rol) for t, rol in regels if "fris houden" in t]
+        self.assertEqual(len(fris), 1)
+        self.assertEqual(fris[0][1], "accent")
+
+
 class TestKiezen(Basis):
     THEMAS = {"wiskunde.hoofdrekenen": (PLUSMIN, TAFELS), "wiskunde.breuken": (BREUK_HERKENNEN,),
               "wiskunde.meten": (MATEN,), "wiskunde.vraagstukken": (VRAAGSTUK,), "wiskunde.cijferen": (STAART,)}

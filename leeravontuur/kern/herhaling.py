@@ -45,6 +45,8 @@ def aan_de_beurt(opslag, kind_id):
 # ---- beheersing -------------------------------------------------------------------
 
 NIET_GEZIEN, BEZIG, BEHEERST = "nog niet gezien", "bezig", "beheerst"
+FRIS_HOUDEN = "fris houden"  # beheerst, maar al FRIS_DAGEN niet meer geoefend: dat zakt weg (Gemengd oefenen, 0.24)
+FRIS_DAGEN = 14
 
 
 def status(antwoorden):
@@ -58,11 +60,15 @@ def status(antwoorden):
 
 
 def _beheersing(rijen):
-    """(status, aantal, laatst geoefend (date of None), juist-% van de laatste 20) uit de nieuwste antwoorden."""
+    """(status, aantal, laatst geoefend (date of None), juist-% van de laatste 20) uit de nieuwste antwoorden.
+    Beheerst maar al FRIS_DAGEN niet geoefend = "fris houden"."""
     laatst = date.fromisoformat(rijen[0]["dag"]) if rijen else None
     laatste20 = rijen[:20]
     pct = round(100 * sum(a["juist"] for a in laatste20) / len(laatste20)) if laatste20 else 0
-    return status(rijen), len(rijen), laatst, pct
+    st = status(rijen)
+    if st == BEHEERST and laatst and (klok.nu().date() - laatst).days >= FRIS_DAGEN:
+        st = FRIS_HOUDEN
+    return st, len(rijen), laatst, pct
 
 
 def overzicht(opslag, kind_id, vaardigheden, zonder_modi=()):

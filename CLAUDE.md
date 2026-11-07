@@ -144,6 +144,22 @@ Gouden regels:
   meteen naar `vergrendeld_kind` (geen titelscherm, geen "Wie ben jij?"), Esc/Stoppen in het hoofdmenu =
   `App.slotscherm` (Esc of 3× fout = terug), en `zonder_onderbreken` negeert Ctrl-C (ook Ctrl-\ en Ctrl-Z) zolang
   dat kind actief is. Openen: de pin, of `--ouder` › Kinderen › kind › Stoppen op slot.
+- **Een reeks uit verschillende onderwerpen** (0.24, `kern/reeks.py`; Gemengd oefenen nu, de examens later):
+  - thema's = de domeinen van het leerplan (`curriculum.gemengd_themas`, als data aan de kern gegeven; Taal komt er
+    vanzelf bij);
+  - `kies_onderwerpen` (alleen wat al geoefend werd; gewogen: "fris houden" > bezig > beheerst; hoogstens
+    `MAX_NA_ELKAAR` uit hetzelfde thema na elkaar en `MAX_LANG` lange vragen, `Onderwerp.lang`) → `maak_vragen` →
+    een `Reeksplan` (vragen + `Hulp`) → de terminal speelt het met `Oefenaar.speel_plan` → `Uitslag` (ook per thema);
+  - Maten doet mee als `reeks.MATEN` (dezelfde namen als een Onderwerp); `Oefenaar.stel_vraag` geeft die vraag aan
+    het scherm van de eenheden;
+  - `Hulp` = de schakelaars (tips, tweede kans, spiekbrief, uitleg na de vraag, herhaalbak, punten via
+    `Sessie(punten=False)`); `Hulp.EXAMEN` zet ze uit (getest in `tests/test_gemengd.py`). Een vraagstuk-object heeft
+    nog een eigen tweede kans: dat is werk voor de examens;
+  - wie de thema's kiest: `Instellingen.gemengd_themas` (het kind) en `gemengd_ouder` (`reeks.ouder_keuze`: kind,
+    vast, één keer; "één keer" vervalt met `reeks.na_reeks` als de reeks tot het resultaat kwam);
+  - **een examen bouwen** = de ouder kiest thema's/onderwerpen en het aantal, een `Reeksplan` met `Hulp.EXAMEN`,
+    dezelfde speler, en de `Uitslag` bewaren (dan pas een migratie). "Fris houden" (`herhaling.FRIS_HOUDEN`, na
+    `FRIS_DAGEN`) staat ook in het rapport.
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =
@@ -164,6 +180,7 @@ Gouden regels:
   Leerstof = de spiekbrieven) · JIJ (Mijn avatar, Winkel) · FEEDBACK (Zeg het ons) · Stoppen: 9 keuzes. Er is nog
   plaats voor één (Frans); vóór er meer bijkomt (Examens, Avontuur) eerst met de vader een oplossing kiezen.
   Verder: een reeks die tot het resultaat komt, is "af" (`App.oefening_af`); dan stelt Verder eerst herhalen voor.
+  Herhalen is een menu (0.24): Mijn herhaalvragen (`App.herhaalvragen`) en Gemengd oefenen (`schermen/gemengd.py`).
 - Spiekbrieven met dezelfde titel binnen een domein worden één keer getoond, dus dezelfde titel = dezelfde
   spiekbrief (test).
 - Instellingen: het kind kiest in Mijn avatar › **Schermkleuren** (L); de rest staat per kind bij de ouder

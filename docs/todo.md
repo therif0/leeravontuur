@@ -1,4 +1,4 @@
-# Leeravontuur: to-do (stand 7/11, 0.23.2)
+# Leeravontuur: to-do (stand 7/11, 0.24.0)
 
 De richting en de volgorde staan in [koers.md](koers.md). Nieuwe ideeën: een fout die het kind merkt = meteen; past
 in de huidige periode = in de rij; al de rest = hier geparkeerd.
@@ -6,7 +6,7 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
 ## Voor de vader
 - [ ] Tags + releases maken, tekst uit CHANGELOG: op GitHub is de laatste tag 0.20.2, dus nog 0.20.3 tot en met
       0.23.0 (en 0.23.1 na het samenvoegen).
-- [ ] 0.22.0, 0.23.0, 0.23.1 en 0.23.2 testen met `docs/testlijst.md` (op een kopie, `LEERAVONTUUR_DATA`).
+- [ ] 0.22.0, 0.23.0, 0.23.1, 0.23.2 en 0.24.0 testen met `docs/testlijst.md` (op een kopie, `LEERAVONTUUR_DATA`).
 - [ ] Issues #24 (logboek) en #18 (plaatswaarden) sluiten als ze goed zijn (gebouwd in 0.22.0 en 0.21.4).
 
 ## Volgende bouwstap (pas na akkoord)
@@ -14,8 +14,9 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
 - [x] 0.23.2: slot op Stoppen (het plan staat hieronder)
   - ouderpin 4 cijfers ("Wachtwoord en ouderpin"), per kind "Stoppen op slot" (ook vooraf), "op slot" in de lijst
   - slotscherm met pin; herstart meteen bij dat kind; Ctrl-C genegeerd; openen via `--ouder`
-- [ ] Gemengd oefenen: eerst een inventaris en een voorstel (wat het kind ziet, hoe er gekozen wordt, de status
-      "fris houden" in het rapport, Maten in het gedeelde oefenscherm); bouwen na akkoord. Daarna wiskunde bevriezen.
+- [x] 0.24.0: Gemengd oefenen (Herhalen › Gemengd oefenen, 20 vragen, thema's door het kind of de ouder, "fris
+      houden" in het rapport; de gedeelde reeks in `kern/reeks.py` voor de examens later)
+- [ ] Daarna: wiskunde bevriezen (alleen nog fouten die het kind merkt), dan Taal 1 (januari).
 
 ## Geparkeerd: vragen voor later
 - [ ] Dagtaak: ook in schoolweken, in een lichtere vorm (bv. 15 minuten), om de gewoonte te bouwen? Of alleen in de
@@ -27,8 +28,9 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
 - [ ] Geparkeerd (`docs/werkwijzen.md`): Ctrl-C, Enter op het resultaat, toets q, Maten volgens de vaste werkwijze,
       lange voetregels, de tip bij "Hoe laat kom je aan?"
 - [ ] Handleidingproject (volledige test + handleiding kind, ouder, coach; schermafdrukken tonen nog 0.19)
-- [ ] Hoofdmenu: nog plaats voor 1 keuze; Gemengd, Examens, Dagtaak, Frans en Avontuur komen eraan = eerst samen een
-      oplossing kiezen (vóór Gemengd oefenen)
+- [ ] Hoofdmenu: nog plaats voor 1 keuze (Gemengd oefenen staat onder Herhalen); Examens, Dagtaak, Frans en
+      Avontuur komen eraan = eerst samen een oplossing kiezen
+- [ ] Examens: een vraagstuk heeft nog een eigen tweede kans (volgt `Hulp.tweede_kans` niet)
 
 ---
 
