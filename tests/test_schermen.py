@@ -355,7 +355,7 @@ class TestMuis(Basis):
         self.assertTrue(menu[20].strip().startswith("9. Stoppen"))
         scherm, _ = self.speel([OK, OK, hm("Taal"), "2"])
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Taal"))
-        self.assertTrue(self.ergens(scherm, "Woordsoorten komt binnenkort."))  # nog niet gebouwd: grijs
+        self.assertTrue(self.ergens(scherm, "Werkwoordspelling komt binnenkort."))  # nog niet gebouwd: grijs
         scherm, app = self.speel([OK, OK, *[curses.KEY_DOWN] * 4, OK])  # Verder, Herhalen, Wiskunde, Taal, Leerstof
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Leerstof"))
         scherm, _ = self.speel([OK, OK, hm("Winkel")])

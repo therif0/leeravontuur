@@ -61,8 +61,8 @@ De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, ni
 | Domein | Wat het kind oefent | Wat hij bereikt | Denkstappen (geen vrij klad) |
 |---|---|---|---|
 | **1. Zinsontleding** | zinsdelen aanduiden in een zin | snel en zeker de pv, het onderwerp, lv, mv (later wwg, nwg, bwb) vinden; dat heeft hij ook nodig voor de werkwoordspelling | de proefjes: vraagproef, tijdproef, getalproef, "wie/wat + pv?" |
-| **2. Woordsoorten** | elk woord een woordsoort geven | de 8 woordsoorten van het 5de herkennen, ook in een lastige zin | "kan er *de/het* voor?" (zn), "kan je het vervoegen?" (ww) … |
-| **3. Werkwoordspelling** | d/t/dt, verleden tijd, voltooid deelwoord | foutloos de werkwoorden in een zin schrijven | het denkschema: tijd → pv → o → stam → regel ('t kofschip) |
+| **2. Werkwoordspelling** | d/t/dt, verleden tijd, voltooid deelwoord | foutloos de werkwoorden in een zin schrijven | het denkschema: tijd → pv → o → stam → regel ('t kofschip) |
+| **3. Woordsoorten** | elk woord een woordsoort geven | de 8 woordsoorten van het 5de herkennen, ook in een lastige zin | "kan er *de/het* voor?" (zn), "kan je het vervoegen?" (ww) … |
 | **4. Spelling** | meervoud, verkleinwoord, ei/ij, au/ou, lettergrepen, tussen-s, trema, apostrof, hoofdletters, leestekens | woorden juist schrijven, en weten waarom | de regel kiezen: open of gesloten lettergreep … |
 | **5. Woordenschat** | synoniemen, tegenstellingen, uitdrukkingen, spreekwoorden | meer woorden kennen en de betekenis uit de zin halen | de zin rond het woord lezen |
 | **6. Begrijpend lezen** | een korte tekst met meerkeuzevragen | feiten, de hoofdgedachte, verwijswoorden, conclusies | terugzoeken in de tekst (het programma toont waar) |
