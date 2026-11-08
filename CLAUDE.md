@@ -160,6 +160,20 @@ Gouden regels:
   - **een examen bouwen** = de ouder kiest thema's/onderwerpen en het aantal, een `Reeksplan` met `Hulp.EXAMEN`,
     dezelfde speler, en de `Uitslag` bewaren (dan pas een migratie). "Fris houden" (`herhaling.FRIS_HOUDEN`, na
     `FRIS_DAGEN`) staat ook in het rapport.
+- **Taal** (0.25, het plan in `docs/taal.md`; de vader: thuis het katholieke leerplan):
+  - `kern/taal/zinnen.py`: `Zin` (woorden met hun woordsoort + `Deel`en; volledig ontleed, de pv hoort bij het
+    gezegde) en de **haakjes** (`[o De juf] [pv geeft] [lv een boek].`, `lees_haakjes`/`Zin.haakjes`), met fouten in
+    gewone taal;
+  - `kern/taal/zinnenmachine.py` + `inhoud/taal/woorden.json`: een zinsbouw × de woordenlijst (werkwoordvormen
+    uitgeschreven, nooit geraden), de pv past bij het onderwerp en de tijd, `BREEDTE` past op het scherm;
+  - `kern/taal/zinsontleding.py`: de stappen per leerjaar (leerlijn `taal.zinsontleding`), nakijken (ook "er is er
+    geen"), de denkfouten (`zo_…`), de tips (de vraag van school, het proefje zonder het antwoord), de uitleg, vrij
+    kleuren, verdelen, de spiekbrief (`SPIEK_KOP` per stap) en het `Onderwerp` (invoer `"zinsdelen"`);
+  - `terminal/zinsdelen.py`: het invoer-object (stappen, Tab = vrij kleuren, Makkelijk eerst verdelen, een eigen
+    tweede kans die `Hulp.tweede_kans` volgt); de kleuren zijn de rollen `z_pv` … `z_bwb` in `terminal/thema.py`
+    (als een markeerstift: zwart op de stiftkleur, pv geel, o blauw, lv groen, mv roze, gezegde oranje, bwb paars; de
+    afkorting staat er altijd onder, nooit kleur alleen; de cursor is een streep onder de woorden);
+  - `terminal/curriculum/taal.py`: een domein zonder onderwerpen = nog niet gebouwd, grijs in het menu.
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =
@@ -176,9 +190,10 @@ Gouden regels:
   ook als kleine letter; een letter die niet geldt, doet niets. De voetregel toont alleen de toetsen van het
   gemarkeerde onderwerp en is klikbaar. Na een oefening of spiekbrief sta je terug op hetzelfde onderwerp.
 - Hoogstens **10 items per menu** (cijfertoetsen 1–9 en 0; test). Het hoofdmenu (0.23, de vader) staat in groepen
-  met kopjes (`Scherm.menu(koppen=, grijs=)`): ▶ Verder, Herhalen · VAKKEN (de vakken, grijs wat `CU.BINNENKORT` is,
-  Leerstof = de spiekbrieven) · JIJ (Mijn avatar, Winkel) · FEEDBACK (Zeg het ons) · Stoppen: 9 keuzes. Er is nog
-  plaats voor één (Frans); vóór er meer bijkomt (Examens, Avontuur) eerst met de vader een oplossing kiezen.
+  met kopjes (`Scherm.menu(koppen=, grijs=)`): ▶ Verder, Herhalen · VAKKEN (Wiskunde, Taal; grijs wat `CU.BINNENKORT`
+  is; Leerstof = de spiekbrieven, met eerst "Welk vak?" als meer vakken spiekbrieven hebben) · JIJ (Mijn avatar,
+  Winkel) · FEEDBACK (Zeg het ons) · Stoppen: 9 keuzes. Er is nog plaats voor één (Frans); vóór er meer bijkomt
+  (Examens, Avontuur) eerst met de vader een oplossing kiezen.
   Verder: een reeks die tot het resultaat komt, is "af" (`App.oefening_af`); dan stelt Verder eerst herhalen voor.
   Herhalen is een menu (0.24): Mijn herhaalvragen (`App.herhaalvragen`) en Gemengd oefenen (`schermen/gemengd.py`).
 - Spiekbrieven met dezelfde titel binnen een domein worden één keer getoond, dus dezelfde titel = dezelfde

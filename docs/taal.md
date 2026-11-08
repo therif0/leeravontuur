@@ -6,17 +6,26 @@ bouwen in fasen (telkens melden en wachten op de go van de vader). De richting s
 ## Wat de vader koos (7/11)
 | Vraag | Keuze |
 |---|---|
-| School | **Katholiek onderwijs (ZILL)** |
+| School | **Steinerschool**; thuis volgen we het **katholieke leerplan** (ZILL, vanaf 2026-27 Op.stap) om voor te blijven |
 | Eerst nodig | **Zinsontleding en woordsoorten** (de fouten: van alles een beetje) |
-| Wat hij nu kent (5de) | zinsdelen **pv, ow, lv, mv**; woordsoorten **zn, lidw, bn, ww, telw, vz, bijw, vw** (bijw: extra, niet in de minimumdoelen) |
+| Wat hij nu kent (5de) | zinsdelen **pv, o, lv, mv**; woordsoorten **zn, lidw, bn, ww, telw, vz, bijw, vw** (bijw: extra, niet in de minimumdoelen) |
 | Afkortingen en kleuren | de gangbare Vlaamse afkortingen, **één vaste kleur per label**, altijd met de afkorting erbij |
-| Aanduiden | **stap voor stap** (pv → ow → lv → mv); **Tab** wisselt naar **vrij kleuren** (Makkelijk, Normaal); Moeilijk = vrij kleuren |
+| Aanduiden | **stap voor stap** (pv → o → lv → mv); **Tab** wisselt naar **vrij kleuren** (Makkelijk, Normaal); Moeilijk = vrij kleuren |
 | Klad | **geen vrij klad**: de denkstappen (de proefjes) zitten in de oefening zelf |
 | Fout | **een tip met het proefje en een tweede kans**, daarna het juiste antwoord met de uitleg |
-| LV en MV vragen | "**Wie/wat + pv + ow?**" (zonder het woord gezegde) |
+| LV en MV vragen | "**Wie/wat + pv + o?**" (zonder het woord gezegde) |
 | Zinnen | **een zinnenmachine + een nagekeken lijst + eigen zinnen van de ouder** |
 | Menu | **alle domeinen**, wat nog niet gebouwd is in het grijs ("komt binnenkort") |
-| Daarna | **werkwoordspelling** (bouwt op pv en ow), dan spelling, dan woordenschat en lezen |
+| Daarna | **werkwoordspelling** (bouwt op pv en o), dan spelling, dan woordenschat en lezen |
+
+## Wat de vader koos (8/11, na de test met zijn zoon en een taaldossier van de leerkracht)
+| Vraag | Keuze |
+|---|---|
+| Afkorting onderwerp | **o** (zoals op school: "schrijf er O bij"), niet *ow* |
+| Kleuren | **de markeerstiften blijven** (pv geel, o blauw …). Op papier gebruikt de leerkracht andere kleuren (rood = o, groen = pv, blauw = bn); dat is bewust niet overgenomen |
+| Zinnen met 2 pv's | een hoofdzin + een bijzin (*Grootvader vertelt dat de kist onder de grond ligt.*): in T1.3b, eerst op Moeilijk |
+| Volgorde | **eerst de verleden tijd**: T3 Werkwoordspelling komt vóór T2 Woordsoorten (school is er nu mee bezig) |
+| Tekstoefening | later (T6): een kort verhaal zoals het taaldossier: o, pv en bn per zin aanduiden, dan elke pv in de verleden tijd |
 
 ## Wat Vlaanderen verwacht
 **De nieuwe minimumdoelen Nederlands** voor het basisonderwijs gelden sinds 1 september 2025. Ze worden stap voor stap
@@ -51,9 +60,9 @@ De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, ni
 ## De domeinen van Taal (het menu, 6 domeinen)
 | Domein | Wat het kind oefent | Wat hij bereikt | Denkstappen (geen vrij klad) |
 |---|---|---|---|
-| **1. Zinsontleding** | zinsdelen aanduiden in een zin | snel en zeker de pv, het ow, lv, mv (later wwg, nwg, bwb) vinden; dat heeft hij ook nodig voor de werkwoordspelling | de proefjes: vraagproef, tijdproef, getalproef, "wie/wat + pv?" |
+| **1. Zinsontleding** | zinsdelen aanduiden in een zin | snel en zeker de pv, het onderwerp, lv, mv (later wwg, nwg, bwb) vinden; dat heeft hij ook nodig voor de werkwoordspelling | de proefjes: vraagproef, tijdproef, getalproef, "wie/wat + pv?" |
 | **2. Woordsoorten** | elk woord een woordsoort geven | de 8 woordsoorten van het 5de herkennen, ook in een lastige zin | "kan er *de/het* voor?" (zn), "kan je het vervoegen?" (ww) … |
-| **3. Werkwoordspelling** | d/t/dt, verleden tijd, voltooid deelwoord | foutloos de werkwoorden in een zin schrijven | het denkschema: tijd → pv → ow → stam → regel ('t kofschip) |
+| **3. Werkwoordspelling** | d/t/dt, verleden tijd, voltooid deelwoord | foutloos de werkwoorden in een zin schrijven | het denkschema: tijd → pv → o → stam → regel ('t kofschip) |
 | **4. Spelling** | meervoud, verkleinwoord, ei/ij, au/ou, lettergrepen, tussen-s, trema, apostrof, hoofdletters, leestekens | woorden juist schrijven, en weten waarom | de regel kiezen: open of gesloten lettergreep … |
 | **5. Woordenschat** | synoniemen, tegenstellingen, uitdrukkingen, spreekwoorden | meer woorden kennen en de betekenis uit de zin halen | de zin rond het woord lezen |
 | **6. Begrijpend lezen** | een korte tekst met meerkeuzevragen | feiten, de hoofdgedachte, verwijswoorden, conclusies | terugzoeken in de tekst (het programma toont waar) |
@@ -61,7 +70,7 @@ De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, ni
 ### Per leerjaar (Makkelijk = 4de, Normaal = 5de, Moeilijk = 6de, Heel moeilijk = 1ste middelbaar)
 | Domein | Makkelijk | Normaal (hij nu) | Moeilijk | Heel moeilijk |
 |---|---|---|---|---|
-| Zinsontleding | pv, ow, in zinsdelen verdelen; korte zinnen | pv, ow, lv, mv; ook inversie ("Morgen gaat…") en vragen | + wwg, nwg, bwb (bwb: extra, niet in de minimumdoelen); langere zinnen | + bijzinnen, "er", samengestelde zinnen |
+| Zinsontleding | pv, o, in zinsdelen verdelen; korte zinnen | pv, o, lv, mv; ook inversie ("Morgen gaat…") en vragen | + wwg, nwg, bwb (bwb: extra, niet in de minimumdoelen); langere zinnen | + bijzinnen, "er", samengestelde zinnen |
 | Woordsoorten | zn, lidw, bn, ww | + telw, vz, bijw (extra, niet in de minimumdoelen), vw | + voornaamwoorden | + soorten werkwoorden (hulp-, koppelww), soorten vnw |
 | Werkwoordspelling | tt: stam + t (ik, jij, hij) | + vt zwak ('t kofschip), vd | + sterke ww, bijvoeglijk vd, alle tijden | + gebiedende wijs, twijfelgevallen (*verhuisd/verhuist*) |
 | Spelling | meervoud, verkleinwoord, hoofdletters | open/gesloten lettergreep, ei/ij, au/ou, f/v, s/z | tussen-s/-(e)n, trema, koppelteken, apostrof | leenwoorden, samenstellingen |
@@ -84,12 +93,12 @@ De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, ni
                ▔▔▔▔▔
                  ↑
 
-       pv …    ow …    lv …    mv …
+       pv …    o …    lv …    mv …
 
     ←→ kies een woord, Enter = dit is de pv.
  [←→] woord  [Shift+←→] groep  [Enter] kies  [F1] tip  [Tab] vrij  [Esc] stoppen
 ```
-- **De stappen** (zoals op school): 1 **pv** → 2 **ow** → 3 **lv** → 4 **mv**. Op Moeilijk komen wwg, nwg en bwb erbij.
+- **De stappen** (zoals op school): 1 **pv** → 2 **o** → 3 **lv** → 4 **mv**. Op Moeilijk komen wwg, nwg en bwb erbij.
 - **Een groep** (bv. *haar kleinzoon*) maak je met **Shift+←→** of door te slepen met de muis. Een klik op een woord
   kiest het ook.
 - **Zit het zinsdeel er niet in?** Dan vraagt de stap het: "Is er een meewerkend voorwerp? Duid het aan, of druk
@@ -100,8 +109,8 @@ De **bwb** (bijwoordelijke bepaling) en het **bijw** (bijwoord) zijn **extra, ni
 ```
        Morgen  geeft  oma  haar kleinzoon  een fiets .
                ▀▀▀▀▀  ▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀
-                pv     ow        mv           lv
- [←→] woord  [Shift+←→] groep  [P] pv [O] ow [L] lv [M] mv  [Spatie] wis  [Enter] nakijken
+                pv     o        mv           lv
+ [←→] woord  [Shift+←→] groep  [P] pv [O] o [L] lv [M] mv  [Spatie] wis  [Enter] nakijken
 ```
 In vrij kleuren duidt hij alles aan in de volgorde die hij wil (de letter = het label). Daarna kijkt **Enter** alles
 na. Per zinsdeel komt er ✔ of ✘ onder.
@@ -110,9 +119,9 @@ na. Per zinsdeel komt er ✔ of ✘ onder.
 | Zinsdeel | Tip 1 (de vraag) | Tip 2 (het proefje, voorgedaan op deze zin) |
 |---|---|---|
 | **pv** | "Maak er een vraag van: het woord dat vooraan komt, is de pv." | "*Geeft* oma morgen haar kleinzoon een fiets? → *geeft* komt vooraan." · of de **tijdproef**: "Zet de zin in een andere tijd: het woord dat verandert, is de pv." · of de **getalproef** |
-| **ow** | "Wie of wat + pv?" | "Wie *geeft*? → *oma*." · en de **getalproef**: "Maak het ow meervoud: de pv verandert mee (*oma's geven*)." |
-| **lv** | "Wie of wat + pv + ow?" | "Wat *geeft oma*? → *een fiets*." |
-| **mv** | "Aan of voor wie + pv + ow + lv?" | "Aan wie *geeft oma een fiets*? → *haar kleinzoon*." |
+| **o** | "Wie of wat + pv?" | "Wie *geeft*? → *oma*." · en de **getalproef**: "Maak het onderwerp meervoud: de pv verandert mee (*oma's geven*)." |
+| **lv** | "Wie of wat + pv + o?" | "Wat *geeft oma*? → *een fiets*." |
+| **mv** | "Aan of voor wie + pv + o + lv?" | "Aan wie *geeft oma een fiets*? → *haar kleinzoon*." |
 
 Tip 3 is de spiekbrief (Leerstof › Taal › Zinsontleding), zoals bij wiskunde.
 
@@ -127,15 +136,15 @@ juiste antwoord met de uitleg.
 | `zo_pv_ander_ww` | neemt het andere werkwoord (*gegeven* in *heeft … gegeven*) | "Er zijn twee werkwoorden. De pv is het werkwoord dat verandert als je de tijd verandert." |
 | `zo_groep_te_klein` | neemt maar een deel van de groep (*kleinzoon* zonder *haar*) | "Een zinsdeel kan meer woorden zijn: wat hoort er nog bij?" |
 | `zo_groep_te_groot` | neemt te veel woorden | "Er zitten woorden bij die niet bij dit zinsdeel horen." |
-| `zo_ow_lv` | wisselt ow en lv (vooral bij inversie) | "Wie doet het? Het ow past bij de pv: maak het meervoud en kijk of de pv mee verandert." |
+| `zo_o_lv` | wisselt o en lv (vooral bij inversie) | "Wie doet het? Het o past bij de pv: maak het meervoud en kijk of de pv mee verandert." |
 | `zo_lv_mv` | wisselt lv en mv | "Het mv krijgt iets: aan wie of voor wie?" |
-| `zo_vergeten` | zegt dat er geen lv/mv is terwijl er een is (of omgekeerd) | "Stel de vraag nog eens: wie/wat + pv + ow?" |
+| `zo_vergeten` | zegt dat er geen lv/mv is terwijl er een is (of omgekeerd) | "Stel de vraag nog eens: wie/wat + pv + o?" |
 
 De denkfouten komen in het rapport, de herhaalbak en het logboek, net als bij wiskunde.
 
 ### De zinnen
 1. **De zinnenmachine** (zoals de vraagstukken): een **zinsbouw** × woorden uit een **woordenlijst**.
-   - Zinsbouw voorbeelden: `ow pv lv`, `bwb pv ow lv` (inversie), `ow pv mv lv`, `pv ow lv?` (vraag), `ow pv lv vd`
+   - Zinsbouw voorbeelden: `o pv lv`, `bwb pv o lv` (inversie), `o pv mv lv`, `pv o lv?` (vraag), `o pv lv vd`
      (*heeft … gegeven*).
    - De woordenlijst geeft:
      - de zelfstandige naamwoorden met *de/het* en het meervoud;
@@ -145,12 +154,12 @@ De denkfouten komen in het rapport, de herhaalbak en het logboek, net als bij wi
      Daaruit volgen de zinsdelen én de woordsoorten vanzelf.
    - De werkwoordvormen staan uitgeschreven in de lijst en een test kijkt ze na (geen gok van een regelmotor). Dezelfde
      lijst dient straks voor de werkwoordspelling.
-   - De zin moet kloppen: de pv past bij het ow (enkelvoud/meervoud), en het lv/mv past bij het werkwoord (*geven* heeft
+   - De zin moet kloppen: de pv past bij het onderwerp (enkelvoud/meervoud), en het lv/mv past bij het werkwoord (*geven* heeft
      een lv en een mv, *slapen* geen lv).
-2. **Een nagekeken lijst** (`inhoud/taal/zinnen.json`) voor de lastige gevallen: inversie, een lang ow, "er",
+2. **Een nagekeken lijst** (`inhoud/taal/zinnen.json`) voor de lastige gevallen: inversie, een lang o, "er",
    vragen, twee werkwoorden. Claude schrijft ze, de vader kijkt ze één keer na. Het schrijven gebeurt zo:
    ```
-   [ow De juf] [pv geeft] [mv de kinderen] [lv een boek].
+   [o De juf] [pv geeft] [mv de kinderen] [lv een boek].
    ```
 3. **Eigen zinnen van de ouder** (Ouders › Taal › Eigen zinnen, bv. uit zijn werkboek): typen in dezelfde vorm met
    haakjes. Het programma toont de zin met de kleuren en zegt wat het niet begrijpt ("*geeft* staat niet in de
@@ -188,7 +197,7 @@ Een test maakt elke zinsbouw in elk leerjaar en kijkt na:
 
 ## T3 en verder (alleen de grote lijn; elk krijgt eerst een eigen voorstel)
 - **T3 Werkwoordspelling:**
-  - de werkwoordmachine, met het denkschema als stappen (tijd → **pv** → **ow** → stam → regel → controle). De
+  - de werkwoordmachine, met het denkschema als stappen (tijd → **pv** → **o** → stam → regel → controle). De
     zinsontleder van T1 doet de eerste stappen;
   - d/t/dt, verleden tijd ('t kofschip met de letter die oplicht), voltooid deelwoord, sterke werkwoorden
     (herhaalbak);
@@ -200,19 +209,21 @@ Een test maakt elke zinsbouw in elk leerjaar en kijkt na:
 
 ---
 
-## De kleuren (de vader: één kleur per label, de afkorting staat er altijd bij)
-Een zinsdeel krijgt **een balk onder de woorden in zijn kleur, met de afkorting eronder**. De woorden zelf blijven
-gewone tekst. Zo botst rood (pv) niet met "fout": juist en fout hebben altijd hun eigen ✔ en ✘.
+## De kleuren (de vader: één kleur per label, de afkorting staat er altijd bij; 8/11: de kleuren van de markeerstiften thuis)
+Een zinsdeel wordt **gemarkeerd zoals met een markeerstift**: zwarte tekst op een lichte achtergrond in zijn kleur,
+met de afkorting eronder. Zo kan het kind thuis op papier dezelfde stiften gebruiken. Juist en fout hebben altijd hun
+eigen ✔ en ✘. Waar het kind staat, staat een streep onder de woorden (niet de gele cursor, die zou op de pv lijken).
 
-| Label | Standaard (8 kleuren) | 256 kleuren | Kleurenblind (Okabe-Ito, beide thema's) | Hoog contrast, geen kleur |
-|---|---|---|---|---|
-| **pv** persoonsvorm | rood | 196 | vermiljoen (202) | vet + onderlijnd, label `pv` |
-| **ow** onderwerp | blauw | 27 | blauw (26) | label `ow` |
-| **lv** lijdend voorwerp | groen | 34 | blauwgroen (35) | label `lv` |
-| **mv** meewerkend voorwerp | paars (magenta) | 129 | roodpaars (175) | label `mv` |
-| **wwg** werkwoordelijk gezegde (6de) | geel | 208 (oranje) | oranje (214) | label `wwg` |
-| **nwg** naamwoordelijk gezegde (6de) | geel | 226 | geel (227) | label `nwg` |
-| **bwb** bijwoordelijke bepaling (6de; extra, niet in de minimumdoelen) | cyaan | 44 | hemelsblauw (117) | label `bwb` |
+| Label | Stift | 256 kleuren (achtergrond) | 8 kleuren | Kleurenblind (Okabe-Ito, beide thema's) | Hoog contrast, geen kleur |
+|---|---|---|---|---|---|
+| **pv** persoonsvorm | geel | 227 | geel | geel (227) | omgekeerd + onderlijnd, label `pv` |
+| **o** onderwerp | blauw | 117 | cyaan | hemelsblauw (117) | omgekeerd, label `o` |
+| **lv** lijdend voorwerp | groen | 120 | groen | blauwgroen (36) | omgekeerd, label `lv` |
+| **mv** meewerkend voorwerp | roze | 213 | magenta | roodpaars (175) | omgekeerd, label `mv` |
+| **wwg / nwg** gezegde (6de; nooit samen in één zin) | oranje | 215 | rood | oranje (214) | omgekeerd, label `wwg`/`nwg` |
+| **bwb** bijwoordelijke bepaling (6de; extra, niet in de minimumdoelen) | paars | 183 | wit | blauw (25) | omgekeerd, label `bwb` |
+
+De woordsoorten (T2) krijgen hun kleuren pas in T2 (een voorstel, met de stiften in gedachten):
 
 | Woordsoort | Kleur | Woordsoort | Kleur |
 |---|---|---|---|
@@ -221,11 +232,13 @@ gewone tekst. Zo botst rood (pv) niet met "fout": juist en fout hebben altijd hu
 | **bn** bijvoeglijk naamwoord | groen | **bijw** bijwoord (extra, niet in de minimumdoelen) | oranje (8 kleuren: geel) |
 | **lidw** lidwoord | grijs | **vw** voegwoord | paars |
 
-- In de terminal met maar 8 kleuren delen een paar labels een kleur (wwg/nwg, telw/bijw). De afkorting maakt het
-  verschil.
+- In de terminal met maar 8 kleuren zijn de stiftkleuren minder mooi (cyaan voor blauw, magenta voor roze). De
+  afkorting maakt altijd het verschil.
 - De kleuren zijn rollen in `terminal/thema.py`, zoals alle kleuren (een test kijkt na dat elk thema elk label heeft).
 - **De legende** staat op de spiekbrief en eventjes onderaan het scherm bij de eerste vraag.
-- Komt er een foto van het schrift met andere kleuren, dan passen we alleen deze tabel aan.
+- Komt er een foto van het schrift met andere kleuren, dan passen we alleen deze tabel aan. (8/11: het taaldossier van de
+  leerkracht gebruikt rood voor het o, groen voor de pv en blauw voor het bn; de vader houdt de stiften: "op papier is
+  het anders".)
 
 ---
 
@@ -252,16 +265,32 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 ## De fasen (elke fase: tests, tmux 80×24, melden, wachten op de go)
 | Fase | Versie | Wat |
 |---|---|---|
-| **T1.1** | – | de kern: `Zin`, de woordenlijst, de zinnenmachine (pv, ow, lv, mv), de haakjes, de leerlijn, de denkfouten + tests |
-| **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu |
-| **T1.3** | 0.25.0 | de nagekeken zinnen, de spiekbrief, Moeilijk (wwg, nwg, bwb), Gemengd oefenen, de documenten |
-| **T2** | 0.26.0 | Woordsoorten |
-| **T2.1** | 0.26.1 | eigen zinnen van de ouder |
-| **T3** | 0.27 | Werkwoordspelling (eerst een voorstel) |
+| ✔ **T1.1** | – | de kern: `Zin`, de woordenlijst, de zinnenmachine (pv, o, lv, mv), de haakjes, de leerlijn, de denkfouten + tests |
+| ✔ **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu; Moeilijk (wwg, nwg, bwb) en Gemengd oefenen werken al |
+| ✔ **T1.3a** | 0.25.0 | de spiekbrief (ook in Leerstof en na de laatste tip), de documenten |
+| **T1.3b** | 0.25.1 | de nagekeken zinnen (de lastige gevallen) + zinnen met 2 pv's (hoofdzin + bijzin, eerst op Moeilijk); eerst een voorstel |
+| **T3** | 0.26 | Werkwoordspelling, met de verleden tijd van zwakke en sterke werkwoorden (eerst een voorstel; de vader 8/11: vóór T2) |
+| **T2** | 0.27.0 | Woordsoorten |
+| **T2.1** | 0.27.1 | eigen zinnen van de ouder |
 | **T4, T5** | later | Spelling, woordenschat en lezen |
+| **T6** | later | Tekstoefening ("het taaldossier"): een kort verhaal, per zin o, pv en bn aanduiden, dan de pv's in de verleden tijd typen (bouwt op T1, T2 en T3) |
+
+## Wat anders werd dan gepland (T1.1–T1.3a)
+- **Tip 2 zegt het antwoord niet**: het kind doet het proefje zelf ("Vraag het met de pv: Wie of wat geeft?"). Het
+  antwoord staat pas in de uitleg, na de tweede kans.
+- **Geen gezegde geschreven** in de haakjes: dan is het werkwoordelijk gezegde de pv alleen.
+- **Een meewerkend voorwerp begint nooit met een naam** ("mijn zus Noor" leest als één onderwerp).
+- **"Oma at."** (een werkwoord zonder zijn gewone lv) alleen op Moeilijk (de vader).
+- **Een groep:** Spatie of Shift+→ (niet elke terminal stuurt Shift+pijl). Met de muis: een klik op het woord ernaast
+  maakt de groep groter (de terminal zegt niet of Shift ingedrukt is). In vrij kleuren wist **Backspace** (niet
+  Spatie).
+- **Is alles juist**, dan toont het resultaat alleen de eerste regel uitleg (zoals bij een vraagstuk); bij een fout
+  de uitleg van elke stap.
+- **Nadruk** met ‘enkele aanhalingstekens’, niet met sterretjes.
+- **Leerstof** vraagt nu eerst welk vak; een vak met één spiekbrief opent ze meteen.
 
 ## Nog open (bij het verslag van T1.1)
-- [ ] De ZILL-termen en de afkortingen in zijn schrift nakijken (bv. *ow* of *OW*, *lv* of *LV*).
+- [x] De afkortingen in zijn schrift nakijken: het onderwerp is **o** (de vader, 8/11).
 - [ ] Hoe vaak eigen zinnen van de ouder in een reeks komen (bv. de helft).
 
 ## Bronnen

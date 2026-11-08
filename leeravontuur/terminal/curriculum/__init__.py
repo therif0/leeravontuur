@@ -50,8 +50,9 @@ class Vak:
 
 
 def _vakken():
+    from .taal import TAAL
     from .wiskunde import GROEPEN, WISKUNDE
-    return (WISKUNDE,), dict(GROEPEN)
+    return (WISKUNDE, TAAL), dict(GROEPEN)
 
 
 VAKKEN, GROEPEN = _vakken()  # VAKKEN: volgorde = volgorde in het hoofdmenu

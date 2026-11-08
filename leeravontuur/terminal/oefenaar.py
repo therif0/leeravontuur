@@ -23,6 +23,7 @@ from . import modellen as M
 from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
+from . import zinsdelen as ZD
 from .kladblad import LEEG_ENTER, Kladblad
 from .scherm import ENTER, ESC, HULP, teken_van
 
@@ -47,9 +48,9 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
               "klokwoord": "Typ bv. kwart over drie, half vier of vijf voor half vier."}
 VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
 LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
-INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER}  # invoersoorten met een eigen invoer-object
+INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, "zinsdelen": ZD.ZinsdelenInvoer}  # invoersoorten met een eigen invoer-object
 # de vaste werkwijze: geen tweede kans waar raden te makkelijk is, of waar het object zelf stap voor stap nakijkt
-GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur"}
+GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur", "zinsdelen"}
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
 KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
@@ -58,8 +59,9 @@ KORT_HULP = " Nog eens F1: je spiekbrief."  # na de hulp van een invoer-object
 
 
 def vraagtekst(v):
-    """De vraag zoals in het rapport ('7 × 8 = ?'; een vraagstuk eindigt zelf al op een vraagteken)."""
-    return v.tekst if v.tekst.endswith("?") else v.tekst + " ?"
+    """De vraag zoals in het rapport ('7 × 8 = ?'; een vraagstuk eindigt zelf al op een vraagteken, een zin om te
+    ontleden is de zin zelf)."""
+    return v.tekst if v.tekst.endswith("?") or v.invoer == "zinsdelen" else v.tekst + " ?"
 
 
 class Oefenaar:
@@ -146,6 +148,8 @@ class Oefenaar:
         gezicht, ballon, spring = "normaal", "", False
         lijnen, cursor = ([v.model], 0) if v.invoer == "lijn" else (None, None)  # aanduiden: zoomstapel + pijl
         obj = INVOER[v.invoer](v, o) if v.invoer in INVOER else None          # rooster, staartdeling, balk …
+        if hasattr(obj, "tweede_kans"):  # een object met een eigen tweede kans volgt de Hulp (een examen: uit)
+            obj.tweede_kans = self.hulp.tweede_kans
         if hasattr(obj, "plaatswaarden"):  # het rooster: de keuze van het kind (#18)
             obj.plaatswaarden = self.app.inst.plaatswaarden
         digi = v.invoer == "klok"  # een tijdstip typ je op een digitaal klokje (#21)
@@ -157,6 +161,8 @@ class Oefenaar:
         tips, tip_nr, tiptekst = (o.tips(v) if not obj else []), 0, ""
         # na de laatste tip: de spiekbrief (#20); daarna begint het weer bij tip 1
         spiek = bool(o.spiekbrief()) and self.hulp.spiekbrief
+        if hasattr(obj, "spiekbrief_aan"):  # het object zegt na de laatste tip "Nog eens F1: je spiekbrief"
+            obj.spiekbrief_aan = spiek
         periode = max(1, len(tips) + (kb is not None)) + spiek
         laatste_hulp = None  # bij een invoer-object: nog eens ? op dezelfde plek = de spiekbrief
         tweede = v.invoer not in GEEN_TWEEDE_KANS and self.hulp.tweede_kans

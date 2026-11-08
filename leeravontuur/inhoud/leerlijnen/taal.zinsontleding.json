@@ -1,0 +1,112 @@
+{
+ "vaardigheid": "taal.zinsontleding",
+ "omschrijving": "Zinsdelen aanduiden: pv, o, lv, mv (op Moeilijk ook het gezegde en de bwb)",
+ "doelen": [
+  "L4 1.4.10",
+  "L6 1.4.8"
+ ],
+ "parameters": {
+  "delen": "lijst",
+  "verdelen": "bool",
+  "zinsbouw": "lijst",
+  "tijden": "lijst",
+  "max_woorden": "int",
+  "stap_voor_stap": "bool",
+  "zonder_lv": "bool"
+ },
+ "leerlijn": {
+  "3": {
+   "delen": [
+    "pv",
+    "o"
+   ],
+   "verdelen": true,
+   "zinsbouw": [
+    "o_pv",
+    "o_pv_lv"
+   ],
+   "tijden": [
+    "tt"
+   ],
+   "max_woorden": 6,
+   "stap_voor_stap": true,
+   "zonder_lv": false
+  },
+  "4": {
+   "delen": [
+    "pv",
+    "o"
+   ],
+   "verdelen": true,
+   "zinsbouw": [
+    "o_pv",
+    "o_pv_lv",
+    "vraag_pv_o_lv"
+   ],
+   "tijden": [
+    "tt",
+    "vt"
+   ],
+   "max_woorden": 7,
+   "stap_voor_stap": true,
+   "zonder_lv": false
+  },
+  "5": {
+   "delen": [
+    "pv",
+    "o",
+    "lv",
+    "mv"
+   ],
+   "verdelen": false,
+   "zinsbouw": [
+    "o_pv",
+    "o_pv_lv",
+    "o_pv_mv_lv",
+    "bwb_pv_o_lv",
+    "bwb_pv_o_mv_lv",
+    "vraag_pv_o_lv",
+    "o_pv_lv_vd",
+    "o_pv_mv_lv_vd"
+   ],
+   "tijden": [
+    "tt",
+    "vt"
+   ],
+   "max_woorden": 11,
+   "stap_voor_stap": true,
+   "zonder_lv": false
+  },
+  "6": {
+   "delen": [
+    "pv",
+    "o",
+    "wwg",
+    "nwg",
+    "lv",
+    "mv",
+    "bwb"
+   ],
+   "verdelen": false,
+   "zinsbouw": [
+    "o_pv_lv",
+    "o_pv_mv_lv",
+    "bwb_pv_o_lv",
+    "bwb_pv_o_mv_lv",
+    "vraag_pv_o_lv",
+    "o_pv_lv_vd",
+    "o_pv_mv_lv_vd",
+    "o_pv_nwg",
+    "o_pv_lv_bwb",
+    "o_pv_lv_aan_mv"
+   ],
+   "tijden": [
+    "tt",
+    "vt"
+   ],
+   "max_woorden": 12,
+   "stap_voor_stap": false,
+   "zonder_lv": true
+  }
+ }
+}

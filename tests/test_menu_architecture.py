@@ -25,6 +25,7 @@ MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
 BEWAARD = {
+    "taal.zinsontleding",
     "wiskunde.eenheden.omzetten",
     "wiskunde.getallen.plaatswaarde", "wiskunde.getallen.afronden", "wiskunde.getallen.deelbaarheid",
     "wiskunde.getallen.getallenlijn",
@@ -228,21 +229,28 @@ class TestNavigatie(TestModiStarten):
         self.assertIn("Procent van een getal", self.app.s.kruimel)
 
     def test_spiekbrieven_kort(self):
-        """#20: zolang er één vak is, geen "Welk vak?"; een domein met één spiekbrief opent die meteen, bij meer staat
-        in de uitleg welke er zijn."""
+        """#20: een domein met één spiekbrief opent die meteen, bij meer staat in de uitleg welke er zijn. Sinds Taal
+        (0.25) vraagt Leerstof eerst "Welk vak?"; met Taal › Zinsontleding."""
         spiek = str(HOOFDMENU.index("Leerstof") + 1)
         beeld = self.speel([OK, OK, spiek])[-1]
+        self.assertIn("Welk vak?", beeld)
+        self.assertIn("2. Taal", beeld)
+        beeld = self.speel([OK, OK, spiek, "2"])[-1]
+        self.assertIn("Zinsontleding: zo vind je de zinsdelen", beeld)
+        self.assertEqual(self.app.s.kruimel[-2:], ["Taal", "Zinsontleding"])
+        spiek = [spiek, "1"]
+        beeld = self.speel([OK, OK, *spiek])[-1]
         self.assertIn("Welke spiekbrief?", beeld)
         self.assertIn("1. Getallen", beeld)
         self.assertIn("2 spiekbrieven: Breuken, Procenten", beeld)
         getallen = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.getallen")
-        beeld = self.speel([OK, OK, spiek, str(getallen)])[-1]
+        beeld = self.speel([OK, OK, *spiek, str(getallen)])[-1]
         self.assertIn("PLAATSWAARDE", beeld)
-        self.assertEqual(self.app.s.kruimel[-2:], ["Leerstof", "Getallen"])
+        self.assertEqual(self.app.s.kruimel[-3:], ["Leerstof", "Wiskunde", "Getallen"])
 
     def test_gedeelde_spiekbrief_een_keer(self):
         meten = next(i for i, d in enumerate(CU.VAKKEN[0].domeinen, 1) if d.id == "wiskunde.meten")
-        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Leerstof") + 1), str(meten)])[-1]
+        beeld = self.speel([OK, OK, str(HOOFDMENU.index("Leerstof") + 1), "1", str(meten)])[-1]
         self.assertEqual(beeld.count("Eenheden omzetten"), 1)
         self.assertIn("2. Oppervlakte en formules", beeld)
         self.assertNotIn("3. ", beeld)

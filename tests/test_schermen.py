@@ -73,7 +73,13 @@ def naar_spiekbrief(domein, nr=1):
     d = next(x for x in v.domeinen if x.label == domein)
     i = [x for x in v.domeinen if any(o.spiek for o in x.onderwerpen)].index(d) + 1
     titels = {o.spiek.titel for o in d.onderwerpen if o.spiek}
-    return [OK, OK, hm("Leerstof"), str(i)] + ([str(nr)] if len(titels) > 1 else [])
+    return [OK, OK, hm("Leerstof"), *leerstof_vak(v), str(i)] + ([str(nr)] if len(titels) > 1 else [])
+
+
+def leerstof_vak(vak):
+    """Leerstof vraagt eerst "Welk vak?" als meer vakken spiekbrieven hebben (sinds Taal, 0.25)."""
+    vakken = [v for v in CU.VAKKEN if any(o.spiek for d in v.domeinen for o in d.onderwerpen)]
+    return [str(vakken.index(vak) + 1)] if len(vakken) > 1 else []
 
 
 class Basis(unittest.TestCase):
@@ -339,17 +345,18 @@ class TestMuis(Basis):
                 self.assertEqual(scherm.toetsen, ["x"])  # Esc op het titelscherm: het programma stopte
 
     def test_hoofdmenu_in_groepen(self):
-        """0.23: kopjes VAKKEN, JIJ, FEEDBACK; Taal staat grijs (↑↓ slaan het over, 4 = "Taal komt binnenkort.");
-        Winkel en Leerstof rechtstreeks."""
+        """0.23: kopjes VAKKEN, JIJ, FEEDBACK; Winkel en Leerstof rechtstreeks. Taal is er sinds 0.25 (de
+        domeinen die nog niet gebouwd zijn, staan grijs in het menu van Taal)."""
         scherm, _ = self.speel([OK, OK])
         menu = next(b for b in scherm.beelden if "Wat wil je doen?" in b).split("\n")
         for kop, rij in (("VAKKEN", 8), ("JIJ", 13), ("FEEDBACK", 17)):
             self.assertEqual(menu[rij][:40].strip(), kop)  # (rechts staan de avatar en de punten)
         self.assertEqual(len(menu), 24)
         self.assertTrue(menu[20].strip().startswith("9. Stoppen"))
-        scherm, _ = self.speel([OK, OK, hm("Taal")])
-        self.assertTrue(self.ergens(scherm, "Taal komt binnenkort."))
-        scherm, app = self.speel([OK, OK, *[curses.KEY_DOWN] * 3, OK])  # Verder, Herhalen, Wiskunde, (Taal), Leerstof
+        scherm, _ = self.speel([OK, OK, hm("Taal"), "2"])
+        self.assertTrue(self.ergens(scherm, "Leeravontuur › Taal"))
+        self.assertTrue(self.ergens(scherm, "Woordsoorten komt binnenkort."))  # nog niet gebouwd: grijs
+        scherm, app = self.speel([OK, OK, *[curses.KEY_DOWN] * 4, OK])  # Verder, Herhalen, Wiskunde, Taal, Leerstof
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Leerstof"))
         scherm, _ = self.speel([OK, OK, hm("Winkel")])
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Winkel"))
