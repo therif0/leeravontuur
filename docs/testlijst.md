@@ -96,7 +96,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Het hoofdmenu: **Taal** is te kiezen. Het toont 6 delen; alleen Zinsontleding werkt, de rest is grijs
   ("Woordsoorten komt binnenkort.").
 - [ ] **Taal › Zinsontleding › Zinsdelen › Normaal:** "Stap 1 van 4: Zoek de persoonsvorm (pv)". Met ←→ een woord,
-  Spatie = het volgende woord erbij, Enter = kiezen. Een juist zinsdeel wordt gemarkeerd als met een markeerstift (pv geel, ow blauw, lv groen, mv roze), met de afkorting.
+  Spatie = het volgende woord erbij, Enter = kiezen. Een juist zinsdeel wordt gemarkeerd als met een markeerstift (pv geel, o blauw, lv groen, mv roze), met de afkorting.
   Daarna het onderwerp, het lijdend voorwerp en het meewerkend voorwerp; is er geen, dan **N**.
 - [ ] Kies met opzet het eerste woord als pv: een uitleg en een tweede kans. **F1** twee keer = de twee tips, een
   derde keer = de spiekbrief bij het kopje van de stap (Esc = terug naar de zin).
@@ -104,7 +104,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Makkelijk:** eerst de zin verdelen (←→ naar een plek tussen twee woorden, Spatie = een |, Enter).
   **Moeilijk:** meteen vrij kleuren, ook G (wwg), N (nwg) en B (bwb).
 - [ ] Zijn de zinnen goed Nederlands? Klopt de ontleding met wat op school geleerd wordt (de afkortingen, de vraag
-  "wie of wat + pv + ow?")? Schrijf de zin op als iets niet klopt.
+  "wie of wat + pv + o?")? Schrijf de zin op als iets niet klopt.
 - [ ] **Leerstof** vraagt eerst welk vak; **Taal** opent meteen de spiekbrief Zinsontleding.
 - [ ] Het rapport van de ouder toont Taal › Zinsontleding; Herhalen › Gemengd oefenen toont het kopje TAAL.
 

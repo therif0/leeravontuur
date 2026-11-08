@@ -15,9 +15,9 @@ except ImportError:  # ook zo te starten: python -m unittest discover -s tests
 L, R = curses.KEY_LEFT, curses.KEY_RIGHT
 SP, TAB = " ", "\t"
 ONDERWERP = "taal.zinsontleding.zinsdelen"
-OMA = "[bwb Morgen] [pv geeft] [ow oma] [mv haar kleinzoon] [lv een fiets]."
-JUF = "[ow De juf] [pv leest] [lv een boek]."
-# Normaal, stap voor stap: pv (geeft), ow (oma), lv (een fiets), mv (haar kleinzoon); de cursor begint telkens vooraan
+OMA = "[bwb Morgen] [pv geeft] [o oma] [mv haar kleinzoon] [lv een fiets]."
+JUF = "[o De juf] [pv leest] [lv een boek]."
+# Normaal, stap voor stap: pv (geeft), o (oma), lv (een fiets), mv (haar kleinzoon); de cursor begint telkens vooraan
 OMA_JUIST = [R, OK, R, R, OK, *[R] * 5, SP, OK, *[R] * 3, SP, OK]
 
 
@@ -66,7 +66,7 @@ class TestStapVoorStap(Basis):
         self.assertIn("spiekbrief.", " ".join(tip2.split()))  # de tip staat over twee regels
         self.assertIn("Nog eens F1: je spiekbrief.", " ".join(tip2.split()))
         brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
-        self.assertIn("HET ONDERWERP (ow)", "\n".join(brief.splitlines()[:5]))  # geopend bij de stap van het ow
+        self.assertIn("HET ONDERWERP (o)", "\n".join(brief.splitlines()[:5]))  # geopend bij de stap van het o
         self.assertIn("[Esc] terug naar je vraag", brief)
         na = scherm.beelden[scherm.beelden.index(brief) + 1:]
         self.assertTrue(any("Stap 2 van 4" in b for b in na))
@@ -93,7 +93,7 @@ class TestStapVoorStap(Basis):
         # De juf leest een boek: de woorden op rij 10 (De x=7, juf 11, leest 16, een 23, boek 28)
         scherm, _ = self.speel_zin(JUF, [("klik", 10, 17), OK, ("klik", 10, 7), ("klik", 10, 11), OK, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "✔ pv: leest."))
-        self.assertTrue(self.ergens(scherm, "✔ ow: de juf."))  # een klik op het woord ernaast = de groep groter
+        self.assertTrue(self.ergens(scherm, "✔ o: de juf."))  # een klik op het woord ernaast = de groep groter
 
     def test_tab_vrij_kleuren(self):
         # Tab, dan kleuren: geeft = P, oma = O, haar kleinzoon = M, een fiets = L, Enter
@@ -113,7 +113,7 @@ class TestStapVoorStap(Basis):
         self.assertTrue(self.ergens(scherm, "Nog niet alles juist: kijk nog eens naar lv, mv"))
 
     def test_makkelijk_eerst_verdelen(self):
-        # 4de leerjaar: De juf | leest | een boek, dan pv en ow
+        # 4de leerjaar: De juf | leest | een boek, dan pv en o
         toetsen = [R, SP, R, SP, OK, R, R, OK, SP, OK, ESC, ESC]
         scherm, _ = self.speel_zin(JUF, toetsen, niveau="1")
         self.assertTrue(self.ergens(scherm, "Stap 1 van 3: Verdeel de zin in zinsdelen."))
@@ -163,7 +163,7 @@ class TestZonderTweedeKans(unittest.TestCase):
         obj.tweede_kans = False
         obj.toets(10)  # Enter: Morgen als pv
         self.assertIn("De pv is ‘geeft’", obj.melding)
-        self.assertEqual(obj.label, "ow")
+        self.assertEqual(obj.label, "o")
         self.assertEqual(obj.mislukt, ["pv"])
 
 

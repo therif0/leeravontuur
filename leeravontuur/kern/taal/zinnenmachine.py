@@ -6,17 +6,17 @@ onderwerp (enkelvoud of meervoud) en bij de tijd; het lijdend voorwerp past bij 
 *eten* een appel).
 
 Een zinsbouw (de code in de leerlijn):
-    ow_pv              De hond slaapt.
-    ow_pv_lv           De juf leest een boek.
-    ow_pv_mv_lv        Oma geeft haar kleinzoon een fiets.
-    bwb_pv_ow_lv       Morgen koopt opa een nieuwe fiets.         (inversie)
-    bwb_pv_ow_mv_lv    Gisteren stuurde Noor de juf een kaartje.
-    vraag_pv_ow_lv     Leest de juf een boek?
-    ow_pv_lv_vd        Opa heeft een taart gebakken.              (de pv is het hulpwerkwoord)
-    ow_pv_mv_lv_vd     Mama heeft de kinderen een verhaal verteld.
-    ow_pv_nwg          De kat is heel moe.                        (naamwoordelijk gezegde)
-    ow_pv_lv_bwb       Tom zoekt een sleutel in de tuin.
-    ow_pv_lv_aan_mv    De juf geeft een boek aan de kinderen.     (meewerkend voorwerp met aan/voor)
+    o_pv              De hond slaapt.
+    o_pv_lv           De juf leest een boek.
+    o_pv_mv_lv        Oma geeft haar kleinzoon een fiets.
+    bwb_pv_o_lv       Morgen koopt opa een nieuwe fiets.         (inversie)
+    bwb_pv_o_mv_lv    Gisteren stuurde Noor de juf een kaartje.
+    vraag_pv_o_lv     Leest de juf een boek?
+    o_pv_lv_vd        Opa heeft een taart gebakken.              (de pv is het hulpwerkwoord)
+    o_pv_mv_lv_vd     Mama heeft de kinderen een verhaal verteld.
+    o_pv_nwg          De kat is heel moe.                        (naamwoordelijk gezegde)
+    o_pv_lv_bwb       Tom zoekt een sleutel in de tuin.
+    o_pv_lv_aan_mv    De juf geeft een boek aan de kinderen.     (meewerkend voorwerp met aan/voor)
 """
 
 import json
@@ -28,8 +28,8 @@ from .zinnen import BREEDTE, Deel, LT, Woord, Zin, breedte, controleer
 
 PAD = Path(__file__).resolve().parent.parent.parent / "inhoud" / "taal" / "woorden.json"
 
-ZINSBOUW = ("ow_pv", "ow_pv_lv", "ow_pv_mv_lv", "bwb_pv_ow_lv", "bwb_pv_ow_mv_lv", "vraag_pv_ow_lv",
-            "ow_pv_lv_vd", "ow_pv_mv_lv_vd", "ow_pv_nwg", "ow_pv_lv_bwb", "ow_pv_lv_aan_mv")
+ZINSBOUW = ("o_pv", "o_pv_lv", "o_pv_mv_lv", "bwb_pv_o_lv", "bwb_pv_o_mv_lv", "vraag_pv_o_lv",
+            "o_pv_lv_vd", "o_pv_mv_lv_vd", "o_pv_nwg", "o_pv_lv_bwb", "o_pv_lv_aan_mv")
 TELWOORDEN = ("twee", "drie", "vier", "vijf")
 
 
@@ -175,10 +175,10 @@ def kies_ww(rng, nodig_lv=False, nodig_mv=False, zonder_lv=False, lv_weglaten=Tr
     return rng.choice(kandidaten)
 
 
-def kies_ow(ww, rng):
+def kies_o(ww, rng):
     """(woorden, getal) van een onderwerp dat bij het werkwoord past."""
     L = lijst()
-    soort = rng.choice(ww["ow"])
+    soort = rng.choice(ww["o"])
     item = rng.choice(L["onderwerpen"][soort])
     return groep(item["tekst"]), item["getal"]
 
@@ -217,7 +217,7 @@ def _maak(zinsbouw, rng, tijd, lv_weglaten=True):
     if "nwg" in delen:
         return _maak_nwg(rng, tijd)
     ww = kies_ww(rng, nodig_lv=met_lv, nodig_mv=met_mv, zonder_lv=not met_lv, lv_weglaten=lv_weglaten)
-    ow, getal = kies_ow(ww, rng)
+    o, getal = kies_o(ww, rng)
     g = 0 if getal == "ev" else 1
     if vd:
         hulp = lijst()["hulpwerkwoorden"][ww["hulp"]]
@@ -233,18 +233,18 @@ def _maak(zinsbouw, rng, tijd, lv_weglaten=True):
     mv = mv_groep(rng) if met_mv else None
     if met_mv and lv and _zelfde(lv, mv):
         raise Opnieuw()
-    if _zelfde(ow, mv) or _zelfde(ow, lv):
+    if _zelfde(o, mv) or _zelfde(o, lv):
         raise Opnieuw()
     b = Bouwer()
-    if delen[0] == "bwb":  # inversie: bwb pv ow …
+    if delen[0] == "bwb":  # inversie: bwb pv o …
         b.voeg(kies_bwb(rng, tijd), "bwb")
         b.voeg([pv], "pv", "wwg")
-        b.voeg(ow, "ow")
+        b.voeg(o, "o")
     elif delen[0] == "vraag":
         b.voeg([pv], "pv", "wwg")
-        b.voeg(ow, "ow")
+        b.voeg(o, "o")
     else:
-        b.voeg(ow, "ow")
+        b.voeg(o, "o")
         b.voeg([pv], "pv", "wwg")
     if "aan" in delen:
         b.voeg(lv, "lv")
@@ -264,16 +264,16 @@ def _maak(zinsbouw, rng, tijd, lv_weglaten=True):
 
 
 def _maak_nwg(rng, tijd):
-    """ow pv nwg: De kat is heel moe. (koppelwerkwoord + bijvoeglijk naamwoord)"""
+    """o pv nwg: De kat is heel moe. (koppelwerkwoord + bijvoeglijk naamwoord)"""
     L = lijst()
     kw = rng.choice(L["koppelwerkwoorden"])
     soort = rng.choice(["mens", "dier", "hond"])
     item = rng.choice(L["onderwerpen"][soort])
     g = 0 if item["getal"] == "ev" else 1
-    data = {"zinsbouw": "ow_pv_nwg", "ww": kw["inf"], "tijd": tijd, "getal": item["getal"],
+    data = {"zinsbouw": "o_pv_nwg", "ww": kw["inf"], "tijd": tijd, "getal": item["getal"],
             "pv_andere_tijd": kw["vt" if tijd == "tt" else "tt"][g], "mv_vz": None, "lv_wie": False}
     b = Bouwer()
-    b.voeg(groep(item["tekst"]), "ow")
+    b.voeg(groep(item["tekst"]), "o")
     b.voeg([Woord(kw[tijd][g], "ww")], "pv", "nwg")
     b.voeg(groep(rng.choice(L["naamwoordelijk"])), "nwg")
     return b.zin(".", data)

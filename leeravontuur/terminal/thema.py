@@ -8,9 +8,9 @@ nooit de enige aanwijzing is.
 import curses
 
 # de zinsdelen (Taal, docs/taal.md): één vaste kleur per label, altijd met de afkorting erbij. Als een markeerstift
-# (de vader, 8/11: de kleuren van de stiften thuis): zwarte tekst op een lichte achtergrond. pv geel, ow blauw,
+# (de vader, 8/11: de kleuren van de stiften thuis): zwarte tekst op een lichte achtergrond. pv geel, o blauw,
 # lv groen, mv roze, het gezegde (wwg of nwg, nooit samen in een zin) oranje, de bwb paars.
-ZINSDEEL_ROLLEN = ("z_pv", "z_ow", "z_wwg", "z_nwg", "z_lv", "z_mv", "z_bwb")
+ZINSDEEL_ROLLEN = ("z_pv", "z_o", "z_wwg", "z_nwg", "z_lv", "z_mv", "z_bwb")
 ROLLEN = ("titel", "voet", "knop", "bold", "dim", "goed", "fout", "accent", "accent2",
           "cursor", "goedvak", "foutvak", "veld", "info", *ZINSDEEL_ROLLEN)
 
@@ -25,7 +25,7 @@ PALETTEN = {
         "accent": ("geel", -1, True), "accent2": ("cyaan", -1, True),
         "cursor": ("zwart", "geel", False), "goedvak": ("zwart", "groen", False),
         "foutvak": ("wit", "rood", True), "info": ("cyaan", -1, False),
-        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_pv": ("zwart", (227, "geel"), False), "z_o": ("zwart", (117, "cyaan"), False),
         "z_lv": ("zwart", (120, "groen"), False), "z_mv": ("zwart", (213, "magenta"), False),
         "z_wwg": ("zwart", (215, "rood"), False), "z_nwg": ("zwart", (215, "rood"), False),
         "z_bwb": ("zwart", (183, "wit"), False),
@@ -38,7 +38,7 @@ PALETTEN = {
         "accent": (_WIT, -1, True), "accent2": ((117, "magenta"), -1, True),
         "cursor": ("zwart", (255, "wit"), False), "goedvak": (_WIT, (25, "blauw"), True),
         "foutvak": ("zwart", (208, "geel"), False), "info": ((117, "cyaan"), -1, False),
-        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_pv": ("zwart", (227, "geel"), False), "z_o": ("zwart", (117, "cyaan"), False),
         "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
         "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
         "z_bwb": (_WIT, (25, "blauw"), True),
@@ -51,7 +51,7 @@ PALETTEN = {
         "accent": (_WIT, -1, True), "accent2": ((201, "magenta"), -1, True),
         "cursor": ("zwart", (255, "wit"), False), "goedvak": ("zwart", (37, "cyaan"), False),
         "foutvak": (_WIT, (160, "rood"), True), "info": ((37, "cyaan"), -1, False),
-        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_pv": ("zwart", (227, "geel"), False), "z_o": ("zwart", (117, "cyaan"), False),
         "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
         "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
         "z_bwb": (_WIT, (25, "blauw"), True),

@@ -2,7 +2,7 @@
 terminal/oefenaar.py, zoals het vraagstuk (eigen_tekst, eigen_tip, extra, uitleg_na).
 
 De vader (7/11):
-- stap voor stap zoals op school (pv → ow → lv → mv; op Makkelijk eerst in zinsdelen verdelen);
+- stap voor stap zoals op school (pv → o → lv → mv; op Makkelijk eerst in zinsdelen verdelen);
 - **Tab** wisselt naar vrij kleuren (Makkelijk, Normaal); op Moeilijk is vrij kleuren meteen aan;
 - een fout geeft een tip en een tweede kans; daarna het juiste antwoord met de uitleg.
 Een zin is juist als elk zinsdeel juist is (ook na de tweede kans; dan komt hij wel in de herhaalbak, zoals bij een
@@ -19,8 +19,8 @@ TAB = 9
 X, RIJ = 7, 6          # waar de zin begint (rij onder het verhaal: RIJ na de opdracht), 2 spaties tussen de woorden
 OPDRACHT_BREED = 56    # tot rij 9 staat rechts het maatje
 VERDELEN = "verdelen"
-LETTERS = {"p": "pv", "o": "ow", "g": "wwg", "n": "nwg", "l": "lv", "m": "mv", "b": "bwb"}
-VRAAG = {"pv": "Zoek de persoonsvorm (pv).", "ow": "Zoek het onderwerp (ow).",
+LETTERS = {"p": "pv", "o": "o", "g": "wwg", "n": "nwg", "l": "lv", "m": "mv", "b": "bwb"}
+VRAAG = {"pv": "Zoek de persoonsvorm (pv).", "o": "Zoek het onderwerp (o).",
          "wwg": "Zoek het werkwoordelijk gezegde (wwg).", "nwg": "Zoek het naamwoordelijk gezegde (nwg).",
          "lv": "Is er een lijdend voorwerp (lv)?", "mv": "Is er een meewerkend voorwerp (mv)?",
          "bwb": "Is er een bijwoordelijke bepaling (bwb)?", VERDELEN: "Verdeel de zin in zinsdelen."}
@@ -37,7 +37,7 @@ class ZinsdelenInvoer:
 
     def __init__(self, v, o):
         self.v, self.o, self.zin = v, o, v.model
-        self.gevraagd = list(v.data.get("delen", ("pv", "ow")))
+        self.gevraagd = list(v.data.get("delen", ("pv", "o")))
         self.stappen = ([VERDELEN] if v.data.get("verdelen") else []) + Z.stappen(self.zin, self.gevraagd)
         self.stap_voor_stap = v.data.get("stap_voor_stap", True)
         self.vrij = not self.stap_voor_stap

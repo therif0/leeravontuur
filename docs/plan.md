@@ -900,9 +900,9 @@ onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met ve
 ### Nog te doen (voorstel voor de volgorde; de vader beslist)
 | Status | # | Fase | Wat er daarna werkt |
 |---|---|---|---|
-| ✔ 0.25.0 | T1 | **Taal: zinsontleding** (plan: `docs/taal.md`) | de zinsontleder (pv, ow, lv, mv; op Moeilijk wwg, nwg, bwb), stap voor stap of vrij kleuren, de proefjes als tips; Taal in het hoofdmenu |
+| ✔ 0.25.0 | T1 | **Taal: zinsontleding** (plan: `docs/taal.md`) | de zinsontleder (pv, o, lv, mv; op Moeilijk wwg, nwg, bwb), stap voor stap of vrij kleuren, de proefjes als tips; Taal in het hoofdmenu |
+| · | 13 | **Taal: werkwoordspelling** (T3; de vader 8/11: vóór T2, school is met de verleden tijd bezig) | werkwoordmachine (tt, vt met 't kofschip, sterke ww, vd, bijvoeglijk vd), d/t-keuze, foutenjager |
 | · | T2 | **Taal: woordsoorten** | zn, lidw, bn, ww, telw, vz, bijw, vw (Moeilijk: vnw); eigen zinnen van de ouder |
-| · | 13 | **Taal: werkwoordspelling** (T3) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager |
 | · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
 | · | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
 | · | 18 | **Taal 4: woordenschat + lezen** | synoniemen, uitdrukkingen, spreekwoorden; leesteksten met vragen; eigen teksten van de ouder |

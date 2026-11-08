@@ -1,15 +1,15 @@
 """Zinsontleding: de stappen, het nakijken, de denkfouten, de tips (de proefjes) en de uitleg. Zonder curses.
 
-De vader (7/11, docs/taal.md): stap voor stap zoals op school (pv → ow → lv → mv; op Moeilijk ook het gezegde en de
-bwb), een tip met het proefje en een tweede kans, en de vraag zoals op school: "wie/wat + pv + ow?".
+De vader (7/11, docs/taal.md): stap voor stap zoals op school (pv → o → lv → mv; op Moeilijk ook het gezegde en de
+bwb), een tip met het proefje en een tweede kans, en de vraag zoals op school: "wie/wat + pv + o?".
 In elke stap kiest het kind woorden (een tuple met posities) of zegt het dat het zinsdeel er niet is (None).
 """
 
 from .zinnen import GEZEGDE, ZINSDELEN
 
-VOLGORDE = ("pv", "ow", "wwg", "nwg", "lv", "mv", "bwb")  # de volgorde van de stappen
+VOLGORDE = ("pv", "o", "wwg", "nwg", "lv", "mv", "bwb")  # de volgorde van de stappen
 NAMEN = ZINSDELEN
-LIDWOORD = {"pv": "de", "ow": "het", "wwg": "het", "nwg": "het", "lv": "het", "mv": "het", "bwb": "de"}
+LIDWOORD = {"pv": "de", "o": "het", "wwg": "het", "nwg": "het", "lv": "het", "mv": "het", "bwb": "de"}
 
 DENKFOUTEN = {
     "zo_pv_geen_ww": "als persoonsvorm een woord gekozen dat geen werkwoord is",
@@ -17,7 +17,7 @@ DENKFOUTEN = {
     "zo_pv_ander_ww": "het andere werkwoord als persoonsvorm gekozen (niet het werkwoord dat verandert)",
     "zo_groep_te_klein": "een zinsdeel te klein gekozen (een deel van de woordgroep)",
     "zo_groep_te_groot": "een zinsdeel te groot gekozen (woorden van een ander zinsdeel erbij)",
-    "zo_ow_lv": "onderwerp en lijdend voorwerp verwisseld",
+    "zo_o_lv": "onderwerp en lijdend voorwerp verwisseld",
     "zo_lv_mv": "lijdend en meewerkend voorwerp verwisseld",
     "zo_vergeten": "gezegd dat een zinsdeel er niet is terwijl het er wel is (of omgekeerd)",
 }
@@ -77,7 +77,7 @@ def diagnose(zin, label, gekozen):
             return "zo_pv_geen_ww", f"‘{w.tekst}’ is geen werkwoord. De pv is altijd een werkwoord."
         return "zo_pv_ander_ww", ("Er zijn twee werkwoorden. De pv is het werkwoord dat verandert als je de zin in een "
                                   "andere tijd zet.")
-    for ander in ("ow", "lv", "mv"):  # twee zinsdelen verwisseld
+    for ander in ("o", "lv", "mv"):  # twee zinsdelen verwisseld
         elders = verwacht(zin, ander)
         if ander != label and elders and keuze == set(elders) and (label, ander) in VERWISSELD:
             code, tekst = VERWISSELD[(label, ander)]
@@ -91,9 +91,9 @@ def diagnose(zin, label, gekozen):
 
 # (gevraagd, gekozen) -> (denkfout, wat het programma zegt; daarna komt de vraag van school)
 VERWISSELD = {
-    ("ow", "lv"): ("zo_ow_lv", "Dat is het lijdend voorwerp. Het onderwerp past bij de pv: maak het meervoud en kijk "
+    ("o", "lv"): ("zo_o_lv", "Dat is het lijdend voorwerp. Het onderwerp past bij de pv: maak het meervoud en kijk "
                                "of de pv mee verandert."),
-    ("lv", "ow"): ("zo_ow_lv", "Dat is het onderwerp."),
+    ("lv", "o"): ("zo_o_lv", "Dat is het onderwerp."),
     ("lv", "mv"): ("zo_lv_mv", "Dat is het meewerkend voorwerp: dat krijgt iets."),
     ("mv", "lv"): ("zo_lv_mv", "Dat is het lijdend voorwerp. Het meewerkend voorwerp krijgt iets."),
 }
@@ -129,22 +129,22 @@ def _woorden(zin, posities):
 def vraag_naar(zin, label):
     """De vraag zoals op school, ingevuld met deze zin (zonder het antwoord)."""
     pv = _woorden(zin, verwacht(zin, "pv"))
-    ow = _woorden(zin, verwacht(zin, "ow") or ())
+    o = _woorden(zin, verwacht(zin, "o") or ())
     rest_ww = _woorden(zin, [p for p in (verwacht(zin, "wwg") or verwacht(zin, "nwg") or ())
                              if p not in verwacht(zin, "pv") and zin.woorden[p].soort == "ww"])
     lv = _woorden(zin, verwacht(zin, "lv") or ())
     if label == "pv":
         return "Maak er een vraag van: welk werkwoord komt vooraan?"
-    if label == "ow":
+    if label == "o":
         return f"Wie of wat {pv}{' ' + rest_ww if rest_ww else ''}?"
     if label == "lv":
         wie = "Wie" if zin.data.get("lv_wie") else "Wat"
-        return f"{wie} {pv} {ow}{' ' + rest_ww if rest_ww else ''}?"
+        return f"{wie} {pv} {o}{' ' + rest_ww if rest_ww else ''}?"
     if label == "mv":
         vz = (zin.data.get("mv_vz") or "aan").capitalize()
-        return f"{vz} wie {pv} {ow}{' ' + lv if lv else ''}{' ' + rest_ww if rest_ww else ''}?"
+        return f"{vz} wie {pv} {o}{' ' + lv if lv else ''}{' ' + rest_ww if rest_ww else ''}?"
     if label in GEZEGDE:
-        return "Welke werkwoorden horen samen (de pv en de andere werkwoorden), en zegt het gezegde wat het ow doet " \
+        return "Welke werkwoorden horen samen (de pv en de andere werkwoorden), en zegt het gezegde wat het onderwerp doet " \
                "of hoe het is?"
     if label == "bwb":
         return "Waar, wanneer of hoe gebeurt het?"
@@ -153,11 +153,11 @@ def vraag_naar(zin, label):
 
 TIP1 = {
     "pv": "Maak er een vraag van: het werkwoord dat vooraan komt, is de pv.",
-    "ow": "Wie of wat + pv?",
-    "lv": "Wie of wat + pv + ow?",
-    "mv": "Aan of voor wie + pv + ow + lv?",
+    "o": "Wie of wat + pv?",
+    "lv": "Wie of wat + pv + o?",
+    "mv": "Aan of voor wie + pv + o + lv?",
     "wwg": "Het werkwoordelijk gezegde: de pv en de andere werkwoorden samen.",
-    "nwg": "Het naamwoordelijk gezegde: een koppelwerkwoord (zijn, worden, blijven) + wat het ow is of wordt.",
+    "nwg": "Het naamwoordelijk gezegde: een koppelwerkwoord (zijn, worden, blijven) + wat het onderwerp is of wordt.",
     "bwb": "Waar, wanneer of hoe? Dat is een bijwoordelijke bepaling.",
 }
 
@@ -174,7 +174,7 @@ def tips(zin, label):
             tweede = f"De tijdproef: zet de zin in de {tijd}. Welk woord verandert? Dat is de pv."
         else:
             tweede = "De tijdproef: zet de zin in een andere tijd (gisteren …, vandaag …). Welk woord verandert?"
-    elif label == "ow":
+    elif label == "o":
         tweede = f"Vraag het met de pv: {tweede}"
     elif label in ("lv", "mv"):
         tweede = f"Vraag het zoals op school: {tweede}"
@@ -192,7 +192,7 @@ def uitleg(zin, label):
         if zin.woorden[-1].tekst == "?":
             return f"De pv is ‘{antwoord}’: in een vraag staat de pv vooraan."
         return f"De pv is ‘{antwoord}’.{proef}"
-    if label in ("ow", "lv", "mv"):
+    if label in ("o", "lv", "mv"):
         return f"{vraag_naar(zin, label)} → ‘{_woorden(zin, verwacht(zin, label))}’. Dat is het {NAMEN[label]}."
     return f"{LIDWOORD[label].capitalize()} {NAMEN[label]} is ‘{_woorden(zin, verwacht(zin, label))}’."
 
@@ -252,7 +252,7 @@ from . import zinnenmachine as M  # noqa: E402
 
 
 def samenvatting(zin, gevraagd):
-    """De juiste ontleding kort, voor het rapport: "pv geeft · ow oma · lv een fiets · mv (geen)"."""
+    """De juiste ontleding kort, voor het rapport: "pv geeft · o oma · lv een fiets · mv (geen)"."""
     stukken = []
     for label in stappen(zin, gevraagd):
         posities = verwacht(zin, label)
@@ -265,7 +265,7 @@ def samenvatting(zin, gevraagd):
 SPIEK_KOP = {
     "verdelen": "IN ZINSDELEN VERDELEN",
     "pv": "DE PERSOONSVORM (pv)",
-    "ow": "HET ONDERWERP (ow)",
+    "o": "HET ONDERWERP (o)",
     "lv": "HET LIJDEND VOORWERP (lv)",
     "mv": "HET MEEWERKEND VOORWERP (mv)",
     "wwg": "HET GEZEGDE (wwg, nwg)",
@@ -275,7 +275,7 @@ SPIEK_KOP = {
 
 SPIEKBRIEF = [
     ("Zinsontleding: zo vind je de zinsdelen", "accent"),
-    ("Zoek ze altijd in deze volgorde: eerst de pv, dan het ow, dan de rest.", "dim"),
+    ("Altijd in deze volgorde: eerst de pv, dan het onderwerp, dan de rest.", "dim"),
     ("", ""),
     (SPIEK_KOP["verdelen"], "accent"),
     ("  Woorden van één zinsdeel kan je samen verplaatsen (de verplaatsproef):", ""),
@@ -290,16 +290,16 @@ SPIEKBRIEF = [
     ("  Getalproef: maak het onderwerp meervoud. Wat mee verandert, is de pv.", ""),
     ("    Oma geeft …  →  De oma's geven …", "dim"),
     ("", ""),
-    (SPIEK_KOP["ow"], "accent"),
+    (SPIEK_KOP["o"], "accent"),
     ("  Vraag: wie of wat + pv?    Wie geeft?  →  oma", ""),
-    ("  Het ow en de pv horen samen: is het ow meervoud, dan ook de pv.", ""),
+    ("  Het onderwerp en de pv horen samen: o meervoud, dan ook pv meervoud.", ""),
     ("", ""),
     (SPIEK_KOP["lv"], "accent"),
-    ("  Vraag: wie of wat + pv + ow?    Wat geeft oma?  →  een fiets", ""),
+    ("  Vraag: wie of wat + pv + o?    Wat geeft oma?  →  een fiets", ""),
     ("  Niet elke zin heeft een lijdend voorwerp: De hond slaapt.", ""),
     ("", ""),
     (SPIEK_KOP["mv"], "accent"),
-    ("  Vraag: aan of voor wie + pv + ow + lv?", ""),
+    ("  Vraag: aan of voor wie + pv + o + lv?", ""),
     ("    Aan wie geeft oma een fiets?  →  haar kleinzoon", "dim"),
     ("  Het mv krijgt iets. Soms staat er aan of voor bij: aan de kinderen.", ""),
     ("  De meeste zinnen hebben geen meewerkend voorwerp.", ""),
@@ -308,7 +308,7 @@ SPIEKBRIEF = [
     ("  6de leerjaar. Werkwoordelijk gezegde (wwg) = de pv + de andere ww:", ""),
     ("    Oma heeft een fiets gekocht.  →  wwg: heeft gekocht", "dim"),
     ("  Naamwoordelijk gezegde (nwg) = een koppelwerkwoord (zijn, worden,", ""),
-    ("  blijven) + wat het ow is of wordt.", ""),
+    ("  blijven) + wat het onderwerp is of wordt.", ""),
     ("    De kat is heel moe.  →  nwg: is heel moe", "dim"),
     ("", ""),
     (SPIEK_KOP["bwb"], "accent"),
@@ -317,7 +317,7 @@ SPIEKBRIEF = [
     ("", ""),
     ("DE KLEUREN (zoals je markeerstiften)", "accent"),
     (" pv  persoonsvorm             geel ", "z_pv"),
-    (" ow  onderwerp                blauw ", "z_ow"),
+    (" o   onderwerp                blauw ", "z_o"),
     (" lv  lijdend voorwerp         groen ", "z_lv"),
     (" mv  meewerkend voorwerp      roze ", "z_mv"),
     (" wwg werkwoordelijk gezegde   oranje ", "z_wwg"),
@@ -361,7 +361,7 @@ class Zinsontleding(Onderwerp):
 
     def uitleg(self, v):
         zin = v.model
-        return [uitleg(zin, label) for label in stappen(zin, v.data.get("delen", ("pv", "ow")))]
+        return [uitleg(zin, label) for label in stappen(zin, v.data.get("delen", ("pv", "o")))]
 
     def tip(self, v):
         return TIP1["pv"]

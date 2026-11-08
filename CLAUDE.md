@@ -162,16 +162,16 @@ Gouden regels:
     `FRIS_DAGEN`) staat ook in het rapport.
 - **Taal** (0.25, het plan in `docs/taal.md`; de vader: thuis het katholieke leerplan):
   - `kern/taal/zinnen.py`: `Zin` (woorden met hun woordsoort + `Deel`en; volledig ontleed, de pv hoort bij het
-    gezegde) en de **haakjes** (`[ow De juf] [pv geeft] [lv een boek].`, `lees_haakjes`/`Zin.haakjes`), met fouten in
+    gezegde) en de **haakjes** (`[o De juf] [pv geeft] [lv een boek].`, `lees_haakjes`/`Zin.haakjes`), met fouten in
     gewone taal;
   - `kern/taal/zinnenmachine.py` + `inhoud/taal/woorden.json`: een zinsbouw × de woordenlijst (werkwoordvormen
-    uitgeschreven, nooit geraden), de pv past bij het ow en de tijd, `BREEDTE` past op het scherm;
+    uitgeschreven, nooit geraden), de pv past bij het onderwerp en de tijd, `BREEDTE` past op het scherm;
   - `kern/taal/zinsontleding.py`: de stappen per leerjaar (leerlijn `taal.zinsontleding`), nakijken (ook "er is er
     geen"), de denkfouten (`zo_…`), de tips (de vraag van school, het proefje zonder het antwoord), de uitleg, vrij
     kleuren, verdelen, de spiekbrief (`SPIEK_KOP` per stap) en het `Onderwerp` (invoer `"zinsdelen"`);
   - `terminal/zinsdelen.py`: het invoer-object (stappen, Tab = vrij kleuren, Makkelijk eerst verdelen, een eigen
     tweede kans die `Hulp.tweede_kans` volgt); de kleuren zijn de rollen `z_pv` … `z_bwb` in `terminal/thema.py`
-    (als een markeerstift: zwart op de stiftkleur, pv geel, ow blauw, lv groen, mv roze, gezegde oranje, bwb paars; de
+    (als een markeerstift: zwart op de stiftkleur, pv geel, o blauw, lv groen, mv roze, gezegde oranje, bwb paars; de
     afkorting staat er altijd onder, nooit kleur alleen; de cursor is een streep onder de woorden);
   - `terminal/curriculum/taal.py`: een domein zonder onderwerpen = nog niet gebouwd, grijs in het menu.
 

@@ -6,9 +6,9 @@ op school; verder overlappen zinsdelen niet.
 
 Een zin schrijven (de nagekeken lijst en de eigen zinnen van de ouder) gaat met haakjes:
 
-    [ow De juf] [pv geeft] [mv de kinderen] [lv een boek].
-    [ow Oma] [pv,wwg heeft] [lv een fiets] [wwg gekocht].
-    [bwb Morgen] [pv geeft] [ow oma] [mv haar/vnw kleinzoon] [lv een fiets].
+    [o De juf] [pv geeft] [mv de kinderen] [lv een boek].
+    [o Oma] [pv,wwg heeft] [lv een fiets] [wwg gekocht].
+    [bwb Morgen] [pv geeft] [o oma] [mv haar/vnw kleinzoon] [lv een fiets].
 
 Een woord kan zijn woordsoort meekrijgen met een schuine streep (`haar/vnw`). Het gezegde (wwg, nwg) mag in stukken
 staan: alle stukken samen zijn één zinsdeel. Bij de andere labels is elk paar haakjes één zinsdeel.
@@ -17,10 +17,10 @@ staan: alle stukken samen zijn één zinsdeel. Bij de andere labels is elk paar 
 import re
 from dataclasses import dataclass, field
 
-# de zinsdelen, in de volgorde van de stappen (de vader, 7/11: pv → ow → lv → mv; op Moeilijk komt de rest erbij)
+# de zinsdelen, in de volgorde van de stappen (de vader, 7/11: pv → o → lv → mv; op Moeilijk komt de rest erbij)
 ZINSDELEN = {
     "pv": "persoonsvorm",
-    "ow": "onderwerp",
+    "o": "onderwerp",
     "wwg": "werkwoordelijk gezegde",
     "nwg": "naamwoordelijk gezegde",
     "lv": "lijdend voorwerp",
@@ -225,8 +225,8 @@ def controleer(zin, volledig=True):
         fouten.append("Een zin heeft precies één persoonsvorm (pv)." if pv else "Er is geen persoonsvorm (pv).")
     elif len(pv[0].posities) != 1:
         fouten.append("De persoonsvorm is één woord.")
-    if len(zin.alle("ow")) > 1:
-        fouten.append("Een zin heeft hoogstens één onderwerp (ow).")
+    if len(zin.alle("o")) > 1:
+        fouten.append("Een zin heeft hoogstens één onderwerp (o).")
     if zin.deel("wwg") and zin.deel("nwg"):
         fouten.append("Een zin heeft een werkwoordelijk of een naamwoordelijk gezegde, niet allebei.")
     gezegde = [d for d in zin.delen if d.label in GEZEGDE]

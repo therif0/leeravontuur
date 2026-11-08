@@ -1,6 +1,6 @@
 {
  "vaardigheid": "taal.zinsontleding",
- "omschrijving": "Zinsdelen aanduiden: pv, ow, lv, mv (op Moeilijk ook het gezegde en de bwb)",
+ "omschrijving": "Zinsdelen aanduiden: pv, o, lv, mv (op Moeilijk ook het gezegde en de bwb)",
  "doelen": [
   "L4 1.4.10",
   "L6 1.4.8"
@@ -18,12 +18,12 @@
   "3": {
    "delen": [
     "pv",
-    "ow"
+    "o"
    ],
    "verdelen": true,
    "zinsbouw": [
-    "ow_pv",
-    "ow_pv_lv"
+    "o_pv",
+    "o_pv_lv"
    ],
    "tijden": [
     "tt"
@@ -35,13 +35,13 @@
   "4": {
    "delen": [
     "pv",
-    "ow"
+    "o"
    ],
    "verdelen": true,
    "zinsbouw": [
-    "ow_pv",
-    "ow_pv_lv",
-    "vraag_pv_ow_lv"
+    "o_pv",
+    "o_pv_lv",
+    "vraag_pv_o_lv"
    ],
    "tijden": [
     "tt",
@@ -54,20 +54,20 @@
   "5": {
    "delen": [
     "pv",
-    "ow",
+    "o",
     "lv",
     "mv"
    ],
    "verdelen": false,
    "zinsbouw": [
-    "ow_pv",
-    "ow_pv_lv",
-    "ow_pv_mv_lv",
-    "bwb_pv_ow_lv",
-    "bwb_pv_ow_mv_lv",
-    "vraag_pv_ow_lv",
-    "ow_pv_lv_vd",
-    "ow_pv_mv_lv_vd"
+    "o_pv",
+    "o_pv_lv",
+    "o_pv_mv_lv",
+    "bwb_pv_o_lv",
+    "bwb_pv_o_mv_lv",
+    "vraag_pv_o_lv",
+    "o_pv_lv_vd",
+    "o_pv_mv_lv_vd"
    ],
    "tijden": [
     "tt",
@@ -80,7 +80,7 @@
   "6": {
    "delen": [
     "pv",
-    "ow",
+    "o",
     "wwg",
     "nwg",
     "lv",
@@ -89,16 +89,16 @@
    ],
    "verdelen": false,
    "zinsbouw": [
-    "ow_pv_lv",
-    "ow_pv_mv_lv",
-    "bwb_pv_ow_lv",
-    "bwb_pv_ow_mv_lv",
-    "vraag_pv_ow_lv",
-    "ow_pv_lv_vd",
-    "ow_pv_mv_lv_vd",
-    "ow_pv_nwg",
-    "ow_pv_lv_bwb",
-    "ow_pv_lv_aan_mv"
+    "o_pv_lv",
+    "o_pv_mv_lv",
+    "bwb_pv_o_lv",
+    "bwb_pv_o_mv_lv",
+    "vraag_pv_o_lv",
+    "o_pv_lv_vd",
+    "o_pv_mv_lv_vd",
+    "o_pv_nwg",
+    "o_pv_lv_bwb",
+    "o_pv_lv_aan_mv"
    ],
    "tijden": [
     "tt",
