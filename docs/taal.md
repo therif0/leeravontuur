@@ -6,7 +6,7 @@ bouwen in fasen (telkens melden en wachten op de go van de vader). De richting s
 ## Wat de vader koos (7/11)
 | Vraag | Keuze |
 |---|---|
-| School | **Katholiek onderwijs (ZILL)** |
+| School | **Steinerschool**; thuis volgen we het **katholieke leerplan** (ZILL, vanaf 2026-27 Op.stap) om voor te blijven |
 | Eerst nodig | **Zinsontleding en woordsoorten** (de fouten: van alles een beetje) |
 | Wat hij nu kent (5de) | zinsdelen **pv, ow, lv, mv**; woordsoorten **zn, lidw, bn, ww, telw, vz, bijw, vw** (bijw: extra, niet in de minimumdoelen) |
 | Afkortingen en kleuren | de gangbare Vlaamse afkortingen, **één vaste kleur per label**, altijd met de afkorting erbij |

@@ -166,10 +166,12 @@ def _hoofdletter(woorden):
     return [Woord(w.tekst[0].upper() + w.tekst[1:], w.soort), *woorden[1:]]
 
 
-def kies_ww(rng, nodig_lv=False, nodig_mv=False, zonder_lv=False):
+def kies_ww(rng, nodig_lv=False, nodig_mv=False, zonder_lv=False, lv_weglaten=True):
+    """Een werkwoord dat bij de zinsbouw past. zonder_lv = een zin zonder lijdend voorwerp; lv_weglaten = dan mag ook
+    een werkwoord dat gewoonlijk een lv heeft ("Oma eet."): alleen op Moeilijk en hoger (de vader, 7/11)."""
     kandidaten = [w for w in lijst()["werkwoorden"]
                   if (not nodig_lv or w.get("lv")) and (nodig_mv if w.get("mv_nodig") else (not nodig_mv or w.get("mv")))
-                  and (not zonder_lv or not w.get("lv") or w.get("zonder_lv"))]
+                  and (not zonder_lv or not w.get("lv") or (lv_weglaten and w.get("zonder_lv")))]
     return rng.choice(kandidaten)
 
 
@@ -191,14 +193,14 @@ def mv_groep(rng):
     return groep(rng.choice(lijst()["meewerkend"]))
 
 
-def maak(zinsbouw, rng=random, tijden=("tt", "vt"), max_woorden=None):
+def maak(zinsbouw, rng=random, tijden=("tt", "vt"), max_woorden=None, lv_weglaten=True):
     """Een volledig ontlede Zin met deze zinsbouw. Probeert opnieuw als een keuze niet past, de zin te breed is voor het
     scherm of meer woorden heeft dan max_woorden (de leerlijn; zonder het leesteken)."""
     if zinsbouw not in ZINSBOUW:
         raise ValueError(f"onbekende zinsbouw '{zinsbouw}'")
     for _ in range(200):
         try:
-            zin = _maak(zinsbouw, rng, rng.choice(list(tijden)))
+            zin = _maak(zinsbouw, rng, rng.choice(list(tijden)), lv_weglaten)
         except Opnieuw:
             continue
         lang = max_woorden is not None and sum(not w.leesteken for w in zin.woorden) > max_woorden
@@ -207,14 +209,14 @@ def maak(zinsbouw, rng=random, tijden=("tt", "vt"), max_woorden=None):
     raise RuntimeError(f"geen zin gevonden voor '{zinsbouw}'")
 
 
-def _maak(zinsbouw, rng, tijd):
+def _maak(zinsbouw, rng, tijd, lv_weglaten=True):
     delen = zinsbouw.split("_")
     met_lv = "lv" in delen
     met_mv = "mv" in delen
     vd = "vd" in delen
     if "nwg" in delen:
         return _maak_nwg(rng, tijd)
-    ww = kies_ww(rng, nodig_lv=met_lv, nodig_mv=met_mv, zonder_lv=not met_lv)
+    ww = kies_ww(rng, nodig_lv=met_lv, nodig_mv=met_mv, zonder_lv=not met_lv, lv_weglaten=lv_weglaten)
     ow, getal = kies_ow(ww, rng)
     g = 0 if getal == "ev" else 1
     if vd:

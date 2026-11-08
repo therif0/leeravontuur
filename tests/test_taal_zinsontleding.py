@@ -97,7 +97,7 @@ class TestZinnenmachine(unittest.TestCase):
             p = leerlijnen.parameters(LIJN, jaar)
             for zb in p["zinsbouw"]:
                 for seed in range(40):
-                    z = M.maak(zb, random.Random(seed), p["tijden"], p["max_woorden"])
+                    z = M.maak(zb, random.Random(seed), p["tijden"], p["max_woorden"], p["zonder_lv"])
                     self.assertLessEqual(sum(not w.leesteken for w in z.woorden), p["max_woorden"], z.tekst)
                     self.assertEqual(controleer(z), [], (jaar, zb, z.haakjes()))
                     self.assertTrue(all(w.soort in WOORDSOORTEN for w in z.woorden if not w.leesteken),
@@ -129,6 +129,22 @@ class TestZinnenmachine(unittest.TestCase):
         self.assertIn("een groot raam", gezien | {"een groot raam"})
         for groep in gezien:
             self.assertNotRegex(groep, r"^een (grote|mooie|nieuwe|dikke) (boek|raam|kaartje|huis|paard)$")
+
+    def test_geen_weggelaten_lv_op_makkelijk_en_normaal(self):
+        """"Oma at." alleen op Moeilijk en hoger (de vader, 7/11): op Makkelijk en Normaal krijgt een zin zonder lv
+        alleen een werkwoord dat nooit een lv heeft (slapen, lachen …)."""
+        werkwoorden = {w["inf"]: w for w in M.lijst()["werkwoorden"]}
+        for jaar in ("3", "4", "5"):
+            self.assertFalse(leerlijnen.parameters(LIJN, jaar)["zonder_lv"], jaar)
+        self.assertTrue(leerlijnen.parameters(LIJN, "6")["zonder_lv"])
+        gezien = set()
+        for seed in range(200):
+            z = M.maak("ow_pv", random.Random(seed), lv_weglaten=False)
+            self.assertNotIn("lv", werkwoorden[z.data["ww"]], z.tekst)
+            gezien.add(z.data["ww"])
+        self.assertGreater(len(gezien), 5)
+        weg = {M.maak("ow_pv", random.Random(s)).data["ww"] for s in range(300)}
+        self.assertTrue(weg & {"eten", "lezen", "tekenen"})  # op Moeilijk mag het wel
 
     def test_tijd_en_bepaling_passen(self):
         for seed in range(200):
@@ -192,7 +208,7 @@ class TestStappenEnNakijken(unittest.TestCase):
         z = zin("[bwb Morgen] [pv geeft] [ow oma] [mv haar kleinzoon] [lv een fiets].")
         self.assertEqual(Z.vraag_naar(z, "lv"), "Wat geeft oma?")
         self.assertEqual(Z.vraag_naar(z, "mv"), "Aan wie geeft oma een fiets?")
-        self.assertEqual(Z.uitleg(z, "lv"), "Wat geeft oma? → *een fiets*. Dat is het lijdend voorwerp.")
+        self.assertEqual(Z.uitleg(z, "lv"), "Wat geeft oma? → ‘een fiets’. Dat is het lijdend voorwerp.")
         z = zin("[ow Lotte] [pv,wwg heeft] [lv de juf] [wwg geholpen].")
         self.assertEqual(Z.vraag_naar(z, "ow"), "Wie of wat heeft geholpen?")
         self.assertEqual(Z.uitleg(z, "mv"), "Deze zin heeft geen meewerkend voorwerp.")

@@ -54,12 +54,12 @@ def opties_met_uitleg(app, items):
     return [(x.label, kort(x.uitleg, plaats)) for x in items]
 
 
-def _menu(app, kr, vraag, items, open_item):
-    """Een gewoon keuzemenu (vak of domein) dat na een keuze op dezelfde plek terugkomt."""
+def _menu(app, kr, vraag, items, open_item, grijs=None):
+    """Een gewoon keuzemenu (vak of domein) dat na een keuze op dezelfde plek terugkomt. grijs = {index: melding}."""
     sel = 0
     while True:
         try:
-            k = app.s.menu(kr, vraag, opties_met_uitleg(app, items), start=sel)
+            k = app.s.menu(kr, vraag, opties_met_uitleg(app, items), start=sel, grijs=grijs)
             if k is None:
                 return
             sel = k
@@ -70,8 +70,9 @@ def _menu(app, kr, vraag, items, open_item):
 
 
 def vak(app, vak_, kr):
-    """Hoofdmenu › Vak: de domeinen."""
-    _menu(app, kr + [vak_.label], "Welk onderwerp?", vak_.domeinen, lambda d, kr_: domein(app, d, kr_))
+    """Hoofdmenu › Vak: de domeinen. Een domein zonder onderwerpen (nog niet gebouwd) staat er grijs."""
+    grijs = {i: f"{d.label} komt binnenkort." for i, d in enumerate(vak_.domeinen) if not d.onderwerpen}
+    _menu(app, kr + [vak_.label], "Welk onderwerp?", vak_.domeinen, lambda d, kr_: domein(app, d, kr_), grijs)
 
 
 def domein(app, domein_, kr):
@@ -95,10 +96,11 @@ def domein(app, domein_, kr):
 def spiekbrieven(app, kr):
     """Hoofdmenu › Spiekbrieven › (Vak ›) Domein › de spiekbrief (#20). "Welk vak?" valt weg zolang er één vak is;
     een domein met één spiekbrief opent die meteen, met meer kies je er nog een (elke titel één keer)."""
-    if len(CU.VAKKEN) == 1:
-        _spiek_domeinen(app, CU.VAKKEN[0], kr)
+    vakken = [v for v in CU.VAKKEN if any(brieven_van(d) for d in v.domeinen)]  # alleen vakken met spiekbrieven
+    if len(vakken) == 1:
+        _spiek_domeinen(app, vakken[0], kr)
     else:
-        _menu(app, kr, "Welk vak?", CU.VAKKEN, lambda v, kr_: _spiek_domeinen(app, v, kr_))
+        _menu(app, kr, "Welk vak?", vakken, lambda v, kr_: _spiek_domeinen(app, v, kr_))
 
 
 def brieven_van(domein_):

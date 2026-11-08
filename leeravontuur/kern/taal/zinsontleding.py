@@ -71,10 +71,10 @@ def diagnose(zin, label, gekozen):
         if len(keuze) > 1:
             return "zo_groep_te_groot", "De persoonsvorm is maar één woord."
         if w.soort != "ww" and min(keuze) == 0:
-            return "zo_pv_eerste", (f"De pv staat niet altijd vooraan, en *{w.tekst}* is geen werkwoord. "
+            return "zo_pv_eerste", (f"De pv staat niet altijd vooraan, en ‘{w.tekst}’ is geen werkwoord. "
                                     "Maak er een vraag van: welk werkwoord komt vooraan?")
         if w.soort != "ww":
-            return "zo_pv_geen_ww", f"*{w.tekst}* is geen werkwoord. De pv is altijd een werkwoord."
+            return "zo_pv_geen_ww", f"‘{w.tekst}’ is geen werkwoord. De pv is altijd een werkwoord."
         return "zo_pv_ander_ww", ("Er zijn twee werkwoorden. De pv is het werkwoord dat verandert als je de zin in een "
                                   "andere tijd zet.")
     for ander in ("ow", "lv", "mv"):  # twee zinsdelen verwisseld
@@ -108,7 +108,7 @@ def _tekst(zin, label):
 
 def _naam(zin, p):
     """Houdt woord p zijn hoofdletter midden in een vraag? Ja voor een naam: een zelfstandig naamwoord met een
-    hoofdletter (een gewoon zn begint de zin niet zonder lidwoord of voornaamwoord: *de juf*, *mijn broer*)."""
+    hoofdletter (een gewoon zn begint de zin niet zonder lidwoord of voornaamwoord: ‘de juf’, ‘mijn broer’)."""
     w = zin.woorden[p]
     if p == 0 and "eerste" in zin.data:  # een zin van de machine: die weet hoe het woord in de lijst staat
         return zin.data["eerste"][:1].isupper()
@@ -188,13 +188,13 @@ def uitleg(zin, label):
         return f"Deze zin heeft geen {NAMEN[label]}."
     if label == "pv":
         anders = zin.data.get("pv_andere_tijd")
-        proef = f" In een andere tijd wordt het *{anders}*: dat woord verandert." if anders else ""
+        proef = f" In een andere tijd wordt het ‘{anders}’: dat woord verandert." if anders else ""
         if zin.woorden[-1].tekst == "?":
-            return f"De pv is *{antwoord}*: in een vraag staat de pv vooraan."
-        return f"De pv is *{antwoord}*.{proef}"
+            return f"De pv is ‘{antwoord}’: in een vraag staat de pv vooraan."
+        return f"De pv is ‘{antwoord}’.{proef}"
     if label in ("ow", "lv", "mv"):
-        return f"{vraag_naar(zin, label)} → *{_woorden(zin, verwacht(zin, label))}*. Dat is het {NAMEN[label]}."
-    return f"{LIDWOORD[label].capitalize()} {NAMEN[label]} is *{_woorden(zin, verwacht(zin, label))}*."
+        return f"{vraag_naar(zin, label)} → ‘{_woorden(zin, verwacht(zin, label))}’. Dat is het {NAMEN[label]}."
+    return f"{LIDWOORD[label].capitalize()} {NAMEN[label]} is ‘{_woorden(zin, verwacht(zin, label))}’."
 
 
 # ---- vrij kleuren (Tab; op Moeilijk altijd) ---------------------------------------------------------------------
@@ -220,7 +220,7 @@ TIP_VERDELEN = ["Woorden die samen één zinsdeel zijn, kan je samen verplaatsen
 
 def verdeling(zin):
     """De zinsdelen als aaneengesloten stukken: [(posities), …] in de volgorde van de zin. De pv is een eigen stuk;
-    de rest van het gezegde (bv. *gekocht*) ook."""
+    de rest van het gezegde (bv. ‘gekocht’) ook."""
     def wie(i):
         delen = [d for d in zin.delen if i in d.posities]
         pv = [d for d in delen if d.label == "pv"]
@@ -243,3 +243,62 @@ def nakijken_verdeling(zin, stukken):
     juist = set(verdeling(zin))
     fout = [s for s in map(tuple, stukken) if s not in juist]
     return not fout and len(juist) == len(stukken), fout
+
+
+# ---- het onderwerp (voor de Oefenaar: reeks, vrij oefenen, herhaalbak, punten, rapport) ------------------------
+
+from ..onderwerp import Onderwerp, Vraag  # noqa: E402 (onderaan: de functies hierboven hebben dit niet nodig)
+from . import zinnenmachine as M  # noqa: E402
+
+
+def samenvatting(zin, gevraagd):
+    """De juiste ontleding kort, voor het rapport: "pv geeft · ow oma · lv een fiets · mv (geen)"."""
+    stukken = []
+    for label in stappen(zin, gevraagd):
+        posities = verwacht(zin, label)
+        stukken.append(f"{label} {_woorden(zin, posities) if posities else '(geen)'}")
+    return " · ".join(stukken)
+
+
+class Zinsontleding(Onderwerp):
+    """Taal › Zinsontleding › Zinsdelen: een zin van de zinnenmachine ontleden (het invoer-object terminal/zinsdelen.py
+    doet de stappen en geeft "juist" of "fout" terug)."""
+    id = "taal.zinsontleding"
+    naam = "Zinsdelen"
+    omschrijving = "de pv, het onderwerp, het lijdend en meewerkend voorwerp aanduiden"
+    denkfouten = DENKFOUTEN
+    vast = ("zinsbouw",)
+
+    def kies_onderwerp(self, gewichten, p, rng):
+        zb = list(p["zinsbouw"])
+        return {"zinsbouw": rng.choices(zb, weights=[gewichten.get(z, 1.0) for z in zb], k=1)[0]}
+
+    def maak_met(self, p, rng, data=None):
+        zb = (data or {}).get("zinsbouw")
+        if zb not in p["zinsbouw"] or zb not in M.ZINSBOUW:  # bv. een herhaling uit een ander leerjaar
+            zb = rng.choice(p["zinsbouw"])
+        zin = M.maak(zb, rng, p["tijden"], p["max_woorden"], p["zonder_lv"])
+        data = {"zinsbouw": zb, "onderwerp": zb, "delen": list(p["delen"]), "verdelen": p["verdelen"],
+                "stap_voor_stap": p["stap_voor_stap"]}
+        return Vraag(self.id, f"{self.id}:{zb}:{zin.tekst}", zin.tekst, "juist", "", data, invoer="zinsdelen",
+                     model=zin, verwacht_tekst=samenvatting(zin, p["delen"]))
+
+    def onderwerp_van_sleutel(self, sleutel):
+        delen = sleutel.split(":", 2)
+        return delen[1] if len(delen) == 3 and delen[0] == self.id and delen[1] in M.ZINSBOUW else None
+
+    def lees_vraag(self, v, tekst):
+        """Het object geeft "juist" of "fout"; de juiste ontleding getypt (zoals in het rapport) telt ook als juist."""
+        if tekst in ("juist", "fout"):
+            return tekst
+        return "juist" if tekst == v.verwacht else None
+
+    def uitleg(self, v):
+        zin = v.model
+        return [uitleg(zin, label) for label in stappen(zin, v.data.get("delen", ("pv", "ow")))]
+
+    def tip(self, v):
+        return TIP1["pv"]
+
+
+ZINSONTLEDING = Zinsontleding()
