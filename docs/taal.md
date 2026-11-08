@@ -252,13 +252,28 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 ## De fasen (elke fase: tests, tmux 80×24, melden, wachten op de go)
 | Fase | Versie | Wat |
 |---|---|---|
-| **T1.1** | – | de kern: `Zin`, de woordenlijst, de zinnenmachine (pv, ow, lv, mv), de haakjes, de leerlijn, de denkfouten + tests |
-| **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu |
-| **T1.3** | 0.25.0 | de nagekeken zinnen, de spiekbrief, Moeilijk (wwg, nwg, bwb), Gemengd oefenen, de documenten |
+| ✔ **T1.1** | – | de kern: `Zin`, de woordenlijst, de zinnenmachine (pv, ow, lv, mv), de haakjes, de leerlijn, de denkfouten + tests |
+| ✔ **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu; Moeilijk (wwg, nwg, bwb) en Gemengd oefenen werken al |
+| ✔ **T1.3a** | 0.25.0 | de spiekbrief (ook in Leerstof en na de laatste tip), de documenten |
+| **T1.3b** | 0.25.1 | de nagekeken zinnen (de lastige gevallen), na de test van de vader |
 | **T2** | 0.26.0 | Woordsoorten |
 | **T2.1** | 0.26.1 | eigen zinnen van de ouder |
 | **T3** | 0.27 | Werkwoordspelling (eerst een voorstel) |
 | **T4, T5** | later | Spelling, woordenschat en lezen |
+
+## Wat anders werd dan gepland (T1.1–T1.3a)
+- **Tip 2 zegt het antwoord niet**: het kind doet het proefje zelf ("Vraag het met de pv: Wie of wat geeft?"). Het
+  antwoord staat pas in de uitleg, na de tweede kans.
+- **Geen gezegde geschreven** in de haakjes: dan is het werkwoordelijk gezegde de pv alleen.
+- **Een meewerkend voorwerp begint nooit met een naam** ("mijn zus Noor" leest als één onderwerp).
+- **"Oma at."** (een werkwoord zonder zijn gewone lv) alleen op Moeilijk (de vader).
+- **Een groep:** Spatie of Shift+→ (niet elke terminal stuurt Shift+pijl). Met de muis: een klik op het woord ernaast
+  maakt de groep groter (de terminal zegt niet of Shift ingedrukt is). In vrij kleuren wist **Backspace** (niet
+  Spatie).
+- **Is alles juist**, dan toont het resultaat alleen de eerste regel uitleg (zoals bij een vraagstuk); bij een fout
+  de uitleg van elke stap.
+- **Nadruk** met ‘enkele aanhalingstekens’, niet met sterretjes.
+- **Leerstof** vraagt nu eerst welk vak; een vak met één spiekbrief opent ze meteen.
 
 ## Nog open (bij het verslag van T1.1)
 - [ ] De ZILL-termen en de afkortingen in zijn schrift nakijken (bv. *ow* of *OW*, *lv* of *LV*).

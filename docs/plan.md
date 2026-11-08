@@ -900,7 +900,7 @@ onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met ve
 ### Nog te doen (voorstel voor de volgorde; de vader beslist)
 | Status | # | Fase | Wat er daarna werkt |
 |---|---|---|---|
-| ▶ | T1 | **Taal: zinsontleding** (plan: `docs/taal.md`) | de zinsontleder (pv, ow, lv, mv; op Moeilijk wwg, nwg, bwb), stap voor stap of vrij kleuren, de proefjes als tips; Taal in het hoofdmenu |
+| ✔ 0.25.0 | T1 | **Taal: zinsontleding** (plan: `docs/taal.md`) | de zinsontleder (pv, ow, lv, mv; op Moeilijk wwg, nwg, bwb), stap voor stap of vrij kleuren, de proefjes als tips; Taal in het hoofdmenu |
 | · | T2 | **Taal: woordsoorten** | zn, lidw, bn, ww, telw, vz, bijw, vw (Moeilijk: vnw); eigen zinnen van de ouder |
 | · | 13 | **Taal: werkwoordspelling** (T3) | werkwoordmachine (tt, vt met 't kofschip, vd, bijvoeglijk vd), d/t-keuze, foutenjager |
 | · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |

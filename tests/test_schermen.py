@@ -73,7 +73,13 @@ def naar_spiekbrief(domein, nr=1):
     d = next(x for x in v.domeinen if x.label == domein)
     i = [x for x in v.domeinen if any(o.spiek for o in x.onderwerpen)].index(d) + 1
     titels = {o.spiek.titel for o in d.onderwerpen if o.spiek}
-    return [OK, OK, hm("Leerstof"), str(i)] + ([str(nr)] if len(titels) > 1 else [])
+    return [OK, OK, hm("Leerstof"), *leerstof_vak(v), str(i)] + ([str(nr)] if len(titels) > 1 else [])
+
+
+def leerstof_vak(vak):
+    """Leerstof vraagt eerst "Welk vak?" als meer vakken spiekbrieven hebben (sinds Taal, 0.25)."""
+    vakken = [v for v in CU.VAKKEN if any(o.spiek for d in v.domeinen for o in d.onderwerpen)]
+    return [str(vakken.index(vak) + 1)] if len(vakken) > 1 else []
 
 
 class Basis(unittest.TestCase):

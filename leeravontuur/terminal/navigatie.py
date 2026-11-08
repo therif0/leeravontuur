@@ -130,6 +130,9 @@ def _spiek_domeinen(app, vak_, kr):
             brieven[0].toon(app, kr_)
         else:
             _spiek_lijst(app, keuze.domein, kr_)
+    if len(keuzes) == 1:  # één domein met spiekbrieven (bv. Taal nu): meteen open
+        open_domein(keuzes[0], kr + [keuzes[0].label])
+        return
     _menu(app, kr, "Welke spiekbrief?", keuzes, open_domein)
 
 

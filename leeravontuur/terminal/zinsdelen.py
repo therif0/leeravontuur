@@ -56,6 +56,8 @@ class ZinsdelenInvoer:
         self.cursor_pos, self.extra, self.uitleg_na = None, None, []
         self.hint = ""
         self.tweede_kans = True     # de Oefenaar zet het volgens de Hulp (een examen later: uit)
+        self.spiekbrief_aan = True  # idem: na de laatste tip opent F1 de spiekbrief (bij het kopje van de stap)
+        self.aantal_tips = 2
         if self.vrij and VERDELEN in self.stappen:
             self.stappen.remove(VERDELEN)
 
@@ -355,17 +357,26 @@ class ZinsdelenInvoer:
                 self.tiptekst = "Alles ziet er juist uit. Druk Enter om na te kijken."
                 return
         tips = Z.TIP_VERDELEN if label == VERDELEN else Z.tips(self.zin, label)
+        self.aantal_tips = len(tips)
+        self.v.data["spiek_kop"] = Z.SPIEK_KOP.get(label, Z.SPIEK_KOP["pv"])  # daar opent de spiekbrief
         if self.tip_nr >= len(tips):
             self.tiptekst = "Meer tips zijn er niet. Probeer het, en lees daarna de uitleg."
             return
         self.tips += 1
         self.tiptekst = f"Tip {self.tip_nr + 1}: {tips[self.tip_nr]}"
         self.tip_nr += 1
+        if self.tip_nr >= len(tips) and self.spiekbrief_aan:
+            self.tiptekst += " Nog eens F1: je spiekbrief."
 
-    tips_op = False  # de spiekbrief komt in T1.3
+    @property
+    def tips_op(self):
+        """Alle tips van deze stap gegeven: de Oefenaar opent dan bij F1 de spiekbrief (de vaste werkwijze, #20)."""
+        return self.tip_nr >= self.aantal_tips
 
     def spiekbrief_bekeken(self):
+        """Na de spiekbrief begint het weer bij tip 1 (de vaste werkwijze)."""
         self.tips += 1
+        self.tip_nr, self.tiptekst = 0, ""
 
     def hulp(self, o):
         return self.tiptekst

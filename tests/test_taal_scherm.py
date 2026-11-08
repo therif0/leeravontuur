@@ -58,6 +58,27 @@ class TestStapVoorStap(Basis):
         self.assertIn('"eerste_fout": "pv"', a["extra"])  # telt als fout om te herhalen (zoals een vraagstuk)
         self.assertEqual(len(app.opslag.herhaalbak(app.kind.id)), 1)
 
+    def test_na_de_tips_de_spiekbrief_bij_de_stap(self):
+        """F1, F1: de twee tips (de tweede zegt "Nog eens F1: je spiekbrief."), F1: de spiekbrief bij het kopje van
+        de stap; Esc = terug naar de vraag, en daarna begint het weer bij tip 1."""
+        scherm, _ = self.speel_zin(OMA, [R, OK, F1, F1, F1, ESC, F1, ESC, ESC, ESC])
+        tip2 = next(b for b in scherm.beelden if "Tip 2:" in b)
+        self.assertIn("spiekbrief.", " ".join(tip2.split()))  # de tip staat over twee regels
+        self.assertIn("Nog eens F1: je spiekbrief.", " ".join(tip2.split()))
+        brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
+        self.assertIn("HET ONDERWERP (ow)", "\n".join(brief.splitlines()[:5]))  # geopend bij de stap van het ow
+        self.assertIn("[Esc] terug naar je vraag", brief)
+        na = scherm.beelden[scherm.beelden.index(brief) + 1:]
+        self.assertTrue(any("Stap 2 van 4" in b for b in na))
+        self.assertTrue(any("Tip 1:" in b for b in na))
+
+    def test_s_in_het_menu_opent_de_spiekbrief(self):
+        from leeravontuur.terminal import curriculum as CU
+        stappen = naar(ONDERWERP, "Enter", niveau=None)[:-1]  # tot in het menu van Zinsontleding
+        scherm, _ = self.speel([*stappen, "s", ESC, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Zinsontleding: zo vind je de zinsdelen"))
+        self.assertTrue(CU.zoek(ONDERWERP).spiek)
+
     def test_twee_keer_fout_dan_de_uitleg(self):
         scherm, app = self.speel_zin(OMA, [OK, OK, ESC, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "✘ De pv is ‘geeft’."))

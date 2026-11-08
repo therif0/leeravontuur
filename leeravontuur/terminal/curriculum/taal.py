@@ -4,21 +4,22 @@ Wat nog niet gebouwd is, staat er al als een domein zonder onderwerpen: in het m
 """
 
 from ...kern.taal import zinsontleding as ZO
-from . import Domein, Onderwerp, Vak
+from . import Domein, Onderwerp, Spiekbrief, Vak
 from . import modi as M
 
 ZINSONTLEDING = "Zinsontleding"
 
 
-def oefenaar(id_, label, kern, domein):
-    """Een onderwerp van de Oefenaar (reeks en vrij oefenen). De spiekbrief komt in T1.3."""
+def oefenaar(id_, label, kern, domein, spiek):
+    """Een onderwerp van de Oefenaar (reeks en vrij oefenen), met zijn spiekbrief (ook in Leerstof)."""
     modi = {"reeks": M.oefenaar(kern.id, "reeks", domein), "vrij": M.oefenaar(kern.id, "vrij", domein)}
-    return Onderwerp(f"taal.{id_}", label, modi, None, (kern.id,), kern.omschrijving)
+    return Onderwerp(f"taal.{id_}", label, modi, Spiekbrief(spiek, M.spiek_oefenaar(kern.id)), (kern.id,),
+                     kern.omschrijving)
 
 
 TAAL = Vak("taal", "Taal", (
     Domein("taal.zinsontleding", ZINSONTLEDING, (
-        oefenaar("zinsontleding.zinsdelen", "Zinsdelen", ZO.ZINSONTLEDING, ZINSONTLEDING),
+        oefenaar("zinsontleding.zinsdelen", "Zinsdelen", ZO.ZINSONTLEDING, ZINSONTLEDING, "Zinsontleding"),
     ), "pv, onderwerp, lijdend en meewerkend voorwerp"),
     Domein("taal.woordsoorten", "Woordsoorten", (), "zn, lidw, bn, ww …"),
     Domein("taal.werkwoordspelling", "Werkwoordspelling", (), "d, t of dt, verleden tijd, voltooid deelwoord"),

@@ -260,6 +260,72 @@ def samenvatting(zin, gevraagd):
     return " · ".join(stukken)
 
 
+# ---- de spiekbrief (Leerstof › Taal › Zinsontleding, en na de laatste tip) ------------------------------------
+
+SPIEK_KOP = {
+    "verdelen": "IN ZINSDELEN VERDELEN",
+    "pv": "DE PERSOONSVORM (pv)",
+    "ow": "HET ONDERWERP (ow)",
+    "lv": "HET LIJDEND VOORWERP (lv)",
+    "mv": "HET MEEWERKEND VOORWERP (mv)",
+    "wwg": "HET GEZEGDE (wwg, nwg)",
+    "nwg": "HET GEZEGDE (wwg, nwg)",
+    "bwb": "DE BIJWOORDELIJKE BEPALING (bwb)",
+}
+
+SPIEKBRIEF = [
+    ("Zinsontleding: zo vind je de zinsdelen", "accent"),
+    ("Zoek ze altijd in deze volgorde: eerst de pv, dan het ow, dan de rest.", "dim"),
+    ("", ""),
+    (SPIEK_KOP["verdelen"], "accent"),
+    ("  Woorden van één zinsdeel kan je samen verplaatsen (de verplaatsproef):", ""),
+    ("  De juf | leest | een boek.  →  Een boek leest de juf.", ""),
+    ("", ""),
+    (SPIEK_KOP["pv"], "accent"),
+    ("  De pv is altijd een werkwoord, en altijd maar één woord.", ""),
+    ("  Vraagproef: maak er een vraag van. Het werkwoord vooraan is de pv.", ""),
+    ("    Oma geeft haar kleinzoon een fiets.  →  Geeft oma … ?", "dim"),
+    ("  Tijdproef: zet de zin in een andere tijd. Wat verandert, is de pv.", ""),
+    ("    Oma geeft …  →  Oma gaf …", "dim"),
+    ("  Getalproef: maak het onderwerp meervoud. Wat mee verandert, is de pv.", ""),
+    ("    Oma geeft …  →  De oma's geven …", "dim"),
+    ("", ""),
+    (SPIEK_KOP["ow"], "accent"),
+    ("  Vraag: wie of wat + pv?    Wie geeft?  →  oma", ""),
+    ("  Het ow en de pv horen samen: is het ow meervoud, dan ook de pv.", ""),
+    ("", ""),
+    (SPIEK_KOP["lv"], "accent"),
+    ("  Vraag: wie of wat + pv + ow?    Wat geeft oma?  →  een fiets", ""),
+    ("  Niet elke zin heeft een lijdend voorwerp: De hond slaapt.", ""),
+    ("", ""),
+    (SPIEK_KOP["mv"], "accent"),
+    ("  Vraag: aan of voor wie + pv + ow + lv?", ""),
+    ("    Aan wie geeft oma een fiets?  →  haar kleinzoon", "dim"),
+    ("  Het mv krijgt iets. Soms staat er aan of voor bij: aan de kinderen.", ""),
+    ("  De meeste zinnen hebben geen meewerkend voorwerp.", ""),
+    ("", ""),
+    (SPIEK_KOP["wwg"], "accent"),
+    ("  6de leerjaar. Werkwoordelijk gezegde (wwg) = de pv + de andere ww:", ""),
+    ("    Oma heeft een fiets gekocht.  →  wwg: heeft gekocht", "dim"),
+    ("  Naamwoordelijk gezegde (nwg) = een koppelwerkwoord (zijn, worden,", ""),
+    ("  blijven) + wat het ow is of wordt.", ""),
+    ("    De kat is heel moe.  →  nwg: is heel moe", "dim"),
+    ("", ""),
+    (SPIEK_KOP["bwb"], "accent"),
+    ("  6de leerjaar (extra). Waar, wanneer of hoe gebeurt het?", ""),
+    ("    Morgen koopt opa een fiets.  →  bwb: morgen", "dim"),
+    ("", ""),
+    ("DE KLEUREN", "accent"),
+    ("  pv  persoonsvorm", "z_pv"),
+    ("  ow  onderwerp", "z_ow"),
+    ("  lv  lijdend voorwerp", "z_lv"),
+    ("  mv  meewerkend voorwerp", "z_mv"),
+    ("  wwg werkwoordelijk gezegde", "z_wwg"),
+    ("  nwg naamwoordelijk gezegde", "z_nwg"),
+    ("  bwb bijwoordelijke bepaling", "z_bwb"),
+]
+
+
 class Zinsontleding(Onderwerp):
     """Taal › Zinsontleding › Zinsdelen: een zin van de zinnenmachine ontleden (het invoer-object terminal/zinsdelen.py
     doet de stappen en geeft "juist" of "fout" terug)."""
@@ -299,6 +365,13 @@ class Zinsontleding(Onderwerp):
 
     def tip(self, v):
         return TIP1["pv"]
+
+    def spiekbrief(self):
+        return SPIEKBRIEF
+
+    def kop_op_spiekbrief(self, v):
+        """Het kopje van de stap waar het kind is (het invoer-object zet v.data["spiek_kop"])."""
+        return v.data.get("spiek_kop", SPIEK_KOP["pv"])
 
 
 ZINSONTLEDING = Zinsontleding()

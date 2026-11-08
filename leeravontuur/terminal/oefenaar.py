@@ -161,6 +161,8 @@ class Oefenaar:
         tips, tip_nr, tiptekst = (o.tips(v) if not obj else []), 0, ""
         # na de laatste tip: de spiekbrief (#20); daarna begint het weer bij tip 1
         spiek = bool(o.spiekbrief()) and self.hulp.spiekbrief
+        if hasattr(obj, "spiekbrief_aan"):  # het object zegt na de laatste tip "Nog eens F1: je spiekbrief"
+            obj.spiekbrief_aan = spiek
         periode = max(1, len(tips) + (kb is not None)) + spiek
         laatste_hulp = None  # bij een invoer-object: nog eens ? op dezelfde plek = de spiekbrief
         tweede = v.invoer not in GEEN_TWEEDE_KANS and self.hulp.tweede_kans

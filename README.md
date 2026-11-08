@@ -89,6 +89,11 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Snelrekenen** (Hoofdrekenen › Tafels, Optellen en aftrekken of Gemengd, met T of Z): 60 seconden zoveel mogelijk, of 20 sommen om het snelst, met een klok die
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.
+- **Taal › Zinsontleding** (de eerste stap van Taal, volgens het katholieke leerplan): een zin ontleden, stap voor
+  stap zoals op school (pv, onderwerp, lijdend en meewerkend voorwerp; op Moeilijk ook het gezegde en de bwb), of
+  vrij kleuren met Tab. Elk zinsdeel heeft een eigen kleur en zijn afkorting; F1 geeft de vraag van school en het
+  proefje, daarna de spiekbrief. De andere delen van Taal (woordsoorten, werkwoordspelling …) staan al in het menu,
+  in het grijs. Het plan: [docs/taal.md](docs/taal.md).
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
   - Het leerjaar stelt de ouder in (Ouders › Kinderen). Volgend schooljaar schuift alles mee.
