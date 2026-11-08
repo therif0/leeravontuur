@@ -200,19 +200,21 @@ Een test maakt elke zinsbouw in elk leerjaar en kijkt na:
 
 ---
 
-## De kleuren (de vader: één kleur per label, de afkorting staat er altijd bij)
-Een zinsdeel krijgt **een balk onder de woorden in zijn kleur, met de afkorting eronder**. De woorden zelf blijven
-gewone tekst. Zo botst rood (pv) niet met "fout": juist en fout hebben altijd hun eigen ✔ en ✘.
+## De kleuren (de vader: één kleur per label, de afkorting staat er altijd bij; 8/11: de kleuren van de markeerstiften thuis)
+Een zinsdeel wordt **gemarkeerd zoals met een markeerstift**: zwarte tekst op een lichte achtergrond in zijn kleur,
+met de afkorting eronder. Zo kan het kind thuis op papier dezelfde stiften gebruiken. Juist en fout hebben altijd hun
+eigen ✔ en ✘. Waar het kind staat, staat een streep onder de woorden (niet de gele cursor, die zou op de pv lijken).
 
-| Label | Standaard (8 kleuren) | 256 kleuren | Kleurenblind (Okabe-Ito, beide thema's) | Hoog contrast, geen kleur |
-|---|---|---|---|---|
-| **pv** persoonsvorm | rood | 196 | vermiljoen (202) | vet + onderlijnd, label `pv` |
-| **ow** onderwerp | blauw | 27 | blauw (26) | label `ow` |
-| **lv** lijdend voorwerp | groen | 34 | blauwgroen (35) | label `lv` |
-| **mv** meewerkend voorwerp | paars (magenta) | 129 | roodpaars (175) | label `mv` |
-| **wwg** werkwoordelijk gezegde (6de) | geel | 208 (oranje) | oranje (214) | label `wwg` |
-| **nwg** naamwoordelijk gezegde (6de) | geel | 226 | geel (227) | label `nwg` |
-| **bwb** bijwoordelijke bepaling (6de; extra, niet in de minimumdoelen) | cyaan | 44 | hemelsblauw (117) | label `bwb` |
+| Label | Stift | 256 kleuren (achtergrond) | 8 kleuren | Kleurenblind (Okabe-Ito, beide thema's) | Hoog contrast, geen kleur |
+|---|---|---|---|---|---|
+| **pv** persoonsvorm | geel | 227 | geel | geel (227) | omgekeerd + onderlijnd, label `pv` |
+| **ow** onderwerp | blauw | 117 | cyaan | hemelsblauw (117) | omgekeerd, label `ow` |
+| **lv** lijdend voorwerp | groen | 120 | groen | blauwgroen (36) | omgekeerd, label `lv` |
+| **mv** meewerkend voorwerp | roze | 213 | magenta | roodpaars (175) | omgekeerd, label `mv` |
+| **wwg / nwg** gezegde (6de; nooit samen in één zin) | oranje | 215 | rood | oranje (214) | omgekeerd, label `wwg`/`nwg` |
+| **bwb** bijwoordelijke bepaling (6de; extra, niet in de minimumdoelen) | paars | 183 | wit | blauw (25) | omgekeerd, label `bwb` |
+
+De woordsoorten (T2) krijgen hun kleuren pas in T2 (een voorstel, met de stiften in gedachten):
 
 | Woordsoort | Kleur | Woordsoort | Kleur |
 |---|---|---|---|
@@ -221,8 +223,8 @@ gewone tekst. Zo botst rood (pv) niet met "fout": juist en fout hebben altijd hu
 | **bn** bijvoeglijk naamwoord | groen | **bijw** bijwoord (extra, niet in de minimumdoelen) | oranje (8 kleuren: geel) |
 | **lidw** lidwoord | grijs | **vw** voegwoord | paars |
 
-- In de terminal met maar 8 kleuren delen een paar labels een kleur (wwg/nwg, telw/bijw). De afkorting maakt het
-  verschil.
+- In de terminal met maar 8 kleuren zijn de stiftkleuren minder mooi (cyaan voor blauw, magenta voor roze). De
+  afkorting maakt altijd het verschil.
 - De kleuren zijn rollen in `terminal/thema.py`, zoals alle kleuren (een test kijkt na dat elk thema elk label heeft).
 - **De legende** staat op de spiekbrief en eventjes onderaan het scherm bij de eerste vraag.
 - Komt er een foto van het schrift met andere kleuren, dan passen we alleen deze tabel aan.

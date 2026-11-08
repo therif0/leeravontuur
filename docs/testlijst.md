@@ -96,7 +96,7 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] Het hoofdmenu: **Taal** is te kiezen. Het toont 6 delen; alleen Zinsontleding werkt, de rest is grijs
   ("Woordsoorten komt binnenkort.").
 - [ ] **Taal › Zinsontleding › Zinsdelen › Normaal:** "Stap 1 van 4: Zoek de persoonsvorm (pv)". Met ←→ een woord,
-  Spatie = het volgende woord erbij, Enter = kiezen. Een juist zinsdeel krijgt een gekleurde balk met de afkorting.
+  Spatie = het volgende woord erbij, Enter = kiezen. Een juist zinsdeel wordt gemarkeerd als met een markeerstift (pv geel, ow blauw, lv groen, mv roze), met de afkorting.
   Daarna het onderwerp, het lijdend voorwerp en het meewerkend voorwerp; is er geen, dan **N**.
 - [ ] Kies met opzet het eerste woord als pv: een uitleg en een tweede kans. **F1** twee keer = de twee tips, een
   derde keer = de spiekbrief bij het kopje van de stap (Esc = terug naar de zin).

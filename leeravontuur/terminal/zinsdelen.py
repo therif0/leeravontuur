@@ -131,16 +131,22 @@ class ZinsdelenInvoer:
         return uit
 
     def teken_zin(self, s, y, kleuren, bezig):
-        """De woorden (rij y), een balk in de kleur van het zinsdeel (y+1) en de afkorting eronder (y+2)."""
+        """De woorden (rij y), gemarkeerd als met een markeerstift in de kleur van het zinsdeel, met de afkorting
+        eronder (y+2). Waar het kind staat (de groep die het kiest), staat een streep onder de woorden (y+1): zo lijkt
+        de cursor niet op de gele pv."""
         x, plekken = X, []
         groep = set(self.groep()) if bezig and self.label != VERDELEN else set()
         for i, w in enumerate(self.zin.woorden):
             plekken.append(x)
-            s.put(y, x, w.tekst, "cursor" if i in groep else "bold" if i in kleuren else "")
+            s.put(y, x, w.tekst, rol(kleuren[i]) if i in kleuren else "bold" if i in groep else "")
+            if i in groep:
+                s.put(y + 1, x, "▀" * len(w.tekst), "accent")
+                if i + 1 in groep:
+                    s.put(y + 1, x + len(w.tekst), "▀▀", "accent")
             if bezig and not w.leesteken:
                 s.zones.voeg(y, x, 1, len(w.tekst), ("woord", self.woorden.index(i)))
             x += len(w.tekst) + 2
-        # de balken en de afkortingen, per aaneengesloten stuk met hetzelfde label
+        # de markeerstift loopt door tussen de woorden van één zinsdeel, en de afkorting staat eronder
         i = 0
         while i < len(self.zin.woorden):
             label = kleuren.get(i)
@@ -152,7 +158,8 @@ class ZinsdelenInvoer:
                     (label == "pv" or kleuren.get(j) == "pv"):
                 j += 1
             begin, eind = plekken[i], plekken[j] + len(self.zin.woorden[j].tekst)
-            s.put(y + 1, begin, "▀" * (eind - begin), rol(label))
+            for k in range(i, j):
+                s.put(y, plekken[k] + len(self.zin.woorden[k].tekst), "  ", rol(label))
             s.put(y + 2, begin + max(0, (eind - begin - len(label)) // 2), label, rol(label))
             i = j + 1
         if bezig and self.label == VERDELEN:  # de grenzen tussen de woorden en de cursor op een gat

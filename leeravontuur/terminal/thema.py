@@ -7,7 +7,9 @@ nooit de enige aanwijzing is.
 
 import curses
 
-# de zinsdelen (Taal, docs/taal.md): één vaste kleur per label, altijd met de afkorting erbij
+# de zinsdelen (Taal, docs/taal.md): één vaste kleur per label, altijd met de afkorting erbij. Als een markeerstift
+# (de vader, 8/11: de kleuren van de stiften thuis): zwarte tekst op een lichte achtergrond. pv geel, ow blauw,
+# lv groen, mv roze, het gezegde (wwg of nwg, nooit samen in een zin) oranje, de bwb paars.
 ZINSDEEL_ROLLEN = ("z_pv", "z_ow", "z_wwg", "z_nwg", "z_lv", "z_mv", "z_bwb")
 ROLLEN = ("titel", "voet", "knop", "bold", "dim", "goed", "fout", "accent", "accent2",
           "cursor", "goedvak", "foutvak", "veld", "info", *ZINSDEEL_ROLLEN)
@@ -23,9 +25,10 @@ PALETTEN = {
         "accent": ("geel", -1, True), "accent2": ("cyaan", -1, True),
         "cursor": ("zwart", "geel", False), "goedvak": ("zwart", "groen", False),
         "foutvak": ("wit", "rood", True), "info": ("cyaan", -1, False),
-        "z_pv": ((196, "rood"), -1, True), "z_ow": ((27, "blauw"), -1, True), "z_lv": ((34, "groen"), -1, True),
-        "z_mv": ((129, "magenta"), -1, True), "z_wwg": ((208, "geel"), -1, True), "z_nwg": ((226, "geel"), -1, True),
-        "z_bwb": ((44, "cyaan"), -1, True),
+        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_lv": ("zwart", (120, "groen"), False), "z_mv": ("zwart", (213, "magenta"), False),
+        "z_wwg": ("zwart", (215, "rood"), False), "z_nwg": ("zwart", (215, "rood"), False),
+        "z_bwb": ("zwart", (183, "wit"), False),
     },
     # Okabe-Ito-kleuren: blauw en oranje blijven te onderscheiden bij rood-groen-kleurenblindheid
     "rood-groen": {
@@ -35,9 +38,10 @@ PALETTEN = {
         "accent": (_WIT, -1, True), "accent2": ((117, "magenta"), -1, True),
         "cursor": ("zwart", (255, "wit"), False), "goedvak": (_WIT, (25, "blauw"), True),
         "foutvak": ("zwart", (208, "geel"), False), "info": ((117, "cyaan"), -1, False),
-        "z_pv": ((202, "rood"), -1, True), "z_ow": ((26, "blauw"), -1, True), "z_lv": ((35, "groen"), -1, True),
-        "z_mv": ((175, "magenta"), -1, True), "z_wwg": ((214, "geel"), -1, True), "z_nwg": ((227, "geel"), -1, True),
-        "z_bwb": ((117, "cyaan"), -1, True),
+        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
+        "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
+        "z_bwb": (_WIT, (25, "blauw"), True),
     },
     # bij blauw-geel-kleurenblindheid blijven rood en blauwgroen goed te onderscheiden
     "blauw-geel": {
@@ -47,9 +51,10 @@ PALETTEN = {
         "accent": (_WIT, -1, True), "accent2": ((201, "magenta"), -1, True),
         "cursor": ("zwart", (255, "wit"), False), "goedvak": ("zwart", (37, "cyaan"), False),
         "foutvak": (_WIT, (160, "rood"), True), "info": ((37, "cyaan"), -1, False),
-        "z_pv": ((202, "rood"), -1, True), "z_ow": ((26, "blauw"), -1, True), "z_lv": ((35, "groen"), -1, True),
-        "z_mv": ((175, "magenta"), -1, True), "z_wwg": ((214, "geel"), -1, True), "z_nwg": ((227, "geel"), -1, True),
-        "z_bwb": ((117, "cyaan"), -1, True),
+        "z_pv": ("zwart", (227, "geel"), False), "z_ow": ("zwart", (117, "cyaan"), False),
+        "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
+        "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
+        "z_bwb": (_WIT, (25, "blauw"), True),
     },
     "contrast": {
         "titel": ("zwart", "wit", False), "voet": ("zwart", "wit", False),
@@ -58,7 +63,7 @@ PALETTEN = {
         "accent": ("wit", -1, True), "accent2": ("wit", -1, True),
         "cursor": ("zwart", "wit", False), "goedvak": ("zwart", "wit", False),
         "foutvak": ("zwart", "wit", False), "info": ("wit", -1, False),
-        **{rol: ("wit", -1, True) for rol in ZINSDEEL_ROLLEN},  # hoog contrast: het verschil zit in de afkorting
+        **{rol: ("zwart", "wit", False) for rol in ZINSDEEL_ROLLEN},  # hoog contrast: het verschil zit in de afkorting
     },
 }
 
@@ -71,7 +76,7 @@ def _mono():
         "accent": A.A_BOLD, "accent2": A.A_UNDERLINE, "cursor": A.A_REVERSE,
         "goedvak": A.A_REVERSE, "foutvak": A.A_REVERSE | A.A_UNDERLINE,
         "veld": A.A_UNDERLINE, "info": 0, "": 0,
-        **{rol: A.A_BOLD | (A.A_UNDERLINE if rol == "z_pv" else 0) for rol in ZINSDEEL_ROLLEN},
+        **{rol: A.A_REVERSE | (A.A_UNDERLINE if rol == "z_pv" else 0) for rol in ZINSDEEL_ROLLEN},
     }
 
 

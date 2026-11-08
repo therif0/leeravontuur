@@ -9,8 +9,9 @@ In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
   - Eerst de **persoonsvorm (pv)**, dan het **onderwerp (ow)**, het **lijdend voorwerp (lv)** en het **meewerkend
     voorwerp (mv)**. Met ←→ kies je een woord, met Spatie komt het volgende woord erbij, Enter = kiezen.
     Heeft de zin geen lv of mv, dan druk je **N**.
-  - Elk gevonden zinsdeel krijgt een gekleurde balk met de afkorting eronder (pv rood, ow blauw, lv groen, mv
-    paars). In de kleurenblinde thema's andere kleuren, zonder kleur alleen de afkorting.
+  - Elk gevonden zinsdeel wordt **gemarkeerd zoals met een markeerstift**, in de kleuren van de stiften thuis: pv
+    geel, ow blauw, lv groen, mv roze (6de leerjaar: het gezegde oranje, de bwb paars), met de afkorting eronder.
+    In de kleurenblinde thema's andere tinten, zonder kleur omgekeerd met de afkorting.
   - **F1** geeft de vraag van school ("wie of wat + pv + ow?"), dan het proefje (de vraagproef, de tijdproef), dan de
     spiekbrief. Een fout krijgt een uitleg die bij de fout past en een tweede kans.
   - **Tab** = vrij kleuren met P, O, L en M (op Moeilijk meteen, ook met het gezegde en de bwb).

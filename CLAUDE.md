@@ -171,7 +171,8 @@ Gouden regels:
     kleuren, verdelen, de spiekbrief (`SPIEK_KOP` per stap) en het `Onderwerp` (invoer `"zinsdelen"`);
   - `terminal/zinsdelen.py`: het invoer-object (stappen, Tab = vrij kleuren, Makkelijk eerst verdelen, een eigen
     tweede kans die `Hulp.tweede_kans` volgt); de kleuren zijn de rollen `z_pv` … `z_bwb` in `terminal/thema.py`
-    (balk + afkorting, nooit kleur alleen);
+    (als een markeerstift: zwart op de stiftkleur, pv geel, ow blauw, lv groen, mv roze, gezegde oranje, bwb paars; de
+    afkorting staat er altijd onder, nooit kleur alleen; de cursor is een streep onder de woorden);
   - `terminal/curriculum/taal.py`: een domein zonder onderwerpen = nog niet gebouwd, grijs in het menu.
 
 ## Menu's (Vak › Domein › Onderwerp)

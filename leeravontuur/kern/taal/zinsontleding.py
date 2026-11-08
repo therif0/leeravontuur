@@ -315,14 +315,14 @@ SPIEKBRIEF = [
     ("  6de leerjaar (extra). Waar, wanneer of hoe gebeurt het?", ""),
     ("    Morgen koopt opa een fiets.  →  bwb: morgen", "dim"),
     ("", ""),
-    ("DE KLEUREN", "accent"),
-    ("  pv  persoonsvorm", "z_pv"),
-    ("  ow  onderwerp", "z_ow"),
-    ("  lv  lijdend voorwerp", "z_lv"),
-    ("  mv  meewerkend voorwerp", "z_mv"),
-    ("  wwg werkwoordelijk gezegde", "z_wwg"),
-    ("  nwg naamwoordelijk gezegde", "z_nwg"),
-    ("  bwb bijwoordelijke bepaling", "z_bwb"),
+    ("DE KLEUREN (zoals je markeerstiften)", "accent"),
+    (" pv  persoonsvorm             geel ", "z_pv"),
+    (" ow  onderwerp                blauw ", "z_ow"),
+    (" lv  lijdend voorwerp         groen ", "z_lv"),
+    (" mv  meewerkend voorwerp      roze ", "z_mv"),
+    (" wwg werkwoordelijk gezegde   oranje ", "z_wwg"),
+    (" nwg naamwoordelijk gezegde   oranje ", "z_nwg"),
+    (" bwb bijwoordelijke bepaling  paars ", "z_bwb"),
 ]
 
 
