@@ -21,8 +21,8 @@ TAAL = Vak("taal", "Taal", (
     Domein("taal.zinsontleding", ZINSONTLEDING, (
         oefenaar("zinsontleding.zinsdelen", "Zinsdelen", ZO.ZINSONTLEDING, ZINSONTLEDING, "Zinsontleding"),
     ), "pv, onderwerp, lijdend en meewerkend voorwerp"),
-    Domein("taal.woordsoorten", "Woordsoorten", (), "zn, lidw, bn, ww …"),
     Domein("taal.werkwoordspelling", "Werkwoordspelling", (), "d, t of dt, verleden tijd, voltooid deelwoord"),
+    Domein("taal.woordsoorten", "Woordsoorten", (), "zn, lidw, bn, ww …"),
     Domein("taal.spelling", "Spelling", (), "meervoud, verkleinwoord, ei/ij, au/ou …"),
     Domein("taal.woordenschat", "Woordenschat", (), "synoniemen, uitdrukkingen, spreekwoorden"),
     Domein("taal.lezen", "Begrijpend lezen", (), "een tekst lezen en vragen beantwoorden"),
