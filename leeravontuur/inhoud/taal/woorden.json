@@ -176,6 +176,14 @@
   {"inf": "worden", "tt": ["wordt", "worden"], "vt": ["werd", "werden"]},
   {"inf": "blijven", "tt": ["blijft", "blijven"], "vt": ["bleef", "bleven"]}
  ],
+ "zegwerkwoorden": [
+  {"inf": "zeggen", "tt": ["zegt", "zeggen"], "vt": ["zei", "zeiden"]},
+  {"inf": "zien", "tt": ["ziet", "zien"], "vt": ["zag", "zagen"]},
+  {"inf": "weten", "tt": ["weet", "weten"], "vt": ["wist", "wisten"]},
+  {"inf": "denken", "tt": ["denkt", "denken"], "vt": ["dacht", "dachten"]},
+  {"inf": "horen", "tt": ["hoort", "horen"], "vt": ["hoorde", "hoorden"]},
+  {"inf": "merken", "tt": ["merkt", "merken"], "vt": ["merkte", "merkten"]}
+ ],
  "naamwoordelijk": [
   "moe/bn", "blij/bn", "ziek/bn", "boos/bn", "heel/bijw moe/bn", "erg/bijw blij/bn", "stil/bn", "rustig/bn"
  ],

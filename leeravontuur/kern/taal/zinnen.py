@@ -12,6 +12,12 @@ Een zin schrijven (de nagekeken lijst en de eigen zinnen van de ouder) gaat met 
 
 Een woord kan zijn woordsoort meekrijgen met een schuine streep (`haar/vnw`). Het gezegde (wwg, nwg) mag in stukken
 staan: alle stukken samen zijn één zinsdeel. Bij de andere labels is elk paar haakjes één zinsdeel.
+
+Een zin met **meer dan één pv** (een samengestelde zin, 0.25.1) duidt alleen de pv's en hun onderwerp aan; de andere
+woorden staan los. Een `|` scheidt de deelzinnen; zonder `|` delen de pv's één onderwerp:
+
+    [o Grootvader] [pv vertelt] | dat [o de kist] onder de grond [pv ligt].
+    [o Emma] [pv leest] de brief en [pv krijgt] een idee.
 """
 
 import re
@@ -90,6 +96,11 @@ class Zin:
     def labels(self):
         return {d.label for d in self.delen}
 
+    @property
+    def samengesteld(self):
+        """Meer dan één pv: dan zijn alleen de pv's en hun onderwerp aangeduid (zie deelzinnen)."""
+        return len(self.alle("pv")) > 1
+
     def label_van(self, i):
         """Het zinsdeel van woord i (de pv gaat voor het gezegde), of None."""
         labels = [d.label for d in self.delen if i in d.posities]
@@ -100,6 +111,8 @@ class Zin:
         stukken, i = [], 0
         while i < len(self.woorden):
             w = self.woorden[i]
+            if i in self.data.get("grenzen", ()):
+                stukken.append("|")
             if w.leesteken:
                 stukken.append(w.tekst)
                 i += 1
@@ -107,6 +120,7 @@ class Zin:
             labels = tuple(sorted({d.label for d in self.delen if i in d.posities}, key=list(ZINSDELEN).index))
             j = i + 1
             while j < len(self.woorden) and not self.woorden[j].leesteken and \
+                    j not in self.data.get("grenzen", ()) and \
                     tuple(sorted({d.label for d in self.delen if j in d.posities}, key=list(ZINSDELEN).index)) == labels \
                     and _zelfde_deel(self, i, j):
                 j += 1
@@ -120,11 +134,26 @@ class Zin:
 
 
 BREEDTE = 71  # zoveel tekens mag een zin hebben met 2 spaties tussen de woorden (80 kolommen min de marges)
+MAX_PV = 3    # zoveel persoonsvormen mag een samengestelde zin hebben
 
 
 def breedte(zin):
-    """Hoe breed de zin op het scherm staat: de woorden met 2 spaties ertussen (ook voor het leesteken)."""
-    return sum(len(w.tekst) for w in zin.woorden) + 2 * (len(zin.woorden) - 1)
+    """Hoe breed de zin op het scherm staat: de woorden met 2 spaties ertussen; een leesteken staat tegen het woord."""
+    echte = sum(not w.leesteken for w in zin.woorden)
+    return sum(len(w.tekst) for w in zin.woorden) + 2 * max(0, echte - 1)
+
+
+def deelzinnen(zin):
+    """[(positie van de pv, posities van zijn onderwerp of None), …] in de volgorde van de zin. Een grens (`|`) scheidt
+    de deelzinnen; pv's in dezelfde deelzin delen het onderwerp van die deelzin."""
+    grenzen = [0, *sorted(zin.data.get("grenzen", ())), len(zin.woorden)]
+    uit = []
+    for a, b in zip(grenzen, grenzen[1:]):
+        o = [d for d in zin.alle("o") if a <= d.posities[0] < b]
+        for d in zin.alle("pv"):
+            if a <= d.posities[0] < b:
+                uit.append((d.posities[0], o[0].posities if len(o) == 1 else None))
+    return sorted(uit)
 
 
 def _zelfde_deel(zin, i, j):
@@ -132,7 +161,7 @@ def _zelfde_deel(zin, i, j):
     return [d for d in zin.delen if i in d.posities] == [d for d in zin.delen if j in d.posities]
 
 
-_WOORD = re.compile(r"[^\s\[\]]+")
+_WOORD = re.compile(r"[^\s\[\]|]+")
 
 
 def _splits(tekst):
@@ -163,7 +192,7 @@ def _woord(stuk, soorten):
 def lees_haakjes(tekst, soorten=None):
     """Een zin met haakjes → Zin. soorten(woord) mag de woordsoort geven van een woord zonder /soort.
     Geeft ZinFout met een uitleg in gewone taal als er iets niet klopt."""
-    woorden, delen, gezegde = [], [], {}
+    woorden, delen, gezegde, grenzen = [], [], {}, []
     i = 0
     tekst = tekst.strip()
     while i < len(tekst):
@@ -198,6 +227,9 @@ def lees_haakjes(tekst, soorten=None):
             i = eind + 1
         elif c == "]":
             raise ZinFout("Er staat een ] zonder [.")
+        elif c == "|":
+            grenzen.append(len(woorden))
+            i += 1
         else:
             m = _WOORD.match(tekst, i)
             for s in _splits(m.group()):
@@ -208,7 +240,15 @@ def lees_haakjes(tekst, soorten=None):
     pv = [d for d in delen if d.label == "pv"]
     if not gezegde and len(pv) == 1:  # geen gezegde geschreven: het werkwoordelijk gezegde is de pv alleen
         delen.append(Deel("wwg", pv[0].posities))
+    werkwoorden = {p for d in delen if d.label in ("pv", "wwg") for p in d.posities}
+    for p in werkwoorden:  # de pv en het werkwoordelijk gezegde zijn altijd werkwoorden
+        if woorden[p].soort is None:
+            woorden[p] = Woord(woorden[p].tekst, "ww")
     zin = Zin(woorden, sorted(delen, key=lambda d: (list(ZINSDELEN).index(d.label), d.posities)))
+    if grenzen:
+        if len(pv) < 2:
+            raise ZinFout("Een | staat tussen twee deelzinnen: elke deelzin heeft een eigen persoonsvorm (pv).")
+        zin.data["grenzen"] = grenzen
     fouten = controleer(zin)
     if fouten:
         raise ZinFout(fouten[0])
@@ -221,8 +261,10 @@ def controleer(zin, volledig=True):
     if not zin.woorden or all(w.leesteken for w in zin.woorden):
         return ["De zin is leeg."]
     pv = zin.alle("pv")
+    if len(pv) > 1:
+        return _controleer_samengesteld(zin)
     if len(pv) != 1:
-        fouten.append("Een zin heeft precies één persoonsvorm (pv)." if pv else "Er is geen persoonsvorm (pv).")
+        fouten.append("Er is geen persoonsvorm (pv).")
     elif len(pv[0].posities) != 1:
         fouten.append("De persoonsvorm is één woord.")
     if len(zin.alle("o")) > 1:
@@ -247,4 +289,28 @@ def controleer(zin, volledig=True):
         los = [w.tekst for i, w in enumerate(zin.woorden) if not w.leesteken and i not in in_deel]
         if los:
             fouten.append(f"'{los[0]}' hoort bij geen enkel zinsdeel.")
+    return list(dict.fromkeys(fouten))
+
+
+def _controleer_samengesteld(zin):
+    """Een zin met meer dan één pv: alleen pv en o, elke pv één woord, en elke deelzin precies één onderwerp."""
+    fouten = []
+    pv = zin.alle("pv")
+    if len(pv) > MAX_PV:
+        fouten.append(f"Een zin heeft hier hoogstens {MAX_PV} persoonsvormen.")
+    if any(len(d.posities) != 1 for d in pv):
+        fouten.append("De persoonsvorm is één woord.")
+    anders = sorted({d.label for d in zin.delen} - {"pv", "o"})
+    if anders:
+        fouten.append(f"In een zin met meer dan één persoonsvorm duid je alleen pv en o aan (niet {', '.join(anders)}).")
+    if any(o is None for _, o in deelzinnen(zin)):
+        fouten.append("Elke deelzin heeft precies één onderwerp (o); zet een | tussen de deelzinnen.")
+    gezien = set()
+    for d in zin.delen:
+        for p in d.posities:
+            if zin.woorden[p].leesteken:
+                fouten.append("Een leesteken hoort bij geen zinsdeel.")
+            elif p in gezien:
+                fouten.append(f"'{zin.woorden[p].tekst}' staat in twee zinsdelen.")
+            gezien.add(p)
     return list(dict.fromkeys(fouten))

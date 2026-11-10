@@ -30,6 +30,14 @@ PAD = Path(__file__).resolve().parent.parent.parent / "inhoud" / "taal" / "woord
 
 ZINSBOUW = ("o_pv", "o_pv_lv", "o_pv_mv_lv", "bwb_pv_o_lv", "bwb_pv_o_mv_lv", "vraag_pv_o_lv",
             "o_pv_lv_vd", "o_pv_mv_lv_vd", "o_pv_nwg", "o_pv_lv_bwb", "o_pv_lv_aan_mv")
+# zinnen met twee persoonsvormen (0.25.1): alleen de pv's en hun onderwerp zijn aangeduid (zinnen.deelzinnen)
+#    twee_en            De juf leest een boek en de kinderen spelen.
+#    twee_samen         Tom zoekt een sleutel en vindt een bal.          (de twee pv's delen het onderwerp)
+#    twee_dat           Oma ziet dat de hond een bal zoekt.              (in de bijzin staat de pv achteraan)
+#    twee_terwijl       Papa bakt een taart terwijl de kinderen spelen.
+#    twee_terwijl_voor  Terwijl de kinderen spelen, bakt papa een taart. (de bijzin vooraan: dan pv vóór o)
+SAMENGESTELD = ("twee_en", "twee_samen", "twee_dat", "twee_terwijl", "twee_terwijl_voor")
+KORT = ("vallen", "vertrekken", "vinden")  # duurt maar een ogenblik: niet in een bijzin met terwijl
 TELWOORDEN = ("twee", "drie", "vier", "vijf")
 
 
@@ -74,7 +82,7 @@ def woordsoorten():
     for basis, met_e in L["bn"].items():
         zet(basis, "bn")
         zet(met_e, "bn")
-    for ww in [*L["werkwoorden"], *L["koppelwerkwoorden"]]:
+    for ww in [*L["werkwoorden"], *L["koppelwerkwoorden"], *L["zegwerkwoorden"]]:
         for vorm in [ww["inf"], *ww["tt"], *ww["vt"], ww.get("vd", ww["inf"])]:
             zet(vorm, "ww")
     for hulp in L["hulpwerkwoorden"].values():
@@ -84,9 +92,11 @@ def woordsoorten():
         zet(w, "lidw")
     for w in TELWOORDEN:
         zet(w, "telw")
-    for w in ("aan", "voor", "in", "op", "na", "om"):
+    for w in ("aan", "voor", "in", "op", "na", "om", "onder", "naar", "met", "van", "door", "bij", "uit", "over",
+              "tegen", "achter", "naast", "tussen", "boven"):
         zet(w, "vz")
-    zet("en", "vw")
+    for w in ("en", "dat", "terwijl", "maar", "want", "omdat", "als", "wanneer", "toen", "of"):
+        zet(w, "vw")
     return uit
 
 
@@ -152,8 +162,19 @@ class Bouwer:
                 self.delen.append(Deel(label, posities))
         return posities
 
+    def los(self, woorden):
+        """Woorden zonder zinsdeel (in een zin met twee pv's is alleen pv en o aangeduid)."""
+        self.woorden += woorden
+
+    def grens(self):
+        """Hier begint een nieuwe deelzin."""
+        self.grenzen = [*getattr(self, "grenzen", []), len(self.woorden)]
+
     def zin(self, leesteken, data):
         self.woorden.append(Woord(leesteken, LT))
+        if getattr(self, "grenzen", None) or len([d for d in self.delen if d.label == "pv"]) > 1:
+            data = {**data, "grenzen": list(getattr(self, "grenzen", [])), "eerste": self.woorden[0].tekst}
+            return Zin(_hoofdletter(self.woorden), list(self.delen), data)
         label = "nwg" if getattr(self, "nwg", False) else "wwg"
         delen = self.delen + [Deel(label, tuple(sorted(self.gezegde)))]
         data = {**data, "eerste": self.woorden[0].tekst}  # zoals in de woordenlijst (papa, Lotte): voor de proefjes
@@ -261,6 +282,104 @@ def _maak(zinsbouw, rng, tijd, lv_weglaten=True):
     if vd:
         b.voeg([Woord(ww["vd"], "ww")], "wwg")
     return b.zin("?" if delen[0] == "vraag" else ".", data)
+
+
+# ---- zinnen met twee persoonsvormen ----------------------------------------------------
+
+def maak_samengesteld(zinsbouw, rng=random, tijden=("tt", "vt")):
+    """Een zin met twee pv's (alleen pv en o aangeduid). Probeert opnieuw als de zin te breed is voor het scherm."""
+    if zinsbouw not in SAMENGESTELD:
+        raise ValueError(f"onbekende zinsbouw '{zinsbouw}'")
+    for _ in range(400):
+        try:
+            zin = _maak_samengesteld(zinsbouw, rng, rng.choice(list(tijden)))
+        except Opnieuw:
+            continue
+        if not controleer(zin) and breedte(zin) <= BREEDTE:
+            return zin
+    raise RuntimeError(f"geen zin gevonden voor '{zinsbouw}'")
+
+
+def _deelzin(rng, tijd, soort=None, niet=()):
+    """Eén deelzin: (onderwerp, pv, de rest (een lijdend voorwerp of niets), het werkwoord, de soort van het
+    onderwerp). soort = het onderwerp moet van die soort zijn (een gedeeld onderwerp); niet = deze werkwoorden niet."""
+    met_lv = rng.random() < 0.6
+    ww = kies_ww(rng, nodig_lv=met_lv, zonder_lv=not met_lv, lv_weglaten=False)
+    if ww["inf"] in niet or (soort and soort not in ww["o"]):
+        raise Opnieuw()
+    soort = soort or rng.choice(ww["o"])
+    item = rng.choice(lijst()["onderwerpen"][soort])
+    g = 0 if item["getal"] == "ev" else 1
+    rest = lv_groep(ww, rng)[0] if met_lv else []
+    o = groep(item["tekst"])
+    if _zelfde(o, rest):
+        raise Opnieuw()
+    return {"o": o, "pv": Woord(ww[tijd][g], "ww"), "rest": rest, "ww": ww, "soort": soort, "g": g}
+
+
+def _maak_samengesteld(zinsbouw, rng, tijd):
+    b = Bouwer()
+    data = {"zinsbouw": zinsbouw, "tijd": tijd}
+    een = _deelzin(rng, tijd)
+    if zinsbouw == "twee_samen":  # o pv … en pv …: één onderwerp voor twee pv's
+        ww2 = kies_ww(rng, nodig_lv=True)
+        if ww2["inf"] == een["ww"]["inf"] or een["soort"] not in ww2["o"] or not een["rest"]:
+            raise Opnieuw()  # (zonder lijdend voorwerp klinkt het vreemd: "Opa slaapt en schrijft een brief.")
+        b.voeg(een["o"], "o")
+        b.voeg([een["pv"]], "pv")
+        b.los(een["rest"])
+        b.los([Woord("en", "vw")])
+        b.voeg([Woord(ww2[tijd][een["g"]], "ww")], "pv")
+        b.los(lv_groep(ww2, rng)[0])
+        return b.zin(".", data)
+    if zinsbouw == "twee_dat":  # een mens zegt/ziet/denkt dat + een deelzin met de pv achteraan
+        zeg = rng.choice(lijst()["zegwerkwoorden"])
+        item = rng.choice(lijst()["onderwerpen"]["mens"])
+        wie = groep(item["tekst"])
+        if _zelfde(wie, een["o"]) or _zelfde(wie, een["rest"]):
+            raise Opnieuw()
+        b.voeg(wie, "o")
+        b.voeg([Woord(zeg[tijd][0 if item["getal"] == "ev" else 1], "ww")], "pv")
+        b.grens()
+        b.los([Woord("dat", "vw")])
+        b.voeg(een["o"], "o")
+        b.los(een["rest"])
+        b.voeg([een["pv"]], "pv")
+        return b.zin(".", data)
+    # terwijl + iets dat maar een ogenblik duurt klinkt vreemd ("terwijl de buren vielen")
+    kort = () if zinsbouw == "twee_en" else KORT
+    twee = _deelzin(rng, tijd, niet=(een["ww"]["inf"], *kort))
+    if _zelfde(een["o"], twee["o"]) or _zelfde(een["o"], twee["rest"]) or _zelfde(twee["o"], een["rest"]) or \
+            (een["rest"] and _zelfde(een["rest"], twee["rest"])):
+        raise Opnieuw()
+    if zinsbouw == "twee_en":
+        for deel, voor in ((een, None), (twee, "en")):
+            if voor:
+                b.grens()
+                b.los([Woord(voor, "vw")])
+            b.voeg(deel["o"], "o")
+            b.voeg([deel["pv"]], "pv")
+            b.los(deel["rest"])
+    elif zinsbouw == "twee_terwijl":
+        b.voeg(een["o"], "o")
+        b.voeg([een["pv"]], "pv")
+        b.los(een["rest"])
+        b.grens()
+        b.los([Woord("terwijl", "vw")])
+        b.voeg(twee["o"], "o")
+        b.los(twee["rest"])
+        b.voeg([twee["pv"]], "pv")
+    else:  # twee_terwijl_voor: de bijzin vooraan, daarna de pv vóór het onderwerp
+        b.los([Woord("terwijl", "vw")])
+        b.voeg(twee["o"], "o")
+        b.los(twee["rest"])
+        b.voeg([twee["pv"]], "pv")
+        b.los([Woord(",", LT)])
+        b.grens()
+        b.voeg([een["pv"]], "pv")
+        b.voeg(een["o"], "o")
+        b.los(een["rest"])
+    return b.zin(".", data)
 
 
 def _maak_nwg(rng, tijd):

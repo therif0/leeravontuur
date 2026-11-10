@@ -3,9 +3,12 @@
 De vader (7/11, docs/taal.md): stap voor stap zoals op school (pv → o → lv → mv; op Moeilijk ook het gezegde en de
 bwb), een tip met het proefje en een tweede kans, en de vraag zoals op school: "wie/wat + pv + o?".
 In elke stap kiest het kind woorden (een tuple met posities) of zegt het dat het zinsdeel er niet is (None).
+
+Een zin met meer dan één pv (0.25.1, `Zin.samengesteld`): eerst **alle** persoonsvormen (stap "pv"), dan het onderwerp
+bij elke pv (de stappen "o1", "o2" …, in de volgorde van de pv's). `soort("o2")` is "o": de naam en de kleur.
 """
 
-from .zinnen import GEZEGDE, ZINSDELEN
+from .zinnen import GEZEGDE, ZINSDELEN, deelzinnen
 
 VOLGORDE = ("pv", "o", "wwg", "nwg", "lv", "mv", "bwb")  # de volgorde van de stappen
 NAMEN = ZINSDELEN
@@ -20,12 +23,27 @@ DENKFOUTEN = {
     "zo_o_lv": "onderwerp en lijdend voorwerp verwisseld",
     "zo_lv_mv": "lijdend en meewerkend voorwerp verwisseld",
     "zo_vergeten": "gezegd dat een zinsdeel er niet is terwijl het er wel is (of omgekeerd)",
+    "zo_pv_een_vergeten": "in een zin met meer dan één persoonsvorm niet alle persoonsvormen gevonden",
+    "zo_pv_te_veel": "in een zin met meer dan één persoonsvorm een woord te veel als persoonsvorm aangeduid",
+    "zo_o_andere_pv": "in een zin met meer dan één persoonsvorm het onderwerp van de andere persoonsvorm gekozen",
 }
+
+
+def soort(label):
+    """Het zinsdeel van een stap: "o2" (het onderwerp bij de tweede pv) is een "o"."""
+    return "o" if len(label) == 2 and label[0] == "o" and label[1].isdigit() else label
+
+
+def _nr(label):
+    """Het nummer van de deelzin bij een stap "o1", "o2" … (vanaf 0), of None."""
+    return int(label[1]) - 1 if soort(label) != label else None
 
 
 def stappen(zin, gevraagd):
     """De labels die in deze oefening gevraagd worden, in de volgorde van de stappen. gevraagd = de zinsdelen van het
     leerjaar (leerlijn). Het gezegde is één stap: wwg of nwg, wat de zin heeft."""
+    if zin.samengesteld:
+        return ["pv", *(f"o{k + 1}" for k in range(len(deelzinnen(zin))))]
     uit = []
     for label in VOLGORDE:
         if label not in gevraagd:
@@ -40,7 +58,11 @@ def stappen(zin, gevraagd):
 
 
 def verwacht(zin, label):
-    """De posities van het zinsdeel (alle bwb's samen), of None als de zin het niet heeft."""
+    """De posities van het zinsdeel (alle bwb's samen, alle pv's van een samengestelde zin), of None als de zin het
+    niet heeft."""
+    if _nr(label) is not None:
+        paren = deelzinnen(zin)
+        return paren[_nr(label)][1] if _nr(label) < len(paren) else None
     delen = zin.alle(label)
     if not delen:
         return None
@@ -63,9 +85,11 @@ def diagnose(zin, label, gekozen):
     if gekozen is None or juist is None:
         vraag = vraag_naar(zin, label)
         if gekozen is None:
-            return "zo_vergeten", f"Kijk nog eens: er is wel een {NAMEN[label]}. {vraag}"
+            return "zo_vergeten", f"Kijk nog eens: er is wel een {NAMEN[soort(label)]}. {vraag}"
         return "zo_vergeten", f"Stel de vraag nog eens: {vraag} Komt er geen antwoord, druk dan N."
     keuze = set(gekozen)
+    if zin.samengesteld:
+        return _diagnose_samengesteld(zin, label, keuze, set(juist))
     if label == "pv":
         w = zin.woorden[min(keuze)]
         if len(keuze) > 1:
@@ -87,6 +111,40 @@ def diagnose(zin, label, gekozen):
     if keuze > set(juist):
         return "zo_groep_te_groot", "Er zitten woorden bij die niet bij dit zinsdeel horen."
     return None
+
+
+def _diagnose_samengesteld(zin, label, keuze, juist):
+    """De denkfouten in een zin met meer dan één pv (alleen pv en o zijn aangeduid)."""
+    n = len(deelzinnen(zin))
+    aantal = {2: "twee", 3: "drie"}.get(n, str(n))
+    if label == "pv":
+        fout = sorted(keuze - juist)
+        if fout:
+            w = zin.woorden[fout[0]]
+            if w.soort == "ww":
+                return "zo_pv_ander_ww", (f"‘{w.tekst}’ is een werkwoord, maar geen pv: het verandert niet als je de "
+                                          "zin in een andere tijd zet.")
+            if w.soort is None:  # een woord dat niet in de woordenlijst staat
+                return "zo_pv_te_veel", (f"Deze zin heeft {aantal} persoonsvormen. ‘{w.tekst}’ verandert niet als je "
+                                         "de zin in een andere tijd zet.")
+            return "zo_pv_geen_ww", f"‘{w.tekst}’ is geen werkwoord. Een pv is altijd een werkwoord."
+        return "zo_pv_een_vergeten", (f"Deze zin heeft {aantal} persoonsvormen. Zet de zin in een andere tijd: welke "
+                                      "werkwoorden veranderen?")
+    pv = _pv_van(zin, label)
+    for k, (_, o) in enumerate(deelzinnen(zin)):
+        if k != _nr(label) and o and keuze == set(o) and set(o) != juist:
+            ander = zin.woorden[deelzinnen(zin)[k][0]].tekst
+            return "zo_o_andere_pv", f"Dat is het onderwerp bij ‘{ander}’. Vraag het met deze pv: wie of wat {pv}?"
+    if keuze < juist:
+        return "zo_groep_te_klein", "Een zinsdeel kan meer woorden zijn: wat hoort er nog bij?"
+    if keuze > juist:
+        return "zo_groep_te_groot", "Er zitten woorden bij die niet bij dit onderwerp horen."
+    return None
+
+
+def _pv_van(zin, label):
+    """De pv (het woord) bij de stap "o1", "o2" …"""
+    return _woorden(zin, [deelzinnen(zin)[_nr(label)][0]])
 
 
 # (gevraagd, gekozen) -> (denkfout, wat het programma zegt; daarna komt de vraag van school)
@@ -128,6 +186,10 @@ def _woorden(zin, posities):
 
 def vraag_naar(zin, label):
     """De vraag zoals op school, ingevuld met deze zin (zonder het antwoord)."""
+    if zin.samengesteld:
+        if label == "pv":
+            return "Zet de zin in een andere tijd: welke werkwoorden veranderen?"
+        return f"Wie of wat {_pv_van(zin, label)}?"
     pv = _woorden(zin, verwacht(zin, "pv"))
     o = _woorden(zin, verwacht(zin, "o") or ())
     rest_ww = _woorden(zin, [p for p in (verwacht(zin, "wwg") or verwacht(zin, "nwg") or ())
@@ -164,6 +226,12 @@ TIP1 = {
 
 def tips(zin, label):
     """[tip 1 (de vraag), tip 2 (het proefje op deze zin, zonder het antwoord te zeggen)]."""
+    if zin.samengesteld:
+        if label == "pv":
+            return ["Een lange zin kan meer dan één pv hebben: elk stuk van de zin heeft er één.",
+                    "De tijdproef: zet de zin in een andere tijd. Elk werkwoord dat verandert, is een pv."]
+        return ["Elke pv heeft een onderwerp. Soms delen twee pv's hetzelfde onderwerp.",
+                f"Vraag het met de pv: {vraag_naar(zin, label)}"]
     tweede = vraag_naar(zin, label)
     if label == "pv":
         anders = zin.data.get("pv_andere_tijd")
@@ -183,6 +251,11 @@ def tips(zin, label):
 
 def uitleg(zin, label):
     """Na het nakijken (of na de tweede kans): het juiste antwoord, met de vraag of het proefje."""
+    if zin.samengesteld:
+        if label == "pv":
+            return f"De persoonsvormen zijn {opsomming(zin, verwacht(zin, 'pv'))}: elk stuk van de zin heeft er één."
+        o = _woorden(zin, verwacht(zin, label))
+        return f"{vraag_naar(zin, label)} → ‘{o}’. Dat is het onderwerp bij ‘{_pv_van(zin, label)}’."
     antwoord = _tekst(zin, label)
     if not antwoord:
         return f"Deze zin heeft geen {NAMEN[label]}."
@@ -197,11 +270,43 @@ def uitleg(zin, label):
     return f"{LIDWOORD[label].capitalize()} {NAMEN[label]} is ‘{_woorden(zin, verwacht(zin, label))}’."
 
 
+def opsomming(zin, posities):
+    """‘vertelt’ en ‘ligt’ (losse woorden, zoals de pv's van een samengestelde zin)."""
+    woorden = [f"‘{_woorden(zin, [p])}’" for p in posities]
+    return " en ".join([", ".join(woorden[:-1]), woorden[-1]] if len(woorden) > 1 else woorden)
+
+
+def kort(zin, label, posities):
+    """De woorden van een nagekeken stap, kort: "mijn ouders", of "vertelt, ligt" (de pv's van een samengestelde zin)."""
+    if zin.samengesteld and label == "pv":
+        return ", ".join(_woorden(zin, [p]) for p in posities)
+    return _woorden(zin, posities)
+
+
+def naam_van_stap(zin, label):
+    """Hoe de stap heet in een melding: "pv", "lv", of "o bij ‘ligt’" (samengestelde zin)."""
+    return f"o bij ‘{_pv_van(zin, label)}’" if _nr(label) is not None else label
+
+
 # ---- vrij kleuren (Tab; op Moeilijk altijd) ---------------------------------------------------------------------
 
 def nakijken_vrij(zin, gevraagd, markering):
     """markering = {positie: label} (wat het kind kleurde). Geeft {label: (juist?, diagnose of None)} per gevraagd
-    label. De pv hoort ook bij het gezegde: wie de pv kleurt, kleurt dat woord ook als stuk van het gezegde."""
+    label. De pv hoort ook bij het gezegde: wie de pv kleurt, kleurt dat woord ook als stuk van het gezegde.
+    In een zin met meer dan één pv: alle pv's en alle onderwerpen gekleurd (welk onderwerp bij welke pv hoort, vraagt
+    alleen stap voor stap)."""
+    if zin.samengesteld:
+        pv = tuple(sorted(p for p, l in markering.items() if l == "pv"))
+        o = {p for p, l in markering.items() if l == "o"}
+        uit = {"pv": (nakijken(zin, "pv", pv or None), diagnose(zin, "pv", pv) if pv else None)}
+        alle_o = {p for _, posities in deelzinnen(zin) for p in posities}
+        for label in stappen(zin, gevraagd)[1:]:
+            eigen = set(verwacht(zin, label))
+            juist = eigen <= o and o <= alle_o
+            d = None if juist else ("zo_groep_te_groot", "") if eigen <= o else ("zo_groep_te_klein", "") \
+                if eigen & o else None
+            uit[label] = (juist, d)
+        return uit
     uit = {}
     for label in stappen(zin, gevraagd):
         gekozen = tuple(sorted(p for p, l in markering.items() if l == label))
@@ -248,11 +353,18 @@ def nakijken_verdeling(zin, stukken):
 # ---- het onderwerp (voor de Oefenaar: reeks, vrij oefenen, herhaalbak, punten, rapport) ------------------------
 
 from ..onderwerp import Onderwerp, Vraag  # noqa: E402 (onderaan: de functies hierboven hebben dit niet nodig)
+from . import nagekeken as N  # noqa: E402
 from . import zinnenmachine as M  # noqa: E402
+
+NAGEKEKEN, TWEE_LIJST = "nagekeken", "twee_lijst"  # zinsbouw van een zin uit de nagekeken lijst (inhoud/taal/zinnen.json)
+ZINSBOUW = (*M.ZINSBOUW, *M.SAMENGESTELD, NAGEKEKEN, TWEE_LIJST)
 
 
 def samenvatting(zin, gevraagd):
-    """De juiste ontleding kort, voor het rapport: "pv geeft · o oma · lv een fiets · mv (geen)"."""
+    """De juiste ontleding kort, voor het rapport: "pv geeft · o oma · lv een fiets · mv (geen)". Een zin met meer dan
+    één pv: "pv vertelt · o grootvader | pv ligt · o de kist"."""
+    if zin.samengesteld:
+        return " | ".join(f"pv {_woorden(zin, [pv])} · o {_woorden(zin, o)}" for pv, o in deelzinnen(zin))
     stukken = []
     for label in stappen(zin, gevraagd):
         posities = verwacht(zin, label)
@@ -271,6 +383,7 @@ SPIEK_KOP = {
     "wwg": "HET GEZEGDE (wwg, nwg)",
     "nwg": "HET GEZEGDE (wwg, nwg)",
     "bwb": "DE BIJWOORDELIJKE BEPALING (bwb)",
+    "twee": "ZINNEN MET TWEE PERSOONSVORMEN",
 }
 
 SPIEKBRIEF = [
@@ -315,6 +428,15 @@ SPIEKBRIEF = [
     ("  6de leerjaar (extra). Waar, wanneer of hoe gebeurt het?", ""),
     ("    Morgen koopt opa een fiets.  →  bwb: morgen", "dim"),
     ("", ""),
+    (SPIEK_KOP["twee"], "accent"),
+    ("  6de leerjaar. Een lange zin kan twee pv's hebben. Zoek ze allebei:", ""),
+    ("  zet de zin in een andere tijd, elk werkwoord dat verandert is een pv.", ""),
+    ("    Opa vertelt dat de kist onder de grond ligt.", "dim"),
+    ("    →  Opa vertelde dat de kist onder de grond lag.", "dim"),
+    ("  Elke pv heeft een onderwerp: wie of wat vertelt? opa. Wie of wat", ""),
+    ("  ligt? de kist. Soms delen twee pv's één onderwerp:", ""),
+    ("    Emma leest de brief en krijgt een idee.  →  Emma leest, Emma krijgt", "dim"),
+    ("", ""),
     ("DE KLEUREN (zoals je markeerstiften)", "accent"),
     (" pv  persoonsvorm             geel ", "z_pv"),
     (" o   onderwerp                blauw ", "z_o"),
@@ -336,22 +458,54 @@ class Zinsontleding(Onderwerp):
     vast = ("zinsbouw",)
 
     def kies_onderwerp(self, gewichten, p, rng):
+        return {"zinsbouw": self.kies_zinsbouw(p, rng, gewichten or {})}
+
+    def kies_zinsbouw(self, p, rng, gewichten=None):
+        """Welke soort zin: een zin met twee pv's (`twee_op_tien` van de 10, alleen waar de leerlijn ze geeft), een
+        nagekeken zin (`nagekeken_op_tien`), anders een zin van de machine (met gewichten: wat moeilijk was, vaker)."""
+        twee = [z for z in p.get("twee_pv", ()) if z in ZINSBOUW]
+        lijst = [j for j in p.get("nagekeken", ()) if N.zinnen(str(j))]
+        r = rng.random() * 10
+        if twee and r < p.get("twee_op_tien", 0):
+            return rng.choice(twee)
+        if lijst and r < p.get("twee_op_tien", 0) * bool(twee) + p.get("nagekeken_op_tien", 0):
+            return NAGEKEKEN
         zb = list(p["zinsbouw"])
-        return {"zinsbouw": rng.choices(zb, weights=[gewichten.get(z, 1.0) for z in zb], k=1)[0]}
+        if gewichten:
+            return rng.choices(zb, weights=[gewichten.get(z, 1.0) for z in zb], k=1)[0]
+        return rng.choice(zb)
+
+    def past(self, zb, p):
+        """Mag deze zinsbouw in dit leerjaar (bv. een herhaling uit een ander leerjaar)?"""
+        if zb == NAGEKEKEN:
+            return any(N.zinnen(str(j)) for j in p.get("nagekeken", ()))
+        if zb in M.SAMENGESTELD or zb == TWEE_LIJST:
+            return zb in p.get("twee_pv", ())
+        return zb in p["zinsbouw"] and zb in M.ZINSBOUW
+
+    def maak_zin(self, zb, p, rng):
+        if zb == NAGEKEKEN:
+            return N.kies(rng, p["nagekeken"])
+        if zb == TWEE_LIJST:
+            return rng.choice(N.twee())
+        if zb in M.SAMENGESTELD:
+            return M.maak_samengesteld(zb, rng, p["tijden"])
+        return M.maak(zb, rng, p["tijden"], p["max_woorden"], p["zonder_lv"])
 
     def maak_met(self, p, rng, data=None):
         zb = (data or {}).get("zinsbouw")
-        if zb not in p["zinsbouw"] or zb not in M.ZINSBOUW:  # bv. een herhaling uit een ander leerjaar
-            zb = rng.choice(p["zinsbouw"])
-        zin = M.maak(zb, rng, p["tijden"], p["max_woorden"], p["zonder_lv"])
-        data = {"zinsbouw": zb, "onderwerp": zb, "delen": list(p["delen"]), "verdelen": p["verdelen"],
-                "stap_voor_stap": p["stap_voor_stap"]}
+        if not self.past(zb, p):  # bv. een herhaling uit een ander leerjaar
+            zb = self.kies_zinsbouw(p, rng)
+        zin = self.maak_zin(zb, p, rng)
+        delen = ["pv", "o"] if zin.samengesteld else list(p["delen"])
+        data = {"zinsbouw": zb, "onderwerp": zb, "delen": delen, "verdelen": p["verdelen"] and not zin.samengesteld,
+                "stap_voor_stap": p["stap_voor_stap"] or zin.samengesteld}
         return Vraag(self.id, f"{self.id}:{zb}:{zin.tekst}", zin.tekst, "juist", "", data, invoer="zinsdelen",
-                     model=zin, verwacht_tekst=samenvatting(zin, p["delen"]))
+                     model=zin, verwacht_tekst=samenvatting(zin, delen))
 
     def onderwerp_van_sleutel(self, sleutel):
         delen = sleutel.split(":", 2)
-        return delen[1] if len(delen) == 3 and delen[0] == self.id and delen[1] in M.ZINSBOUW else None
+        return delen[1] if len(delen) == 3 and delen[0] == self.id and delen[1] in ZINSBOUW else None
 
     def lees_vraag(self, v, tekst):
         """Het object geeft "juist" of "fout"; de juiste ontleding getypt (zoals in het rapport) telt ook als juist."""

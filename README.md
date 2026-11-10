@@ -90,8 +90,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   meeloopt, records (+25 punten) en een overzicht van je laatste rondes. Zet de ouder de timer uit, dan is
   er alleen "20 sommen" zonder klok.
 - **Taal › Zinsontleding** (de eerste stap van Taal, volgens het katholieke leerplan): een zin ontleden, stap voor
-  stap zoals op school (pv, onderwerp, lijdend en meewerkend voorwerp; op Moeilijk ook het gezegde en de bwb), of
-  vrij kleuren met Tab. Elk zinsdeel heeft een eigen kleur en zijn afkorting; F1 geeft de vraag van school en het
+  stap zoals op school (pv, onderwerp, lijdend en meewerkend voorwerp; op Moeilijk ook het gezegde, de bwb en zinnen
+  met twee persoonsvormen), of vrij kleuren met Tab. De zinnen komen van een zinnenmachine en uit een nagekeken lijst. Elk zinsdeel heeft een eigen kleur en zijn afkorting; F1 geeft de vraag van school en het
   proefje, daarna de spiekbrief. De andere delen van Taal (woordsoorten, werkwoordspelling …) staan al in het menu,
   in het grijs. Het plan: [docs/taal.md](docs/taal.md).
 - **Niveaus volgens het leerjaar:**

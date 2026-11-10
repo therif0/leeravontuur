@@ -18,7 +18,8 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
       houden" in het rapport; de gedeelde reeks in `kern/reeks.py` voor de examens later)
 - [x] Wiskunde bevroren (alleen nog fouten die het kind merkt).
 - [x] **Taal T1** (0.25.0): Zinsontleding (het plan in [taal.md](taal.md)).
-- [ ] Taal T1.3b: de nagekeken zinnen + zinnen met 2 pv's (eerst een voorstel), dan T3 Werkwoordspelling, dan T2
+- [x] Taal T1.3b (0.25.1): de nagekeken zinnen + zinnen met 2 pv's op Moeilijk.
+- [ ] T3 Werkwoordspelling (0.26.0–0.26.2, één voorstel goedgekeurd op 10/11), dan T2
       Woordsoorten; later T6 de tekstoefening (het taaldossier). Zie [taal.md](taal.md).
 
 ## Geparkeerd: vragen voor later

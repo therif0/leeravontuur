@@ -7,6 +7,7 @@ from leeravontuur.kern import leerlijnen
 from leeravontuur.kern.leerjaren import LEERJAREN
 from leeravontuur.kern.taal import zinnenmachine as M
 from leeravontuur.kern.taal import zinsontleding as Z
+from leeravontuur.kern.taal import zinnen as ZN
 from leeravontuur.kern.taal.zinnen import GEZEGDE, WOORDSOORTEN, ZINSDELEN, ZinFout, controleer, lees_haakjes
 
 LIJN = "taal.zinsontleding"
@@ -17,8 +18,8 @@ def zin(tekst):
 
 
 def breedte(z):
-    """Zoals op het scherm: 7 kolommen inspringen, de woorden met 2 spaties ertussen."""
-    return 7 + sum(len(w.tekst) for w in z.woorden) + 2 * (len(z.woorden) - 1)
+    """Zoals op het scherm: 7 kolommen inspringen, de woorden met 2 spaties ertussen (een leesteken tegen het woord)."""
+    return 7 + ZN.breedte(z)
 
 
 def posities(z, tekst):
@@ -50,7 +51,9 @@ class TestHaakjes(unittest.TestCase):
     def test_fouten_in_gewone_taal(self):
         for tekst, melding in (("[o De juf geeft een boek.", "ontbreekt een ]"),
                                ("[xx De juf] [pv geeft].", "geen zinsdeel"),
-                               ("[o De juf] [pv geeft] [pv leest].", "precies één persoonsvorm"),
+                               ("[o De juf] [pv geeft] [lv een boek] en [pv leest].", "alleen pv en o"),
+                               ("[o De juf] [pv geeft] | en [pv leest].", "precies één onderwerp"),
+                               ("[o De juf] [pv geeft] | een boek.", "eigen persoonsvorm"),
                                ("[o De juf] geeft.", "geen persoonsvorm"),
                                ("[o De juf] [pv geeft] een boek.", "hoort bij geen enkel zinsdeel"),
                                ("[o De juf] [pv geeft/xyz].", "geen woordsoort"),
@@ -233,6 +236,158 @@ class TestStappenEnNakijken(unittest.TestCase):
         self.assertEqual(Z.nakijken_verdeling(z, [(0,), (1, 2), (3, 4), (5, 6)]), (False, [(1, 2)]))
         z = zin("[o Oma] [pv,wwg heeft] [lv een fiets] [wwg gekocht].")
         self.assertEqual(Z.verdeling(z), [(0,), (1,), (2, 3), (4,)])
+
+
+class TestNagekekenZinnen(unittest.TestCase):
+    """0.25.1: de met de hand geschreven zinnen (inhoud/taal/zinnen.json)."""
+
+    def test_elke_zin_is_volledig_ontleed_en_past(self):
+        from leeravontuur.kern.taal import nagekeken as N
+        self.assertGreaterEqual(sum(len(N.zinnen(j)) for j in N.JAREN), 40)
+        for jaar in N.JAREN:
+            self.assertGreaterEqual(len(N.zinnen(jaar)), 10, jaar)
+            for z in N.zinnen(jaar):
+                self.assertFalse(z.samengesteld, z.tekst)
+                self.assertEqual(controleer(z), [], z.haakjes())
+                self.assertLessEqual(ZN.breedte(z), ZN.BREEDTE, z.tekst)
+                self.assertTrue(z.tekst[0].isupper() and z.tekst[-1] in ".?", z.tekst)
+                self.assertIn(z.data["tijd"], ("tt", "vt"), z.tekst)
+                self.assertTrue(z.data["pv_andere_tijd"], z.tekst)  # voor de tijdproef
+                self.assertTrue(z.deel("o"), z.tekst)
+                if z.deel("mv"):
+                    self.assertIn(z.data["mv_vz"], ("aan", "voor"), z.tekst)
+                for label in ("pv", "o", "lv", "mv"):  # de vraag van school lukt bij elke zin
+                    if z.deel(label):
+                        self.assertTrue(Z.vraag_naar(z, label).endswith("?"), z.tekst)
+                        self.assertIn("‘", Z.uitleg(z, label))
+
+    def test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt(self):
+        from leeravontuur.kern.taal import nagekeken as N
+        self.assertTrue(all(not z.deel("nwg") and len(z.alle("bwb")) <= 2 for z in N.zinnen("4")))
+        self.assertTrue(any(z.deel("mv") for z in N.zinnen("5")))
+        self.assertTrue(any(z.deel("nwg") for z in N.zinnen("6")))
+        for z in N.zinnen("4"):  # Makkelijk verdeelt de zin eerst: elk stuk is één zinsdeel
+            juist, fout = Z.nakijken_verdeling(z, Z.verdeling(z))
+            self.assertTrue(juist, z.tekst)
+
+    def test_zinnen_met_twee_persoonsvormen(self):
+        from leeravontuur.kern.taal import nagekeken as N
+        self.assertGreaterEqual(len(N.twee()), 20)
+        for z in N.twee():
+            self.assertTrue(z.samengesteld, z.tekst)
+            self.assertEqual(controleer(z), [], z.haakjes())
+            self.assertLessEqual(ZN.breedte(z), ZN.BREEDTE, z.tekst)
+            paren = ZN.deelzinnen(z)
+            self.assertEqual(len(paren), 2, z.tekst)
+            self.assertTrue(all(o for _, o in paren), z.tekst)
+            self.assertEqual(zin(z.haakjes()).haakjes(), z.haakjes())
+
+    def test_een_reeks_mengt_de_lijst_en_de_machine(self):
+        o = Z.ZINSONTLEDING
+        for jaar, soorten in (("3", {"machine"}), ("4", {"machine", "nagekeken"}), ("5", {"machine", "nagekeken"}),
+                              ("6", {"machine", "nagekeken", "twee"})):
+            gezien = set()
+            for seed in range(200):
+                v = o.maak(jaar, rng=random.Random(seed))
+                zb = v.data["zinsbouw"]
+                gezien.add("twee" if zb.startswith("twee") else zb if zb == Z.NAGEKEKEN else "machine")
+                self.assertEqual(o.onderwerp_van_sleutel(v.sleutel), zb)
+                if v.model.samengesteld:
+                    self.assertEqual((v.data["delen"], v.data["verdelen"], v.data["stap_voor_stap"]),
+                                     (["pv", "o"], False, True))
+            self.assertEqual(gezien, soorten, jaar)
+
+    def test_herhalen_geeft_dezelfde_soort_zin(self):
+        o = Z.ZINSONTLEDING
+        for zb in (Z.NAGEKEKEN, Z.TWEE_LIJST, "twee_dat"):
+            v = o.maak("6", data={"zinsbouw": zb}, rng=random.Random(1))
+            self.assertEqual(v.data["zinsbouw"], zb)
+            w = o.maak_herhaling(o.herhaal_data(v), "6", vermijd={v.sleutel})
+            self.assertEqual(w.data["zinsbouw"], zb)
+            self.assertNotEqual(w.sleutel, v.sleutel)
+        v = o.maak("4", data={"zinsbouw": "twee_dat"}, rng=random.Random(1))  # niet in het 4de: een gewone zin
+        self.assertFalse(v.model.samengesteld)
+
+
+class TestTweePersoonsvormen(unittest.TestCase):
+    """0.25.1: een zin met meer dan één pv (alleen pv en o), de stappen en de denkfouten."""
+    GROOT = "[o Grootvader] [pv vertelt] | dat [o de kist] onder de grond [pv ligt]."
+    EMMA = "[o Emma] [pv leest] de brief en [pv krijgt] een idee."
+
+    def test_de_haakjes(self):
+        z = zin(self.GROOT)
+        self.assertTrue(z.samengesteld)
+        self.assertEqual(ZN.deelzinnen(z), [(1, (0,)), (8, (3, 4))])
+        self.assertEqual(z.haakjes(), self.GROOT)
+        e = zin(self.EMMA)  # zonder |: de twee pv's delen het onderwerp
+        self.assertEqual(ZN.deelzinnen(e), [(1, (0,)), (5, (0,))])
+        self.assertEqual(e.haakjes(), self.EMMA)
+
+    def test_de_stappen_en_het_nakijken(self):
+        z = zin(self.GROOT)
+        self.assertEqual(Z.stappen(z, ["pv", "o", "lv", "mv"]), ["pv", "o1", "o2"])
+        self.assertEqual((Z.soort("o2"), Z.soort("o"), Z.soort("pv")), ("o", "o", "pv"))
+        self.assertTrue(Z.nakijken(z, "pv", (8, 1)))
+        self.assertFalse(Z.nakijken(z, "pv", (1,)))
+        self.assertTrue(Z.nakijken(z, "o1", (0,)))
+        self.assertTrue(Z.nakijken(z, "o2", (3, 4)))
+        self.assertEqual(Z.samenvatting(z, ["pv", "o"]), "pv vertelt · o grootvader | pv ligt · o de kist")
+        self.assertEqual(Z.naam_van_stap(z, "o2"), "o bij ‘ligt’")
+        self.assertEqual(Z.kort(z, "pv", (1, 8)), "vertelt, ligt")
+
+    def test_de_denkfouten(self):
+        z = zin(self.GROOT)
+        self.assertEqual(Z.diagnose(z, "pv", (1,))[0], "zo_pv_een_vergeten")
+        self.assertIn("twee persoonsvormen", Z.diagnose(z, "pv", (8,))[1])
+        self.assertEqual(Z.diagnose(z, "pv", (1, 5, 8))[0], "zo_pv_geen_ww")  # onder
+        self.assertEqual(Z.diagnose(z, "pv", (1, 4, 8))[0], "zo_pv_te_veel")  # kist (staat niet in de woordenlijst)
+        self.assertEqual(Z.diagnose(z, "o2", (0,))[0], "zo_o_andere_pv")
+        self.assertIn("wie of wat ligt?", Z.diagnose(z, "o2", (0,))[1])
+        self.assertEqual(Z.diagnose(z, "o2", (4,))[0], "zo_groep_te_klein")
+        self.assertEqual(Z.diagnose(z, "o2", (3, 4, 5))[0], "zo_groep_te_groot")
+        self.assertIsNone(Z.diagnose(z, "o2", (3, 4)))
+        staan = zin("[o Noor] [pv blijft] staan/ww en [pv kijkt] rond.")
+        self.assertEqual(Z.diagnose(staan, "pv", (1, 2, 4))[0], "zo_pv_ander_ww")
+        self.assertIsNone(Z.diagnose(zin(self.EMMA), "o2", (0,)))  # hetzelfde onderwerp: juist
+
+    def test_tips_en_uitleg(self):
+        z = zin(self.GROOT)
+        for label in Z.stappen(z, ["pv", "o"]):
+            tips = Z.tips(z, label)
+            self.assertEqual(len(tips), 2)
+            for woord in ("Grootvader", "kist") if label != "pv" else ("vertelt", "ligt"):
+                self.assertNotIn(woord, " ".join(tips), label)  # de tip zegt het antwoord niet
+        self.assertIn("‘vertelt’ en ‘ligt’", Z.uitleg(z, "pv"))
+        self.assertIn("Wie of wat ligt? → ‘de kist’", Z.uitleg(z, "o2"))
+
+    def test_vrij_kleuren(self):
+        z = zin(self.GROOT)
+        goed = {1: "pv", 8: "pv", 0: "o", 3: "o", 4: "o"}
+        self.assertTrue(all(juist for juist, _ in Z.nakijken_vrij(z, ["pv", "o"], goed).values()))
+        een = Z.nakijken_vrij(z, ["pv", "o"], {1: "pv", 0: "o", 3: "o", 4: "o"})
+        self.assertEqual((een["pv"][0], een["pv"][1][0]), (False, "zo_pv_een_vergeten"))
+        half = Z.nakijken_vrij(z, ["pv", "o"], {1: "pv", 8: "pv", 0: "o", 4: "o"})
+        self.assertEqual((half["o1"][0], half["o2"][0]), (True, False))
+
+    def test_de_machine(self):
+        for zb in M.SAMENGESTELD:
+            for seed in range(60):
+                z = M.maak_samengesteld(zb, random.Random(seed))
+                self.assertEqual(controleer(z), [], z.haakjes())
+                self.assertLessEqual(ZN.breedte(z), ZN.BREEDTE, z.tekst)
+                paren = ZN.deelzinnen(z)
+                self.assertEqual(len(paren), 2, z.tekst)
+                self.assertEqual(paren[0][1] == paren[1][1], zb == "twee_samen", z.haakjes())
+                self.assertTrue(all(w.soort in WOORDSOORTEN for w in z.woorden if not w.leesteken), z.haakjes())
+                self.assertEqual(zin(z.haakjes()).haakjes(), z.haakjes())
+                self.assertTrue(z.tekst[0].isupper() and z.tekst.endswith("."), z.tekst)
+                self.assertEqual(z.tekst.count(","), 1 if zb == "twee_terwijl_voor" else 0, z.tekst)
+
+    def test_een_gewone_zin_verandert_niet(self):
+        z = zin("[o De juf] [pv leest] [lv een boek].")
+        self.assertFalse(z.samengesteld)
+        self.assertEqual(Z.stappen(z, ["pv", "o", "lv", "mv"]), ["pv", "o", "lv", "mv"])
+        self.assertEqual(ZN.breedte(z), len("De  juf  leest  een  boek."))
 
 
 if __name__ == "__main__":

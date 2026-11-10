@@ -268,7 +268,7 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 | ✔ **T1.1** | – | de kern: `Zin`, de woordenlijst, de zinnenmachine (pv, o, lv, mv), de haakjes, de leerlijn, de denkfouten + tests |
 | ✔ **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu; Moeilijk (wwg, nwg, bwb) en Gemengd oefenen werken al |
 | ✔ **T1.3a** | 0.25.0 | de spiekbrief (ook in Leerstof en na de laatste tip), de documenten |
-| **T1.3b** | 0.25.1 | de nagekeken zinnen (de lastige gevallen) + zinnen met 2 pv's (hoofdzin + bijzin, eerst op Moeilijk); eerst een voorstel |
+| ✔ **T1.3b** | 0.25.1 | de nagekeken zinnen (40, per leerjaar) + zinnen met 2 pv's (alleen op Moeilijk: de machine en 26 nagekeken zinnen) |
 | **T3** | 0.26 | Werkwoordspelling, met de verleden tijd van zwakke en sterke werkwoorden (eerst een voorstel; de vader 8/11: vóór T2) |
 | **T2** | 0.27.0 | Woordsoorten |
 | **T2.1** | 0.27.1 | eigen zinnen van de ouder |
@@ -288,6 +288,23 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
   de uitleg van elke stap.
 - **Nadruk** met ‘enkele aanhalingstekens’, niet met sterretjes.
 - **Leerstof** vraagt nu eerst welk vak; een vak met één spiekbrief opent ze meteen.
+
+## Wat de vader koos (10/11): grotere stukken
+Eén voorstel voor T1.3b en heel T3, daarna bouwen zonder een stop per fase (zie CLAUDE.md, "Grotere stukken").
+- **2 pv's:** in Zinsdelen, alleen op Moeilijk. Stap 1 = alle persoonsvormen, daarna het onderwerp bij elke pv.
+- **Werkwoordspelling:** stap voor stap met Tab (zoals Zinsdelen), Moeilijk typt meteen; het ezelsbruggetje is
+  **'t kofschip**; het menu: Tegenwoordige tijd · Verleden tijd: zwakke werkwoorden · Verleden tijd: sterke
+  werkwoorden · Voltooid deelwoord · Zet in de verleden tijd.
+
+## Wat anders werd dan gepland (T1.3b, 0.25.1)
+- **Een zin met twee pv's gaat altijd eerst stap voor stap**, ook op Moeilijk (waar de andere zinnen meteen vrij
+  gekleurd worden): het is een nieuwe soort zin. Tab = vrij kleuren.
+- **Vrij kleuren** kijkt daar na of alle pv's en alle onderwerpen gekleurd zijn. Welk onderwerp bij welke pv hoort,
+  vraagt alleen de stap-voor-stap-weg (met een kleur kan je dat niet zeggen).
+- **Twee pv's met één onderwerp** ("Emma leest … en krijgt …") doen ook mee: zo staan ze in de teksten van school.
+- **Een leesteken staat tegen het woord** ("boek." en "kijkt, ziet"), ook op Makkelijk en Normaal.
+- De zinnen uit de lijst komen ook op Makkelijk en Normaal (3 van de 10); op Moeilijk 2 van de 10, naast 3 van de 10
+  met twee pv's.
 
 ## Nog open (bij het verslag van T1.1)
 - [x] De afkortingen in zijn schrift nakijken: het onderwerp is **o** (de vader, 8/11).
