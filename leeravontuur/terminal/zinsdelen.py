@@ -5,6 +5,8 @@ De vader (7/11):
 - stap voor stap zoals op school (pv → o → lv → mv; op Makkelijk eerst in zinsdelen verdelen);
 - **Tab** wisselt naar vrij kleuren (Makkelijk, Normaal); op Moeilijk is vrij kleuren meteen aan;
 - een fout geeft een tip en een tweede kans; daarna het juiste antwoord met de uitleg.
+Een zin met meer dan één pv (0.25.1, alleen op Moeilijk): altijd stap voor stap (Tab = vrij kleuren). Stap 1 = alle
+persoonsvormen aanduiden (Spatie = aan of uit, Enter = klaar), daarna het onderwerp bij elke pv.
 Een zin is juist als elk zinsdeel juist is (ook na de tweede kans; dan komt hij wel in de herhaalbak, zoals bij een
 vraagstuk). Al het nakijken gebeurt in de kern (kern/taal/zinsontleding.py).
 """
@@ -28,7 +30,7 @@ KAN_GEEN = {"lv", "mv", "bwb"}  # die zitten niet in elke zin: N = er is er geen
 
 
 def rol(label):
-    return f"z_{label}"
+    return f"z_{Z.soort(label)}"
 
 
 class ZinsdelenInvoer:
@@ -37,12 +39,13 @@ class ZinsdelenInvoer:
 
     def __init__(self, v, o):
         self.v, self.o, self.zin = v, o, v.model
-        self.gevraagd = list(v.data.get("delen", ("pv", "o")))
+        self.gevraagd = ["pv", "o"] if self.zin.samengesteld else list(v.data.get("delen", ("pv", "o")))
         self.stappen = ([VERDELEN] if v.data.get("verdelen") else []) + Z.stappen(self.zin, self.gevraagd)
         self.stap_voor_stap = v.data.get("stap_voor_stap", True)
         self.vrij = not self.stap_voor_stap
         self.woorden = [i for i, w in enumerate(self.zin.woorden) if not w.leesteken]
         self.stap, self.cur, self.anker = 0, 0, 0
+        self.gekozen = set()        # een zin met meer pv's: de woorden die het kind als pv aanduidde (posities)
         self.gevonden = {}          # label -> posities (of None: er is er geen), wat al nagekeken is
         self.markering = {}         # vrij kleuren: positie -> label
         self.grenzen = set()        # in zinsdelen verdelen: index k = een grens vóór self.woorden[k]
@@ -66,6 +69,18 @@ class ZinsdelenInvoer:
     def label(self):
         return self.stappen[self.stap] if self.stap < len(self.stappen) else None
 
+    @property
+    def meer(self):
+        """De stap "alle persoonsvormen" van een zin met meer dan één pv: Spatie duidt een woord aan (of wist het)."""
+        return self.zin.samengesteld and self.label == "pv" and not self.vrij
+
+    def vraag(self):
+        if self.zin.samengesteld and self.label == "pv":
+            return f"Zoek alle persoonsvormen ({len(Z.verwacht(self.zin, 'pv'))})."
+        if Z.soort(self.label) != self.label:
+            return f"Zoek het onderwerp bij ‘{Z._pv_van(self.zin, self.label)}’."
+        return VRAAG[self.label]
+
     def groep(self):
         a, b = sorted((self.anker, self.cur))
         return tuple(self.woorden[a:b + 1])
@@ -80,6 +95,8 @@ class ZinsdelenInvoer:
         elif self.vrij:
             letters = " ".join(l.upper() for l, lab in LETTERS.items() if lab in self.gevraagd)
             k = [(letters, "kleur", None), ("Enter", "nakijken", 10)]
+        elif self.meer:
+            k = [("Spatie", "aanduiden", ord(" ")), ("Enter", "klaar", 10)]
         else:
             k = [("Spatie", "woord erbij", ord(" ")), ("Enter", "kies", 10)]
             if self.label in KAN_GEEN:
@@ -111,11 +128,12 @@ class ZinsdelenInvoer:
     def teken_opdracht(self, s, y):
         if self.vrij:
             namen = " · ".join(f"{l.upper()} {LETTERS[l]}" for l in LETTERS if LETTERS[l] in self.gevraagd)
-            s.put(y, 4, "Kleur de zinsdelen.", "bold")
+            s.put(y, 4, "Kleur alle persoonsvormen en hun onderwerp." if self.zin.samengesteld else
+                  "Kleur de zinsdelen.", "bold")
             for i, regel in enumerate(textwrap.wrap(namen, OPDRACHT_BREED)[:2]):
                 s.put(y + 1 + i, 4, regel, "dim")
         else:
-            s.put(y, 4, f"Stap {self.stap + 1} van {len(self.stappen)}: {VRAAG[self.label]}", "bold")
+            s.put(y, 4, f"Stap {self.stap + 1} van {len(self.stappen)}: {self.vraag()}", "bold")
             if self.label in KAN_GEEN:
                 s.put(y + 1, 4, "Duid het aan, of druk N (er is er geen).", "dim")
 
@@ -128,6 +146,8 @@ class ZinsdelenInvoer:
                     uit[p] = label
         if self.vrij:
             uit.update(self.markering)
+        elif self.meer:
+            uit.update({p: "pv" for p in self.gekozen})
         return uit
 
     def teken_zin(self, s, y, kleuren, bezig):
@@ -137,6 +157,8 @@ class ZinsdelenInvoer:
         x, plekken = X, []
         groep = set(self.groep()) if bezig and self.label != VERDELEN else set()
         for i, w in enumerate(self.zin.woorden):
+            if w.leesteken and i:
+                x -= 2  # een leesteken staat tegen het woord ervoor
             plekken.append(x)
             s.put(y, x, w.tekst, rol(kleuren[i]) if i in kleuren else "bold" if i in groep else "")
             if i in groep:
@@ -155,12 +177,13 @@ class ZinsdelenInvoer:
                 continue
             j = i
             while j + 1 < len(self.zin.woorden) and kleuren.get(j + 1) == label and not \
-                    (label == "pv" or kleuren.get(j) == "pv"):
+                    (Z.soort(label) == "pv" or kleuren.get(j) == "pv"):
                 j += 1
             begin, eind = plekken[i], plekken[j] + len(self.zin.woorden[j].tekst)
             for k in range(i, j):
                 s.put(y, plekken[k] + len(self.zin.woorden[k].tekst), "  ", rol(label))
-            s.put(y + 2, begin + max(0, (eind - begin - len(label)) // 2), label, rol(label))
+            naam = Z.soort(label)
+            s.put(y + 2, begin + max(0, (eind - begin - len(naam)) // 2), naam, rol(label))
             i = j + 1
         if bezig and self.label == VERDELEN:  # de grenzen tussen de woorden en de cursor op een gat
             for k in range(1, len(self.woorden)):
@@ -178,10 +201,10 @@ class ZinsdelenInvoer:
                 continue
             if label in self.gevonden:
                 posities = self.gevonden[label]
-                tekst = Z._woorden(self.zin, posities) if posities else "(geen)"
-                stuk, r = f"{label} {tekst}", rol(label)
+                tekst = Z.kort(self.zin, label, posities) if posities else "(geen)"
+                stuk, r = f"{Z.soort(label)} {tekst}", rol(label)
             else:
-                stuk, r = f"{label} …", "dim"
+                stuk, r = f"{Z.soort(label)} …", "dim"
             if x + len(stuk) > 78:
                 break
             s.put(y, x, stuk, r)
@@ -192,7 +215,10 @@ class ZinsdelenInvoer:
             return "←→ naar een plek tussen twee woorden · Spatie: een grens |"
         if self.vrij:
             return "←→ woord · Spatie: woord erbij · letter: kleur · Backspace: wis"
-        return f"←→ woord, Spatie = het volgende woord erbij, Enter = dit is {Z.LIDWOORD[self.label]} {self.label}."
+        if self.meer:
+            return "←→ woord · Spatie: aanduiden of wissen · Enter: klaar"
+        naam = Z.soort(self.label)
+        return f"←→ woord, Spatie = het volgende woord erbij, Enter = dit is {Z.LIDWOORD[naam]} {naam}."
 
     # ---- toetsen ------------------------------------------------------------------------------------
     def toets(self, k):
@@ -207,6 +233,8 @@ class ZinsdelenInvoer:
             return None
         if self.label == VERDELEN:
             return self.toets_verdelen(k)
+        if self.meer:
+            return self.toets_meer(k)
         n = len(self.woorden)
         sleft, sright = getattr(curses, "KEY_SLEFT", -1), getattr(curses, "KEY_SRIGHT", -1)
         if k == curses.KEY_LEFT:
@@ -235,10 +263,35 @@ class ZinsdelenInvoer:
         self.melding = ""
         return None
 
+    def toets_meer(self, k):
+        """Alle persoonsvormen van een zin met meer pv's: ←→ = woord, Spatie = aanduiden of wissen, Enter = klaar."""
+        n = len(self.woorden)
+        if k == curses.KEY_LEFT:
+            self.cur = self.anker = max(0, self.cur - 1)
+        elif k == curses.KEY_RIGHT:
+            self.cur = self.anker = min(n - 1, self.cur + 1)
+        elif k == ord(" "):
+            self.gekozen ^= {self.woorden[self.cur]}
+        elif k in BACKSPACE or k == curses.KEY_DC:
+            self.gekozen.discard(self.woorden[self.cur])
+        elif k in ENTER:
+            if not self.gekozen:
+                self.melding, self.melding_rol = "Duid eerst elke persoonsvorm aan met Spatie.", "accent"
+                return None
+            return self.kies(tuple(sorted(self.gekozen)))
+        else:
+            return None
+        self.melding = ""
+        return None
+
     def klik(self, k):
         if k[0] == "gat" and self.label == VERDELEN:
             self.gat = k[1]
             self.grenzen ^= {k[1]}
+        elif k[0] == "woord" and self.meer:  # een klik = dat woord aanduiden of wissen (zoals Spatie)
+            self.cur = self.anker = k[1]
+            self.gekozen ^= {self.woorden[k[1]]}
+            self.melding = ""
         elif k[0] == "woord" and self.label != VERDELEN:
             a, b = sorted((self.anker, self.cur))
             if k[1] == b + 1 or k[1] == a - 1:  # een woord ernaast: de groep groter (slepen kan niet)
@@ -251,7 +304,7 @@ class ZinsdelenInvoer:
     def wissel(self):
         """Tab: van stap voor stap naar vrij kleuren en terug. Wat al juist gevonden was, blijft staan."""
         if not self.vrij:
-            self.markering = {p: l for p, l in self.kleuren_nu().items()}
+            self.markering = {p: Z.soort(l) for p, l in self.kleuren_nu().items()}
         else:
             self.markering = {}
             klaar = set(self.gevonden) | ({VERDELEN} if self.verdeeld else set())
@@ -264,8 +317,8 @@ class ZinsdelenInvoer:
         label = self.label
         if Z.nakijken(self.zin, label, keuze):
             self.gevonden[label] = Z.verwacht(self.zin, label)
-            tekst = Z._woorden(self.zin, keuze) if keuze else "er is er geen"
-            self.melding, self.melding_rol = f"✔ {label}: {tekst}.", "goed"
+            tekst = Z.kort(self.zin, label, keuze) if keuze else "er is er geen"
+            self.melding, self.melding_rol = f"✔ {Z.naam_van_stap(self.zin, label)}: {tekst}.", "goed"
             return self.volgende()
         d = Z.diagnose(self.zin, label, keuze)
         self.fout(label, d)
@@ -281,7 +334,7 @@ class ZinsdelenInvoer:
     def fout(self, label, d):
         self.pogingen[label] = self.pogingen.get(label, 0) + 1
         if self.eerste_fout is None:
-            self.eerste_fout = label
+            self.eerste_fout = Z.soort(label)
         if self.diagnose is None and d:
             self.diagnose = d
 
@@ -289,6 +342,7 @@ class ZinsdelenInvoer:
         self.stap += 1
         self.tip_nr, self.tiptekst = 0, ""
         self.cur = self.anker = 0
+        self.gekozen = set()
         if self.stap < len(self.stappen):
             return None
         return self.klaar()
@@ -347,7 +401,8 @@ class ZinsdelenInvoer:
         for l in fout:
             self.fout(l, uit[l][1])
         if self.vrij_poging == 1 and self.tweede_kans:
-            self.melding = f"✘ Nog niet alles juist: kijk nog eens naar {', '.join(fout)} (F1 = tip)."
+            namen = ", ".join(dict.fromkeys(Z.soort(l) for l in fout))
+            self.melding = f"✘ Nog niet alles juist: kijk nog eens naar {namen} (F1 = tip)."
             self.melding_rol = "fout"
             return None
         self.mislukt += [l for l in fout if l not in self.mislukt]
@@ -365,7 +420,8 @@ class ZinsdelenInvoer:
                 return
         tips = Z.TIP_VERDELEN if label == VERDELEN else Z.tips(self.zin, label)
         self.aantal_tips = len(tips)
-        self.v.data["spiek_kop"] = Z.SPIEK_KOP.get(label, Z.SPIEK_KOP["pv"])  # daar opent de spiekbrief
+        kop = "twee" if self.zin.samengesteld else label
+        self.v.data["spiek_kop"] = Z.SPIEK_KOP.get(kop, Z.SPIEK_KOP["pv"])  # daar opent de spiekbrief
         if self.tip_nr >= len(tips):
             self.tiptekst = "Meer tips zijn er niet. Probeer het, en lees daarna de uitleg."
             return
@@ -394,14 +450,16 @@ class ZinsdelenInvoer:
     # ---- klaar --------------------------------------------------------------------------------------
     def klaar(self):
         juist = not self.mislukt
+        def namen(labels):
+            return ", ".join(dict.fromkeys(Z.soort(l) for l in labels))
         self.extra = {"zinsdelen": 1, "tips": self.tips, "eerste_fout": self.eerste_fout,
-                      "mislukt": list(self.mislukt), "vrij": self.vrij}
+                      "mislukt": list(dict.fromkeys(Z.soort(l) for l in self.mislukt)), "vrij": self.vrij}
         if juist and self.eerste_fout is None:
             kop = ["Elk zinsdeel juist, meteen!"]
         elif juist:
-            kop = [f"Juist, met een tweede kans bij: {', '.join(dict.fromkeys(self.pogingen))}."]
+            kop = [f"Juist, met een tweede kans bij: {namen(self.pogingen)}."]
         else:
-            kop = [f"Niet gevonden: {', '.join(self.mislukt)}. Lees de uitleg."]
+            kop = [f"Niet gevonden: {namen(self.mislukt)}. Lees de uitleg."]
         stappen = [l for l in self.stappen if l != VERDELEN]
         self.uitleg_na = kop + [("✘ " if l in self.mislukt else "✔ ") + Z.uitleg(self.zin, l) for l in stappen]
         antwoord = "juist" if juist else "fout"

@@ -166,6 +166,13 @@ Gouden regels:
     gewone taal;
   - `kern/taal/zinnenmachine.py` + `inhoud/taal/woorden.json`: een zinsbouw × de woordenlijst (werkwoordvormen
     uitgeschreven, nooit geraden), de pv past bij het onderwerp en de tijd, `BREEDTE` past op het scherm;
+  - `kern/taal/nagekeken.py` + `inhoud/taal/zinnen.json` (0.25.1): de met de hand geschreven zinnen (`zinnen` per
+    leerjaar 4, 5, 6, volledig ontleed; `twee` = zinnen met meer dan één pv). De leerlijn zegt hoe vaak ze komen
+    (`nagekeken_op_tien`, `twee_op_tien`); de zinsbouw van zo'n vraag is `nagekeken` of `twee_lijst`;
+  - **een zin met meer dan één pv** (`Zin.samengesteld`, alleen waar de leerlijn `twee_pv` geeft: Moeilijk): alleen
+    de pv's en hun onderwerp zijn aangeduid, met een `|` tussen de deelzinnen (`zinnen.deelzinnen`: elke pv met zijn
+    onderwerp; zonder `|` delen de pv's één onderwerp). De stappen zijn "pv" (alle pv's) en "o1", "o2" …
+    (`zinsontleding.soort("o2")` = "o"); de machine maakt ze met `maak_samengesteld` (`SAMENGESTELD`);
   - `kern/taal/zinsontleding.py`: de stappen per leerjaar (leerlijn `taal.zinsontleding`), nakijken (ook "er is er
     geen"), de denkfouten (`zo_…`), de tips (de vraag van school, het proefje zonder het antwoord), de uitleg, vrij
     kleuren, verdelen, de spiekbrief (`SPIEK_KOP` per stap) en het `Onderwerp` (invoer `"zinsdelen"`);
@@ -228,6 +235,12 @@ dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.comman
 - **Bewijs vóór "klaar":** de volledige suite (ook de lange aapjestest bij grote wijzigingen), schermen echt
   bekeken in tmux 80×24, en bij een verbouwing een vergelijking met de vorige versie op echte gegevens (een kopie).
   Wat niet nagekeken is, wordt niet "klaar" genoemd.
+- **Grotere stukken** (de vader, 10/11/2026): hij kan een voorstel voor meer versies tegelijk goedkeuren. Dan bouwt
+  Claude die versies na elkaar zonder een stop per fase: elke versie op een eigen branch (op de vorige gestapeld) met
+  een pull request naar `main`, hetzelfde bewijs per versie, en een kort bericht per pull request. Claude neemt kleine
+  keuzes die het voorstel niet noemt zelf en zet ze onder "Keuzes" in de pull request. Claude stopt toch en vraagt bij:
+  een migratie van de databank, een verandering aan het hoofdmenu, iets dat tegen een eerdere keuze van de vader
+  ingaat, of een test die niet netjes op te lossen is. Op het afgesproken stoppunt komt een volledig verslag.
 - Een fout of iets vreemds gezien buiten de opdracht: melden en voorstellen, niet zelf de opdracht uitbreiden.
   Een kleine fout die het kind zou merken: melden, en na akkoord meteen in dezelfde branch.
 - Testen door de vader gebeurt op een kopie van de gegevens (`LEERAVONTUUR_DATA`), met een testlijst.

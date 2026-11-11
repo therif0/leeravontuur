@@ -1,6 +1,6 @@
 {
  "vaardigheid": "taal.zinsontleding",
- "omschrijving": "Zinsdelen aanduiden: pv, o, lv, mv (op Moeilijk ook het gezegde en de bwb)",
+ "omschrijving": "Zinsdelen aanduiden: pv, o, lv, mv (op Moeilijk ook het gezegde, de bwb en zinnen met twee pv's)",
  "doelen": [
   "L4 1.4.10",
   "L6 1.4.8"
@@ -12,7 +12,11 @@
   "tijden": "lijst",
   "max_woorden": "int",
   "stap_voor_stap": "bool",
-  "zonder_lv": "bool"
+  "zonder_lv": "bool",
+  "nagekeken": "lijst",
+  "nagekeken_op_tien": "int",
+  "twee_pv": "lijst",
+  "twee_op_tien": "int"
  },
  "leerlijn": {
   "3": {
@@ -30,7 +34,11 @@
    ],
    "max_woorden": 6,
    "stap_voor_stap": true,
-   "zonder_lv": false
+   "zonder_lv": false,
+   "nagekeken": [],
+   "nagekeken_op_tien": 0,
+   "twee_pv": [],
+   "twee_op_tien": 0
   },
   "4": {
    "delen": [
@@ -49,7 +57,13 @@
    ],
    "max_woorden": 7,
    "stap_voor_stap": true,
-   "zonder_lv": false
+   "zonder_lv": false,
+   "nagekeken": [
+    "4"
+   ],
+   "nagekeken_op_tien": 3,
+   "twee_pv": [],
+   "twee_op_tien": 0
   },
   "5": {
    "delen": [
@@ -75,7 +89,14 @@
    ],
    "max_woorden": 11,
    "stap_voor_stap": true,
-   "zonder_lv": false
+   "zonder_lv": false,
+   "nagekeken": [
+    "4",
+    "5"
+   ],
+   "nagekeken_op_tien": 3,
+   "twee_pv": [],
+   "twee_op_tien": 0
   },
   "6": {
    "delen": [
@@ -106,7 +127,23 @@
    ],
    "max_woorden": 12,
    "stap_voor_stap": false,
-   "zonder_lv": true
+   "zonder_lv": true,
+   "nagekeken": [
+    "5",
+    "6"
+   ],
+   "nagekeken_op_tien": 2,
+   "twee_pv": [
+    "twee_en",
+    "twee_samen",
+    "twee_dat",
+    "twee_terwijl",
+    "twee_terwijl_voor",
+    "twee_lijst",
+    "twee_lijst",
+    "twee_lijst"
+   ],
+   "twee_op_tien": 3
   }
  }
 }

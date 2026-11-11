@@ -2,6 +2,21 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.25.1 — Zinsdelen: nagekeken zinnen en zinnen met twee persoonsvormen
+- **Nagekeken zinnen.** Naast de zinnen van de zinnenmachine komen er nu ook met de hand geschreven zinnen (ongeveer
+  3 van de 10 op Makkelijk en Normaal, 2 van de 10 op Moeilijk), voor wat lastig is: een lang onderwerp ("De kinderen
+  van de buren"), het onderwerp niet vooraan, een vraag, twee werkwoorden, een persoon als lijdend voorwerp, een
+  meewerkend voorwerp met aan of voor ("voor mijn zus"), "ons" of "jullie" als meewerkend voorwerp.
+- **Zinnen met twee persoonsvormen** (alleen op Moeilijk, ongeveer 3 van de 10), zoals in de teksten van school:
+  "Grootvader vertelt dat de kist onder de grond ligt."
+  - Stap 1: **zoek alle persoonsvormen** (Spatie of een klik duidt een woord aan of wist het, Enter = klaar).
+  - Daarna **het onderwerp bij elke pv** ("Zoek het onderwerp bij ‘ligt’."). Soms delen twee pv's één onderwerp:
+    "Emma leest de brief en krijgt een idee."
+  - Alleen de pv's en hun onderwerp worden gevraagd; de andere woorden blijven zoals ze zijn. Met Tab kleur je vrij
+    (P en O).
+  - Op de spiekbrief: "Zinnen met twee persoonsvormen".
+- Een leesteken staat nu tegen het woord ("een boek." in plaats van "een boek .").
+
 ## 0.25.0 — Taal: zinsontleding
 - **Taal staat in het hoofdmenu.** Het menu van Taal toont al de zes delen; wat nog niet klaar is, staat in het grijs
   ("Woordsoorten komt binnenkort.").

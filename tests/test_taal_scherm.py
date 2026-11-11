@@ -1,11 +1,14 @@
 """Taal T1.2: de zinsontleder op het scherm (stap voor stap, Tab, vrij kleuren, verdelen, de muis, de tweede kans)."""
 
 import curses
+import os
+import random
 import unittest
 from unittest import mock
 
 from leeravontuur.kern.taal import zinnenmachine as M
 from leeravontuur.kern.taal.zinnen import lees_haakjes
+from leeravontuur.terminal.nepscherm import HangtFout
 from leeravontuur.terminal.zinsdelen import ZinsdelenInvoer
 try:
     from .test_schermen import ESC, F1, OK, Basis, naar
@@ -22,8 +25,9 @@ OMA_JUIST = [R, OK, R, R, OK, *[R] * 5, SP, OK, *[R] * 3, SP, OK]
 
 
 def vaste_zin(haakjes):
-    """De zinnenmachine geeft altijd deze zin (zodat de test weet welke toetsen juist zijn)."""
-    return mock.patch.object(M, "maak", side_effect=lambda *a, **k: lees_haakjes(haakjes, M.soort_van))
+    """Elke vraag is deze zin (zodat de test weet welke toetsen juist zijn)."""
+    from leeravontuur.kern.taal.zinsontleding import Zinsontleding
+    return mock.patch.object(Zinsontleding, "maak_zin", side_effect=lambda *a, **k: lees_haakjes(haakjes, M.soort_van))
 
 
 class TestStapVoorStap(Basis):
@@ -131,6 +135,103 @@ class TestStapVoorStap(Basis):
         self.assertTrue(all(ord(c) < 128 for b in scherm.beelden for c in b))
 
 
+GROOT = "[o Grootvader] [pv vertelt] | dat [o de kist] onder de grond [pv ligt]."
+EMMA = "[o Emma] [pv leest] de brief en [pv krijgt] een idee."
+# alle pv's (vertelt, ligt), dan het onderwerp bij elke pv (Grootvader; de kist)
+GROOT_JUIST = [R, SP, *[R] * 7, SP, OK, OK, *[R] * 3, SP, OK]
+
+
+class TestTweePersoonsvormen(Basis):
+    """0.25.1: een zin met meer dan één pv (alleen op Moeilijk): alle pv's, dan het onderwerp bij elke pv."""
+
+    def speel_zin(self, haakjes, toetsen, **opties):
+        with vaste_zin(haakjes):
+            return self.speel([*naar(ONDERWERP, "Enter", niveau="3"), *toetsen], **opties)
+
+    def test_alles_meteen_juist(self):
+        scherm, app = self.speel_zin(GROOT, [*GROOT_JUIST, ESC, ESC])
+        for tekst in ("Stap 1 van 3: Zoek alle persoonsvormen (2).", "✔ pv: vertelt, ligt.",
+                      "Stap 2 van 3: Zoek het onderwerp bij ‘vertelt’.", "✔ o bij ‘vertelt’: grootvader.",
+                      "Stap 3 van 3: Zoek het onderwerp bij ‘ligt’.", "Elk zinsdeel juist, meteen!"):
+            self.assertTrue(self.ergens(scherm, tekst), tekst)
+        self.assertTrue(app.opslag.recente_antwoorden(app.kind.id, "taal.zinsontleding", 5)[0]["juist"])
+        for b in scherm.beelden:
+            for regel in b.splitlines():
+                self.assertLessEqual(len(regel), 80, regel)
+
+    def test_een_pv_vergeten_dan_tweede_kans(self):
+        scherm, app = self.speel_zin(GROOT, [R, SP, OK, *[R] * 7, SP, OK, OK, *[R] * 3, SP, OK, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Deze zin heeft twee persoonsvormen."))
+        self.assertTrue(self.ergens(scherm, "Juist, met een tweede kans bij: pv."))
+        self.assertIn('"eerste_fout": "pv"', app.opslag.recente_antwoorden(app.kind.id, "taal.zinsontleding", 5)[0]["extra"])
+
+    def test_enter_zonder_iets_aan_te_duiden_is_geen_fout(self):
+        scherm, _ = self.speel_zin(GROOT, [OK, *GROOT_JUIST, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Duid eerst elke persoonsvorm aan met Spatie."))
+        self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
+
+    def test_het_onderwerp_van_de_andere_pv(self):
+        # bij ‘ligt’ kiest het kind Grootvader (het onderwerp bij ‘vertelt’)
+        scherm, _ = self.speel_zin(GROOT, [*GROOT_JUIST[:12], OK, OK, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Dat is het onderwerp bij ‘vertelt’."))
+        self.assertTrue(self.ergens(scherm, "Niet gevonden: o. Lees de uitleg."))  # na de tweede fout
+
+    def test_twee_pvs_met_een_onderwerp(self):
+        # Emma leest … en krijgt …: Emma is het onderwerp bij de twee pv's
+        scherm, _ = self.speel_zin(EMMA, [R, SP, *[R] * 4, SP, OK, OK, OK, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Zoek het onderwerp bij ‘krijgt’."))
+        self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
+
+    def test_met_de_muis(self):
+        # de woorden op rij 10: Grootvader x=7, vertelt 19, dat 28, de 33, kist 37, onder 43, de 50, grond 54, ligt 61
+        klikken = [("klik", 10, 20), ("klik", 10, 62), OK, ("klik", 10, 8), OK, ("klik", 10, 33), ("klik", 10, 38), OK]
+        scherm, _ = self.speel_zin(GROOT, [*klikken, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
+
+    def test_tab_vrij_kleuren(self):
+        toetsen = [TAB, "o", R, "p", *[R] * 2, SP, "o", *[R] * 4, "p", OK, ESC, ESC]
+        scherm, _ = self.speel_zin(GROOT, toetsen)
+        self.assertTrue(self.ergens(scherm, "Kleur alle persoonsvormen en hun onderwerp."))
+        self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
+
+    def test_het_leesteken_staat_tegen_het_woord(self):
+        scherm, _ = self.speel_zin(GROOT, [ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "grond  ligt."))
+
+    def test_f1_opent_de_spiekbrief_bij_twee_persoonsvormen(self):
+        scherm, _ = self.speel_zin(GROOT, [F1, F1, F1, ESC, ESC, ESC])
+        brief = next(b for b in scherm.beelden if "› Spiekbrief" in b)
+        self.assertIn("ZINNEN MET TWEE PERSOONSVORMEN", brief)
+
+    def test_zonder_kleur_en_eenvoudige_tekens(self):
+        scherm, _ = self.speel_zin(GROOT, [*GROOT_JUIST, ESC, ESC], voorrang={"ascii": True, "thema": "geen-kleur"})
+        self.assertTrue(all(ord(c) < 128 for b in scherm.beelden for c in b))
+
+
+class TestGerichteAap(Basis):
+    """Willekeurig drukken in de zinsontleder op elk niveau (ook de nagekeken zinnen en de zinnen met twee pv's):
+    geen fout en niets mag blijven hangen. Ook in de lange aapjestest (LEERAVONTUUR_AAP_RONDES)."""
+
+    def test_aapjes_in_de_zinsontleder(self):
+        try:
+            from .test_stabiliteit import TestAapjes
+        except ImportError:
+            from test_stabiliteit import TestAapjes
+        rondes = int(os.environ.get("LEERAVONTUUR_AAP_RONDES", "1"))
+        with mock.patch.dict(os.environ, {"LEERAVONTUUR_DEBUG": "1"}):
+            for seed in range(6 * rondes):
+                rng = random.Random(900 + seed)
+                niveau = "123"[seed % 3]
+                toetsen = [e for e in TestAapjes.gebeurtenissen(self, rng, 400) if e != ESC]
+                try:
+                    scherm, _ = self.speel([*naar(ONDERWERP, "Enter", niveau=niveau), *toetsen, *[ESC] * 10])
+                except HangtFout as e:
+                    self.fail(f"seed {seed}: het programma hangt ({e})")
+                except Exception as e:  # noqa: BLE001
+                    raise AssertionError(f"seed {seed} (niveau {niveau}): {type(e).__name__}: {e}") from e
+                self.assertTrue(self.ergens(scherm, "Vraag 1 van 10"), seed)
+
+
 class TestDeTekstPast(unittest.TestCase):
     def test_hints_en_legende_passen(self):
         """De hint staat op kolom 6 (de Oefenaar), dus hoogstens 72 tekens; de legende naast het maatje 56."""
@@ -147,6 +248,8 @@ class TestDeTekstPast(unittest.TestCase):
                     for vrij in (False, True):
                         obj.vrij = vrij
                         self.assertLessEqual(len(obj.hint_tekst()), 72, (jaar, label, obj.hint_tekst()))
+                    if label != ZD.VERDELEN:
+                        self.assertLessEqual(len(f"Stap 1 van 3: {obj.vraag()}"), ZD.OPDRACHT_BREED, obj.vraag())
                 namen = " · ".join(f"{l.upper()} {ZD.LETTERS[l]}" for l in ZD.LETTERS if ZD.LETTERS[l] in obj.gevraagd)
                 self.assertLessEqual(len(namen), ZD.OPDRACHT_BREED)
 

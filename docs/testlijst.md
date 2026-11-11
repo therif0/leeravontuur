@@ -103,6 +103,13 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Tab** = vrij kleuren met P, O, L, M (Backspace = wissen), Enter = nakijken. Tab = terug naar de stappen.
 - [ ] **Makkelijk:** eerst de zin verdelen (←→ naar een plek tussen twee woorden, Spatie = een |, Enter).
   **Moeilijk:** meteen vrij kleuren, ook G (wwg), N (nwg) en B (bwb).
+- [ ] **Moeilijk, een zin met twee persoonsvormen** (0.25.1, ongeveer 3 van de 10; bv. "Papa kookt soep terwijl mama
+  de tafel dekt."): "Stap 1 van 3: Zoek alle persoonsvormen (2)." Spatie op elk van de twee, dan Enter. Daarna "Zoek
+  het onderwerp bij ‘kookt’." en "… bij ‘dekt’." Duid met opzet maar één pv aan: "Deze zin heeft twee
+  persoonsvormen." en een tweede kans. Tab = vrij kleuren met P en O.
+- [ ] **De nagekeken zinnen** (0.25.1): lees de lijst in `leeravontuur/inhoud/taal/zinnen.json` (of in de tekst van de
+  pull request). Is elke zin goed Nederlands en klopt elke ontleding? In een reeks herken je ze aan wat de machine
+  niet maakt ("De kinderen van de buren spelen buiten.", "Vertelt opa jullie een verhaal?").
 - [ ] Zijn de zinnen goed Nederlands? Klopt de ontleding met wat op school geleerd wordt (de afkortingen, de vraag
   "wie of wat + pv + o?")? Schrijf de zin op als iets niet klopt.
 - [ ] **Leerstof** vraagt eerst welk vak; **Taal** opent meteen de spiekbrief Zinsontleding.
