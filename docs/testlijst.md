@@ -128,6 +128,13 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
   bij stap 3 met opzet "de stam + t": "Kijk waar ‘jij’ staat: voor of achter het werkwoord?".
 - [ ] **F1** twee keer = de twee tips van de stap, een derde keer = de spiekbrief (Esc = terug naar de zin).
   **S** in het menu en **Leerstof › Taal › Werkwoordspelling** tonen de twee spiekbrieven.
+- [ ] **Verleden tijd: sterke werkwoorden** (0.26.1): "Gisteren ___ Noor in het park. (lopen)". Typ `loopte`: "‘lopen’
+  is een sterk werkwoord: in de verleden tijd verandert de klank." F1 twee keer: een stukje van het rijtje. De
+  spiekbrief (S) toont alle rijtjes.
+- [ ] **Voltooid deelwoord** (0.26.1): "Noor heeft gisteren in het park ___. (fietsen)": de stam, "Zit de s in
+  't kofschip?", dan `gefietst`. Typ met opzet `gefietsd` (d of t) en bij vertellen `geverteld` (ge- te veel).
+  Een sterk werkwoord (lopen) typ je meteen.
+- [ ] **Tegenwoordige tijd › Heel moeilijk** (0.26.1): zinnen met verhuist/verhuisd, gebeurt/gebeurd, vertelt/verteld.
 - [ ] Zijn de zinnen goed Nederlands, en klopt elke werkwoordvorm? De lijst staat in
   `leeravontuur/inhoud/taal/werkwoorden.json` en als tabel in de tekst van de pull request.
 - [ ] Het rapport van de ouder toont Taal › Werkwoordspelling met de twee onderwerpen.

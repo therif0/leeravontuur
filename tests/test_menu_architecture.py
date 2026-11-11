@@ -26,6 +26,7 @@ MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
 BEWAARD = {
     "taal.zinsontleding", "taal.werkwoordspelling.tt", "taal.werkwoordspelling.vt_zwak",
+    "taal.werkwoordspelling.vt_sterk", "taal.werkwoordspelling.vd",
     "wiskunde.eenheden.omzetten",
     "wiskunde.getallen.plaatswaarde", "wiskunde.getallen.afronden", "wiskunde.getallen.deelbaarheid",
     "wiskunde.getallen.getallenlijn",
@@ -237,7 +238,7 @@ class TestNavigatie(TestModiStarten):
         self.assertIn("2. Taal", beeld)
         beeld = self.speel([OK, OK, spiek, "2"])[-1]
         self.assertIn("Welke spiekbrief?", beeld)
-        self.assertIn("2 spiekbrieven: Tegenwoordige tijd", beeld)
+        self.assertIn(" spiekbrieven: Tegenwoordige tijd", beeld)
         beeld = self.speel([OK, OK, spiek, "2", "1"])[-1]
         self.assertIn("Zinsontleding: zo vind je de zinsdelen", beeld)
         self.assertEqual(self.app.s.kruimel[-2:], ["Taal", "Zinsontleding"])

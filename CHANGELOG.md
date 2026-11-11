@@ -2,6 +2,25 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.26.1 — Werkwoordspelling: sterke werkwoorden en het voltooid deelwoord
+- **Verleden tijd: sterke werkwoorden** (liep, gaf, schreef). Er is geen regel: je leert het rijtje.
+  - Stap 1: één of meer? Stap 2: typ de vorm.
+  - Schrijf je een sterk werkwoord zwak ("loopte"), dan zegt het programma dat de klank verandert. De tweede tip
+    geeft een stukje van het rijtje ("het voltooid deelwoord is ‘gelopen’").
+  - Wat fout ging, komt terug in de herhaalbak als **dat werkwoord**, in een andere zin.
+  - De spiekbrief **Sterke werkwoorden** heeft alle rijtjes: lopen – liep – gelopen.
+  - Makkelijk = 26 heel gewone werkwoorden, Normaal = 49, Moeilijk = alle 71.
+- **Voltooid deelwoord** (gewerkt, gespeeld, gelopen): "Noor heeft gisteren in het park ___. (fietsen)".
+  - Een zwak werkwoord gaat in stappen: de stam, dan "Zit de letter in 't kofschip?" (een t of een d), dan de vorm.
+  - Een sterk werkwoord typ je meteen (het rijtje).
+  - Het programma herkent: gewerkd of gespeelt, ge- vergeten, ge- te veel ("geverteld"), een sterk werkwoord zwak
+    geschreven ("geloopt"), gepraatt, geleevd.
+  - Makkelijk = zwakke werkwoorden met een duidelijke stam. Normaal = ook een stam op d of t (gepraat, gemeld) en de
+    gewoonste sterke werkwoorden. Moeilijk = alles, ook zonder ge- (verteld, betaald) en met v of z (geleefd).
+- **Tegenwoordige tijd › Heel moeilijk:** verhuist of verhuisd? Je hoort hetzelfde; de zin zegt of het de
+  persoonsvorm is ("Opa ___ naar de stad.") of het voltooid deelwoord ("Opa is gisteren naar de stad ___.").
+  Ongeveer 4 van de 10 vragen.
+
 ## 0.26.0 — Taal: werkwoordspelling (deel 1)
 - **Taal › Werkwoordspelling** staat niet meer in het grijs. De eerste twee oefeningen:
   - **Tegenwoordige tijd:** ik werk, jij werkt, werk jij?, hij wordt, we werken.

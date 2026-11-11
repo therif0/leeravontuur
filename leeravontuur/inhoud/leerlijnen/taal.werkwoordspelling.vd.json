@@ -1,0 +1,94 @@
+{
+ "vaardigheid": "taal.werkwoordspelling.vd",
+ "omschrijving": "Werkwoordspelling voltooid deelwoord (gewerkt, gespeeld, gelopen)",
+ "doelen": [
+  "L4 1.2.7",
+  "L6 1.2.5"
+ ],
+ "parameters": {
+  "niveaus": "lijst",
+  "stammen": "lijst",
+  "personen": "lijst",
+  "patronen": "lijst",
+  "stap_voor_stap": "bool",
+  "sterk": "lijst",
+  "zonder_ge": "bool"
+ },
+ "leerlijn": {
+  "4": {
+   "niveaus": [
+    1
+   ],
+   "stammen": [
+    "gewoon"
+   ],
+   "personen": [
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon"
+   ],
+   "sterk": [],
+   "zonder_ge": false,
+   "stap_voor_stap": true
+  },
+  "5": {
+   "niveaus": [
+    1,
+    2
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie"
+   ],
+   "sterk": [
+    1
+   ],
+   "zonder_ge": false,
+   "stap_voor_stap": true
+  },
+  "6": {
+   "niveaus": [
+    1,
+    2,
+    3
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "sterk": [
+    1,
+    2,
+    3
+   ],
+   "zonder_ge": true,
+   "stap_voor_stap": false
+  }
+ }
+}

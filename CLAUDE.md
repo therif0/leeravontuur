@@ -194,7 +194,15 @@ Gouden regels:
     (gewoon, d, t, vz), `personen`, `patronen` en `stap_voor_stap`;
   - `terminal/werkwoord.py`: het invoer-object `"werkwoord"` (speelt de stappen: cijfer, ↑↓ + Enter of een klik;
     Tab = meteen typen; 't kofschip met de letter die oplicht; een eigen tweede kans die `Hulp.tweede_kans` volgt).
-    Het antwoord van de vraag is de getypte vorm; een fout in een stap ervoor telt als "met een tweede kans".
+    Het antwoord van de vraag is de getypte vorm; een fout in een stap ervoor telt als "met een tweede kans";
+  - 0.26.1: `VerledenTijdSterk` (geen regel: `rijtje`, de stappen zijn "één of meer" en de vorm; het groepje voor
+    herhaling is het werkwoord, bv. `ev/lopen`) en `VoltooidDeelwoord` (`vorm = "vd"`: het gat staat achteraan, na
+    heeft of is; zwak = stam → 't kofschip (t of d) → vorm, sterk = meteen typen; de leerlijn heeft `sterk` = de
+    niveaus van de sterke werkwoorden en `zonder_ge`). `sterk(zin)` zegt of de gevraagde vorm een sterke vorm is.
+    Tegenwoordige tijd op Heel moeilijk (`homofoon` in de leerlijn m1): `homofoon(w)` = verhuist/verhuisd; dan
+    vraagt dat onderwerp ook zinnen met `vorm = "vd"`. Een kopje dat niet op de spiekbrief van het onderwerp staat,
+    wordt `kop_anders`. Wat na het werkwoord staat (`rest`) mag geen deel van een scheidbaar werkwoord zijn
+    ("de deur open" → opengehouden): een test bewaakt dat.
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =

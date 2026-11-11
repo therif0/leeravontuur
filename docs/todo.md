@@ -20,7 +20,8 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
 - [x] **Taal T1** (0.25.0): Zinsontleding (het plan in [taal.md](taal.md)).
 - [x] Taal T1.3b (0.25.1): de nagekeken zinnen + zinnen met 2 pv's op Moeilijk.
 - [x] T3 deel 1 (0.26.0): de werkwoordenlijst, het scherm met de stappen, Tegenwoordige tijd, Verleden tijd zwak.
-- [ ] T3 deel 2 en 3 (0.26.1 sterke werkwoorden en voltooid deelwoord, 0.26.2 Zet in de verleden tijd), dan T2
+- [x] T3 deel 2 (0.26.1): Verleden tijd sterk, Voltooid deelwoord, verhuist/verhuisd op Heel moeilijk.
+- [ ] T3 deel 3 (0.26.2 Zet in de verleden tijd), dan T2
       Woordsoorten; later T6 de tekstoefening (het taaldossier). Zie [taal.md](taal.md).
 
 ## Geparkeerd: vragen voor later
