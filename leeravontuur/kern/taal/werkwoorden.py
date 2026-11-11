@@ -138,7 +138,7 @@ TT_WOORDEN = ("vandaag", "nu", "soms")
 VT_WOORDEN = ("gisteren", "vorige week", "toen")
 VROEGER = ("vroeger", "toen", "vorig jaar")
 VD_WOORDEN = ("gisteren", "vorige week", "daarnet")
-BEGIN = ("daarna", "plotseling", "even later", "op zaterdag")  # past in de tegenwoordige en in de verleden tijd
+BEGIN = ("daarna", "die dag", "even later", "op zaterdag")  # past in de tegenwoordige en in de verleden tijd
 WIE = {"ik": "ik", "jij": "jij", "jij_inv": "jij", "hij": "hij, zij, het of één naam", "mv": "meer dan één"}
 
 
@@ -218,6 +218,8 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN, omzetten
     for o, persoon in onderwerpen:
         for patroon in patronen:
             p = "jij_inv" if persoon == "jij" and patroon != "gewoon" else persoon
+            if omzetten and w.get("vroeger") and patroon == "inversie":
+                continue  # ("op zaterdag woon jij naast de school" klinkt vreemd)
             if p in personen and not (patroon == "vraag" and persoon == "ik"):
                 kandidaten.append((o, p, patroon))
     if not kandidaten:
@@ -225,7 +227,8 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN, omzetten
     # elke persoon even vaak (er zijn meer namen dan "ik" en "jij")
     persoon = rng.choice(sorted({k[1] for k in kandidaten}))
     o, persoon, patroon = rng.choice([k for k in kandidaten if k[1] == persoon])
-    rest = rng.choice(w["rest"])
+    # niet "De buren voetballen met de buren."
+    rest = rng.choice([r for r in w["rest"] if o.lower() not in r.lower()] or w["rest"])
     if vorm == "vd":  # het gat staat achteraan: "Noor heeft gisteren in het park ___."
         hulp = vorm_van(ww(w["hulp"]), "tt", persoon)
         tijd = "vroeger" if w.get("vroeger") else rng.choice(VD_WOORDEN)

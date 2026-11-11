@@ -120,6 +120,13 @@ class TestDeZin(unittest.TestCase):
         self.assertRegex(zin("fietsen", "vt", "hij").zin, r"(gisteren|vorige week|toen)")
         self.assertIsNone(W.maak_zin(W.ww("branden"), "tt", random.Random(1), ["ik"], ["gewoon"]))  # het vuur brandt
 
+    def test_het_onderwerp_staat_niet_ook_achteraan(self):
+        rng = random.Random(4)
+        for inf, o in (("voetballen", "de buren"), ("bedanken", "de juf"), ("luisteren", "de juf")):
+            for _ in range(200):
+                z = W.maak_zin(W.ww(inf), "tt", rng)
+                self.assertFalse(z.o == o and z.vol().lower().count(o) > 1, z.vol())
+
     def test_nakijken(self):
         z = zin("rijden", "tt", "ik")
         self.assertTrue(all(W.nakijken(z, t) for t in ("rijd", "Rijd ", "rij")))  # rij mag ook
