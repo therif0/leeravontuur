@@ -5,8 +5,8 @@ De vader (10/11):
 - stap voor stap zoals bij Zinsdelen: wie doet het, de stam, de regel ('t kofschip), dan de vorm typen;
 - **Tab** = meteen de vorm typen (en terug); op Moeilijk typ je altijd meteen;
 - een fout geeft een uitleg die bij de fout past en een tweede kans; daarna het juiste antwoord.
-De stappen zijn data uit de kern (kern/taal/werkwoorden.stappen): een keuze (cijfer, ↑↓ + Enter, of een klik) of een
-woord typen. Het antwoord van de vraag is de getypte vorm; een fout in een stap ervoor telt als "met een tweede kans"
+De stappen zijn data uit de kern (kern/taal/werkwoorden.stappen): een keuze (cijfer, ↑↓ + Enter, of een klik), een
+woord typen, of (Zet in de verleden tijd, 0.26.2) een woord aanduiden in de zin (←→ + Enter, of een klik). Het antwoord van de vraag is de getypte vorm; een fout in een stap ervoor telt als "met een tweede kans"
 (dan komt de vraag in de herhaalbak, zoals bij de zinsontleder).
 """
 
@@ -33,6 +33,7 @@ class WerkwoordInvoer:
         self.direct = not self.kan_wisselen                  # alleen de vorm typen (Tab, of Moeilijk)
         self.stappen = self.alle if not self.direct else W.stappen(self.zin, False)
         self.stap, self.keuze, self.buf = 0, 0, ""
+        self.woorden = self.zin.bron.split() if self.zin.omzetten else []  # de zin in de tegenwoordige tijd
         self.gedaan = {}            # naam van de stap -> kort wat het juiste antwoord was
         self.pogingen, self.mislukt = {}, []
         self.tips, self.tip_nr, self.tiptekst = 0, 0, ""
@@ -57,6 +58,8 @@ class WerkwoordInvoer:
     def knoppen(self):
         if self.nu.soort == "keuze":
             k = [("↑↓", "kies", None), ("Enter", "ok", 10)]
+        elif self.nu.soort == "woord":
+            k = [("←→", "woord", None), ("Enter", "kies", 10)]
         else:
             k = [("Enter", "controleren", 10)]
         k.append(("F1", "tip", HULP))
@@ -68,7 +71,8 @@ class WerkwoordInvoer:
     def teken(self, s, y, uitslag=None, hulp=False):
         self.cursor_pos = None
         if uitslag is not None:  # nagekeken: de zin met de juiste vorm
-            s.put(y + RIJ - 2, 4, "De zin met de juiste vorm:", "bold")
+            s.put(y + RIJ - 2, 4, "De zin in de verleden tijd:" if self.zin.omzetten else "De zin met de juiste vorm:",
+                  "bold")
             self.teken_zin(s, y + RIJ, self.zin.antwoord, "goed")
             return
         stap = self.nu
@@ -76,14 +80,20 @@ class WerkwoordInvoer:
         s.put(y, 4, kop, "bold")
         if stap.sub:
             s.put(y + 1, 4, stap.sub, "dim")
-        self.teken_zin(s, y + RIJ, self.buf if stap.naam == "vorm" else None, "veld")
         rij = y + RIJ + 2
+        if self.zin.omzetten:  # de zin van nu (met de pv aangeduid), en eronder de zin van toen met het vak
+            self.teken_bron(s, y + RIJ)
+            if stap.naam == "vorm":
+                s.put(rij, 4, "Verleden tijd:", "dim")
+                self.teken_zin(s, rij + 1, self.buf, "veld")
+        else:
+            self.teken_zin(s, y + RIJ, self.buf if stap.naam == "vorm" else None, "veld")
         if stap.soort == "keuze":
             for i, tekst in enumerate(stap.opties):
                 regel = f" {i + 1}  {tekst} "
                 s.put(rij + i, X, regel, "cursor" if i == self.keuze else "")
                 s.zones.voeg(rij + i, X, 1, len(regel), ("optie", i))
-        elif stap.naam != "vorm":  # een woord typen (de stam)
+        elif stap.soort == "typ" and stap.naam != "vorm":  # een woord typen (de stam)
             s.put(rij, X, stap.voor, "bold")
             x = X + len(stap.voor) + 1
             s.tekstvak(rij, x, self.buf, MAX_WOORD, "veld")
@@ -93,7 +103,8 @@ class WerkwoordInvoer:
         self.teken_gevonden(s, y + RIJ + 6)
         for i, regel in enumerate(textwrap.wrap(self.tiptekst, 72)[:2]):
             s.put(y + RIJ + 7 + i, 4, regel, "accent")
-        self.hint = ("↑↓ of het cijfer, Enter = kies" if stap.soort == "keuze" else "Typ het woord, Enter = klaar")
+        self.hint = {"keuze": "↑↓ of het cijfer, Enter = kies", "woord": "←→ woord, Enter = dit is de persoonsvorm"
+                     }.get(stap.soort, "Typ het woord, Enter = klaar")
 
     def teken_zin(self, s, y, vak, rol):
         """De zin (rij y): vak = None (het gat ___), of de tekst in het vak (bij het typen en na het nakijken)."""
@@ -115,7 +126,19 @@ class WerkwoordInvoer:
             x += len(vorm)
         na = zin.na if zin.na[:1] in ".?!," else " " + zin.na
         s.put(y, x, na)
-        s.put(y, x + len(na) + 2, f"({zin.inf})", "dim")
+        if not zin.omzetten:
+            s.put(y, x + len(na) + 2, f"({zin.inf})", "dim")
+
+    def teken_bron(self, s, y):
+        """De zin in de tegenwoordige tijd, woord per woord: de cursor bij het zoeken van de pv; is de pv gevonden,
+        dan staat ze in de kleur van de pv (zoals bij Zinsdelen)."""
+        zoeken, x = self.nu.soort == "woord", X
+        for i, woord in enumerate(self.woorden):
+            pv = i == self.zin.pv_plek and "pv" in self.gedaan
+            s.put(y, x, woord, "cursor" if zoeken and i == self.keuze else "z_pv" if pv else "")
+            if zoeken:
+                s.zones.voeg(y, x, 1, len(woord), ("woord", i))
+            x += len(woord) + 1
 
     def teken_kofschip(self, s, y):
         """'t kofschip, letter per letter; de letter van dit werkwoord licht op zodra die stap klaar is."""
@@ -138,6 +161,9 @@ class WerkwoordInvoer:
             if k[0] == "optie" and stap.soort == "keuze" and k[1] < len(stap.opties):
                 self.keuze = k[1]
                 return self.kies(k[1])
+            if k[0] == "woord" and stap.soort == "woord" and k[1] < len(self.woorden):
+                self.keuze = k[1]
+                return self.kies(k[1])
             return None
         if k == HULP:
             self.volgende_tip()
@@ -145,6 +171,18 @@ class WerkwoordInvoer:
         if k == TAB:
             if self.kan_wisselen:
                 self.wissel()
+            return None
+        if stap.soort == "woord":
+            n = len(self.woorden)
+            if k == curses.KEY_LEFT:
+                self.keuze = max(0, self.keuze - 1)
+            elif k == curses.KEY_RIGHT:
+                self.keuze = min(n - 1, self.keuze + 1)
+            elif k in ENTER:
+                return self.kies(self.keuze)
+            else:
+                return None
+            self.melding = ""
             return None
         if stap.soort == "keuze":
             n = len(stap.opties)
@@ -275,4 +313,5 @@ class WerkwoordInvoer:
 
 # hoe een stap heet in "Juist, met een tweede kans bij: …"
 NAAM = {"wie": "wie het doet", "getal": "één of meer", "stam": "de stam", "regel": "de regel",
+        "pv": "de persoonsvorm", "soort": "zwak of sterk",
         "kofschip": W.KOFSCHIP, "vorm": "de vorm"}

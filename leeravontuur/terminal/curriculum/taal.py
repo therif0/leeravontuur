@@ -32,6 +32,8 @@ TAAL = Vak("taal", "Taal", (
                  WERKWOORDSPELLING, "Sterke werkwoorden"),
         oefenaar("werkwoordspelling.vd", "Voltooid deelwoord", WW.VOLTOOID_DEELWOORD, WERKWOORDSPELLING,
                  "Voltooid deelwoord"),
+        oefenaar("werkwoordspelling.naar_vt", "Zet in de verleden tijd", WW.ZET_IN_DE_VERLEDEN_TIJD,
+                 WERKWOORDSPELLING, "Van tegenwoordige naar verleden tijd"),
     ), "d, t of dt, verleden tijd, voltooid deelwoord"),
     Domein("taal.woordsoorten", "Woordsoorten", (), "zn, lidw, bn, ww …"),
     Domein("taal.spelling", "Spelling", (), "meervoud, verkleinwoord, ei/ij, au/ou …"),
