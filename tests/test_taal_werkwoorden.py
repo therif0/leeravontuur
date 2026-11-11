@@ -19,8 +19,8 @@ except ImportError:  # ook zo te starten: python -m unittest discover -s tests
 
 TAB = "\t"
 TT, VT = W.TEGENWOORDIGE_TIJD, W.VERLEDEN_TIJD_ZWAK
-STERK, VD = W.VERLEDEN_TIJD_STERK, W.VOLTOOID_DEELWOORD
-ONDERWERPEN = (TT, VT, STERK, VD)
+STERK, VD, NAAR = W.VERLEDEN_TIJD_STERK, W.VOLTOOID_DEELWOORD, W.ZET_IN_DE_VERLEDEN_TIJD
+ONDERWERPEN = (TT, VT, STERK, VD, NAAR)
 JAREN = ("4", "5", "6", "m1")
 VOORVOEGSELS = ("be", "ge", "ver", "ont", "her")
 
@@ -119,6 +119,13 @@ class TestDeZin(unittest.TestCase):
         self.assertTrue(vraag.vol().startswith("Fiets jij"))  # ingevuld: met een hoofdletter
         self.assertRegex(zin("fietsen", "vt", "hij").zin, r"(gisteren|vorige week|toen)")
         self.assertIsNone(W.maak_zin(W.ww("branden"), "tt", random.Random(1), ["ik"], ["gewoon"]))  # het vuur brandt
+
+    def test_het_onderwerp_staat_niet_ook_achteraan(self):
+        rng = random.Random(4)
+        for inf, o in (("voetballen", "de buren"), ("bedanken", "de juf"), ("luisteren", "de juf")):
+            for _ in range(200):
+                z = W.maak_zin(W.ww(inf), "tt", rng)
+                self.assertFalse(z.o == o and z.vol().lower().count(o) > 1, z.vol())
 
     def test_nakijken(self):
         z = zin("rijden", "tt", "ik")
@@ -222,6 +229,7 @@ class TestElkOnderwerpInElkLeerjaar(unittest.TestCase):
                     self.assertEqual(v.antwoord, W.vorm_van(z.ww, z.vorm, z.persoon), v.tekst)
                     self.assertTrue(o.nakijken(v, o.lees_vraag(v, v.verwacht)), v.tekst)
                     self.assertIn(z.ww, o.kandidaten(p), v.tekst)
+                    self.assertEqual(z.omzetten, o is NAAR, v.tekst)
                     if not p.get("homofoon"):
                         self.assertEqual(z.vorm, o.vorm, v.tekst)
                         self.assertIn(z.persoon, p["personen"], v.tekst)
@@ -240,6 +248,8 @@ class TestElkOnderwerpInElkLeerjaar(unittest.TestCase):
                             self.assertTrue(st.uitleg)
                             if st.soort == "keuze":
                                 self.assertTrue(0 <= st.juist < len(st.opties) <= 4)
+                            elif st.soort == "woord":
+                                self.assertEqual(z.bron.split()[st.juist].lower(), z.bron_vorm)
                             else:
                                 self.assertTrue(st.juist and all(st.juist))
                     self.assertIn(z.antwoord, o.uitleg(v)[-1])
@@ -377,9 +387,75 @@ class TestSterkEnVoltooidDeelwoord(unittest.TestCase):
         self.assertEqual(TT.maak_herhaling(TT.herhaal_data(vd), "5").model.vorm, "tt")  # niet in het 5de
 
 
+class TestZetInDeVerledenTijd(unittest.TestCase):
+    """0.26.2: een zin in de tegenwoordige tijd; de pv zoeken en in de verleden tijd zetten."""
+
+    def omzet(self, inf, persoon, patroon="gewoon"):
+        rng = random.Random(1)
+        return next(z for z in (W.maak_zin(W.ww(inf), "vt", rng, [persoon], [patroon], True) for _ in range(50)) if z)
+
+    def test_de_zin(self):
+        z = self.omzet("fietsen", "hij")
+        self.assertTrue(z.omzetten)
+        self.assertRegex(z.bron, r"^[A-Z].* fietst (in het park|met de buren)\.$")
+        self.assertEqual((z.bron_vorm, z.antwoord, z.bron.split()[z.pv_plek]), ("fietst", "fietste", "fietst"))
+        self.assertEqual(z.tekst, z.bron + " → verleden tijd")
+        self.assertTrue(z.vol().replace("fietste", "fietst") == z.bron)  # alleen de pv verandert
+        for woord in (*W.TT_WOORDEN, *W.VT_WOORDEN):  # geen tijdwoord dat maar in één tijd past
+            self.assertNotIn(woord, z.bron.lower().split())
+        inv = self.omzet("lopen", "mv", "inversie")
+        self.assertEqual((inv.bron.split()[inv.pv_plek], inv.antwoord), ("lopen", "liepen"))
+        vraag = self.omzet("worden", "jij_inv", "vraag")
+        self.assertEqual((vraag.pv_plek, vraag.bron.split()[0], vraag.antwoord), (0, "Word", "werd"))
+        self.assertTrue(vraag.vol().startswith("Werd jij"))
+
+    def test_de_stappen(self):
+        z = self.omzet("fietsen", "hij")
+        stappen = W.stappen(z)
+        self.assertEqual([(s.naam, s.soort) for s in stappen], [("pv", "woord"), ("soort", "keuze"), ("vorm", "typ")])
+        self.assertEqual((stappen[0].juist, stappen[1].juist), (z.pv_plek, 0))
+        self.assertTrue(W.nakijken_stap(stappen[0], z.pv_plek) and not W.nakijken_stap(stappen[0], 0))
+        self.assertEqual(W.diagnose_stap(z, stappen[0], 0)[0], "ws_pv")
+        self.assertEqual(W.diagnose_stap(z, stappen[1], 1)[0], "ws_soort")
+        self.assertEqual((W.kort(z, stappen[0]), W.kort(z, stappen[1])), ("pv: fietst", "zwak"))
+        sterk = self.omzet("lopen", "hij")
+        self.assertEqual(W.stappen(sterk)[1].juist, 1)
+        self.assertIn("lopen – liep – gelopen", W.stappen(sterk)[1].uitleg)
+        self.assertEqual([s.naam for s in W.stappen(z, False)], ["vorm"])
+        self.assertNotIn("(van", W.stappen(self.omzet("lopen", "mv"))[0].uitleg)  # de pv is het hele werkwoord
+
+    def test_de_denkfouten_en_de_uitleg(self):
+        z = self.omzet("fietsen", "hij")
+        self.assertEqual(W.diagnose_vorm(z, "fietst"), ("ws_tijd", W._NOG_TT))
+        self.assertEqual(W.diagnose_vorm(z, "fietsde")[0], "ws_kofschip")
+        self.assertEqual(W.diagnose_vorm(self.omzet("lopen", "hij"), "loopte")[0], "ws_sterk_zwak")
+        self.assertEqual(W.diagnose_vorm(self.omzet("lopen", "hij"), "loopt")[0], "ws_tijd")
+        regels = W.uitleg(z)
+        self.assertIn("De persoonsvorm is ‘fietst’ (van ‘fietsen’).", regels[0])
+        self.assertTrue(any("‘fiets’ + te" in r for r in regels))
+        self.assertIn("fietste", regels[-1])
+        self.assertTrue(any("lopen – liep – gelopen" in r for r in W.uitleg(self.omzet("lopen", "hij"))))
+
+    def test_de_leerlijn(self):
+        makkelijk = [NAAR.maak("4", rng=random.Random(s)).model for s in range(80)]
+        self.assertTrue(all(z.ww["vt_soort"] == "zwak" and z.patroon == "gewoon" for z in makkelijk))
+        normaal = [NAAR.maak("5", rng=random.Random(s)) for s in range(300)]
+        sterk = sum(v.model.ww["vt_soort"] == "sterk" for v in normaal)
+        self.assertTrue(110 <= sterk <= 190, sterk)  # ongeveer even vaak zwak als sterk
+        self.assertEqual({v.data["onderwerp"].split("/")[0] for v in normaal}, {"zwak", "sterk"})
+        self.assertTrue(NAAR.maak("5").data["stap_voor_stap"] and not NAAR.maak("6").data["stap_voor_stap"])
+        for groep in ("sterk/lopen", "zwak/t"):
+            v = NAAR.maak("5", data={"onderwerp": groep}, rng=random.Random(1))
+            self.assertEqual(v.data["onderwerp"], groep)
+            self.assertEqual(NAAR.maak_herhaling(NAAR.herhaal_data(v), "5", vermijd={v.sleutel}).data["onderwerp"], groep)
+        v = NAAR.maak("4", data={"onderwerp": "sterk/lopen"}, rng=random.Random(1))  # niet in het 4de: een zwak ww
+        self.assertEqual(v.model.ww["vt_soort"], "zwak")
+
+
 FIETS = W.WwZin("Gisteren", "Noor in het park.", "fietsen", "vt", "hij", "Noor", "fietste", "inversie")
 WORD = W.WwZin("", "jij snel moe?", "worden", "tt", "jij_inv", "jij", "word", "vraag")
 LIEP = W.WwZin("Gisteren", "Noor in het park.", "lopen", "vt", "hij", "Noor", "liep", "inversie")
+NU = W.WwZin("Daarna", "Noor in het park.", "fietsen", "vt", "hij", "Noor", "fietste", "inversie", True)
 GEFIETST = W.WwZin("Noor heeft gisteren in het park", ".", "fietsen", "vd", "hij", "Noor", "gefietst", "gewoon")
 FIETS_JUIST = ["1", *"fiets", OK, "j", *"fietste", OK]
 
@@ -391,7 +467,8 @@ def vaste_zin(z):
 
 class TestHetScherm(Basis):
     def speel_zin(self, z, toetsen, niveau=OK, **opties):
-        o = TT if z.vorm == "tt" else VD if z.vorm == "vd" else STERK if z.ww["vt_soort"] == "sterk" else VT
+        o = NAAR if z.omzetten else TT if z.vorm == "tt" else VD if z.vorm == "vd" else \
+            STERK if z.ww["vt_soort"] == "sterk" else VT
         with vaste_zin(z):
             return self.speel([*naar(o.id, "Enter", niveau=niveau), *toetsen], **opties)
 
@@ -504,6 +581,32 @@ class TestHetScherm(Basis):
                       "Noor heeft gisteren in het park gefietst.", "Meteen juist!"):
             self.assertTrue(self.ergens(scherm, tekst), tekst)
         self.assertEqual(self.antwoord(app, VD)["gegeven"], "gefietst")
+
+    def test_zet_in_de_verleden_tijd(self):
+        # Daarna fietst Noor in het park.: de pv is het tweede woord (→), zwak (1), fietste
+        scherm, app = self.speel_zin(NU, [OK, curses.KEY_RIGHT, OK, "2", "1", *"fietst", OK, *"e", OK, ESC, ESC])
+        for tekst in ("Stap 1 van 3: Zoek de persoonsvorm.", "Daarna fietst Noor in het park.",
+                      "✘ Dat is niet de persoonsvorm.", "✔ De persoonsvorm is ‘fietst’ (van ‘fietsen’).",
+                      "Stap 2 van 3: Is ‘fietsen’ zwak of sterk?", "✘ Zeg het hardop met ‘gisteren’",
+                      "✔ ‘fietsen’ is zwak: de klank blijft (fietsen – fietste).",
+                      "Stap 3 van 3: Typ de persoonsvorm in de verleden tijd.", "Verleden tijd:",
+                      "✔ pv: fietst · zwak", "✘ Dat is nog de tegenwoordige tijd.", "De zin in de verleden tijd:",
+                      "Daarna fietste Noor in het park.",
+                      "Juist, met een tweede kans bij: de persoonsvorm, zwak of sterk,"):
+            self.assertTrue(self.ergens(scherm, tekst), tekst)
+        self.assertFalse(self.ergens(scherm, "(fietsen)  "))  # het werkwoord staat er niet bij: dat zoek je zelf
+        a = self.antwoord(app, NAAR)
+        self.assertEqual((a["gegeven"], bool(a["juist"]), a["vraag"]),
+                         ("fietste", True, "Daarna fietst Noor in het park. → verleden tijd"))
+
+    def test_zet_in_de_verleden_tijd_met_de_muis_en_tab(self):
+        # de woorden op rij 10: Daarna x=7, fietst x=14
+        scherm, _ = self.speel_zin(NU, [("klik", 10, 15), "1", *"fietste", OK, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Meteen juist!"))
+        scherm, _ = self.speel_zin(NU, [TAB, *"fietste", OK, ESC, ESC])
+        self.assertTrue(self.ergens(scherm, "Typ de persoonsvorm in de verleden tijd."))
+        self.assertFalse(self.ergens(scherm, "Stap 2 van 3"))
+        self.assertTrue(self.ergens(scherm, "Meteen juist!"))
 
     def test_de_spiekbrief_met_de_rijtjes(self):
         stappen = naar(STERK.id, "Enter", niveau=None)[:-1]

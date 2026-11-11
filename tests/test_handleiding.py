@@ -18,7 +18,8 @@ WORTEL = Path(__file__).resolve().parent.parent
 MAP = WORTEL / "docs" / "handleiding"
 
 NOG_TE_BESCHRIJVEN = {"taal.zinsontleding", "taal.werkwoordspelling.tt", "taal.werkwoordspelling.vt_zwak",
-                      "taal.werkwoordspelling.vt_sterk", "taal.werkwoordspelling.vd"}  # onderwerp-ids (bv. "taal.werkwoorden.tt"), leeg na het handleidingproject
+                      "taal.werkwoordspelling.vt_sterk", "taal.werkwoordspelling.vd",
+                      "taal.werkwoordspelling.naar_vt"}  # onderwerp-ids (bv. "taal.werkwoorden.tt"), leeg na het handleidingproject
 
 
 def laad_script():

@@ -1,0 +1,92 @@
+{
+ "vaardigheid": "taal.werkwoordspelling.naar_vt",
+ "omschrijving": "Een zin van de tegenwoordige naar de verleden tijd zetten (zwakke en sterke werkwoorden)",
+ "doelen": [
+  "L4 1.2.7",
+  "L4 1.4.9"
+ ],
+ "parameters": {
+  "niveaus": "lijst",
+  "stammen": "lijst",
+  "sterk": "lijst",
+  "personen": "lijst",
+  "patronen": "lijst",
+  "stap_voor_stap": "bool"
+ },
+ "leerlijn": {
+  "4": {
+   "niveaus": [
+    1
+   ],
+   "stammen": [
+    "gewoon"
+   ],
+   "sterk": [],
+   "personen": [
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon"
+   ],
+   "stap_voor_stap": true
+  },
+  "5": {
+   "niveaus": [
+    1,
+    2
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t"
+   ],
+   "sterk": [
+    1,
+    2
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie"
+   ],
+   "stap_voor_stap": true
+  },
+  "6": {
+   "niveaus": [
+    1,
+    2,
+    3
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "sterk": [
+    1,
+    2,
+    3
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "jij_inv",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "stap_voor_stap": false
+  }
+ }
+}

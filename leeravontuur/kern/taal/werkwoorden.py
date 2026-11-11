@@ -42,6 +42,8 @@ DENKFOUTEN = {
     "ws_vd_ge": "ge- vergeten bij het voltooid deelwoord (werkt in plaats van gewerkt)",
     "ws_vd_ge_te_veel": "ge- geschreven waar het niet hoort (geverteld, gebezocht)",
     "ws_homofoon": "de persoonsvorm en het voltooid deelwoord verward (hij verhuisd, hij is verhuist)",
+    "ws_pv": "in een zin de persoonsvorm niet gevonden (om ze in de verleden tijd te zetten)",
+    "ws_soort": "niet gezien of een werkwoord zwak of sterk is",
 }
 
 
@@ -136,6 +138,7 @@ TT_WOORDEN = ("vandaag", "nu", "soms")
 VT_WOORDEN = ("gisteren", "vorige week", "toen")
 VROEGER = ("vroeger", "toen", "vorig jaar")
 VD_WOORDEN = ("gisteren", "vorige week", "daarnet")
+BEGIN = ("daarna", "die dag", "even later", "op zaterdag")  # past in de tegenwoordige en in de verleden tijd
 WIE = {"ik": "ik", "jij": "jij", "jij_inv": "jij", "hij": "hij, zij, het of één naam", "mv": "meer dan één"}
 
 
@@ -149,6 +152,7 @@ class WwZin:
     o: str         # het onderwerp zoals het in de zin staat
     antwoord: str
     patroon: str = "gewoon"
+    omzetten: bool = False  # "Zet in de verleden tijd": de zin staat er in de tegenwoordige tijd (zie bron)
 
     @property
     def zin(self):
@@ -157,7 +161,22 @@ class WwZin:
 
     @property
     def tekst(self):
-        return f"{self.zin} ({self.inf})"
+        return f"{self.bron} → verleden tijd" if self.omzetten else f"{self.zin} ({self.inf})"
+
+    @property
+    def bron_vorm(self):
+        """De persoonsvorm zoals ze in de zin in de tegenwoordige tijd staat."""
+        return vorm_van(self.ww, "tt", self.persoon)
+
+    @property
+    def bron(self):
+        """De zin in de tegenwoordige tijd (bij omzetten): "Noor fietst in het park." """
+        return self.vol(self.bron_vorm)
+
+    @property
+    def pv_plek(self):
+        """Het hoeveelste woord van de bron de persoonsvorm is (vanaf 0)."""
+        return len(self.voor.split())
 
     def vol(self, vorm=None):
         """De zin met de vorm ingevuld (met een hoofdletter als de zin ermee begint)."""
@@ -191,7 +210,7 @@ def vorm_van(w, vorm, persoon):
     return w["vd"]
 
 
-def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
+def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN, omzetten=False):
     """Een zin met een gat voor dit werkwoord. personen en patronen: wat het leerjaar toelaat. Geeft None als er met
     deze keuzes geen zin kan (bv. een werkwoord met eigen onderwerpen en alleen "ik" gevraagd)."""
     onderwerpen = [tuple(o) for o in w["o"]] if w.get("o") else MENSEN
@@ -199,6 +218,8 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
     for o, persoon in onderwerpen:
         for patroon in patronen:
             p = "jij_inv" if persoon == "jij" and patroon != "gewoon" else persoon
+            if omzetten and w.get("vroeger") and patroon == "inversie":
+                continue  # ("op zaterdag woon jij naast de school" klinkt vreemd)
             if p in personen and not (patroon == "vraag" and persoon == "ik"):
                 kandidaten.append((o, p, patroon))
     if not kandidaten:
@@ -206,7 +227,8 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
     # elke persoon even vaak (er zijn meer namen dan "ik" en "jij")
     persoon = rng.choice(sorted({k[1] for k in kandidaten}))
     o, persoon, patroon = rng.choice([k for k in kandidaten if k[1] == persoon])
-    rest = rng.choice(w["rest"])
+    # niet "De buren voetballen met de buren."
+    rest = rng.choice([r for r in w["rest"] if o.lower() not in r.lower()] or w["rest"])
     if vorm == "vd":  # het gat staat achteraan: "Noor heeft gisteren in het park ___."
         hulp = vorm_van(ww(w["hulp"]), "tt", persoon)
         tijd = "vroeger" if w.get("vroeger") else rng.choice(VD_WOORDEN)
@@ -217,7 +239,9 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
         else:
             voor, na = f"{_hoofd(o)} {hulp} {tijd} {rest}", "."
         return WwZin(voor, na, w["inf"], vorm, persoon, o, w["vd"], patroon)
-    if vorm == "vt":
+    if omzetten:  # de zin moet in de twee tijden kloppen: geen "gisteren" of "nu"
+        tijd = rng.choice(BEGIN) if patroon == "inversie" else ""
+    elif vorm == "vt":
         tijd = rng.choice(VROEGER if w.get("vroeger") else VT_WOORDEN)
     elif w.get("vroeger"):  # wonen, leven: "vandaag woon ik" klinkt vreemd
         tijd = "nu" if patroon == "inversie" else ""
@@ -229,7 +253,7 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
         voor, na = "", f"{o} {tijd + ' ' if tijd else ''}{rest}?"
     else:
         voor, na = _hoofd(o), f"{tijd + ' ' if tijd else ''}{rest}."
-    return WwZin(voor, na, w["inf"], vorm, persoon, o, vorm_van(w, vorm, persoon), patroon)
+    return WwZin(voor, na, w["inf"], vorm, persoon, o, vorm_van(w, vorm, persoon), patroon, omzetten)
 
 
 def nakijken(zin, getypt):
@@ -244,11 +268,12 @@ def nakijken(zin, getypt):
 
 @dataclass(frozen=True)
 class Stap:
-    naam: str             # "wie", "getal", "stam", "regel", "kofschip", "vorm"
-    soort: str            # "keuze" (kies een van de opties) of "typ" (typ een woord)
+    naam: str             # "wie", "getal", "stam", "regel", "kofschip", "vorm"; bij omzetten ook "pv" en "soort"
+    soort: str            # "keuze" (kies een van de opties), "typ" (typ een woord) of "woord" (duid een woord aan)
     vraag: str
     opties: tuple = ()    # keuze: de teksten, in de volgorde van de cijfertoetsen
-    juist: object = None  # keuze: het nummer van de juiste optie (vanaf 0); typ: de goede antwoorden (kleine letters)
+    juist: object = None  # keuze: het nummer van de juiste optie (vanaf 0); typ: de goede antwoorden (kleine letters);
+    #                       woord: het hoeveelste woord van de zin (vanaf 0)
     uitleg: str = ""      # het juiste antwoord met de reden (na de tweede kans en in de uitleg achteraf)
     tips: tuple = ()
     voor: str = ""        # typ: wat vóór het vakje staat ("ik")
@@ -300,6 +325,12 @@ def sterk(zin):
 
 def _vorm_stap(zin, direct):
     w = zin.ww
+    if zin.omzetten:
+        tips = ("Zoek eerst de persoonsvorm: welk werkwoord verandert als je de tijd verandert?",
+                "Is het werkwoord zwak ('t kofschip: -te of -de) of sterk (de klank verandert)? Is het onderwerp één "
+                "of meer?")
+        return Stap("vorm", "typ", "Typ de persoonsvorm in de verleden tijd.", juist=(zin.antwoord.lower(),),
+                    uitleg=f"In de verleden tijd: ‘{zin.antwoord}’.", tips=tips, kop=KOP["soort"])
     if zin.vorm == "tt":
         tips = ("Wie doet het? Zoek het onderwerp en de stam (de ik-vorm).",
                 "Ik: de stam. Jij, hij, zij, het of één naam: de stam + t. Meer dan één: het hele werkwoord. "
@@ -333,6 +364,23 @@ def stappen(zin, stap_voor_stap=True):
     w = zin.ww
     if not stap_voor_stap or (zin.vorm == "tt" and w.get("onregelmatig")):
         return [_vorm_stap(zin, True)]
+    if zin.omzetten:
+        is_sterk = sterk(zin)
+        waarom = (f"sterk: de klank verandert ({rijtje(w)})" if is_sterk else
+                  f"zwak: de klank blijft ({w['inf']} – {w['vt'][0]})")
+        return [
+            Stap("pv", "woord", "Zoek de persoonsvorm.", juist=zin.pv_plek,
+                 uitleg=(f"De persoonsvorm is ‘{zin.bron_vorm}’" +
+                         ("." if zin.bron_vorm == zin.inf else f" (van ‘{zin.inf}’).")),
+                 tips=("De persoonsvorm is het werkwoord dat verandert als je de tijd verandert.",
+                       "Zeg de zin met ‘gisteren’ ervoor: welk woord verandert?"), kop=KOP["pv"]),
+            Stap("soort", "keuze", f"Is ‘{zin.inf}’ zwak of sterk?", ("zwak: de klank blijft", "sterk: de klank verandert"),
+                 1 if is_sterk else 0, f"‘{zin.inf}’ is {waarom}.",
+                 ("Zeg het met ‘gisteren’: blijft de klank van het werkwoord dezelfde?",
+                  "Zwak: werken – werkte (de klank blijft). Sterk: lopen – liep (de klank verandert)."),
+                 kop=KOP["soort"]),
+            _vorm_stap(zin, False),
+        ]
     if zin.vorm == "vd" and sterk(zin):
         return [_vorm_stap(zin, True)]
     zoek = ("Zoek het onderwerp: wie of wat doet het?", "Het onderwerp staat vlak voor of vlak na het gat.")
@@ -386,8 +434,8 @@ def stappen(zin, stap_voor_stap=True):
 
 
 def nakijken_stap(stap, antwoord):
-    """Is het antwoord op deze stap juist? keuze: het nummer van de optie; typ: het getypte woord."""
-    if stap.soort == "keuze":
+    """Is het antwoord op deze stap juist? keuze en woord: het nummer; typ: het getypte woord."""
+    if stap.soort in ("keuze", "woord"):
         return antwoord == stap.juist
     return (antwoord or "").strip().lower() in stap.juist
 
@@ -418,6 +466,11 @@ def diagnose_stap(zin, stap, antwoord):
         if zin.persoon == "jij_inv" and antwoord == 1:
             return "ws_inversie", "Kijk waar ‘jij’ staat: voor of achter het werkwoord?"
         return "ws_regel", "Ik: de stam. Jij, hij, zij, het: de stam + t. Meer dan één: het hele werkwoord."
+    if stap.naam == "pv":
+        return "ws_pv", ("Dat is niet de persoonsvorm. Zeg de zin met ‘gisteren’ ervoor: welk woord verandert? Dat "
+                         "is de pv.")
+    if stap.naam == "soort":
+        return "ws_soort", "Zeg het hardop met ‘gisteren’: blijft de klank van het werkwoord, of verandert ze?"
     if stap.naam == "kofschip":
         if stamsoort(w) == "vz":
             return "ws_kofschip_vz", (f"Kijk naar het werkwoord zonder -en (‘{ruw(zin.inf)}’), niet naar de stam: "
@@ -442,7 +495,7 @@ def diagnose_vorm(zin, getypt):
         if getypt in w["vt"]:
             return "ws_getal", "Kijk naar het onderwerp: is het één, of meer dan één?"
         if getypt in w["tt"]:
-            return "ws_tijd", "Dat is de tegenwoordige tijd. De zin speelt in het verleden."
+            return "ws_tijd", _NOG_TT if zin.omzetten else "Dat is de tegenwoordige tijd. De zin speelt in het verleden."
         if getypt == w["vd"]:
             return "ws_tijd", "Dat is het voltooid deelwoord (met heeft of is). Hier staat het werkwoord alleen."
         return None
@@ -456,7 +509,7 @@ def diagnose_vorm(zin, getypt):
     if getypt in andere_tijd and getypt not in (w["tt"] if zin.vorm == "tt" else w["vt"]):
         if zin.vorm == "tt":
             return "ws_tijd", "Dat is de verleden tijd. De zin staat in de tegenwoordige tijd."
-        return "ws_tijd", "Dat is de tegenwoordige tijd. De zin speelt in het verleden."
+        return "ws_tijd", _NOG_TT if zin.omzetten else "Dat is de tegenwoordige tijd. De zin speelt in het verleden."
     if zin.vorm == "tt":
         if getypt.endswith("tt"):
             return "ws_dubbele_t", "Een woord eindigt nooit op tt: de stam eindigt al op t."
@@ -493,6 +546,9 @@ def diagnose_vorm(zin, getypt):
     if _dubbel(w) and getypt.startswith(ruw(w["inf"])):
         return "ws_stam_dubbel", "Schrijf eerst de stam: die eindigt nooit op twee dezelfde medeklinkers."
     return None
+
+
+_NOG_TT = "Dat is nog de tegenwoordige tijd. Zet het werkwoord in de verleden tijd."
 
 
 def _diagnose_vd(zin, getypt):
@@ -532,6 +588,15 @@ def uitleg(zin):
         tt = w["tt"]
         return [f"‘{zin.inf}’ is onregelmatig: ik {tt[0]}, jij {tt[1]}, hij {tt[2]}, wij {tt[3]}.",
                 f"Het onderwerp is ‘{zin.o}’, dus: {zin.antwoord}."]
+    if zin.omzetten:
+        st = stappen(zin)
+        regels = [st[0].uitleg, st[1].uitleg]
+        if not sterk(zin):
+            kof, lt = in_kofschip(zin.inf), letter(zin.inf)
+            regels.append(f"‘{ruw(zin.inf)}’ eindigt op {lt}: die zit {'wel' if kof else 'niet'} in {KOFSCHIP}, dus "
+                          f"‘{w['stam']}’ + {'te' if kof else 'de'}{'n' if zin.meervoud else ''}.")
+        regels.append(f"Het onderwerp is ‘{zin.o}’: {'meer dan één' if zin.meervoud else 'één'}.")
+        return regels + [f"Dus: {zin.antwoord}.  →  {zin.vol()}"]
     regels = [s.uitleg for s in stappen(zin)[:-1]]
     if sterk(zin):
         regels.insert(0, f"‘{zin.inf}’ is een sterk werkwoord. Het rijtje: {rijtje(w)}.")
@@ -557,6 +622,8 @@ KOP = {
     "getal": "EEN OF MEER",
     "kofschip": "'T KOFSCHIP",
     "rijtjes": "ZO LEER JE ZE",
+    "pv": "ZOEK DE PERSOONSVORM",
+    "soort": "ZWAK OF STERK?",
 }
 
 HOMOFOON_KOP = "VERHUIST OF VERHUISD?"
@@ -677,6 +744,34 @@ SPIEKBRIEF_VD = [
 ]
 
 
+SPIEKBRIEF_NAAR_VT = [
+    ("Van de tegenwoordige naar de verleden tijd", "accent"),
+    ("Zoek de persoonsvorm en zet alleen dat woord in de verleden tijd.", "dim"),
+    ("", ""),
+    (KOP["pv"], "accent"),
+    ("  De pv is het werkwoord dat verandert als je de tijd verandert.", ""),
+    ("    Emma wandelt door de tuin.  →  de pv is wandelt (van wandelen)", "dim"),
+    ("", ""),
+    (KOP["soort"], "accent"),
+    ("  Zwak: de klank blijft.       wandelen – wandelde   ('t kofschip)", ""),
+    ("  Sterk: de klank verandert.   lopen – liep          (het rijtje)", ""),
+    ("  Twijfel je? Zeg de zin met ‘gisteren’ en luister wat goed klinkt.", ""),
+    ("", ""),
+    (KOP["kofschip"], "accent"),
+    ("  Staat de letter vóór -en in 't kofschip (t, k, f, s, ch, p)?", ""),
+    ("    ja   →  de stam + te     werken: werkte", ""),
+    ("    nee  →  de stam + de     spelen: speelde", ""),
+    ("", ""),
+    (KOP["getal"], "accent"),
+    ("  Eén:   wandelde, liep          Meer:  wandelden, liepen", ""),
+    ("", ""),
+    ("EEN HELE TEKST", "accent"),
+    ("  Doe het zin per zin. Elke persoonsvorm verandert, de rest blijft.", ""),
+    ("    Emma leest de brief en krijgt een idee.", "dim"),
+    ("    →  Emma las de brief en kreeg een idee.", "dim"),
+]
+
+
 # ---- de onderwerpen (voor de Oefenaar: reeks, vrij oefenen, herhaalbak, punten, rapport) ------------------------
 
 from ..onderwerp import Onderwerp, Vraag  # noqa: E402 (onderaan: de functies hierboven hebben dit niet nodig)
@@ -705,10 +800,16 @@ class Werkwoordspelling(Onderwerp):
         """De vorm die de zin vraagt (een onderwerp kan er meer dan één mengen)."""
         return self.vorm
 
+    omzetten = False  # de zin staat er in de tegenwoordige tijd, het kind zet de pv in de verleden tijd
+
+    def lijst_voor(self, p, rng, groep):
+        """De werkwoorden waaruit deze vraag kiest (een onderwerp kan eerst een soort kiezen)."""
+        return self.kandidaten(p)
+
     def maak_met(self, p, rng, data=None):
-        ww_lijst = self.kandidaten(p)
-        personen, stam = list(p["personen"]), None
         groep = (data or {}).get("onderwerp") or ""
+        ww_lijst = self.lijst_voor(p, rng, groep)
+        personen, stam = list(p["personen"]), None
         if "/" in groep:  # een herhaling: dezelfde persoon en dezelfde soort stam, als dat leerjaar ze heeft
             persoon, stam = groep.split("/", 1)
             if persoon in personen:
@@ -721,9 +822,9 @@ class Werkwoordspelling(Onderwerp):
             soort = stam if stam in soorten else rng.choices(soorten, [2 if s == "gewoon" else 1 for s in soorten])[0]
             w = rng.choice(zelfde or [w for w in ww_lijst if stamsoort(w) == soort])
             vorm = self.vorm_voor(w, p, rng, groep)
-            zin = maak_zin(w, vorm, rng, personen, p["patronen"])
+            zin = maak_zin(w, vorm, rng, personen, p["patronen"], self.omzetten)
             if zin is None and _ >= 100:  # geen werkwoord met deze persoon: dan een andere persoon
-                zin = maak_zin(w, vorm, rng, p["personen"], p["patronen"])
+                zin = maak_zin(w, vorm, rng, p["personen"], p["patronen"], self.omzetten)
             if zin is not None and len(zin.tekst) <= BREED:
                 break
         else:
@@ -853,6 +954,42 @@ class VoltooidDeelwoord(Werkwoordspelling):
         return f"vd/{zin.inf}" if w["vd_soort"] == "sterk" else f"vd/{stamsoort(w)}"
 
 
+class ZetInDeVerledenTijd(Werkwoordspelling):
+    """Een zin in de tegenwoordige tijd; het kind zoekt de persoonsvorm en zet ze in de verleden tijd (zoals het
+    taaldossier van school, zin per zin). Zwakke en sterke werkwoorden door elkaar: de leerlijn zegt welke
+    (`niveaus` en `stammen` voor de zwakke, `sterk` = de niveaus van de sterke). Het groepje voor herhaling is
+    "zwak/stamsoort" of "sterk/werkwoord"."""
+    id = "taal.werkwoordspelling.naar_vt"
+    naam = "Zet in de verleden tijd"
+    omschrijving = "een zin van nu naar gisteren"
+    vorm = "vt"
+    omzetten = True
+    brief = SPIEKBRIEF_NAAR_VT
+    kop_anders = KOP["soort"]
+
+    def kandidaten(self, p):
+        return self.zwakke(p) + self.sterke(p)
+
+    def zwakke(self, p):
+        return [w for w in lijst() if w["vt_soort"] == "zwak" and w["niveau"] in p["niveaus"]
+                and stamsoort(w) in p["stammen"]]
+
+    def sterke(self, p):
+        return [w for w in lijst() if w["vt_soort"] == "sterk" and w["niveau"] in p["sterk"]]
+
+    def lijst_voor(self, p, rng, groep):
+        zwak, sterk_ = self.zwakke(p), self.sterke(p)
+        if groep.startswith("sterk/") and sterk_:
+            return sterk_
+        if groep.startswith("zwak/") or not sterk_:
+            return zwak
+        return rng.choice([zwak, sterk_])  # even vaak zwak als sterk
+
+    def groepje(self, zin):
+        w = zin.ww
+        return f"sterk/{zin.inf}" if w["vt_soort"] == "sterk" else f"zwak/{stamsoort(w)}"
+
+
 def homofoon(w):
     """Klinkt de hij-vorm zoals het voltooid deelwoord, met een andere letter (verhuist – verhuisd)?"""
     return not w["ge"] and w["vd_soort"] == "zwak" and w["vd"] == w["stam"] + "d" and w["tt"][2] == w["stam"] + "t"
@@ -862,6 +999,7 @@ TEGENWOORDIGE_TIJD = TegenwoordigeTijd()
 VERLEDEN_TIJD_ZWAK = VerledenTijdZwak()
 VERLEDEN_TIJD_STERK = VerledenTijdSterk()
 VOLTOOID_DEELWOORD = VoltooidDeelwoord()
+ZET_IN_DE_VERLEDEN_TIJD = ZetInDeVerledenTijd()
 
 
 def kort(zin, stap):
@@ -874,6 +1012,10 @@ def kort(zin, stap):
         return f"stam: {stap.juist[0]}"
     if stap.naam == "regel":
         return TT_REGEL[stap.juist]
+    if stap.naam == "pv":
+        return f"pv: {zin.bron_vorm}"
+    if stap.naam == "soort":
+        return "sterk" if stap.juist else "zwak"
     if stap.naam == "kofschip" and zin.vorm == "vd":
         return f"{KOFSCHIP}: {'d' if stap.juist else 't'}"
     if stap.naam == "kofschip":

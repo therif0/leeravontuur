@@ -26,7 +26,7 @@ MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
 BEWAARD = {
     "taal.zinsontleding", "taal.werkwoordspelling.tt", "taal.werkwoordspelling.vt_zwak",
-    "taal.werkwoordspelling.vt_sterk", "taal.werkwoordspelling.vd",
+    "taal.werkwoordspelling.vt_sterk", "taal.werkwoordspelling.vd", "taal.werkwoordspelling.naar_vt",
     "wiskunde.eenheden.omzetten",
     "wiskunde.getallen.plaatswaarde", "wiskunde.getallen.afronden", "wiskunde.getallen.deelbaarheid",
     "wiskunde.getallen.getallenlijn",
