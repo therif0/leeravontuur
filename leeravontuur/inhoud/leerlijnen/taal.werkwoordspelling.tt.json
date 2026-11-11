@@ -10,7 +10,8 @@
   "personen": "lijst",
   "patronen": "lijst",
   "onregelmatig": "bool",
-  "stap_voor_stap": "bool"
+  "stap_voor_stap": "bool",
+  "homofoon": "bool"
  },
  "leerlijn": {
   "4": {
@@ -29,7 +30,8 @@
     "gewoon"
    ],
    "onregelmatig": false,
-   "stap_voor_stap": true
+   "stap_voor_stap": true,
+   "homofoon": false
   },
   "5": {
    "niveaus": [
@@ -55,7 +57,8 @@
     "vraag"
    ],
    "onregelmatig": true,
-   "stap_voor_stap": true
+   "stap_voor_stap": true,
+   "homofoon": false
   },
   "6": {
    "niveaus": [
@@ -82,7 +85,36 @@
     "vraag"
    ],
    "onregelmatig": true,
-   "stap_voor_stap": false
+   "stap_voor_stap": false,
+   "homofoon": false
+  },
+  "m1": {
+   "niveaus": [
+    1,
+    2,
+    3
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "jij_inv",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "onregelmatig": true,
+   "stap_voor_stap": false,
+   "homofoon": true
   }
  }
 }
