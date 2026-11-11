@@ -112,7 +112,7 @@ class TestDeZin(unittest.TestCase):
 
     def test_de_drie_patronen(self):
         self.assertRegex(zin("fietsen", "tt", "hij", "gewoon").zin, r"^[A-Z].* ___ .*\.$")
-        self.assertRegex(zin("fietsen", "tt", "hij", "inversie").zin, r"^(Vandaag|Nu|Elke dag) ___ .*\.$")
+        self.assertRegex(zin("fietsen", "tt", "hij", "inversie").zin, r"^(Vandaag|Nu|Soms) ___ .*\.$")
         vraag = zin("fietsen", "tt", "jij_inv", "vraag")
         self.assertRegex(vraag.zin, r"^___ jij .*\?$")
         self.assertTrue(vraag.vol().startswith("Fiets jij"))  # ingevuld: met een hoofdletter

@@ -127,7 +127,7 @@ MENSEN = (("ik", "ik"), ("jij", "jij"), ("hij", "hij"), ("de juf", "hij"), ("mij
           ("Lotte en Noor", "mv"))
 PERSONEN = ("ik", "jij", "jij_inv", "hij", "mv")  # jij_inv = jij achter het werkwoord (dan valt de t weg)
 PATRONEN = ("gewoon", "inversie", "vraag")
-TT_WOORDEN = ("vandaag", "nu", "elke dag")
+TT_WOORDEN = ("vandaag", "nu", "soms")
 VT_WOORDEN = ("gisteren", "vorige week", "toen")
 VROEGER = ("vroeger", "toen", "vorig jaar")
 WIE = {"ik": "ik", "jij": "jij", "jij_inv": "jij", "hij": "hij, zij, het of één naam", "mv": "meer dan één"}
@@ -203,6 +203,8 @@ def maak_zin(w, vorm, rng=random, personen=PERSONEN, patronen=PATRONEN):
     rest = rng.choice(w["rest"])
     if vorm == "vt":
         tijd = rng.choice(VROEGER if w.get("vroeger") else VT_WOORDEN)
+    elif w.get("vroeger"):  # wonen, leven: "vandaag woon ik" klinkt vreemd
+        tijd = "nu" if patroon == "inversie" else ""
     else:
         tijd = rng.choice(TT_WOORDEN) if patroon == "inversie" or rng.random() < 0.3 else ""
     if patroon == "inversie":
