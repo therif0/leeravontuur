@@ -228,9 +228,12 @@ class Stap:
     voor: str = ""        # typ: wat vóór het vakje staat ("ik")
     kofschip: str = ""    # deze letter licht op in 't kofschip zodra de stap klaar is
     kop: str = ""         # het kopje op de spiekbrief bij deze stap
+    sub: str = ""         # een regel onder de vraag (wat je nodig hebt om te antwoorden)
 
 
 TT_REGEL = ("de stam", "de stam + t", "het hele werkwoord")
+# hoe een afgewerkte stap kort heet in de regel met wat al gevonden is
+KORT_WIE = ("ik", "jij", "hij, zij of het", "meer dan één")
 TT_KEUZE = {"ik": 0, "jij": 1, "jij_inv": 0, "hij": 1, "mv": 2}
 TT_WAAROM = {
     "ik": "Bij ik schrijf je alleen de stam.",
@@ -303,13 +306,14 @@ def stappen(zin, stap_voor_stap=True):
              1 if zin.meervoud else 0, f"Het onderwerp is ‘{zin.o}’: {'meer dan één' if zin.meervoud else 'één'}.",
              zoek, kop=KOP["getal"]),
         _stam_stap(zin),
-        Stap("kofschip", "keuze", f"Zonder -en: ‘{ruw(zin.inf)}’. Zit de {lt} in {KOFSCHIP}?",
+        Stap("kofschip", "keuze", f"Zit de {lt} in {KOFSCHIP}?",
              ("ja: -te of -ten", "nee: -de of -den"), 0 if kof else 1,
              f"‘{ruw(zin.inf)}’ eindigt op {lt}: die zit {'wel' if kof else 'niet'} in {KOFSCHIP}, dus "
              f"-{'te' if kof else 'de'}{n}.",
              ("Neem het werkwoord zonder -en en kijk naar de laatste letter.",
               "De letters van 't kofschip: t, k, f, s, ch, p. Staat de letter erbij: -te. Anders: -de."),
-             kofschip=lt, kop=KOP["kofschip"]),
+             kofschip=lt, kop=KOP["kofschip"],
+             sub=f"Het werkwoord zonder -en is ‘{ruw(zin.inf)}’: kijk naar de laatste letter."),
         _vorm_stap(zin, False),
     ]
 
@@ -438,7 +442,7 @@ _STAM = [
     ("  De stam is de ik-vorm: ik werk, ik loop, ik pak.", ""),
     ("    lopen → ik loop     een lange klank: twee klinkers", "dim"),
     ("    pakken → ik pak     nooit twee dezelfde medeklinkers aan het einde", "dim"),
-    ("    leven → ik leef     nooit een v of z aan het einde (reizen → ik reis)", "dim"),
+    ("    leven → ik leef     nooit een v of z aan het einde (reizen: ik reis)", "dim"),
     ("", ""),
 ]
 
@@ -595,3 +599,18 @@ class VerledenTijdZwak(Werkwoordspelling):
 
 TEGENWOORDIGE_TIJD = TegenwoordigeTijd()
 VERLEDEN_TIJD_ZWAK = VerledenTijdZwak()
+
+
+def kort(zin, stap):
+    """Het juiste antwoord van een afgewerkte stap, kort (voor de regel met wat al gevonden is)."""
+    if stap.naam == "wie":
+        return f"wie: {KORT_WIE[stap.juist]}"
+    if stap.naam == "getal":
+        return "meer dan één" if stap.juist else "één"
+    if stap.naam == "stam":
+        return f"stam: {stap.juist[0]}"
+    if stap.naam == "regel":
+        return TT_REGEL[stap.juist]
+    if stap.naam == "kofschip":
+        return f"{KOFSCHIP}: {'-de' if stap.juist else '-te'}{'n' if zin.meervoud else ''}"
+    return ""

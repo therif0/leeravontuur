@@ -23,6 +23,7 @@ from . import modellen as M
 from . import balk as B
 from . import rooster as R
 from . import vraagstuk as VI
+from . import werkwoord as WW
 from . import zinsdelen as ZD
 from .kladblad import LEEG_ENTER, Kladblad
 from .scherm import ENTER, ESC, HULP, teken_van
@@ -48,9 +49,10 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
               "klokwoord": "Typ bv. kwart over drie, half vier of vijf voor half vier."}
 VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
 LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
-INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, "zinsdelen": ZD.ZinsdelenInvoer}  # invoersoorten met een eigen invoer-object
+# invoersoorten met een eigen invoer-object
+INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, "zinsdelen": ZD.ZinsdelenInvoer, "werkwoord": WW.WerkwoordInvoer}
 # de vaste werkwijze: geen tweede kans waar raden te makkelijk is, of waar het object zelf stap voor stap nakijkt
-GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur", "zinsdelen"}
+GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur", "zinsdelen", "werkwoord"}
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
 KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
@@ -60,8 +62,8 @@ KORT_HULP = " Nog eens F1: je spiekbrief."  # na de hulp van een invoer-object
 
 def vraagtekst(v):
     """De vraag zoals in het rapport ('7 × 8 = ?'; een vraagstuk eindigt zelf al op een vraagteken, een zin om te
-    ontleden is de zin zelf)."""
-    return v.tekst if v.tekst.endswith("?") or v.invoer == "zinsdelen" else v.tekst + " ?"
+    ontleden is de zin zelf, een zin met een gat ook)."""
+    return v.tekst if v.tekst.endswith("?") or v.invoer in ("zinsdelen", "werkwoord") else v.tekst + " ?"
 
 
 class Oefenaar:

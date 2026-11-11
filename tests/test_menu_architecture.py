@@ -25,7 +25,7 @@ MENUMODULES = ["terminal/app.py", "terminal/navigatie.py", "terminal/scherm.py"]
 
 # Alles wat vandaag in de databank als vaardigheid bewaard wordt (sessies, antwoorden, herhaalbak).
 BEWAARD = {
-    "taal.zinsontleding",
+    "taal.zinsontleding", "taal.werkwoordspelling.tt", "taal.werkwoordspelling.vt_zwak",
     "wiskunde.eenheden.omzetten",
     "wiskunde.getallen.plaatswaarde", "wiskunde.getallen.afronden", "wiskunde.getallen.deelbaarheid",
     "wiskunde.getallen.getallenlijn",
@@ -230,14 +230,19 @@ class TestNavigatie(TestModiStarten):
 
     def test_spiekbrieven_kort(self):
         """#20: een domein met één spiekbrief opent die meteen, bij meer staat in de uitleg welke er zijn. Sinds Taal
-        (0.25) vraagt Leerstof eerst "Welk vak?"; met Taal › Zinsontleding."""
+        (0.25) vraagt Leerstof eerst "Welk vak?"; sinds Werkwoordspelling (0.26) heeft Taal twee domeinen."""
         spiek = str(HOOFDMENU.index("Leerstof") + 1)
         beeld = self.speel([OK, OK, spiek])[-1]
         self.assertIn("Welk vak?", beeld)
         self.assertIn("2. Taal", beeld)
         beeld = self.speel([OK, OK, spiek, "2"])[-1]
+        self.assertIn("Welke spiekbrief?", beeld)
+        self.assertIn("2 spiekbrieven: Tegenwoordige tijd", beeld)
+        beeld = self.speel([OK, OK, spiek, "2", "1"])[-1]
         self.assertIn("Zinsontleding: zo vind je de zinsdelen", beeld)
         self.assertEqual(self.app.s.kruimel[-2:], ["Taal", "Zinsontleding"])
+        beeld = self.speel([OK, OK, spiek, "2", "2", "2"])[-1]
+        self.assertIn("Verleden tijd van zwakke werkwoorden: 't kofschip", beeld)
         spiek = [spiek, "1"]
         beeld = self.speel([OK, OK, *spiek])[-1]
         self.assertIn("Welke spiekbrief?", beeld)
