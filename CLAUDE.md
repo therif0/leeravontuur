@@ -181,6 +181,20 @@ Gouden regels:
     (als een markeerstift: zwart op de stiftkleur, pv geel, o blauw, lv groen, mv roze, gezegde oranje, bwb paars; de
     afkorting staat er altijd onder, nooit kleur alleen; de cursor is een streep onder de woorden);
   - `terminal/curriculum/taal.py`: een domein zonder onderwerpen = nog niet gebouwd, grijs in het menu.
+- **Werkwoordspelling** (0.26, T3):
+  - `inhoud/taal/werkwoorden.json`: de werkwoorden met elke vorm uitgeschreven (stam, tt = [ik, jij, hij, meervoud],
+    vt, vd, hulp, `vt_soort`/`vd_soort` zwak of sterk, `ge`, `niveau` 1–3, `rest` = wat na het werkwoord kan staan,
+    `o` = eigen onderwerpen, `ook` = ik-vormen die ook goed zijn). `tests/test_taal_werkwoorden.py` rekent elke
+    zwakke vorm na met de regels (`regel_tt`, `regel_vt`, `regel_vd`): een tikfout in de lijst wordt rood;
+  - `kern/taal/werkwoorden.py`: de zin met een gat (`WwZin`, `maak_zin`: onderwerp eerst, een tijdwoord eerst, of
+    een vraag; geen zij/ze, want dat kan één of meer zijn), het denkschema als data (`stappen` → `Stap`: een keuze
+    of een woord typen, de laatste stap is altijd de vorm), `nakijken`, de denkfouten (`ws_…`), de uitleg en de
+    spiekbrieven (`KOP` per stap). Eén `Onderwerp` per menu-item (`Werkwoordspelling` met `vorm` en `past`); het
+    groepje voor herhaling is "persoon/stamsoort" (bv. `jij_inv/d`); de leerlijn kiest `niveaus`, `stammen`
+    (gewoon, d, t, vz), `personen`, `patronen` en `stap_voor_stap`;
+  - `terminal/werkwoord.py`: het invoer-object `"werkwoord"` (speelt de stappen: cijfer, ↑↓ + Enter of een klik;
+    Tab = meteen typen; 't kofschip met de letter die oplicht; een eigen tweede kans die `Hulp.tweede_kans` volgt).
+    Het antwoord van de vraag is de getypte vorm; een fout in een stap ervoor telt als "met een tweede kans".
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =

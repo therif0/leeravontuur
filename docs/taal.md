@@ -269,7 +269,9 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 | ✔ **T1.2** | – | het scherm: de zinsontleder (stappen, Tab, vrij kleuren, muis), de kleuren in alle thema's, Taal in het hoofdmenu; Moeilijk (wwg, nwg, bwb) en Gemengd oefenen werken al |
 | ✔ **T1.3a** | 0.25.0 | de spiekbrief (ook in Leerstof en na de laatste tip), de documenten |
 | ✔ **T1.3b** | 0.25.1 | de nagekeken zinnen (40, per leerjaar) + zinnen met 2 pv's (alleen op Moeilijk: de machine en 26 nagekeken zinnen) |
-| **T3** | 0.26 | Werkwoordspelling, met de verleden tijd van zwakke en sterke werkwoorden (eerst een voorstel; de vader 8/11: vóór T2) |
+| ✔ **T3 deel 1** | 0.26.0 | Werkwoordspelling: de werkwoordenlijst (144), het scherm met de stappen, Tegenwoordige tijd en Verleden tijd: zwakke werkwoorden ('t kofschip) |
+| **T3 deel 2** | 0.26.1 | Verleden tijd: sterke werkwoorden, Voltooid deelwoord |
+| **T3 deel 3** | 0.26.2 | Zet in de verleden tijd |
 | **T2** | 0.27.0 | Woordsoorten |
 | **T2.1** | 0.27.1 | eigen zinnen van de ouder |
 | **T4, T5** | later | Spelling, woordenschat en lezen |
@@ -295,6 +297,20 @@ Eén voorstel voor T1.3b en heel T3, daarna bouwen zonder een stop per fase (zie
 - **Werkwoordspelling:** stap voor stap met Tab (zoals Zinsdelen), Moeilijk typt meteen; het ezelsbruggetje is
   **'t kofschip**; het menu: Tegenwoordige tijd · Verleden tijd: zwakke werkwoorden · Verleden tijd: sterke
   werkwoorden · Voltooid deelwoord · Zet in de verleden tijd.
+
+## Wat anders werd dan gepland (T3 deel 1, 0.26.0)
+- **144 werkwoorden** in plaats van ongeveer 110 (73 zwakke, 71 sterke of onregelmatige). De sterke werkwoorden
+  hebben drie groepen (26, 23 en 22) in plaats van 20, 45 en 80: wat een kind van de lagere school echt gebruikt.
+- **Geen "zij" of "ze" als onderwerp:** dat kan één of meer zijn, en dan zou het gat twee juiste antwoorden hebben.
+- **gaan, staan en slaan** staan niet in de oefening Tegenwoordige tijd (ik ga, hij gaat volgt de regel stam + t
+  niet); **zijn en hebben** wel, vanaf Normaal, zonder stappen (ze zijn onregelmatig).
+- **Wat lastig is, komt vaker:** een stam op d of t en een v of z komen elk even vaak als hun groep, de gewone stam
+  twee keer zo vaak (niet volgens het aantal werkwoorden in de lijst).
+- **Het tijdwoord** in de tegenwoordige tijd is vandaag, nu of soms (niet "elke dag": "Elke dag breken de kinderen
+  een bord." klinkt vreemd); in de verleden tijd gisteren, vorige week of toen.
+- **Een fout in een stap** (bv. de stam) en daarna de vorm juist = juist "met een tweede kans" (zoals bij Zinsdelen).
+- **Heel moeilijk** heeft nog geen eigen leerlijn: het valt terug op Moeilijk (verhuist/verhuisd komt met het
+  voltooid deelwoord in 0.26.1).
 
 ## Wat anders werd dan gepland (T1.3b, 0.25.1)
 - **Een zin met twee pv's gaat altijd eerst stap voor stap**, ook op Moeilijk (waar de andere zinnen meteen vrij

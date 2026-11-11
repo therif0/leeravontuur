@@ -901,7 +901,7 @@ onderweg (wat hij op school nodig had, ging voor). Status: **✔** klaar (met ve
 | Status | # | Fase | Wat er daarna werkt |
 |---|---|---|---|
 | ✔ 0.25.0 | T1 | **Taal: zinsontleding** (plan: `docs/taal.md`) | de zinsontleder (pv, o, lv, mv; op Moeilijk wwg, nwg, bwb), stap voor stap of vrij kleuren, de proefjes als tips; Taal in het hoofdmenu. **0.25.1:** nagekeken zinnen en zinnen met twee pv's (Moeilijk) |
-| · | 13 | **Taal: werkwoordspelling** (T3; de vader 8/11: vóór T2, school is met de verleden tijd bezig) | werkwoordmachine (tt, vt met 't kofschip, sterke ww, vd, bijvoeglijk vd), d/t-keuze, foutenjager |
+| ◐ 0.26.0 | 13 | **Taal: werkwoordspelling** (T3; deel 1 klaar: tegenwoordige tijd en verleden tijd zwak; de vader 8/11: vóór T2, school is met de verleden tijd bezig) | werkwoordmachine (tt, vt met 't kofschip, sterke ww, vd, bijvoeglijk vd), d/t-keuze, foutenjager |
 | · | T2 | **Taal: woordsoorten** | zn, lidw, bn, ww, telw, vz, bijw, vw (Moeilijk: vnw); eigen zinnen van de ouder |
 | · | 14 | **Taal 2: spelling** | meervoud, verkleinwoord, lettergrepen, ei/ij-au/ou, tussen-s, trema/koppelteken/apostrof, snel-spellen |
 | · | 17 | **Taal 3: zinsontleding** | zinsontleder (pv, onderwerp, gezegde, LV, MV, bijw. bep.), woordsoorten, proefjes |
