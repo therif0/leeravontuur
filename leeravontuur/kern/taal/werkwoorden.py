@@ -103,6 +103,14 @@ def _klinker(w):
     return any(d in w["stam"] and d not in w["inf"] for d in ("aa", "ee", "oo", "uu"))
 
 
+def _vz_fout(w, getypt):
+    """Staat er een v of z waar de stam een f of s heeft (leevt, reizde, levde)?"""
+    stam = w["stam"]
+    fout = stam[:-1] + {"f": "v", "s": "z"}.get(stam[-1], stam[-1])
+    return stamsoort(w) == "vz" and (fout in getypt or (getypt.startswith(ruw(w["inf"])) and
+                                                        not getypt.startswith(stam)))
+
+
 def _dubbel(w):
     """Verliest de stam een dubbele medeklinker (pakken → pak)?"""
     r = ruw(w["inf"])
@@ -248,7 +256,7 @@ def _stam_stap(zin):
     w = zin.ww
     if _klinker(w):
         waarom = " (een lange klank: twee klinkers)"
-        tip = "Zeg het hardop: ik … Hoor je een lange klank? Dan schrijf je twee klinkers."
+        tip = "Zeg het hardop: ik … Hoor je een lange klank? Dan staan er twee klinkers."
     elif _dubbel(w):
         waarom = " (nooit twee dezelfde medeklinkers aan het einde)"
         tip = "Een stam eindigt nooit op twee dezelfde medeklinkers."
@@ -256,7 +264,7 @@ def _stam_stap(zin):
         waarom, tip = "", f"Haal -en van ‘{zin.inf}’ af en zeg: ik …"
     if stamsoort(w) == "vz":
         waarom = " (een stam eindigt nooit op v of z)"
-        tip = "Een stam eindigt nooit op v of z: je schrijft f of s."
+        tip = "Een stam eindigt nooit op v of z: het wordt f of s."
     return Stap("stam", "typ", f"Typ de stam (de ik-vorm) van ‘{zin.inf}’.", juist=(w["stam"], *w.get("ook", ())),
                 uitleg=f"De stam van ‘{zin.inf}’ is ‘{w['stam']}’{waarom}.", voor="ik",
                 tips=("De stam is de ik-vorm: ik …", tip), kop=KOP["stam"])
@@ -313,7 +321,7 @@ def stappen(zin, stap_voor_stap=True):
              ("Neem het werkwoord zonder -en en kijk naar de laatste letter.",
               "De letters van 't kofschip: t, k, f, s, ch, p. Staat de letter erbij: -te. Anders: -de."),
              kofschip=lt, kop=KOP["kofschip"],
-             sub=f"Het werkwoord zonder -en is ‘{ruw(zin.inf)}’: kijk naar de laatste letter."),
+             sub=f"Zonder -en: ‘{ruw(zin.inf)}’. Kijk naar de laatste letter."),
         _vorm_stap(zin, False),
     ]
 
@@ -366,6 +374,9 @@ def diagnose_vorm(zin, getypt):
         return None
     w, juist = zin.ww, zin.antwoord.lower()
     stam, soort = w["stam"], stamsoort(w)
+    if zin.vorm == "vt" and soort in ("t", "d") and getypt in (stam + "e", stam + "en"):
+        return "ws_dubbel", (f"De stam eindigt al op {soort}, en dan komt er nog -{soort}e bij: twee keer dezelfde "
+                             "letter.")
     andere_tijd = {v.lower() for v in (w["vt"] if zin.vorm == "tt" else w["tt"])}
     if getypt in andere_tijd and getypt not in (w["tt"] if zin.vorm == "tt" else w["vt"]):
         if zin.vorm == "tt":
@@ -386,7 +397,7 @@ def diagnose_vorm(zin, getypt):
             return "ws_t_vergeten", "Bij dit onderwerp komt er een t achter de stam."
         if stam.endswith("d") and getypt == stam[:-1] + "t":
             return "ws_t_vergeten", "De d van de stam blijft staan. Zeg het hele werkwoord: je hoort de d."
-        if soort == "vz" and ruw(w["inf"]) in getypt:
+        if _vz_fout(w, getypt):
             return "ws_stam_vz", "Schrijf eerst de stam: die eindigt nooit op v of z."
         if _klinker(w) and getypt.startswith(ruw(w["inf"])):
             return "ws_stam_klinker", "Zeg de stam hardop: je hoort een lange klank. Schrijf twee klinkers."
@@ -400,10 +411,7 @@ def diagnose_vorm(zin, getypt):
             return "ws_kofschip_vz", (f"Kijk naar het werkwoord zonder -en (‘{ruw(zin.inf)}’), niet naar de stam: "
                                       f"de {letter(zin.inf)} zit niet in {KOFSCHIP}.")
         return "ws_kofschip", f"Kijk naar de letter vóór -en: zit de {letter(zin.inf)} in {KOFSCHIP}?"
-    if soort in ("t", "d") and getypt in (stam + "e", stam + "en"):
-        return "ws_dubbel", (f"De stam eindigt al op {soort}, en dan komt er nog -{soort}e bij: twee keer dezelfde "
-                             "letter.")
-    if soort == "vz" and getypt.startswith(ruw(w["inf"])):
+    if _vz_fout(w, getypt):
         return "ws_stam_vz", "Schrijf eerst de stam: die eindigt op f of s. Daarna komt de uitgang."
     if _klinker(w) and getypt.startswith(ruw(w["inf"])) and not getypt.startswith(stam):
         return "ws_stam_klinker", "Schrijf eerst de stam: je hoort een lange klank, dus twee klinkers."
@@ -523,13 +531,14 @@ class Werkwoordspelling(Onderwerp):
             if persoon in personen:
                 personen = [persoon]
         soorten = sorted({stamsoort(w) for w in ww_lijst})
-        for _ in range(200):
+        for _ in range(300):
             # wat lastig is (een stam op d of t, een v of z) komt even vaak als elk ander soort, niet naar het aantal
             # werkwoorden in de lijst; de gewone stam telt dubbel
             soort = stam if stam in soorten else rng.choices(soorten, [2 if s == "gewoon" else 1 for s in soorten])[0]
             w = rng.choice([w for w in ww_lijst if stamsoort(w) == soort])
-            zin = maak_zin(w, self.vorm, rng, personen, p["patronen"]) or \
-                maak_zin(w, self.vorm, rng, p["personen"], p["patronen"])
+            zin = maak_zin(w, self.vorm, rng, personen, p["patronen"])
+            if zin is None and _ >= 100:  # geen werkwoord met deze persoon: dan een andere persoon
+                zin = maak_zin(w, self.vorm, rng, p["personen"], p["patronen"])
             if zin is not None and len(zin.tekst) <= BREED:
                 break
         else:
@@ -573,7 +582,7 @@ class Werkwoordspelling(Onderwerp):
 class TegenwoordigeTijd(Werkwoordspelling):
     id = "taal.werkwoordspelling.tt"
     naam = "Tegenwoordige tijd"
-    omschrijving = "de stam, de stam + t of het hele werkwoord (hij wordt, word jij?)"
+    omschrijving = "ik werk, hij werkt, word jij?"
     vorm = "tt"
     brief = SPIEKBRIEF_TT
 
@@ -586,7 +595,7 @@ class TegenwoordigeTijd(Werkwoordspelling):
 class VerledenTijdZwak(Werkwoordspelling):
     id = "taal.werkwoordspelling.vt_zwak"
     naam = "Verleden tijd: zwakke werkwoorden"
-    omschrijving = "'t kofschip: werkte of speelde, praatte, leefde"
+    omschrijving = "'t kofschip: werkte, speelde"
     vorm = "vt"
     brief = SPIEKBRIEF_VT
 
