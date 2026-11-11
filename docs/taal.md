@@ -270,7 +270,7 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 | ✔ **T1.3a** | 0.25.0 | de spiekbrief (ook in Leerstof en na de laatste tip), de documenten |
 | ✔ **T1.3b** | 0.25.1 | de nagekeken zinnen (40, per leerjaar) + zinnen met 2 pv's (alleen op Moeilijk: de machine en 26 nagekeken zinnen) |
 | ✔ **T3 deel 1** | 0.26.0 | Werkwoordspelling: de werkwoordenlijst (144), het scherm met de stappen, Tegenwoordige tijd en Verleden tijd: zwakke werkwoorden ('t kofschip) |
-| **T3 deel 2** | 0.26.1 | Verleden tijd: sterke werkwoorden, Voltooid deelwoord |
+| ✔ **T3 deel 2** | 0.26.1 | Verleden tijd: sterke werkwoorden (de rijtjes), Voltooid deelwoord, en verhuist/verhuisd op Heel moeilijk |
 | **T3 deel 3** | 0.26.2 | Zet in de verleden tijd |
 | **T2** | 0.27.0 | Woordsoorten |
 | **T2.1** | 0.27.1 | eigen zinnen van de ouder |
@@ -297,6 +297,18 @@ Eén voorstel voor T1.3b en heel T3, daarna bouwen zonder een stop per fase (zie
 - **Werkwoordspelling:** stap voor stap met Tab (zoals Zinsdelen), Moeilijk typt meteen; het ezelsbruggetje is
   **'t kofschip**; het menu: Tegenwoordige tijd · Verleden tijd: zwakke werkwoorden · Verleden tijd: sterke
   werkwoorden · Voltooid deelwoord · Zet in de verleden tijd.
+
+## Wat anders werd dan gepland (T3 deel 2, 0.26.1)
+- **Het voltooid deelwoord van een sterk werkwoord typ je meteen**, zonder stappen (er is geen regel om in stappen
+  te zetten); in de verleden tijd is er één stap vooraf: één of meer.
+- **De tweede tip bij een sterk werkwoord** geeft een ander stuk van het rijtje (bij de verleden tijd het voltooid
+  deelwoord, en omgekeerd), nooit het antwoord zelf.
+- **vergeten** staat met "zijn" ("Ik ben de sleutels vergeten."), zoals in Vlaanderen gewoon is.
+- **Niets dat aan het voltooid deelwoord vast geschreven wordt** in de zinnen: "de deur open houden" wordt
+  "opengehouden", dus houden kreeg "van chocolade", blijven "bij oma" in plaats van "thuis".
+- **Scheidbare werkwoorden** (opruimen, uitleggen) en het **bijvoeglijk gebruikte voltooid deelwoord** (de gebakken
+  taart) zitten er niet in: later.
+- **Voltooid deelwoord op Heel moeilijk** heeft geen eigen leerlijn (valt terug op Moeilijk).
 
 ## Wat anders werd dan gepland (T3 deel 1, 0.26.0)
 - **144 werkwoorden** in plaats van ongeveer 110 (73 zwakke, 71 sterke of onregelmatige). De sterke werkwoorden

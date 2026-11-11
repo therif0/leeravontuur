@@ -822,7 +822,7 @@ class VerledenTijdSterk(Werkwoordspelling):
     werkwoord zelf ("ev/lopen"): wat fout ging, komt terug in een andere zin."""
     id = "taal.werkwoordspelling.vt_sterk"
     naam = "Verleden tijd: sterke werkwoorden"
-    omschrijving = "liep, gaf, schreef: de klank verandert"
+    omschrijving = "liep, gaf, schreef"
     vorm = "vt"
     brief = SPIEKBRIEF_STERK
 
