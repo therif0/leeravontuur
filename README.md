@@ -97,8 +97,8 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Taal › Werkwoordspelling** (0.26): een zin met een gat ("Gisteren ___ Noor in het park. (fietsen)"), stap voor
   stap zoals het denkschema van school (wie doet het, de stam, de regel, de vorm), of meteen typen met Tab.
   Tegenwoordige tijd (ik werk, hij wordt, word jij?), de verleden tijd van zwakke werkwoorden met 't kofschip en
-  van sterke werkwoorden (de rijtjes: lopen – liep – gelopen), en het voltooid deelwoord (gewerkt, gespeeld,
-  gelopen).
+  van sterke werkwoorden (de rijtjes: lopen – liep – gelopen), het voltooid deelwoord (gewerkt, gespeeld,
+  gelopen), en een zin van de tegenwoordige naar de verleden tijd zetten.
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
   - Het leerjaar stelt de ouder in (Ouders › Kinderen). Volgend schooljaar schuift alles mee.

@@ -202,7 +202,12 @@ Gouden regels:
     Tegenwoordige tijd op Heel moeilijk (`homofoon` in de leerlijn m1): `homofoon(w)` = verhuist/verhuisd; dan
     vraagt dat onderwerp ook zinnen met `vorm = "vd"`. Een kopje dat niet op de spiekbrief van het onderwerp staat,
     wordt `kop_anders`. Wat na het werkwoord staat (`rest`) mag geen deel van een scheidbaar werkwoord zijn
-    ("de deur open" → opengehouden): een test bewaakt dat.
+    ("de deur open" → opengehouden): een test bewaakt dat;
+  - 0.26.2: `ZetInDeVerledenTijd` (`omzetten = True`): de `WwZin` heeft dan `omzetten`, `bron` (de zin in de
+    tegenwoordige tijd, zonder tijdwoord dat maar in één tijd past: `BEGIN`) en `pv_plek`. De stappen: "pv" (soort
+    `"woord"`: een woord aanduiden in de zin), "soort" (zwak of sterk) en de vorm. `lijst_voor` kiest eerst zwak of
+    sterk (even vaak); het groepje is `zwak/stamsoort` of `sterk/werkwoord`. Het scherm tekent de bron
+    (`teken_bron`, de gevonden pv in de rol `z_pv`) en eronder de zin van toen met het vak.
 
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =

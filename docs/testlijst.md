@@ -134,6 +134,9 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Voltooid deelwoord** (0.26.1): "Noor heeft gisteren in het park ___. (fietsen)": de stam, "Zit de s in
   't kofschip?", dan `gefietst`. Typ met opzet `gefietsd` (d of t) en bij vertellen `geverteld` (ge- te veel).
   Een sterk werkwoord (lopen) typ je meteen.
+- [ ] **Zet in de verleden tijd** (0.26.2): "Daarna fietst Noor in het park." Stap 1: duid de persoonsvorm aan (←→
+  en Enter, of een klik); een fout woord geeft "Dat is niet de persoonsvorm." Stap 2: zwak of sterk. Stap 3: typ
+  `fietste`; typ je `fietst`, dan "Dat is nog de tegenwoordige tijd." Het resultaat toont de zin in de verleden tijd.
 - [ ] **Tegenwoordige tijd › Heel moeilijk** (0.26.1): zinnen met verhuist/verhuisd, gebeurt/gebeurd, vertelt/verteld.
 - [ ] Zijn de zinnen goed Nederlands, en klopt elke werkwoordvorm? De lijst staat in
   `leeravontuur/inhoud/taal/werkwoorden.json` en als tabel in de tekst van de pull request.

@@ -22,7 +22,7 @@ schooljaarwissel werken. Die datum verschuift niet; al de rest kan schuiven.
 | Periode | Voor | Wat |
 |---|---|---|
 | tot november 2026 | 🧒 | ✔ 0.23.2 het slot op Stoppen → ✔ 0.24.0 Gemengd oefenen (ook "fris houden" in het rapport) → **wiskunde bevroren**: daarna alleen nog fouten die het kind merkt |
-| nu → Pasen 2027 | 🌍 | **Taal** (het plan: [taal.md](taal.md)): eerst **zinsontleding** (de vader, 7/11), dan **werkwoordspelling** met de verleden tijd (8/11: vóór de woordsoorten), dan **woordsoorten**, met de woordenlijsten |
+| nu → Pasen 2027 | 🌍 | **Taal** (het plan: [taal.md](taal.md)): eerst ✔ **zinsontleding** (de vader, 7/11; 0.25), dan ✔ **werkwoordspelling** met de verleden tijd (0.26.0–0.26.2, 8/11: vóór de woordsoorten), dan **woordsoorten**, met de woordenlijsten |
 | Pasen → juni 2027 | 🧒 | **Examens** (de ouder stelt samen, het kind maakt het zonder hulp), klaar vóór de examens van juni · **rekenpuzzels** ("lolly + lolly = ijsje …") |
 | juni → 1 juli 2027 | 🧒 | **Dagtaak / vakantiewerk**: elke dag een taak van 30 à 60 minuten met pauzes en een gekozen rustdag; gemengd met spelletjes (woordzoeker, foutenzoeker, rekenpuzzels) en **begrijpend lezen** (een tekst met meerkeuzevragen) |
 | juli → 1 september 2027 | 🌍 🧒 | **Schooljaarwissel + leerlijnen tot 2de middelbaar** (de vaste datum) · wiskunde v2 uit de feedback van het jaar (schuift na september als het krap wordt) |

@@ -2,6 +2,19 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.26.2 — Werkwoordspelling: zet in de verleden tijd
+- **Taal › Werkwoordspelling › Zet in de verleden tijd:** een zin in de tegenwoordige tijd ("Daarna fietst Noor in
+  het park."), en jij zet de persoonsvorm in de verleden tijd. Zoals het taaldossier van school, zin per zin.
+  - Stap 1: **zoek de persoonsvorm** (←→ en Enter, of een klik op het woord). Ze krijgt de gele kleur van de pv.
+  - Stap 2: is het werkwoord **zwak of sterk**?
+  - Stap 3: **typ de persoonsvorm in de verleden tijd**; eronder staat de zin van toen met het vak.
+  - Zwakke en sterke werkwoorden door elkaar (even vaak). Het werkwoord staat er niet bij: dat zoek je zelf.
+  - Tab = meteen typen; op Moeilijk altijd meteen, ook met een vraag ("Fietst Noor in het park?").
+  - Makkelijk = alleen zwakke werkwoorden; Normaal = zwak en sterk; Moeilijk = alle werkwoorden.
+- De spiekbrief "Van tegenwoordige naar verleden tijd": zoek de pv, zwak of sterk, 't kofschip, één of meer, en hoe
+  je een hele tekst omzet.
+- Hiermee is Werkwoordspelling (deel T3 van het plan voor Taal) af: vijf oefeningen.
+
 ## 0.26.1 — Werkwoordspelling: sterke werkwoorden en het voltooid deelwoord
 - **Verleden tijd: sterke werkwoorden** (liep, gaf, schreef). Er is geen regel: je leert het rijtje.
   - Stap 1: één of meer? Stap 2: typ de vorm.

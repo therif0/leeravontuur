@@ -271,7 +271,7 @@ terminal/curriculum/taal.py     Vak Taal › 6 domeinen (wat nog niet gebouwd is
 | ✔ **T1.3b** | 0.25.1 | de nagekeken zinnen (40, per leerjaar) + zinnen met 2 pv's (alleen op Moeilijk: de machine en 26 nagekeken zinnen) |
 | ✔ **T3 deel 1** | 0.26.0 | Werkwoordspelling: de werkwoordenlijst (144), het scherm met de stappen, Tegenwoordige tijd en Verleden tijd: zwakke werkwoorden ('t kofschip) |
 | ✔ **T3 deel 2** | 0.26.1 | Verleden tijd: sterke werkwoorden (de rijtjes), Voltooid deelwoord, en verhuist/verhuisd op Heel moeilijk |
-| **T3 deel 3** | 0.26.2 | Zet in de verleden tijd |
+| ✔ **T3 deel 3** | 0.26.2 | Zet in de verleden tijd (de pv zoeken, zwak of sterk, de vorm). **T3 is af.** |
 | **T2** | 0.27.0 | Woordsoorten |
 | **T2.1** | 0.27.1 | eigen zinnen van de ouder |
 | **T4, T5** | later | Spelling, woordenschat en lezen |
@@ -297,6 +297,15 @@ Eén voorstel voor T1.3b en heel T3, daarna bouwen zonder een stop per fase (zie
 - **Werkwoordspelling:** stap voor stap met Tab (zoals Zinsdelen), Moeilijk typt meteen; het ezelsbruggetje is
   **'t kofschip**; het menu: Tegenwoordige tijd · Verleden tijd: zwakke werkwoorden · Verleden tijd: sterke
   werkwoorden · Voltooid deelwoord · Zet in de verleden tijd.
+
+## Wat anders werd dan gepland (T3 deel 3, 0.26.2)
+- **Geen zinnen met twee werkwoorden** op Moeilijk (het plan noemde ze): één persoonsvorm per zin. Een hele tekst
+  met meer persoonsvormen is de tekstoefening (T6).
+- **Het werkwoord staat er niet tussen haakjes bij:** het kind zoekt zelf de persoonsvorm. Na die stap noemt het
+  programma het werkwoord ("Is ‘fietsen’ zwak of sterk?").
+- **De zin heeft geen "gisteren" of "nu":** ze moet in de twee tijden kloppen. Een zin die niet met het onderwerp
+  begint, begint met daarna, plotseling, even later of op zaterdag.
+- **Zwak en sterk komen even vaak** (niet volgens het aantal werkwoorden in de lijst).
 
 ## Wat anders werd dan gepland (T3 deel 2, 0.26.1)
 - **Het voltooid deelwoord van een sterk werkwoord typ je meteen**, zonder stappen (er is geen regel om in stappen
