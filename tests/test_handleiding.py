@@ -17,7 +17,7 @@ from leeravontuur.kern.onderwerp import ONDERWERPEN
 WORTEL = Path(__file__).resolve().parent.parent
 MAP = WORTEL / "docs" / "handleiding"
 
-NOG_TE_BESCHRIJVEN = {"taal.zinsontleding"}  # onderwerp-ids (bv. "taal.werkwoorden.tt"), leeg na het handleidingproject
+NOG_TE_BESCHRIJVEN = {"taal.zinsontleding", "taal.werkwoordspelling.tt", "taal.werkwoordspelling.vt_zwak"}  # onderwerp-ids (bv. "taal.werkwoorden.tt"), leeg na het handleidingproject
 
 
 def laad_script():

@@ -115,6 +115,23 @@ Doe dit na elke nieuwe versie, op je eigen computer. Vink af wat klopt; schrijf 
 - [ ] **Leerstof** vraagt eerst welk vak; **Taal** opent meteen de spiekbrief Zinsontleding.
 - [ ] Het rapport van de ouder toont Taal › Zinsontleding; Herhalen › Gemengd oefenen toont het kopje TAAL.
 
+## 3c. Taal › Werkwoordspelling (nieuw, 0.26.0)
+- [ ] **Taal › Werkwoordspelling** is te kiezen: Tegenwoordige tijd en Verleden tijd: zwakke werkwoorden.
+- [ ] **Verleden tijd › Normaal:** "Gisteren ___ Noor in het park. (fietsen)". Stap 1: één of meer (cijfer, ↑↓ +
+  Enter, of een klik). Stap 2: typ de stam (fiets). Stap 3: "Zit de s in 't kofschip?" (1 of J = ja); daarna licht
+  de s op in 't kofschip. Stap 4: typ de vorm (fietste). Het resultaat toont de hele zin.
+- [ ] Typ met opzet `fietsde`: "Kijk naar de letter vóór -en: zit de s in 't kofschip?" en een tweede kans. Twee
+  keer fout: het juiste antwoord en het denkschema voor die zin.
+- [ ] **Tab** = meteen de vorm typen; Tab = terug naar de stappen (wat al gevonden was, blijft staan).
+  **Moeilijk:** altijd meteen typen, ook leefde, reisde, praatte, antwoordde.
+- [ ] **Tegenwoordige tijd › Normaal:** een zin met "jij" achter het werkwoord ("___ jij snel moe? (worden)"): kies
+  bij stap 3 met opzet "de stam + t": "Kijk waar ‘jij’ staat: voor of achter het werkwoord?".
+- [ ] **F1** twee keer = de twee tips van de stap, een derde keer = de spiekbrief (Esc = terug naar de zin).
+  **S** in het menu en **Leerstof › Taal › Werkwoordspelling** tonen de twee spiekbrieven.
+- [ ] Zijn de zinnen goed Nederlands, en klopt elke werkwoordvorm? De lijst staat in
+  `leeravontuur/inhoud/taal/werkwoorden.json` en als tabel in de tekst van de pull request.
+- [ ] Het rapport van de ouder toont Taal › Werkwoordspelling met de twee onderwerpen.
+
 ## 4. Reeks, herhalen en punten
 - [ ] **Reeks van 10** (Enter op eender welk onderwerp): na 10 vragen een score en uitleg bij je fouten.
 - [ ] Met `F` krijg je dezelfde foute vragen opnieuw, met `G` gelijkaardige.

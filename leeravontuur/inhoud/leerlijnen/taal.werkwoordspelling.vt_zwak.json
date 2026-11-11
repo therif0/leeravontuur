@@ -1,0 +1,81 @@
+{
+ "vaardigheid": "taal.werkwoordspelling.vt_zwak",
+ "omschrijving": "Werkwoordspelling verleden tijd van zwakke werkwoorden ('t kofschip)",
+ "doelen": [
+  "L4 1.2.7"
+ ],
+ "parameters": {
+  "niveaus": "lijst",
+  "stammen": "lijst",
+  "personen": "lijst",
+  "patronen": "lijst",
+  "onregelmatig": "bool",
+  "stap_voor_stap": "bool"
+ },
+ "leerlijn": {
+  "4": {
+   "niveaus": [
+    1
+   ],
+   "stammen": [
+    "gewoon"
+   ],
+   "personen": [
+    "ik",
+    "hij"
+   ],
+   "patronen": [
+    "gewoon"
+   ],
+   "onregelmatig": false,
+   "stap_voor_stap": true
+  },
+  "5": {
+   "niveaus": [
+    1,
+    2
+   ],
+   "stammen": [
+    "gewoon"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie"
+   ],
+   "onregelmatig": false,
+   "stap_voor_stap": true
+  },
+  "6": {
+   "niveaus": [
+    1,
+    2,
+    3
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "onregelmatig": false,
+   "stap_voor_stap": false
+  }
+ }
+}

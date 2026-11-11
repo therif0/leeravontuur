@@ -3,11 +3,13 @@
 Wat nog niet gebouwd is, staat er al als een domein zonder onderwerpen: in het menu in het grijs ("komt binnenkort").
 """
 
+from ...kern.taal import werkwoorden as WW
 from ...kern.taal import zinsontleding as ZO
 from . import Domein, Onderwerp, Spiekbrief, Vak
 from . import modi as M
 
 ZINSONTLEDING = "Zinsontleding"
+WERKWOORDSPELLING = "Werkwoordspelling"
 
 
 def oefenaar(id_, label, kern, domein, spiek):
@@ -21,7 +23,12 @@ TAAL = Vak("taal", "Taal", (
     Domein("taal.zinsontleding", ZINSONTLEDING, (
         oefenaar("zinsontleding.zinsdelen", "Zinsdelen", ZO.ZINSONTLEDING, ZINSONTLEDING, "Zinsontleding"),
     ), "pv, onderwerp, lijdend en meewerkend voorwerp"),
-    Domein("taal.werkwoordspelling", "Werkwoordspelling", (), "d, t of dt, verleden tijd, voltooid deelwoord"),
+    Domein("taal.werkwoordspelling", WERKWOORDSPELLING, (
+        oefenaar("werkwoordspelling.tt", "Tegenwoordige tijd", WW.TEGENWOORDIGE_TIJD, WERKWOORDSPELLING,
+                 "Tegenwoordige tijd"),
+        oefenaar("werkwoordspelling.vt_zwak", "Verleden tijd: zwakke werkwoorden", WW.VERLEDEN_TIJD_ZWAK,
+                 WERKWOORDSPELLING, "Verleden tijd ('t kofschip)"),
+    ), "d, t of dt, verleden tijd, voltooid deelwoord"),
     Domein("taal.woordsoorten", "Woordsoorten", (), "zn, lidw, bn, ww …"),
     Domein("taal.spelling", "Spelling", (), "meervoud, verkleinwoord, ei/ij, au/ou …"),
     Domein("taal.woordenschat", "Woordenschat", (), "synoniemen, uitdrukkingen, spreekwoorden"),

@@ -1,0 +1,88 @@
+{
+ "vaardigheid": "taal.werkwoordspelling.tt",
+ "omschrijving": "Werkwoordspelling tegenwoordige tijd: de stam, de stam + t of het hele werkwoord",
+ "doelen": [
+  "L4 1.2.6"
+ ],
+ "parameters": {
+  "niveaus": "lijst",
+  "stammen": "lijst",
+  "personen": "lijst",
+  "patronen": "lijst",
+  "onregelmatig": "bool",
+  "stap_voor_stap": "bool"
+ },
+ "leerlijn": {
+  "4": {
+   "niveaus": [
+    1
+   ],
+   "stammen": [
+    "gewoon"
+   ],
+   "personen": [
+    "ik",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon"
+   ],
+   "onregelmatig": false,
+   "stap_voor_stap": true
+  },
+  "5": {
+   "niveaus": [
+    1,
+    2
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "jij_inv",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "onregelmatig": true,
+   "stap_voor_stap": true
+  },
+  "6": {
+   "niveaus": [
+    1,
+    2,
+    3
+   ],
+   "stammen": [
+    "gewoon",
+    "d",
+    "t",
+    "vz"
+   ],
+   "personen": [
+    "ik",
+    "jij",
+    "jij_inv",
+    "hij",
+    "mv"
+   ],
+   "patronen": [
+    "gewoon",
+    "inversie",
+    "vraag"
+   ],
+   "onregelmatig": true,
+   "stap_voor_stap": false
+  }
+ }
+}

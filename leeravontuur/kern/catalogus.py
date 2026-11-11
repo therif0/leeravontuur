@@ -4,7 +4,7 @@ from . import vaardigheden
 from .onderwerp import ONDERWERPEN  # noqa: F401
 from .wiskunde import (breuken, cijferen, eenheden, getallen, grootheden, hoofdrekenen, klok, meetkunde,  # noqa: F401
                        procenten, vraagstukken)  # (registreren zich bij het importeren)
-from .taal import zinsontleding  # noqa: F401
+from .taal import werkwoorden, zinsontleding  # noqa: F401
 
 
 def naam(vaardigheid_id):

@@ -92,8 +92,11 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
 - **Taal › Zinsontleding** (de eerste stap van Taal, volgens het katholieke leerplan): een zin ontleden, stap voor
   stap zoals op school (pv, onderwerp, lijdend en meewerkend voorwerp; op Moeilijk ook het gezegde, de bwb en zinnen
   met twee persoonsvormen), of vrij kleuren met Tab. De zinnen komen van een zinnenmachine en uit een nagekeken lijst. Elk zinsdeel heeft een eigen kleur en zijn afkorting; F1 geeft de vraag van school en het
-  proefje, daarna de spiekbrief. De andere delen van Taal (woordsoorten, werkwoordspelling …) staan al in het menu,
+  proefje, daarna de spiekbrief. De andere delen van Taal (woordsoorten, spelling …) staan al in het menu,
   in het grijs. Het plan: [docs/taal.md](docs/taal.md).
+- **Taal › Werkwoordspelling** (0.26): een zin met een gat ("Gisteren ___ Noor in het park. (fietsen)"), stap voor
+  stap zoals het denkschema van school (wie doet het, de stam, de regel, de vorm), of meteen typen met Tab.
+  Tegenwoordige tijd (ik werk, hij wordt, word jij?) en de verleden tijd van zwakke werkwoorden met 't kofschip.
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
   - Het leerjaar stelt de ouder in (Ouders › Kinderen). Volgend schooljaar schuift alles mee.

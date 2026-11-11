@@ -2,6 +2,32 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.26.0 — Taal: werkwoordspelling (deel 1)
+- **Taal › Werkwoordspelling** staat niet meer in het grijs. De eerste twee oefeningen:
+  - **Tegenwoordige tijd:** ik werk, jij werkt, werk jij?, hij wordt, we werken.
+  - **Verleden tijd: zwakke werkwoorden**, met **'t kofschip**: werkte of speelde.
+- **Een zin met een gat** en het werkwoord tussen haakjes: "Gisteren ___ Noor in het park. (fietsen)".
+- **Stap voor stap** (Makkelijk en Normaal), zoals het denkschema van school:
+  1. Wie doet het? (ik · jij · hij, zij, het of één naam · meer dan één) In de verleden tijd: één, of meer dan één?
+  2. Typ de stam (de ik-vorm).
+  3. De regel: de stam, de stam + t of het hele werkwoord. In de verleden tijd: zit de letter in 't kofschip?
+     Daarna licht die letter op in 't kofschip.
+  4. Typ de vorm in de zin.
+  Een keuze maak je met het cijfer, met ↑↓ en Enter, of met een klik.
+- **Tab** = meteen de vorm typen (en terug naar de stappen). Op **Moeilijk** typ je altijd meteen.
+- **Een fout** krijgt een uitleg die bij de fout past ("Jij staat achter het werkwoord: dan valt de t weg.", "Kijk
+  naar de letter vóór -en: zit de s in 't kofschip?") en een tweede kans. Daarna het denkschema voor die zin.
+- **F1** = twee tips bij de stap, daarna de spiekbrief. Twee nieuwe spiekbrieven (ook in Leerstof):
+  "Tegenwoordige tijd" en "Verleden tijd ('t kofschip)".
+- **De niveaus:**
+  - Tegenwoordige tijd: Makkelijk = ik, hij en meervoud met een gewone stam. Normaal = ook jij en "word jij?", een
+    stam op d of t (wordt, wacht), leven en reizen (leeft, reist), en zijn en hebben. Moeilijk = ook antwoordt,
+    verandert, gebeurt.
+  - Verleden tijd: Makkelijk = duidelijke werkwoorden, één persoon. Normaal = ook meervoud (werkten). Moeilijk =
+    ook leefde, reisde, praatte, antwoordde.
+- Een lijst van 144 werkwoorden, elke vorm uitgeschreven; een test rekent elke zwakke vorm na met 't kofschip.
+- Werkwoordspelling telt mee in de punten, de herhaalbak, het rapport, ▶ Verder en Gemengd oefenen.
+
 ## 0.25.1 — Zinsdelen: nagekeken zinnen en zinnen met twee persoonsvormen
 - **Nagekeken zinnen.** Naast de zinnen van de zinnenmachine komen er nu ook met de hand geschreven zinnen (ongeveer
   3 van de 10 op Makkelijk en Normaal, 2 van de 10 op Moeilijk), voor wat lastig is: een lang onderwerp ("De kinderen
