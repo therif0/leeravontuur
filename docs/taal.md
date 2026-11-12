@@ -304,7 +304,7 @@ Eén voorstel voor T1.3b en heel T3, daarna bouwen zonder een stop per fase (zie
 - **Het werkwoord staat er niet tussen haakjes bij:** het kind zoekt zelf de persoonsvorm. Na die stap noemt het
   programma het werkwoord ("Is ‘fietsen’ zwak of sterk?").
 - **De zin heeft geen "gisteren" of "nu":** ze moet in de twee tijden kloppen. Een zin die niet met het onderwerp
-  begint, begint met daarna, plotseling, even later of op zaterdag.
+  begint, begint met daarna, die dag, even later of op zaterdag.
 - **Zwak en sterk komen even vaak** (niet volgens het aantal werkwoorden in de lijst).
 
 ## Wat anders werd dan gepland (T3 deel 2, 0.26.1)
