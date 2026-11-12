@@ -268,6 +268,9 @@ dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.comman
   keuzes die het voorstel niet noemt zelf en zet ze onder "Keuzes" in de pull request. Claude stopt toch en vraagt bij:
   een migratie van de databank, een verandering aan het hoofdmenu, iets dat tegen een eerdere keuze van de vader
   ingaat, of een test die niet netjes op te lossen is. Op het afgesproken stoppunt komt een volledig verslag.
+- **Werkbestanden** (de vader, 12/11/2026): elke nieuwe functie of update wordt eerst uitgedacht in een md-bestand in
+  `werk/` (vragen, keuzes, fasen; zie `werk/README.md`). Pas als de vader "actie" zegt, wordt er gebouwd. Plannen
+  blijven kort: het werkbestand is het plan.
 - Een fout of iets vreemds gezien buiten de opdracht: melden en voorstellen, niet zelf de opdracht uitbreiden.
   Een kleine fout die het kind zou merken: melden, en na akkoord meteen in dezelfde branch.
 - Testen door de vader gebeurt op een kopie van de gegevens (`LEERAVONTUUR_DATA`), met een testlijst.
