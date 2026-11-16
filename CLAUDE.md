@@ -3,6 +3,8 @@
 Gratis leerprogramma van **Solve It Now** ("Iedereen moet kunnen leren"), licentie CC BY-NC-SA 4.0.
 Voor kinderen in Vlaanderen (nu een kind in het 5de leerjaar). Alle teksten in het programma zijn
 Nederlands (Vlaams), met komma als decimaalteken.
+**Het doel:** twee doelen, even zwaar, om beurten: de zoon (wat hij dit jaar nodig heeft, en niets vergeten) en het
+product (gratis voor alle Vlaamse kinderen). Richting: `docs/koers.md`.
 
 ## Architectuur (niet doorbreken)
 **In één oogopslag** (elke laag kent alleen de lagen eronder):
