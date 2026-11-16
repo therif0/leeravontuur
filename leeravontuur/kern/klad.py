@@ -20,7 +20,6 @@ from .wiskunde import eenheden as E
 PLUS, MIN, MAAL, DEEL, VAN = "+", "−", "×", ":", "van"
 OPS = {"+": PLUS, "-": MIN, "−": MIN, "–": MIN, "x": MAAL, "X": MAAL, "×": MAAL, "*": MAAL, "·": MAAL,
        ":": DEEL, "/": DEEL, "÷": DEEL}
-OP_NAAM = {PLUS: "optellen", MIN: "aftrekken", MAAL: "vermenigvuldigen", DEEL: "delen", VAN: "vermenigvuldigen"}
 
 # eenheden buiten de eenhedentabel: (soort, factor tegenover de kleinste)
 TIJD = {"s": 1, "sec": 1, "seconden": 1, "min": 60, "minuten": 60, "minuut": 60, "u": 3600, "uur": 3600,
@@ -482,10 +481,6 @@ def rekenfout_tekst(s):
             if op != s.ops[0] and _reken(op, a, b) == g and not (op == MAAL and s.ops[0] == VAN):
                 return f"{s.links_tekst}: je schreef {s.ops[0]}, maar je rekende {op}."
     return f"Reken {s.links_tekst} nog eens na."
-
-
-def lees_klad(regels):
-    return [lees_regel(r) for r in regels]
 
 
 # ---- het klad tegenover een oplossing --------------------------------------------------------------------

@@ -27,3 +27,4 @@ bouwen, op hun gewone plaats.
 | Bestand | Status |
 |---|---|
 | [breuken.md](breuken.md) | geparkeerd tot wiskunde v2 (wiskunde is bevroren) |
+| [opruimen.md](opruimen.md) | in overleg (deel 1 gedaan: dode code weg, CLAUDE.md korter) |

@@ -300,16 +300,6 @@ SOORTEN_HOEK = ["scherp", "recht", "stomp", "gestrekt", "vol"]
 BIJVOEGLIJK = {"scherp": "scherpe", "recht": "rechte", "stomp": "stompe", "gestrekt": "gestrekte", "vol": "volle"}
 
 
-def hoek_soort(graden):
-    if graden < 90:
-        return "scherp"
-    if graden == 90:
-        return "recht"
-    if graden < 180:
-        return "stomp"
-    return "gestrekt" if graden == 180 else "vol"
-
-
 class Hoeken(_Meetkunde):
     id = "wiskunde.meetkunde.hoeken"
     naam = "Hoeken"

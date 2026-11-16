@@ -40,11 +40,6 @@ SPIEKBRIEF = [
     ("  Btw: prijs met btw = prijs + het procent van de prijs (6 % of 21 %).", ""),
 ]
 
-STRATEGIE = {50: "50 % is de helft", 25: "25 % is een vierde (: 4)", 10: "10 % is een tiende (: 10)",
-             20: "20 % is een vijfde (: 5)", 75: "75 % is drie vierden", 1: "1 % is een honderdste (: 100)",
-             100: "100 % is alles"}
-
-
 def deel_regels(p, totaal):
     """p % van totaal als klad-regels, met dezelfde handige strategie als deel_uitleg."""
     deel, t = D(totaal) * D(p) / 100, D(totaal)
