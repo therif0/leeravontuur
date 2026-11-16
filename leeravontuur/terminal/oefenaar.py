@@ -52,7 +52,8 @@ LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het vens
 # invoersoorten met een eigen invoer-object
 INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, "zinsdelen": ZD.ZinsdelenInvoer, "werkwoord": WW.WerkwoordInvoer}
 # de vaste werkwijze: geen tweede kans waar raden te makkelijk is, of waar het object zelf stap voor stap nakijkt
-GEEN_TWEEDE_KANS = {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk", "speur", "zinsdelen", "werkwoord"}
+# (een invoer-object zegt dat zelf met `geen_tweede_kans = True`)
+GEEN_TWEEDE_KANS = {"janee", "vergelijk"} | {k for k, c in INVOER.items() if getattr(c, "geen_tweede_kans", False)}
 TAB, KLAD, ANTWOORD = 9, "klad", "antwoord"
 KLAD_BREED, KLAD_HOOG = 54, 6
 KLAD_HINT = "Rekenregel + Enter (bv. 70 : 7 = 10) · lege regel of Tab = antwoord"
@@ -63,7 +64,8 @@ KORT_HULP = " Nog eens F1: je spiekbrief."  # na de hulp van een invoer-object
 def vraagtekst(v):
     """De vraag zoals in het rapport ('7 × 8 = ?'; een vraagstuk eindigt zelf al op een vraagteken, een zin om te
     ontleden is de zin zelf, een zin met een gat ook)."""
-    return v.tekst if v.tekst.endswith("?") or v.invoer in ("zinsdelen", "werkwoord") else v.tekst + " ?"
+    zin = getattr(INVOER.get(v.invoer), "vraag_is_zin", False)
+    return v.tekst if v.tekst.endswith("?") or zin else v.tekst + " ?"
 
 
 class Oefenaar:

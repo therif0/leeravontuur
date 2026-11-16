@@ -16,6 +16,7 @@ MAATJE_X, MAATJE_ONDER = 60, 9  # tot rij 9 staat rechts het maatje (vanaf kolom
 
 
 class RoosterInvoer:
+    geen_tweede_kans = True  # het object kijkt zelf stap voor stap na
     X0 = 12
 
     def __init__(self, v, o):
@@ -230,6 +231,7 @@ class RoosterInvoer:
 
 
 class StaartInvoer:
+    geen_tweede_kans = True  # het object kijkt zelf stap voor stap na
     X0 = 8
     VENSTER = 7  # zoveel regels van de staartdeling passen tijdens het rekenen
 
