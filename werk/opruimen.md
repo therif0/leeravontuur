@@ -1,7 +1,7 @@
 # Opruimen: wat eenvoudiger kan
 
-**Status:** in overleg. Een audit van main (60ab177, 16/11/2026). Deel 1 is gedaan (branch `opruimen`); de rest wacht
-op "actie". Niets hiervan verandert wat het kind ziet.
+**Status:** gebouwd (16/11/2026, "actie" van de vader). Een audit van main (60ab177). Niets hiervan verandert wat
+het kind ziet. Branches, na elkaar samen te voegen: `opruimen` → `opruimen-a` → `opruimen-b`.
 
 ## Gedaan (branch `opruimen`)
 - Zes definities weg die nergens gebruikt werden (elke naam stond maar één keer in de repo, bij de definitie):
@@ -9,7 +9,7 @@ op "actie". Niets hiervan verandert wat het kind ziet.
   `winkel.straf_tekst`. Eerst nagebootst (de volledige suite met die namen uit het geheugen gehaald: 595 OK).
 - CLAUDE.md van 304 naar ±110 regels; de details woord voor woord naar `docs/architectuur.md`.
 
-## Open (aanbeveling van Claude bij elk punt)
+## Wat de audit vond (met de aanbeveling)
 1. **Dezelfde tip-code twee keer.** `terminal/zinsdelen.py` en `terminal/werkwoord.py` hebben ±30 dezelfde regels
    (`tips_op`, `spiekbrief_bekeken`, `hulp`, `rijen`, het einde van `volgende_tip`, `tweede_kans`, `spiekbrief_aan`).
    → Eén klein gedeeld stuk (bv. `terminal/hulpstap.py`). Aanbevolen vóór T2 Woordsoorten, dat er een derde kopie
@@ -28,6 +28,13 @@ op "actie". Niets hiervan verandert wat het kind ziet.
 **Niet dood, ook al lijkt het zo:** `_alles_juist`, `_rekenfout`, `_denkfout` in `vraagstukken.py` worden met
 `getattr(self, "_" + soort)` opgeroepen (regel 1213).
 
-## Fasen (pas na "actie")
-- A: punt 1 + 2 (één PR, tests + tmux van Zinsdelen en Werkwoordspelling).
-- B: punt 4 + 5 (één PR, alleen data en docs).
+## Fasen
+- A (`opruimen-a`): punt 1 + 2. `terminal/stappenhulp.py` (`StappenHulp`); `geen_tweede_kans` en `vraag_is_zin` op
+  de objecten; `tests/test_invoer_objecten.py` bewaakt dat de lijst en `vraagtekst` hetzelfde blijven. tmux: F1 tip 1,
+  tip 2, spiekbrief, Esc, weer tip 1 in Zinsdelen en Werkwoordspelling.
+- B (`opruimen-b`): punt 4 + 5.
+
+**Anders dan afgesproken:** `docs/plan.md` is niet tot de twee tabellen ingekort maar van 957 naar 715 regels: alleen
+wat verouderd was ging weg (de stand van zaken van 0.23.1, hoofdstuk L met de architectuur en menu's van 0.20, de
+structuur van 0.20). De hoofdstukken over Frans, Avontuur, de winkel, publiceren … zijn nog de plannen voor later en
+bleven staan. Punt 3 (`BINNENKORT`) bleef zoals aanbevolen.

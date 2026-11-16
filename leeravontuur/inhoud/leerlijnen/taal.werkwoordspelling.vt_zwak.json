@@ -9,7 +9,6 @@
   "stammen": "lijst",
   "personen": "lijst",
   "patronen": "lijst",
-  "onregelmatig": "bool",
   "stap_voor_stap": "bool"
  },
  "leerlijn": {
@@ -27,7 +26,6 @@
    "patronen": [
     "gewoon"
    ],
-   "onregelmatig": false,
    "stap_voor_stap": true
   },
   "5": {
@@ -48,7 +46,6 @@
     "gewoon",
     "inversie"
    ],
-   "onregelmatig": false,
    "stap_voor_stap": true
   },
   "6": {
@@ -74,7 +71,6 @@
     "inversie",
     "vraag"
    ],
-   "onregelmatig": false,
    "stap_voor_stap": false
   }
  }

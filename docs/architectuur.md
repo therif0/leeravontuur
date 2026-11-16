@@ -64,7 +64,8 @@ waaraan je werkt. Uit CLAUDE.md gehaald op 16/11/2026, woord voor woord, zodat C
   getrapte tips (`Onderwerp.tips`), na de laatste tip de spiekbrief bij het kopje van de vraag
   (`Onderwerp.spiek_kop`/`kop_op_spiekbrief`; een test kijkt na dat elk kopje bestaat; Esc = terug naar de vraag),
   daarna weer tip 1; fout = één tweede kans (niet bij janee/vergelijk/keuze en objecten met een
-  eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`), daarna "Zo kan het:" in klad-regels, met het
+  eigen stappenlogica: `GEEN_TWEEDE_KANS` in `terminal/oefenaar.py`, voor een invoer-object het attribuut
+  `geen_tweede_kans = True`), daarna "Zo kan het:" in klad-regels, met het
   eigen klad ernaast (`Kladblad.teken_kader`: ✔ ✘ en ! waar `analyseer` een denkfout ziet). Het klad
   is één onderdeel voor alles: `terminal/kladblad.py` (ook in het vraagstuk). **Elk nieuw rekenonderwerp** zet
   `klad = "ja"` (of `"verplicht"`, met `klad_klaar`) en geeft `oplossing(v)` in klad-regels (`kern/klad.stap`,
@@ -120,7 +121,7 @@ waaraan je werkt. Uit CLAUDE.md gehaald op 16/11/2026, woord voor woord, zodat C
   (`getal`, `klok`, `duur`) zegt hoe het antwoord gelezen wordt; tijd rekent in minuten, en het klad kent
   tijdstippen (`9.45 u`, `9:45`). Invoer
   `"vraagstuk"` = `terminal/vraagstuk.py` (4 stappen). Haakjes in de Oefenaar voor zo'n invoer-object: `eigen_tekst`
-  (tekent zelf de vraag), `eigen_tip` (F1 gaat naar het object), `extra` (bewaard bij het antwoord en gebruikt
+  (tekent zelf de vraag), `eigen_tip` (F1 gaat naar het object), `vraag_is_zin` (geen " ?" in het rapport), `extra` (bewaard bij het antwoord en gebruikt
   voor de punten) en `uitleg_na`. `tests/test_vraagstukken.py` maakt elke structuur in elk leerjaar en kijkt na
   dat het verhaal klopt, past (4 × 56 tekens) en mooi uitkomt. De Speurneus (invoer `"speur"`, model `Speur`)
   maakt van een fout pad (of een rekenfout) het klad van een ander kind; Schatten (invoer `"keuze"`, model
@@ -157,6 +158,8 @@ waaraan je werkt. Uit CLAUDE.md gehaald op 16/11/2026, woord voor woord, zodat C
     `FRIS_DAGEN`) staat ook in het rapport.
 
 ## Taal
+- Een object met eigen stappen (Zinsdelen, Werkwoordspelling, later Woordsoorten) erft van
+  `terminal/stappenhulp.StappenHulp` (tips per stap, spiekbrief, de schakelaars van de `Hulp`).
 - **Taal** (0.25, het plan in `docs/taal.md`; de vader: thuis het katholieke leerplan):
   - `kern/taal/zinnen.py`: `Zin` (woorden met hun woordsoort + `Deel`en; volledig ontleed, de pv hoort bij het
     gezegde) en de **haakjes** (`[o De juf] [pv geeft] [lv een boek].`, `lees_haakjes`/`Zin.haakjes`), met fouten in
