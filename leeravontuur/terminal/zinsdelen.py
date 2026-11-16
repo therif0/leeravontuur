@@ -16,6 +16,7 @@ import textwrap
 
 from ..kern.taal import zinsontleding as Z
 from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
+from .stappenhulp import StappenHulp
 
 TAB = 9
 X, RIJ = 7, 6          # waar de zin begint (rij onder het verhaal: RIJ na de opdracht), 2 spaties tussen de woorden
@@ -33,9 +34,7 @@ def rol(label):
     return f"z_{Z.soort(label)}"
 
 
-class ZinsdelenInvoer:
-    eigen_tekst = True
-    eigen_tip = True
+class ZinsdelenInvoer(StappenHulp):
 
     def __init__(self, v, o):
         self.v, self.o, self.zin = v, o, v.model
@@ -53,14 +52,11 @@ class ZinsdelenInvoer:
         self.gat = 1                # in zinsdelen verdelen: de cursor staat op een gat tussen twee woorden
         self.pogingen, self.mislukt = {}, []
         self.vrij_poging = 0
-        self.tips, self.tip_nr, self.tiptekst = 0, 0, ""
+        self.begin_hulp()
         self.eerste_fout, self.diagnose, self.fouten = None, None, 0
         self.melding, self.melding_rol = "", "fout"
         self.cursor_pos, self.extra, self.uitleg_na = None, None, []
         self.hint = ""
-        self.tweede_kans = True     # de Oefenaar zet het volgens de Hulp (een examen later: uit)
-        self.spiekbrief_aan = True  # idem: na de laatste tip opent F1 de spiekbrief (bij het kopje van de stap)
-        self.aantal_tips = 2
         if self.vrij and VERDELEN in self.stappen:
             self.stappen.remove(VERDELEN)
 
@@ -419,33 +415,8 @@ class ZinsdelenInvoer:
                 self.tiptekst = "Alles ziet er juist uit. Druk Enter om na te kijken."
                 return
         tips = Z.TIP_VERDELEN if label == VERDELEN else Z.tips(self.zin, label)
-        self.aantal_tips = len(tips)
         kop = "twee" if self.zin.samengesteld else label
-        self.v.data["spiek_kop"] = Z.SPIEK_KOP.get(kop, Z.SPIEK_KOP["pv"])  # daar opent de spiekbrief
-        if self.tip_nr >= len(tips):
-            self.tiptekst = "Meer tips zijn er niet. Probeer het, en lees daarna de uitleg."
-            return
-        self.tips += 1
-        self.tiptekst = f"Tip {self.tip_nr + 1}: {tips[self.tip_nr]}"
-        self.tip_nr += 1
-        if self.tip_nr >= len(tips) and self.spiekbrief_aan:
-            self.tiptekst += " Nog eens F1: je spiekbrief."
-
-    @property
-    def tips_op(self):
-        """Alle tips van deze stap gegeven: de Oefenaar opent dan bij F1 de spiekbrief (de vaste werkwijze, #20)."""
-        return self.tip_nr >= self.aantal_tips
-
-    def spiekbrief_bekeken(self):
-        """Na de spiekbrief begint het weer bij tip 1 (de vaste werkwijze)."""
-        self.tips += 1
-        self.tip_nr, self.tiptekst = 0, ""
-
-    def hulp(self, o):
-        return self.tiptekst
-
-    def rijen(self):
-        return []
+        self.geef_tip(tips, Z.SPIEK_KOP.get(kop, Z.SPIEK_KOP["pv"]))
 
     # ---- klaar --------------------------------------------------------------------------------------
     def klaar(self):

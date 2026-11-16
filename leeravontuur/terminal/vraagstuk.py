@@ -32,6 +32,7 @@ NAAST_MAATJE, MAATJE_ONDER = 58, 9   # tot rij 9 staat rechts het maatje: daar i
 class VraagstukInvoer:
     eigen_tekst = True
     eigen_tip = True
+    geen_tweede_kans = True  # een eigen tweede kans per stap
 
     def __init__(self, v, o):
         self.v, self.o, self.m = v, o, v.model
@@ -567,6 +568,7 @@ class _MetTip:
 
 class SpeurInvoer(_MetTip):
     """Kies de foute regel (of 'alles is juist'), en dan waarom (a, b of c)."""
+    geen_tweede_kans = True  # kiezen: raden is te makkelijk
 
     def __init__(self, v, o):
         self.v, self.o, self.m = v, o, v.model
@@ -675,6 +677,7 @@ class SpeurInvoer(_MetTip):
 
 class KeuzeInvoer(_MetTip):
     """Een vraag bij een verhaal met 2 of 3 keuzes (a, b, c): typen, ↑↓ en Enter, of klikken."""
+    geen_tweede_kans = True  # kiezen: raden is te makkelijk
 
     def __init__(self, v, o):
         self.v, self.o, self.m = v, o, v.model

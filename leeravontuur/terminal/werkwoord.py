@@ -15,6 +15,7 @@ import textwrap
 
 from ..kern.taal import werkwoorden as W
 from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
+from .stappenhulp import StappenHulp
 
 TAB = 9
 X, RIJ = 7, 6          # waar de zin staat (RIJ rijen onder de opdracht: onder het maatje)
@@ -22,9 +23,7 @@ OPDRACHT_BREED = 56    # tot rij 9 staat rechts het maatje
 MAX_WOORD = 16         # zoveel letters kan je typen
 
 
-class WerkwoordInvoer:
-    eigen_tekst = True
-    eigen_tip = True
+class WerkwoordInvoer(StappenHulp):
 
     def __init__(self, v, o):
         self.v, self.o, self.zin = v, o, v.model
@@ -36,15 +35,12 @@ class WerkwoordInvoer:
         self.woorden = self.zin.bron.split() if self.zin.omzetten else []  # de zin in de tegenwoordige tijd
         self.gedaan = {}            # naam van de stap -> kort wat het juiste antwoord was
         self.pogingen, self.mislukt = {}, []
-        self.tips, self.tip_nr, self.tiptekst = 0, 0, ""
+        self.begin_hulp()
         self.eerste_fout, self.diagnose, self.fouten = None, None, 0
         self.melding, self.melding_rol = "", "fout"
         self.cursor_pos, self.extra, self.uitleg_na = None, None, []
         self.hint = ""
         self.getypt = ""            # de vorm die het kind typte (voor het beeld na het nakijken)
-        self.tweede_kans = True     # de Oefenaar zet het volgens de Hulp (een examen later: uit)
-        self.spiekbrief_aan = True  # idem: na de laatste tip opent F1 de spiekbrief (bij het kopje van de stap)
-        self.aantal_tips = 2
 
     # ---- wat er nu gevraagd wordt -------------------------------------------------------------------
     @property
@@ -266,33 +262,7 @@ class WerkwoordInvoer:
 
     # ---- tips ---------------------------------------------------------------------------------------
     def volgende_tip(self):
-        tips = self.nu.tips
-        self.aantal_tips = len(tips)
-        self.v.data["spiek_kop"] = self.nu.kop  # daar opent de spiekbrief
-        if self.tip_nr >= len(tips):
-            self.tiptekst = "Meer tips zijn er niet. Probeer het, en lees daarna de uitleg."
-            return
-        self.tips += 1
-        self.tiptekst = f"Tip {self.tip_nr + 1}: {tips[self.tip_nr]}"
-        self.tip_nr += 1
-        if self.tip_nr >= len(tips) and self.spiekbrief_aan:
-            self.tiptekst += " Nog eens F1: je spiekbrief."
-
-    @property
-    def tips_op(self):
-        """Alle tips van deze stap gegeven: de Oefenaar opent dan bij F1 de spiekbrief (de vaste werkwijze, #20)."""
-        return self.tip_nr >= self.aantal_tips
-
-    def spiekbrief_bekeken(self):
-        """Na de spiekbrief begint het weer bij tip 1 (de vaste werkwijze)."""
-        self.tips += 1
-        self.tip_nr, self.tiptekst = 0, ""
-
-    def hulp(self, o):
-        return self.tiptekst
-
-    def rijen(self):
-        return []
+        self.geef_tip(self.nu.tips, self.nu.kop)
 
     # ---- klaar --------------------------------------------------------------------------------------
     def klaar(self, getypt):
