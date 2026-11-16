@@ -346,7 +346,3 @@ class AvatarSchermen:
         for laag, sleutel in outfits[k]["config"].items():
             if laag in W.LAGEN and (sleutel is None or (laag, sleutel) in kast):
                 W.draag(self.o, self.kind.id, laag, sleutel)
-
-
-def straf_tekst(straf):
-    return STRAFFEN.get(straf, straf)

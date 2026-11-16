@@ -33,10 +33,6 @@ def _geheel_lengte(x):
     return len(format(abs(D(x)).normalize(), "f").partition(".")[0])
 
 
-def _uit_cijfers(cijfers):
-    return sum((D(c).scaleb(k) for k, c in cijfers.items()), D(0))
-
-
 def _kol(k):
     return AFK.get(k, f"10^{k}")
 
