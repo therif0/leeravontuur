@@ -16,6 +16,7 @@ from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
 from ..kern.wiskunde.eenheden import OMZETTEN
 from . import curriculum as CU
 from . import navigatie
+from .beta import oefenaar_klasse
 from .oefenaar import Oefenaar
 from .schermen.eenheden import Eenheden
 from .schermen.kinderen import kies_kind
@@ -377,7 +378,7 @@ class App:
                 vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10"}[vorige["vorm"]]
                 kr, d = self.kruimel_van(o.id)
                 return (f"{o.naam.lower()} · {vorm}",
-                        lambda: Oefenaar(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
+                        lambda: oefenaar_klasse(d.label)(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
         if vorige.get("onderwerp") == "gemengd":
             from ..kern.reeks import GEMENGD_AANTAL
             return f"gemengd oefenen · {GEMENGD_AANTAL} vragen", self.gemengd
