@@ -114,7 +114,7 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 | [ ] | `KlokInvoer` (wijzers) | `balk.py` | klok | klok 21×11 pixels, `naast`, of in het klokvenster | ✘ (vraag 2, 21) |
 | [ ] | `ZinsdelenInvoer` | `zinsdelen.py` | zinsontleding | `OPDRACHT_BREED = 56`, **Tab = vrij kleuren**, eigen getrapte tips | ◐ scherm 3 (Stappen rechts); ✘ Tab-botsing (vraag 10), tips (vraag 9), kleuren per zinsdeel in een vak (`docs/taal.md`) |
 | [ ] | `WerkwoordInvoer` | `werkwoord.py` | werkwoorden, zinnen | `OPDRACHT_BREED = 56`, **Tab = wissel**, kofschip, bron, gevonden | ✘ helemaal nog niet geschetst (vraag 23); Tab (vraag 10) |
-| [ ] | `VraagstukInvoer` | `vraagstuk.py` | vraagstukken | tekent zelf alles (`eigen_tekst`), `X = 2`, `KOP = 15`, eigen klad (`MAX_KLAD = 8`), **Tab/Shift-Tab = stappen** | ✘ eigen klad tegenover de klad-kolom (vraag 8); Tab (vraag 10) |
+| [ ] | `VraagstukInvoer` | `vraagstuk.py` | vraagstukken | tekent zelf alles (`eigen_tekst`), `X = 2`, `KOP = 15`, eigen klad (`MAX_KLAD = 8`), **Tab/Shift-Tab = stappen** | ◐ gekozen 22/11: stappen rechts, klad-kolom, pijltjes (vraag 8) |
 | [ ] | `SpeurInvoer` | `vraagstuk.py` | vraagstukken | eigen tip-vak (`_MetTip.teken_tip`), kader "Het verhaal" | ✘ (vraag 8, 9) |
 | [ ] | `KeuzeInvoer` | `vraagstuk.py` | vraagstukken, werkwoorden | eigen tip-vak (`_MetTip`) | ✘ (vraag 9) |
 | [ ] | Getallenlijn aanduiden (`lijn`) | in `oefenaar.py` | getallen | 72 breed, zoomstapel | ✘ (vraag 2) |
@@ -237,8 +237,17 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 6. Hoofdmenu en titelscherm in vakken → apart beslissen.
 7. **Eenheden** is een eigen kopie van de Oefenaar → **aanbeveling:** eerst laten opgaan in de Oefenaar (de tabel
    wordt een invoer-object), dan krijgt het de vakken vanzelf. Anders wordt alles twee keer gebouwd.
-8. **Vraagstuk** heeft een eigen klad en eigen stappen → het eigen klad wordt de klad-kolom, de stappen gaan naar
-   het vak Stappen rechts (zoals bij zinsdelen); het verhaal staat in het Vraag-vak.
+8. **Vraagstuk** — **gekozen 22/11 (de vader): één werkwijze, de stappen met de pijltjes.** Nu tekent het
+   vraagstuk het hele scherm zelf: het verhaal, daaronder de 4 stappen (Lees, Plan, Reken, Controle) als kopjes,
+   een eigen klad in stap 3 (hoogstens 8 regels), Tab/Shift-Tab = volgende/vorige stap, eigen tips. Nieuw:
+   - het **verhaal** in het Vraag-vak (gegevens aanduiden zoals nu); Plan en Controle ook in dat vak;
+   - de **stappen** in een vak **Stappen** rechts (✔ gedaan, ▸ nu), zoals scherm 3 voor zinsdelen;
+   - **geen eigen klad meer**: stap 3 Reken gebruikt de klad-kolom; Tab = klad, zoals overal;
+   - de tips in het gewone vak **Tip**;
+   - **de pijltjes** = naar een andere stap. Een klik werkt overal (een klik op een stap = naar die stap).
+   - *Nog uit te werken:* in stap 1 doen de pijltjes al iets (←→ = naar het volgende gegeven, ↓ = naar "wat is
+     gevraagd?", nog eens ↓ = naar stap 2). Voorstel: ←→ blijven binnen de stap, **↓ voorbij het laatste in de
+     stap = volgende stap, ↑ bovenaan = vorige stap** (zoals nu al van stap 1 naar 2). Zo ook in Plan en Controle.
 9. **Objecten met eigen tips** (zinsdelen, werkwoord, speur, keuze) → het object geeft de tekst, het vak Tip tekent
    ze; overal dezelfde plaats en "Tip 1 van n" in de rand.
 10. **Tab-botsing**: Tab = klad overal, maar nu is Tab "vrij kleuren" (zinsdelen), "wissel" (werkwoord), "volgende
@@ -260,6 +269,21 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 19. **Kleuren**: de vraag-band en de rand in de 5 thema's en in de gekochte schermkleuren → de `b_`-rollen worden
     gewone rollen; elk thema nakijken in tmux.
 20. **Geen klad** (onderwerpen zonder klad) → de klad-kolom valt weg en de spiekbrief/Tip worden breder.
+    Welke onderwerpen nu geen klad hebben (uit `klad` in de kern, 22/11):
+    - **Getallen:** Plaatswaarde, Getallenlijn, Afronden, Deelbaarheid.
+    - **Hoofdrekenen:** × en : met 10, 100, 1000; Tafels alleen bij uitbreiden (7 × 80), niet bij een tafel uit het
+      hoofd; Gemengd (snelrekenen).
+    - **Cijferen:** alle vier volgens de kern (het rooster is het klad), **maar de beta geeft nu wel een klad-kolom**
+      naast het rooster. Beslissen: blijft dat?
+    - **Breuken en procenten:** Herkennen, Vergelijken, Vereenvoudigen, Breuk en kommagetal, Honderdveld, Procent,
+      breuk en kommagetal.
+    - **Meten:** de zeven maten (Eenheden: een eigen scherm zonder klad), Oppervlakte en omtrek.
+    - **Tijd:** De klok alleen bij aflezen, zetten en in woorden (wel bij later, vroeger, 24 uur).
+    - **Meetkunde:** Schatkaart, Hoeken.
+    - **Vraagstukken:** Oplossen heeft een eigen klad (zie 8); Speurneus, Schatten en controleren: geen.
+    - **Taal:** Zinsdelen en alle Werkwoordspelling.
+    - **Wel klad:** Optellen en aftrekken, Verdubbelen en halveren, Slim × en : (verplicht), Breuk van een getal,
+      Breuken optellen en aftrekken, Procent van een getal, Korting en btw, Formules, Tijd, Geld, Snelheid, Schaal.
 21. **Klokvenster open** → de rechterkolom (maatje) valt weg; het klad blijft.
 22. **Einde van een reeks** (rapport, `na_reeks`) → vakken: Resultaat, Maatje, Wat ging goed / Moeilijk voor jou, Kies.
     Eerst een schets voor de vader.
