@@ -228,18 +228,27 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 ---
 
 ## Open vragen (met de aanbeveling van Claude)
-*1 tot 6 staan al in `schermen.md`; hier kort herhaald, 7 tot 23 zijn nieuw uit deze inventaris.*
+*1 tot 6 staan al in `schermen.md`; hier kort herhaald, 7 tot 24 zijn nieuw uit deze inventaris.*
 
-1. Grootte van het venster van de zoon → meten in het logboek.
+**22/11, de vader: akkoord met de aanbevelingen van 2, 4, 6, 9, 10, 12–18, 21, 22 en 23.** Nog open: **3** en
+**7** (uitleg gevraagd), **24** (nieuw). 1, 5, 11, 19 en 20: zie hieronder.
+
+1. **Beantwoord 22/11:** de zoon heeft een scherm van 1920×1080, en vaak start de vader het programma in een tty
+   op Fedora (Ctrl+Alt+F3). Dat is ongeveer **240×67** tekens (lettertype `eurlatgr`, 8×16). Kleinere schermen
+   moeten blijven werken (tot 80×24). Gevolgen: zie **M. De tty** en vraag 24.
 2. Grote modellen en objecten (getallenlijn 72, balk 52, groepjes 68, klok 21×11, digitaal klokje 33, schatkaart,
    cm²-veld) → **aanbeveling:** zo'n model krijgt de volle breedte links; de klad-kolom schuift eronder of wordt
    smaller; op 80×24 is het klad dan een paar regels onder het model.
-3. Rustig of uitgebreid → een keuze per kind bij Weergave.
+3. **Rustig of uitgebreid** (uitleg gevraagd 22/11): op een groot scherm is er plaats voor extra vakken (Reeks met
+   cijfers, Vandaag, Herhaalbak, Stappen, een groot maatje, de spiekbrief open). Rustig = alleen Vraag, Klad en Tip;
+   uitgebreid = alles. Nieuwe aanbeveling: **geen instelling**; eerst één indeling bouwen en zien of de zoon ze
+   druk vindt. Pas dan een keuze bij Weergave.
 4. Tip-vak vóór F1 → alleen "F1 = tip 1 van 3".
-5. Volgorde tegenover T2 → eerst de schermen.
+5. **Gekozen 22/11:** T2 nog niet: overslaan, `docs/koers.md` niet aanpassen.
 6. Hoofdmenu en titelscherm in vakken → apart beslissen.
 7. **Eenheden** is een eigen kopie van de Oefenaar → **aanbeveling:** eerst laten opgaan in de Oefenaar (de tabel
    wordt een invoer-object), dan krijgt het de vakken vanzelf. Anders wordt alles twee keer gebouwd.
+   *(22/11: uitleg gevraagd, nog open.)*
 8. **Vraagstuk** — **gekozen 22/11 (de vader): één werkwijze, de stappen met de pijltjes.** Nu tekent het
    vraagstuk het hele scherm zelf: het verhaal, daaronder de 4 stappen (Lees, Plan, Reken, Controle) als kopjes,
    een eigen klad in stap 3 (hoogstens 8 regels), Tab/Shift-Tab = volgende/vorige stap, eigen tips. Nieuw:
@@ -256,7 +265,10 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 10. **Tab-botsing**: Tab = klad overal, maar nu is Tab "vrij kleuren" (zinsdelen), "wissel" (werkwoord), "volgende
     stap" (vraagstuk), "volgende rij" (rooster, nu ↓). → per object een andere toets kiezen (voorstel: ↓/↑ of een
     letter die het kind niet typt). Elk geval apart voorleggen.
-11. Klad ✔ ✘ per regel (klopt de rekenregel, niet tegenover de oplossing) → bevestigen.
+    **22/11:** het vraagstuk is beslist (vraag 8); zinsdelen, werkwoord en het rooster hebben geen klad, dus houdt
+    Tab daar zijn betekenis (akkoord van de vader).
+11. **Vervalt (22/11):** de vraag ging over het klad naast het rooster in de beta, en dat gaat weg (vraag 20). Het
+    gewone klad kijkt de rekenregels al na, als een rekenmachine (de vader).
 12. **"Zo kan het"** na een fout: voor welke onderwerpen bestaat er een voorbeeldklad? → alleen tonen waar de kern
     er een heeft; anders blijft het vak "Wat ging er mis?" alleen.
 13. **Spiekbrief op 80×24** (geen plaats) en in een **examen** (geen tip, geen spiekbrief) → op 80×24 blijft F1
@@ -271,6 +283,10 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 18. Te klein → de ondergrens blijft 80×24.
 19. **Kleuren**: de vraag-band en de rand in de 5 thema's en in de gekochte schermkleuren → de `b_`-rollen worden
     gewone rollen; elk thema nakijken in tmux.
+    **De vader 22/11: voorzichtig, elke soort vraag is anders.** Geen band die overal hetzelfde wordt geplakt:
+    per soort vraag een eigen, verzorgd ontwerp waar het nodig is. Bv. bij Snelrekenen is het niet echt nodig, bij
+    een vraagstuk is het helemaal anders (een verhaal, geen som). Dus: per soort vraag een schets, en pas bouwen
+    na akkoord.
 20. **Geen klad** — **gekozen 22/11 (de vader): het klad blijft uit waar het vandaag uit staat**; niets aan te
     passen. Het klad is een soort rekenmachine: het kijkt de rekenregels van het kind na. Waar er geen klad is,
     valt de kolom weg en krijgen Vraag, Tip en spiekbrief de plaats.
@@ -292,3 +308,25 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 22. **Einde van een reeks** (rapport, `na_reeks`) → vakken: Resultaat, Maatje, Wat ging goed / Moeilijk voor jou, Kies.
     Eerst een schets voor de vader.
 23. **Werkwoordspelling** (kofschip, bron, gevonden) → nog een schets nodig, zoals scherm 3 voor zinsdelen.
+24. **Een groot scherm** (240×67 in de tty, ook een terminal op het hele scherm): alles mee laten groeien geeft een
+    vraag van 200 tekens breed. Aanbeveling: de vakken groeien **tot ongeveer 120×40** en staan dan in het midden;
+    daarboven alleen meer lucht. Zo blijft het op elk scherm hetzelfde beeld.
+
+---
+
+## M. De tty (Linux-console, Ctrl+Alt+F3): nieuw, 22/11
+De vader start het programma vaak in een tty. Nagekeken op het lettertype `eurlatgr` (Fedora):
+- [ ] **Deze tekens bestaan niet in de tty** (je ziet een ruitje of niets): `✔ ✘` (juist/fout, verplicht volgens
+      CLAUDE.md!), `○ ◉` (de bolletjes van de reeks), `▸ ◂`, `▼ ▲ ▶ ◀`, `★ ☆` (punten), `□ ▪`, `⌫`, `✦`, `◷`, `⋮`
+      en de ronde hoeken `╭ ╮ ╰ ╯` van de beta.
+- [ ] **Wel:** `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ ━ ┃ ═ ║ ● • · › → ← ↑ ↓ × █ ░ ▒ ▀ ▄ ■ − ÷ … € ² ³`.
+- [ ] Dit geldt **ook voor `main` vandaag**: `tekens.ascii_nodig()` kijkt alleen of de terminal UTF-8 is, en de tty
+      is UTF-8. **Een fout die het kind kan merken → apart melden, niet in de schermen-verbouwing.** Voorstel: bij
+      `TERM=linux` een derde tekenreeks (bv. ✔ → `√` of `v`, ○ → `·`, ╭ → `┌`) in `tekens.py`.
+- [ ] Vakken in de tty: rechte hoeken `┌┐└┘` in plaats van `╭╮╰╯`.
+- [ ] Kleuren: de tty heeft 8 kleuren (16 met vet). De grijze band (`b_band`, kleur 236) wordt zwart: de vraag
+      valt dan niet meer op. Elk thema ook in de tty nakijken.
+- [ ] De pixel-avatar (▀▄ met kleuren) werkt met 8 kleuren: nakijken hoe hij eruitziet.
+- [ ] De muis werkt in de tty alleen met `gpm`. Klikken mag nooit de enige weg zijn (al zo: toets = klik).
+- [ ] Testen: naast tmux 80×24 ook een echte tty (of `TERM=linux` in tmux, al zijn de lettertekens daar wel
+      zichtbaar) en een groot scherm (240×67).
