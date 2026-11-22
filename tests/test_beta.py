@@ -12,6 +12,8 @@ from leeravontuur.terminal.oefenaar import INVOER, Oefenaar
 
 from test_schermen import OK, Basis, naar
 
+TAB = 9
+
 CIJFEREN = [o for o in ONDERWERPEN.values() if o.id.startswith("wiskunde.cijferen.")]
 
 
@@ -97,6 +99,28 @@ class TestScherm(Basis):
                         or self.ergens(scherm, "┤ Goed! ├"))
         rij = app.opslag.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["vaardigheid"], o.id)
+
+    def test_klad_naast_het_rooster_wordt_bewaard(self):
+        """Vermenigvuldigen past in 80×24 met een klad ernaast: K = naar het klad, Tab = terug; het klad gaat mee
+        met het antwoord (extra["klad"])."""
+        o = ONDERWERPEN["wiskunde.cijferen.vermenigvuldigen"]
+        with MetBeta("1"):
+            scherm, app = self.speel([*naar(o, "Enter"), "k", *"2 x 3 = 6", OK, TAB, OK])
+        self.assertTrue(self.ergens(scherm, "┤ ▸ Klad ├"))
+        self.assertTrue(self.ergens(scherm, "[K] klad"))
+        rij = app.opslag.antwoorden(app.kind.id)
+        self.assertEqual(rij, [])  # Enter met een leeg rooster: nog niets nagekeken
+        self.assertIn("2 × 3 = 6", [b for b in scherm.beelden if "▸ Klad" in b][-1])
+
+    def test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen(self):
+        from leeravontuur.kern.reeks import Hulp
+        o = ONDERWERPEN["wiskunde.cijferen.optellen"]
+        with MetBeta("1"):
+            scherm, _ = self.speel([*naar(o, "Enter")], hoogte=46, breedte=150)
+        beeld = next(b for b in scherm.beelden if "Vraag 1 van 10" in b)
+        self.assertIn("┤ Spiekbrief ├", beeld)
+        self.assertIn("▸ OPTELLEN", beeld)
+        self.assertFalse(Hulp.EXAMEN.spiekbrief)  # in een examen: geen spiekbrief (spiek = ... and hulp.spiekbrief)
 
     def test_zonder_beta_het_gewone_scherm(self):
         o = ONDERWERPEN["wiskunde.cijferen.delen"]

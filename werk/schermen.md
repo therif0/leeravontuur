@@ -11,6 +11,8 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
 ## Gekozen
 - 21/11: btop als voorbeeld: vakken met een titel in de rand, sober, één taak per vak.
 - 21/11: het klad krijgt een betere plaats.
+- 22/11 (na de eerste test van de beta, een schermafdruk met "KLAD?" en "SPIEKBRIEFJE?" in de lege plaatsen): de
+  **spiekbrief staat altijd open** waar er plaats is, met het stuk van de vraag in het licht; in een examen niet.
 
 ## Het voorstel (80×24, het kleinste scherm)
 - **Vaste vakken**, links 60 breed en rechts 20 breed:
@@ -145,6 +147,11 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
 - Vakken: Vraag (met de typrichting in de rand), Tip (F1 in de rand; na het nakijken "Wat ging er mis?" of "Goed!"),
   Maatje, Reeks (✔ ✘ per vraag, punten, op rij). Op een groter scherm wordt het vak breder; Tip blijft hoogstens 8
   rijen.
+- 22/11: **Klad** naast het rooster waar er minstens 24 kolommen over zijn (hoogstens 44 breed): K of een klik = naar
+  het klad, Tab of Enter op een lege regel = terug. Elke regel krijgt ✔ ✘ (klopt de rekenregel?), niet tegenover
+  een oplossing; het klad gaat mee met het antwoord (`extra["klad"]`). Keuze van Claude, nog te bevestigen.
+  **Spiekbrief** onderaan als er minstens 5 rijen over zijn (op 80×24 meestal niet). "deel → maal → min → neer"
+  staat nu in de rand van het vak Vraag.
 - Tests: `tests/test_beta.py` (elk rooster en elke staartdeling in elk leerjaar past in het vak).
 
 ## Wat het makkelijk maakt (architectuur)
