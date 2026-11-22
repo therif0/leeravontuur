@@ -1,6 +1,7 @@
 # Schermen 1.0: vakken zoals btop
 
-**Status:** in overleg (21/11/2026) · beta voor Cijferen op de branch `beta-schermen-cijferen`
+**Status:** klaar voor actie (22/11/2026): alle vragen beantwoord, de fasen hieronder. Beta voor Cijferen op de
+branch `beta-schermen-cijferen`; de inventaris (fase 0) staat in [schermen-inventaris.md](schermen-inventaris.md).
 
 ## Waarom
 De vader (21/11): het scherm wordt slecht benut, vooral rechts onder het maatje. Op een groter venster blijft alles
@@ -180,24 +181,79 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
   Wat er al is: de reeks, de punten, vandaag, de herhaalbak, fris houden, laatst geoefend en het percentage juist.
   Nieuw: "Moeilijk voor jou" (de denkfouten per onderwerp tellen).
 
-## Open vragen (met de aanbeveling van Claude)
-1. **Welke grootte heeft het venster van de zoon?** Het voorstel werkt op 80×24 en groeit mee. Aanbeveling: het
-   echte venster meten (een kleine regel in het logboek bij het starten).
-2. **Het klokvenster en de grote modellen** (klok, getallenlijn, schatkaart, rooster): die passen niet altijd in een
-   vak van 60 breed. Aanbeveling: zo'n model krijgt het hele linkervak (Vraag + Klad), en het klad schuift dan onder
-   het model, zoals nu.
-3. **Rustig of uitgebreid?** Aanbeveling: rustig = alleen Vraag, Klad en Tip, met het maatje klein. Een keuze per kind
-   bij Weergave.
-4. **Wat staat er in het vak Tip vóór F1?** Aanbeveling: alleen "F1 = tip 1 van 3". De tip zelf komt nooit vanzelf
-   (de getrapte tips blijven zoals ze zijn).
-5. **Volgorde tegenover T2 Woordsoorten.** Aanbeveling: eerst de schermen (1.0), want T2 krijgt dan meteen de nieuwe
-   vakken en hoeft niet twee keer gebouwd te worden. Maar dat verschuift Taal in `docs/koers.md`.
-6. **Hoofdmenu en titelscherm in vakken?** Dat valt onder "een verandering aan het hoofdmenu", dus apart te kiezen.
+## Gekozen na de inventaris (22/11, de vader)
+De details en de nummers staan in [schermen-inventaris.md](schermen-inventaris.md) (*Open vragen*).
+- **Eén werkwijze** voor alle oefeningen: Vraag, Klad (Tab), Tip (F1), dan de spiekbrief.
+- **Klad:** blijft uit waar het vandaag uit staat (het klad kijkt rekenregels na, als een rekenmachine). Waar er geen
+  klad is, valt de kolom weg. **Cijferen krijgt geen klad-kolom** (die in de beta was een test van de indeling).
+  Tab houdt zijn betekenis op schermen zonder klad (zinsdelen, werkwoord, rooster).
+- **Vraagstuk:** het verhaal in het Vraag-vak, de stappen in een vak **Stappen** rechts, geen eigen klad meer (stap 3
+  gebruikt de klad-kolom), tips in het vak Tip; **de pijltjes** = naar een andere stap (↓ voorbij het laatste in een
+  stap = volgende stap, ↑ bovenaan = vorige); klikken werkt overal.
+- **Grote modellen** (getallenlijn, breukbalk, groepjes, klok, schatkaart …): de volle breedte links; Tip eronder.
+- **Tip-vak vóór F1:** alleen "F1 = tip 1 van n"; een tip komt nooit vanzelf. Objecten met eigen tips geven de tekst,
+  het vak Tip toont ze.
+- **Na een fout:** "Zo kan het" alleen waar de kern een voorbeeld heeft; anders alleen "Wat ging er mis?".
+- **Spiekbrief:** open waar er plaats is; op 80×24 opent F1 na de laatste tip hem over het hele scherm (zoals nu);
+  in een examen krijgt de vraag de vrije plaats.
+- **Rustig (F3):** een schakelaar van het kind: alleen Vraag, Antwoord en Klad; alle toetsen blijven werken; F1 geeft
+  toch een tip (even); onthouden per kind.
+- **Groot scherm:** de zoon heeft 1920×1080, vaak in een tty (ongeveer 240×67). De vakken groeien **tot ongeveer
+  120×40** en staan dan in het midden. De ondergrens blijft 80×24. **In de tty niets veranderen** (werkt perfect).
+- **Klokvenster open:** de rechterkolom (maatje) valt weg.
+- **Kleuren (de band, de rand):** voorzichtig, **per soort vraag een eigen ontwerp** waar het nodig is (bij Snelrekenen
+  niet echt, bij een vraagstuk helemaal anders). Eerst een schets, dan bouwen. De `b_`-rollen worden gewone rollen.
+- **Eenheden** gaat eerst op in de Oefenaar (een opruimstap; het kind ziet niets).
+- **Menu's:** op 80×24 zonder lege regels tussen de items; lege regels vanaf 30 rijen.
+- **Snelrekenen:** vakken Vraag, Tijd en Reeks; geen klad.
+- **Ouderdeel, kinderkeuze, winkel, slot, oeps, opmerkingen:** als laatste, alleen een kader rond wat er is.
+- **Hoofdmenu en titelscherm:** later en apart (een verandering aan het hoofdmenu).
+- **Beta → iedereen:** per domein achter de schakelaar `LEERAVONTUUR_BETA`; de oude weg gaat weg als heel Wiskunde over
+  is (dan weer één codepad).
+- **Geen instelling "uitgebreid"** naast Rustig; **T2** nog niet (`docs/koers.md` blijft).
 
-## Fasen (een schets, pas vast als alles gekozen is)
-0. Inventaris: elk scherm en elk invoer-object met zijn vaste rijen en kolommen, om af te vinken.
-1. `vak.py` + de indeling + de Oefenaar met gewone vragen (Vraag, Klad, Tip, Maatje, Reeks).
-2. De invoer-objecten in een vak: rooster, staartdeling, modellen, balk, klok, zinsdelen, werkwoord, vraagstuk.
-3. Na een fout: jouw klad naast Zo kan het, en het vak "Wat ging er mis?".
-4. Menu's met een kaartje; Eenheden, spiekbrieven, rapport en ouderdeel.
-5. Groter venster: de vakken groeien mee.
+## Fasen (klaar voor actie)
+Elke fase = een eigen branch (op de vorige gestapeld) met een pull request naar `main` en een eigen versie (vanaf
+0.27.0). Bewijs per fase: de volledige suite + de aapjestest, de schermen in tmux op **80×24, 120×40 en 240×67**, in
+ASCII-modus en in elk thema, één keer in een echte tty, en een vergelijking met de vorige versie op een kopie van
+echte gegevens. De schakelaar `LEERAVONTUUR_BETA=1` blijft tot fase 8: zonder is alles zoals in `main`.
+**Stoppen en vragen bij:** een migratie van de databank, het hoofdmenu, iets tegen een keuze hierboven, een test die
+niet netjes op te lossen is, en bij elke **schets** (★).
+
+0. ✔ **Inventaris** (22/11): [schermen-inventaris.md](schermen-inventaris.md).
+1. **Opruimen vooraf (het kind ziet niets):**
+   - Eenheden in de Oefenaar: de tabel wordt een invoer-object; `schermen/eenheden.py` verdwijnt grotendeels.
+   - De klad-kolom uit de Cijferen-beta halen.
+   - Bewijs: dezelfde schermen en dezelfde bewaarde antwoorden als vóór de stap.
+2. **Bouwstenen:**
+   - `vak.py` (focus, scrollen, ASCII); één **indeling** (welk vak waar, van 80×24 tot 120×40, daarboven in het
+     midden; klokvenster).
+   - Elk invoer-object krijgt een rechthoek en zegt zijn breedte, hoogte en randtekst: `InVak`, `Meter`,
+     `VERSCHUIF` en `KORTER` uit de beta verdwijnen.
+   - Rollen: `b_vraag`/`b_band`/`b_cursor` worden gewone rollen in elk thema (ook de gekochte schermkleuren).
+   - Kern: de regels met rollen voor Reeks, Vandaag, Herhaalbak, fris houden, laatst geoefend.
+   - Tests: elk object en elk model past in zijn vak op elke grootte; klikken in tests via de zone van een actie, niet
+     via (y, x).
+3. **De Oefenaar met gewone vragen** (Hoofdrekenen, Breuken en procenten, Meten met Eenheden, Tijd/geld/snelheid,
+   Getallen zonder model):
+   - Vraag (band), Klad-kolom (alleen waar er klad is), Tip ("Tip 1 van n"), Maatje, Reeks bovenaan, spiekbrief open
+     waar er plaats is; vrij oefenen, examen, tweede kans.
+   - Na een fout: jouw klad, "Zo kan het" (waar de kern het heeft), "Wat ging er mis?".
+   - **Rustig (F3)**, onthouden per kind (als dat een migratie vraagt: stoppen).
+4. **Modellen en invoer-objecten:** getallenlijn (en aanduiden met zoom), breukbalk, cm²-veld, schatkaart, klok
+   (wijzers, digitaal klokje, klokvenster), groepjes, strook, figuur, hoek: volle breedte links. Cijferen (rooster,
+   staartdeling) op de nieuwe bouwstenen.
+5. **Vraagstukken** (★ eerst een schets van het ontwerp, ook de kleuren): het verhaal, Stappen rechts, de klad-kolom,
+   de pijltjes, tips in Tip; Speurneus en Schatten en controleren.
+6. **Taal:** Zinsdelen (scherm 3); Werkwoordspelling (★ eerst een schets: kofschip, bron, gevonden). Tab blijft.
+7. **Rond de oefening:**
+   - Menu's met een kaartje (scherm 4; nieuw in de kern: "Moeilijk voor jou").
+   - Spiekbrieven, Gemengd en Herhalen.
+   - Snelrekenen (Vraag, Tijd, Reeks).
+   - Het einde van een reeks (★ eerst een schets).
+8. **Beta → iedereen:**
+   - De schakelaar en de oude weg verdwijnen (één codepad).
+   - Een kader rond ouderdeel, kinderkeuze, winkel, slot, oeps en opmerkingen.
+   - Documenten: `docs/architectuur.md` (schermen: vakken en indeling), CLAUDE.md ("past in 80×24 en groeit mee"),
+     `docs/testlijst.md`, CHANGELOG, README.
+   - Het hoofdmenu en het titelscherm blijven buiten dit plan (vraag 6).

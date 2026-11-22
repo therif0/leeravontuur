@@ -28,4 +28,5 @@ bouwen, op hun gewone plaats.
 |---|---|
 | [breuken.md](breuken.md) | geparkeerd tot wiskunde v2 (wiskunde is bevroren) |
 | [opruimen.md](opruimen.md) | gebouwd (16/11, drie pull requests) |
-| [schermen.md](schermen.md) | in overleg (schermen 1.0, vakken zoals btop; beta Cijferen) |
+| [schermen.md](schermen.md) | klaar voor actie (schermen 1.0, vakken zoals btop; 8 fasen) |
+| [schermen-inventaris.md](schermen-inventaris.md) | inventaris, alle vragen beantwoord (22/11, fase 0 van schermen 1.0) |
