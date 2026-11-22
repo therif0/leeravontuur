@@ -6,6 +6,26 @@ from fractions import Fraction
 from leeravontuur.kern.klad import DEEL, MAAL, MIN, VAN, lees_regel
 
 
+class TestNooitEenCrash(unittest.TestCase):
+    """Wat het kind ook typt in het klad (elk teken dat het klad toelaat), het lezen crasht nooit."""
+
+    def test_kwadraat_los_achter_een_getal(self):
+        for tekst in ("2²=4", "2 ² = 4", "²", "4³ = 64"):  # ² telt voor isdigit() als cijfer (de vader, 22/11)
+            with self.subTest(tekst):
+                self.assertFalse(lees_regel(tekst).leesbaar)
+        self.assertTrue(lees_regel("3 m² = 300 dm²").juist)
+
+    def test_willekeurige_regels(self):
+        import random
+        from leeravontuur.terminal.kladblad import KLAD_TEKENS
+        tekens = sorted(KLAD_TEKENS)
+        rng = random.Random(7)
+        for _ in range(5000):
+            tekst = "".join(rng.choice(tekens) for _ in range(rng.randint(1, 20)))
+            with self.subTest(tekst):
+                lees_regel(tekst)
+
+
 class TestLezen(unittest.TestCase):
     def juist(self, tekst):
         r = lees_regel(tekst)

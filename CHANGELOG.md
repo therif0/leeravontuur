@@ -2,6 +2,10 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.26.3 — Een fout in het klad hersteld
+- Wie in het klad een ² of ³ los achter een getal typte (bv. `2²=4`), kreeg "Oei, er ging iets mis" en moest terug
+  naar het menu. Nu zegt het klad gewoon dat het die regel niet kan lezen. m² en cm³ blijven werken.
+
 ## 0.26.2 — Werkwoordspelling: zet in de verleden tijd
 - **Taal › Werkwoordspelling › Zet in de verleden tijd:** een zin in de tegenwoordige tijd ("Daarna fietst Noor in
   het park."), en jij zet de persoonsvorm in de verleden tijd. Zoals het taaldossier van school, zin per zin.
