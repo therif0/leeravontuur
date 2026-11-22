@@ -1,6 +1,6 @@
 # Schermen 1.0: inventaris van wat de beta overal moet veranderen
 
-**Status:** inventaris (22/11/2026), fase 0 van [schermen.md](schermen.md). Geen code: alleen wat er veranderen moet,
+**Status:** inventaris, alle open vragen beantwoord (22/11/2026), fase 0 van [schermen.md](schermen.md). Geen code: alleen wat er veranderen moet,
 waar, en wat nog niet beslist is. Gemaakt op de stand van de beta na commit `35dbcdf`.
 
 **Legende**
@@ -230,8 +230,7 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 ## Open vragen (met de aanbeveling van Claude)
 *1 tot 6 staan al in `schermen.md`; hier kort herhaald, 7 tot 24 zijn nieuw uit deze inventaris.*
 
-**22/11, de vader: akkoord met de aanbevelingen van 2, 4, 6, 9, 10, 12–18, 21, 22 en 23.** Nog open: **7** en
-**24**. 1, 3, 5, 11, 19 en 20: zie hieronder.
+**22/11, de vader: akkoord met de aanbevelingen van 2, 4, 6, 9, 10, 12–18, 21, 22 en 23.** **Alle vragen zijn beantwoord (22/11).** 1, 3, 5, 11, 19 en 20: zie hieronder.
 
 1. **Beantwoord 22/11:** de zoon heeft een scherm van 1920×1080, en vaak start de vader het programma in een tty
    op Fedora (Ctrl+Alt+F3). Dat is ongeveer **240×67** tekens (lettertype `eurlatgr`, 8×16). Kleinere schermen
@@ -249,7 +248,7 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 6. Hoofdmenu en titelscherm in vakken → apart beslissen.
 7. **Eenheden** is een eigen kopie van de Oefenaar → **aanbeveling:** eerst laten opgaan in de Oefenaar (de tabel
    wordt een invoer-object), dan krijgt het de vakken vanzelf. Anders wordt alles twee keer gebouwd.
-   *(22/11: uitleg gevraagd, nog open.)*
+   **Gekozen 22/11 (de vader): akkoord.** Een opruimstap vóór de verbouwing; het kind ziet daar niets van.
 8. **Vraagstuk** — **gekozen 22/11 (de vader): één werkwijze, de stappen met de pijltjes.** Nu tekent het
    vraagstuk het hele scherm zelf: het verhaal, daaronder de 4 stappen (Lees, Plan, Reken, Controle) als kopjes,
    een eigen klad in stap 3 (hoogstens 8 regels), Tab/Shift-Tab = volgende/vorige stap, eigen tips. Nieuw:
@@ -311,7 +310,7 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 23. **Werkwoordspelling** (kofschip, bron, gevonden) → nog een schets nodig, zoals scherm 3 voor zinsdelen.
 24. **Een groot scherm** (240×67 in de tty, ook een terminal op het hele scherm): alles mee laten groeien geeft een
     vraag van 200 tekens breed. Aanbeveling: de vakken groeien **tot ongeveer 120×40** en staan dan in het midden;
-    daarboven alleen meer lucht. Zo blijft het op elk scherm hetzelfde beeld.
+    daarboven alleen meer lucht. Zo blijft het op elk scherm hetzelfde beeld. **Gekozen 22/11 (de vader): akkoord.**
 
 ---
 
