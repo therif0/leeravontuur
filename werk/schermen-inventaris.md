@@ -241,8 +241,9 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
    smaller; op 80×24 is het klad dan een paar regels onder het model.
 3. **Rustig** — **gekozen 22/11 (de vader):** een schakelaar die het kind zelf aan en uit zet als het scherm te druk
    is. Rustig = alleen **Vraag, Antwoord en Klad**; geen vak Tip, geen spiekbrief, geen cijfers. **Alle toetsen
-   blijven werken** en staan in de voetregel. *Nog te bevestigen:* F1 geeft in Rustig toch een tip (even, op de plaats
-   van de vraag), zodat Rustig geen hulp wegneemt; de toets **F3** (F1 = tip, F2 = klok); onthouden per kind.
+   blijven werken** en staan in de voetregel. **Bevestigd 22/11:** F1 geeft in Rustig toch een tip (even, op de plaats
+   van de vraag), zodat Rustig geen hulp wegneemt; de toets is **F3** (F1 = tip, F2 = klok); onthouden per kind
+   (een instelling van het kind in `kern/instellingen.py`, via `kern/opslag.py`).
 4. Tip-vak vóór F1 → alleen "F1 = tip 1 van 3".
 5. **Gekozen 22/11:** T2 nog niet: overslaan, `docs/koers.md` niet aanpassen.
 6. Hoofdmenu en titelscherm in vakken → apart beslissen.
