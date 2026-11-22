@@ -6,7 +6,8 @@ waar, en wat nog niet beslist is. Gemaakt op de stand van de beta na commit `35d
 **Legende**
 - ✔ = beslist en al in de beta (Cijferen)
 - ◐ = beslist of geschetst in het voorstel (`schermen.md`), nog niet gebouwd
-- ✘ = **nog niet beslist** voor de nieuwe werkwijze: een vraag voor de vader (de nummers verwijzen naar *Open vragen*
+- ✘ = een klein detail dat bij het bouwen beslist wordt (alle vragen voor de vader zijn beantwoord, 22/11);
+  vroeger: nog niet beslist (de nummers verwijzen naar *Open vragen*
   onderaan)
 
 Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is).
@@ -52,16 +53,16 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
 | [ ] | *nieuw:* indeling | (in `beta.py`, per scherm) | één module: vakken volgens h × w (80×24 → groter), ook met klokvenster | ◐ |
 | [ ] | `scherm.py` `nieuw`/`voet` | titelbalk + voetbalk | blijft; toetsen die in een rand staan niet dubbel onderaan | ✔ (beta) |
 | [ ] | `scherm.py` `menu` | lijst op vaste rijen, uitleg tot een kolom | menu in vakken + kaartje (scherm 4 van het voorstel) | ◐ |
-| [ ] | `scherm.py` `afvink` | afvinklijst (Gemengd, ouder) | in een vak? | ✘ (vraag 17) |
+| [ ] | `scherm.py` `afvink` | afvinklijst (Gemengd, ouder) | in een vak? | ◐ (vraag 17) |
 | [ ] | `scherm.py` `lezer` | scrollbare tekst (spiekbrief, rapport, uitleg) | in een vak met scrollen in de rand (zoals de spiekbrief van de beta) | ◐ |
 | [ ] | `scherm.py` `bevestig` | kader midden over het scherm ("stoppen?") | al een kader: in de stijl van `vak.py` zetten | ✘ (klein) |
-| [ ] | `scherm.py` `invoer` | één regel tekst (naam, wachtwoord, pin) | in een vak? | ✘ (vraag 17) |
+| [ ] | `scherm.py` `invoer` | één regel tekst (naam, wachtwoord, pin) | in een vak? | ◐ (vraag 17) |
 | [ ] | `scherm.py` `te_klein` | "Maak het minstens 80x24" | blijft 80×24 als ondergrens | ✔ |
 | [ ] | `maatje.py` | 3 plaatsen volgens de breedte (≥100: groot; ruim; tekstgezicht) | het maatje tekent in het vak dat het krijgt; tekstje in de onderrand | ✔ (beta, alleen Cijferen) |
 | [ ] | `voortgang.py` | bolletjes op kolom 4/22/46, rij 2 | wordt het vak/de regel Reeks; Eenheden en Oefenaar gebruiken hem | ✔ (beta) |
 | [ ] | `kladblad.py` | `teken` (regels), `teken_kader` (na het antwoord, 38 breed), lege tekst "typ hier je rekenregels" | klad als kolom; na een fout "Jouw klad" naast "Zo kan het" | ✔ kolom / ◐ na een fout |
-| [ ] | `stappenhulp.py` | getrapte tips van zinsdelen en werkwoord | de tip in het vak Tip | ✘ (vraag 9) |
-| [ ] | `digitaal.py` | digitaal klokje (33 breed, of compact) | past niet naast een klad van 34 in 80 breed | ✘ (vraag 2) |
+| [ ] | `stappenhulp.py` | getrapte tips van zinsdelen en werkwoord | de tip in het vak Tip | ◐ (vraag 9) |
+| [ ] | `digitaal.py` | digitaal klokje (33 breed, of compact) | past niet naast een klad van 34 in 80 breed | ◐ (vraag 2) |
 | [ ] | `avatar.py` | pixel-avatar 16×8, groot in de winkel | blijft; in een vak | ◐ |
 | [ ] | `tekens.py` | ronde hoeken ╭╮╰╯ + ASCII | alle nieuwe randtekens; testen op Windows (conhost/Terminal) en macOS Terminal | ✘ (nagaan) |
 | [ ] | `thema.py` | 5 thema's, `b_`-rollen | gewone rollen; rand-rol per thema (`dim`) nakijken in elk thema | ◐ |
@@ -81,23 +82,23 @@ Nu tekent `_stel_vraag` alles op vaste rijen en kolommen (vraag op rij 6, model 
 | [ ] | Klad verplicht (`klad_voor == "verplicht"`) | focus begint in het klad | focus begint in de klad-kolom | ◐ |
 | [ ] | Geen klad (`klad_voor` leeg) | geen klad | blijft zonder klad (gekozen 22/11); de vrije plaats gaat naar Vraag, Tip en spiekbrief | ◐ |
 | [ ] | Rooster, staartdeling | object op rij 8 | ✔ in de beta | ✔ |
-| [ ] | Invoer-object met `naast` (veld, coord, wijzers) | feedback rechts van het object | object in het Vraag-vak; feedback in Tip | ✘ (vraag 2) |
-| [ ] | `lijn` (aanduiden op de getallenlijn, zoomen) | getallenlijn 72 breed op rij 9 | past niet in een vak van 56 binnenin | ✘ (vraag 2) |
-| [ ] | Model onder de vraag (getallenlijn, balk, groepjes, strook, veld, figuur, kaart, hoek, klok) | `teken_model` op rij 9; hoger dan 7 = feedback ernaast | per model een plaats | ✘ (vraag 2) |
-| [ ] | Digitaal klokje (`klok`) | onder de vraag of naast een hoog model | idem | ✘ (vraag 2) |
-| [ ] | Klokvenster open | tekst links van kolom 60 | de rechterkolom (maatje) valt weg? klad-kolom? | ✘ (vraag 21) |
-| [ ] | Eigen tekst (vraagstuk) | object tekent vanaf rij 4 de hele breedte | zie D: vraagstuk | ✘ (vraag 8) |
+| [ ] | Invoer-object met `naast` (veld, coord, wijzers) | feedback rechts van het object | object in het Vraag-vak; feedback in Tip | ◐ (vraag 2) |
+| [ ] | `lijn` (aanduiden op de getallenlijn, zoomen) | getallenlijn 72 breed op rij 9 | past niet in een vak van 56 binnenin | ◐ (vraag 2) |
+| [ ] | Model onder de vraag (getallenlijn, balk, groepjes, strook, veld, figuur, kaart, hoek, klok) | `teken_model` op rij 9; hoger dan 7 = feedback ernaast | per model een plaats | ◐ (vraag 2) |
+| [ ] | Digitaal klokje (`klok`) | onder de vraag of naast een hoog model | idem | ◐ (vraag 2) |
+| [ ] | Klokvenster open | tekst links van kolom 60 | de rechterkolom (maatje) valt weg? klad-kolom? | ◐ (vraag 21) |
+| [ ] | Eigen tekst (vraagstuk) | object tekent vanaf rij 4 de hele breedte | zie D: vraagstuk | ◐ (vraag 8) |
 | [ ] | Tweede kans (`kans_melding`) | melding onder de vraag | in het vak Tip of onder de vraag? voorstel scherm 3 zet het in "Antwoord" | ◐ |
 | [ ] | Getrapte tips + "Nog eens F1: spiekbrief" | tekst onder de feedback, 2 à 4 regels | Tip-vak met "Tip 1 van 3 ●○○" in de rand | ◐ (vraag 4) |
-| [ ] | Spiekbrief via F1 na de laatste tip | `lezer` over het hele scherm | altijd open waar er plaats is; anders? (80×24: meestal geen plaats) | ✔ groot / ✘ 80×24 (vraag 13) |
+| [ ] | Spiekbrief via F1 na de laatste tip | `lezer` over het hele scherm | altijd open waar er plaats is; anders? (80×24: meestal geen plaats) | ✔ groot / ◐ 80×24: volle scherm zoals nu (vraag 13) |
 | [ ] | Na het antwoord: juist | lof + (vrij) uitwerking | "Goed!" in Tip | ✔ (beta) |
 | [ ] | Na het antwoord: fout | kop + diagnose + "in je klad regel n" + uitwerking; klad-kader 38 breed rechtsonder | "Jouw klad" ✔✘! naast "Zo kan het" + vak "Wat ging er mis?" (scherm 2) | ◐ (vraag 12) |
 | [ ] | "De uitkomst klopt, maar onderweg ging het n keer mis" (rooster) | kop in accent | in "Wat ging er mis?" | ✔ (beta) |
-| [ ] | Examen (geen tips, geen uitleg: "Je antwoord is bewaard.") | geen F1, geen kader | geen Tip-vak, geen spiekbrief: wat vult de plaats? | ✘ (vraag 13) |
+| [ ] | Examen (geen tips, geen uitleg: "Je antwoord is bewaard.") | geen F1, geen kader | geen Tip-vak, geen spiekbrief: wat vult de plaats? | ◐ (vraag 13) |
 | [ ] | Vrij oefenen (geen reeks) | "Vrij oefenen: 3 van 5 juist" op rij 2 | de regel/het vak Reeks met vrij-teller | ◐ |
 | [ ] | `kies_niveau` (Hoe moeilijk?) | `s.menu` | menu in vakken | ◐ |
 | [ ] | `spiekbrief` (los, vanuit het menu) | `s.lezer` | lezer in een vak | ◐ |
-| [ ] | `na_reeks` / `rapport` (einde van een reeks) | eigen tekst + menu | in vakken: wat staat waar? | ✘ (vraag 22) |
+| [ ] | `na_reeks` / `rapport` (einde van een reeks) | eigen tekst + menu | in vakken: wat staat waar? | ◐ (vraag 22) |
 | [ ] | `herhalen` (herhaalbak) | gewone Oefenaar | volgt vanzelf | ◐ |
 | [ ] | Sprongetje van het maatje bij juist (`spring`, `pauze(170)`) | maatje één rij hoger | in een vak: mag het buiten zijn vak? | ✘ (klein) |
 
@@ -111,32 +112,32 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 |---|---|---|---|---|---|
 | [ ] | `RoosterInvoer` | `rooster.py` | cijferen | `X0 = 12`, Tab = volgende rij | ✔ beta (via `InVak`); omzetten naar een rechthoek |
 | [ ] | `StaartInvoer` | `rooster.py` | cijferen | `X0 = 8`, `VENSTER = 7` | ✔ beta (via `InVak`); idem |
-| [ ] | `BalkInvoer` (breukbalk) | `balk.py` | breuken, meetkunde | `X0 = 8`, `BALK_B = 52` | ✘ 52 + rand + klad 34 > 80 (vraag 2) |
-| [ ] | `VeldInvoer` (cm²-rooster) | `balk.py` | procenten | `X0 = 10`, `naast = (13, X0+23)` | ✘ (vraag 2) |
-| [ ] | `CoordInvoer` (schatkaart) | `balk.py` | meetkunde | `X0 = 8`, `naast` | ✘ (vraag 2) |
-| [ ] | `KlokInvoer` (wijzers) | `balk.py` | klok | klok 21×11 pixels, `naast`, of in het klokvenster | ✘ (vraag 2, 21) |
-| [ ] | `ZinsdelenInvoer` | `zinsdelen.py` | zinsontleding | `OPDRACHT_BREED = 56`, **Tab = vrij kleuren**, eigen getrapte tips | ◐ scherm 3 (Stappen rechts); ✘ Tab-botsing (vraag 10), tips (vraag 9), kleuren per zinsdeel in een vak (`docs/taal.md`) |
-| [ ] | `WerkwoordInvoer` | `werkwoord.py` | werkwoorden, zinnen | `OPDRACHT_BREED = 56`, **Tab = wissel**, kofschip, bron, gevonden | ✘ helemaal nog niet geschetst (vraag 23); Tab (vraag 10) |
+| [ ] | `BalkInvoer` (breukbalk) | `balk.py` | breuken, meetkunde | `X0 = 8`, `BALK_B = 52` | ◐ 52 + rand + klad 34 > 80: volle breedte (vraag 2) |
+| [ ] | `VeldInvoer` (cm²-rooster) | `balk.py` | procenten | `X0 = 10`, `naast = (13, X0+23)` | ◐ (vraag 2) |
+| [ ] | `CoordInvoer` (schatkaart) | `balk.py` | meetkunde | `X0 = 8`, `naast` | ◐ (vraag 2) |
+| [ ] | `KlokInvoer` (wijzers) | `balk.py` | klok | klok 21×11 pixels, `naast`, of in het klokvenster | ◐ (vraag 2, 21) |
+| [ ] | `ZinsdelenInvoer` | `zinsdelen.py` | zinsontleding | `OPDRACHT_BREED = 56`, **Tab = vrij kleuren**, eigen getrapte tips | ◐ scherm 3 (Stappen rechts); ◐ Tab blijft (vraag 10), tips in het vak Tip (vraag 9), kleuren per zinsdeel in een vak (`docs/taal.md`) |
+| [ ] | `WerkwoordInvoer` | `werkwoord.py` | werkwoorden, zinnen | `OPDRACHT_BREED = 56`, **Tab = wissel**, kofschip, bron, gevonden | ◐ eerst een schets voor de vader (vraag 23); Tab blijft (vraag 10) |
 | [ ] | `VraagstukInvoer` | `vraagstuk.py` | vraagstukken | tekent zelf alles (`eigen_tekst`), `X = 2`, `KOP = 15`, eigen klad (`MAX_KLAD = 8`), **Tab/Shift-Tab = stappen** | ◐ gekozen 22/11: stappen rechts, klad-kolom, pijltjes (vraag 8) |
-| [ ] | `SpeurInvoer` | `vraagstuk.py` | vraagstukken | eigen tip-vak (`_MetTip.teken_tip`), kader "Het verhaal" | ✘ (vraag 8, 9) |
-| [ ] | `KeuzeInvoer` | `vraagstuk.py` | vraagstukken, werkwoorden | eigen tip-vak (`_MetTip`) | ✘ (vraag 9) |
-| [ ] | Getallenlijn aanduiden (`lijn`) | in `oefenaar.py` | getallen | 72 breed, zoomstapel | ✘ (vraag 2) |
+| [ ] | `SpeurInvoer` | `vraagstuk.py` | vraagstukken | eigen tip-vak (`_MetTip.teken_tip`), kader "Het verhaal" | ◐ (vraag 8, 9) |
+| [ ] | `KeuzeInvoer` | `vraagstuk.py` | vraagstukken, werkwoorden | eigen tip-vak (`_MetTip`) | ◐ (vraag 9) |
+| [ ] | Getallenlijn aanduiden (`lijn`) | in `oefenaar.py` | getallen | 72 breed, zoomstapel | ◐ (vraag 2) |
 
 **De modellen** (`modellen.py`, getekend onder de vraag; alleen tonen, geen invoer)
-- [ ] Getallenlijn: `posities(…, breedte=72)` → past niet in een vak van 56 binnenin. ✘
-- [ ] Breukbalk: `BALK_B = 52`. ✘
-- [ ] Groepjes: breedte 68. ✘
-- [ ] Strook: `STROOK_B = 50`. ✘
-- [ ] cm²-veld: `VAK_B = 4` per vakje. ✘
-- [ ] Figuur (pixels of tekens), schatkaart (`KAART_B = 3`), hoek (`HOEK_R = 6`): hoogte nakijken. ✘
-- [ ] Klok: 21×11, met `VENSTER_TEKST` "De klok staat in een eigen venster" + F2. ✘ (vraag 21)
+- [ ] Getallenlijn: `posities(…, breedte=72)` → past niet in een vak van 56 binnenin. ◐ (vraag 2)
+- [ ] Breukbalk: `BALK_B = 52`. ◐ (vraag 2)
+- [ ] Groepjes: breedte 68. ◐ (vraag 2)
+- [ ] Strook: `STROOK_B = 50`. ◐ (vraag 2)
+- [ ] cm²-veld: `VAK_B = 4` per vakje. ◐ (vraag 2)
+- [ ] Figuur (pixels of tekens), schatkaart (`KAART_B = 3`), hoek (`HOEK_R = 6`): hoogte nakijken. ◐ (vraag 2)
+- [ ] Klok: 21×11, met `VENSTER_TEKST` "De klok staat in een eigen venster" + F2. ◐ (vraag 21)
 
 ---
 
 ## E. Andere oefenschermen
 - [ ] **Eenheden** (`schermen/eenheden.py`, 678 regels, 48 keer `put`): een **eigen kopie van de Oefenaar** (eigen
       `stel_vraag`, `voortgang`, `reeks`, `rapport`, `vrij_oefenen`, `herhalen`, `spiekbrief`) + de tabelvraag
-      (`teken_tabel`, "Antwoord:" op een vaste rij). ✘ Eerst laten opgaan in de Oefenaar, of apart verbouwen? (vraag 7)
+      (`teken_tabel`, "Antwoord:" op een vaste rij). ◐ Eerst laten opgaan in de Oefenaar (gekozen) (vraag 7)
 - [ ] **Snelrekenen** (`schermen/snelrekenen.py`): tijd, ronde, uitslag; geen klad, geen tips. ✘ Niet geschetst
       (vraag 16).
 - [ ] **Gemengd** (`schermen/gemengd.py`): een afvinklijst en dan de gewone Oefenaar. ◐ (volgt de Oefenaar);
@@ -151,28 +152,28 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 - [ ] `navigatie.toetsen_voor` / `modi_voor` (Enter = reeks, V = vrij, S = spiekbrief): het vak "Kies". ◐
 - [ ] `navigatie.spiekbrieven`, `_spiek_domeinen`, `_spiek_lijst`: menu + lezer. ◐
 - [ ] Hoogte: hoogstens 10 items per menu; scherm 4 toont 4 items met een lege regel ertussen. Met 8 à 10 items
-      past dat niet samen met een kaartje op 24 rijen. ✘ (vraag 15)
+      past dat niet samen met een kaartje op 24 rijen. ◐ (vraag 15)
 - [ ] Taal: lege domeinen (Woordsoorten, Spelling, Woordenschat, Begrijpend lezen) staan grijs: hoe in een
       kaartje? ✘ (klein; voorstel: "komt nog")
 - [ ] `app.hoofdmenu`, `app.startscherm` (titel), `app.kiezen`, `app.voorstel`, `app.herhalen_of_verder`:
-      ✘ een verandering aan het hoofdmenu = apart beslissen (vraag 6).
+      ◐ later, apart beslissen (vraag 6).
 - [ ] `app.slotscherm` (het slot), `app.oeps` (een fout opgevangen), `app.zeg_het_ons` (opmerking van het kind):
-      ✘ niet geschetst (vraag 17).
+      ◐ als laatste, alleen een kader (vraag 17).
 
-## G. Kind-, winkel- en ouderschermen (nog niets beslist)
-- [ ] `schermen/kinderen.py`: kies een kind, pincode, nieuw kind. ✘
+## G. Kind-, winkel- en ouderschermen (als laatste: alleen een kader, vraag 17)
+- [ ] `schermen/kinderen.py`: kies een kind, pincode, nieuw kind. ◐ (vraag 17)
 - [ ] `schermen/winkel.py` (`AvatarSchermen`, 26 keer `put`): hub, winkel, rek, koop, kast, schermkleuren
-      (die thema's moeten de nieuwe rollen krijgen). ✘
-- [ ] `app.mijn_avatar`, `teken_avatar_menu`, `avatar_links`. ✘
+      (die thema's moeten de nieuwe rollen krijgen). ◐ (vraag 17)
+- [ ] `app.mijn_avatar`, `teken_avatar_menu`, `avatar_links`. ◐ (vraag 17)
 - [ ] `schermen/ouder.py` (Ouderdeel, 26 keer menu/lezer/afvink…): toegang, wachtwoord en pin, kinderen, rapporten
       (`kies_periode`, `vraag_datum`, `toon_rapport`, `exporteer`), kalender, antwoorden (+ details), punten, Gemengd
-      oefenen, Weergave, pincode, stoppen op slot, alles exporteren, wissen, opmerkingen. ✘ (vraag 17)
-- [ ] Weergave (ouderdeel): een nieuwe keuze "rustig / uitgebreid" per kind? ✘ (vraag 3)
+      oefenen, Weergave, pincode, stoppen op slot, alles exporteren, wissen, opmerkingen. ◐ (vraag 17)
+- [ ] Weergave (ouderdeel): een nieuwe keuze "rustig / uitgebreid" per kind? ◐ (vraag 3)
 
 ## H. Het klokvenster (`venster/`, `terminal/venster.py`)
 - [ ] Het venster is hoogstens een kwart van het scherm breed; de terminal houdt zijn tekst links van kolom 60
-      (`oefenaar.LINKS`). Met vakken: wat schuift er opzij? ✘ (vraag 21)
-- [ ] F2 = de klok in de terminal: dan moet de klok (21 breed) in een vak passen. ✘ (vraag 2)
+      (`oefenaar.LINKS`). Met vakken: wat schuift er opzij? ◐ (vraag 21)
+- [ ] F2 = de klok in de terminal: dan moet de klok (21 breed) in een vak passen. ◐ (vraag 2)
 
 ## I. De kern (wat de vakken nodig hebben; gouden regels 1 en 2)
 - [ ] Het vak **Reeks**: al in de kern/opslag (resultaten, punten, op rij). ✔ (beta tekent het)
@@ -183,12 +184,12 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 - [ ] **Stappen** (zinsdelen, vraagstuk): de stappen als regels uit het object/de kern, niet getekend door het
       scherm. ◐
 - [ ] **Zo kan het** (na een fout, naast "Jouw klad"): een voorbeeldklad per vraag. `uitwerking` bestaat al voor een
-      deel van de onderwerpen; voor welke niet? ✘ (vraag 12)
+      deel van de onderwerpen; voor welke niet? ◐ (vraag 12)
 - [ ] Klad ✔ ✘ per regel bij een object (nu alleen bij een gewoon antwoordvak via `kern/klad.py`): ✔ beta; bevestigen
       (vraag 11).
 - [ ] Bewaren: het klad in `extra["klad"]` (geen nieuwe migratie nodig zolang het in `extra` blijft). Nakijken dat
       het rapport en "antwoorden" in het ouderdeel het tonen. ✘ (klein)
-- [ ] Instelling "rustig / uitgebreid" (`kern/instellingen.py`). ✘ (vraag 3)
+- [ ] Instelling "rustig / uitgebreid" (`kern/instellingen.py`). ◐ (vraag 3)
 - [ ] De grootte van het venster in het logboek bij het starten (vraag 1). ◐ (aanbevolen)
 
 ## J. Tests
@@ -219,8 +220,8 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 
 ## L. Van beta naar iedereen
 - [ ] De schakelaar `LEERAVONTUUR_BETA=1` en `beta.DOMEINEN = {"Cijferen"}`: per domein uitbreiden, of in één keer?
-      ✘ (vraag 14)
-- [ ] Twee manieren van tekenen naast elkaar gaat tegen gouden regel 3 in: hoe lang mag dat? ✘ (vraag 14)
+      ◐ (vraag 14)
+- [ ] Twee manieren van tekenen naast elkaar gaat tegen gouden regel 3 in: hoe lang mag dat? ◐ (vraag 14)
 - [ ] Platformen: ronde hoeken en de ▀▄-pixels op Windows (conhost, Windows Terminal, PDCurses) en macOS Terminal
       echt bekijken; ASCII-modus als terugval. ✘ (nagaan)
 - [ ] Een vergelijking met de vorige versie op een kopie van echte gegevens (afspraak bij een verbouwing).
