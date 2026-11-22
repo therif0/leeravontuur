@@ -18,7 +18,10 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
 - [ ] ✔ De **reeks bovenaan** onder de broodkruimel (een vak vanaf 30 rijen, anders één regel).
 - [ ] ✔ De **vraag op een band** (oranje op grijs, rol `b_vraag`/`b_band`), met lucht rond + − × : =.
 - [ ] ✔ **Tab = het klad** en terug, zoals overal (geen K). In het rooster deed Tab "volgende rij": dat is nu ↓.
-- [ ] ✔ Het **klad is een kolom** van boven tot onder, rechts naast Vraag/Tip/Spiekbrief (24 tot 34 breed).
+- [ ] ✔ Het **klad is een kolom** van boven tot onder, rechts naast Vraag/Tip/Spiekbrief (24 tot 34 breed), **alleen
+      bij onderwerpen die vandaag een klad hebben** (gekozen 22/11, vraag 20).
+- [ ] **Uit de beta halen:** de klad-kolom bij Cijferen (de vader 22/11: was een test van de indeling, Cijferen
+      heeft geen klad nodig; het rooster is het rekenwerk).
 - [ ] ✔ De **spiekbrief staat altijd open** waar er plaats is, met het stuk van de vraag in het licht; scrollt
       (PgUp, PgDn, wiel, klik in de rand); niet in een examen.
 - [ ] ✔ Het **maatje** heeft de rechterkolom (20 breed).
@@ -76,7 +79,7 @@ Nu tekent `_stel_vraag` alles op vaste rijen en kolommen (vraag op rij 6, model 
 | [ ] | Met een eenheid (`v.eenheid`) | eenheid op `vx + 15` | in het Vraag-vak | ◐ |
 | [ ] | `klokwoord` (antwoordvak 22 breed) | `VAK = {"klokwoord": 22}` | idem, breder vak | ◐ |
 | [ ] | Klad verplicht (`klad_voor == "verplicht"`) | focus begint in het klad | focus begint in de klad-kolom | ◐ |
-| [ ] | Geen klad (`klad_voor` leeg) | geen klad | wat komt er in de plaats van de klad-kolom? (spiekbrief breder? vraag groter?) | ✘ (vraag 20) |
+| [ ] | Geen klad (`klad_voor` leeg) | geen klad | blijft zonder klad (gekozen 22/11); de vrije plaats gaat naar Vraag, Tip en spiekbrief | ◐ |
 | [ ] | Rooster, staartdeling | object op rij 8 | ✔ in de beta | ✔ |
 | [ ] | Invoer-object met `naast` (veld, coord, wijzers) | feedback rechts van het object | object in het Vraag-vak; feedback in Tip | ✘ (vraag 2) |
 | [ ] | `lijn` (aanduiden op de getallenlijn, zoomen) | getallenlijn 72 breed op rij 9 | past niet in een vak van 56 binnenin | ✘ (vraag 2) |
@@ -268,13 +271,14 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 18. Te klein → de ondergrens blijft 80×24.
 19. **Kleuren**: de vraag-band en de rand in de 5 thema's en in de gekochte schermkleuren → de `b_`-rollen worden
     gewone rollen; elk thema nakijken in tmux.
-20. **Geen klad** (onderwerpen zonder klad) → de klad-kolom valt weg en de spiekbrief/Tip worden breder.
+20. **Geen klad** — **gekozen 22/11 (de vader): het klad blijft uit waar het vandaag uit staat**; niets aan te
+    passen. Het klad is een soort rekenmachine: het kijkt de rekenregels van het kind na. Waar er geen klad is,
+    valt de kolom weg en krijgen Vraag, Tip en spiekbrief de plaats.
     Welke onderwerpen nu geen klad hebben (uit `klad` in de kern, 22/11):
     - **Getallen:** Plaatswaarde, Getallenlijn, Afronden, Deelbaarheid.
     - **Hoofdrekenen:** × en : met 10, 100, 1000; Tafels alleen bij uitbreiden (7 × 80), niet bij een tafel uit het
       hoofd; Gemengd (snelrekenen).
-    - **Cijferen:** alle vier volgens de kern (het rooster is het klad), **maar de beta geeft nu wel een klad-kolom**
-      naast het rooster. Beslissen: blijft dat?
+    - **Cijferen:** alle vier (het rooster is het rekenwerk). De klad-kolom van de beta gaat weg (de vader 22/11).
     - **Breuken en procenten:** Herkennen, Vergelijken, Vereenvoudigen, Breuk en kommagetal, Honderdveld, Procent,
       breuk en kommagetal.
     - **Meten:** de zeven maten (Eenheden: een eigen scherm zonder klad), Oppervlakte en omtrek.
