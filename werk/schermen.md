@@ -161,6 +161,14 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
   zoals overal. In het rooster deed Tab "volgende rij": in de beta doet ↓ dat nu (de volgende rij, rechts
   beginnen). Zonder plaats voor het klad blijft Tab "volgende rij". De voetregel laat [r] weg als het klad er is
   (r staat in de rand), zodat [Esc] stoppen altijd past.
+- 22/11, de vraag (de vader, na schetsen in de chat; groter typen kan niet, grote blokcijfers "zijn niet mooi"): de
+  vraag in **oranje op een donkergrijze band** (256 kleuren: 208 op 236), 3 rijen hoog vanaf 30 rijen (anders 1),
+  één spatie van de rand; het rooster **rustiger** (de cijfers gewoon, niet vet); de **cursor donkergeel** (178);
+  **twee lege rijen** onder "uitkomst". Rollen `b_vraag`, `b_band`, `b_cursor` in `terminal/thema.py`, met een eigen
+  waarde per thema (kleurenblind: wit op grijs, want oranje is daar "fout"; hoog contrast: zwart op wit; zonder
+  kleur: omgekeerd).
+- **Uitrollen** (de vader, 22/11): als hij goedkeurt wat hij ziet, krijgt **elke oefening** deze vraag (band, kleuren,
+  cursor). Daarvoor komt eerst de inventaris (fase 0) van alle schermen en invoer-objecten.
 - Tests: `tests/test_beta.py` (elk rooster en elke staartdeling in elk leerjaar past in het vak).
 
 ## Wat het makkelijk maakt (architectuur)

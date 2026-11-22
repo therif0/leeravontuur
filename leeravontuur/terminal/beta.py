@@ -30,6 +30,7 @@ TAB, KLAD, OBJECT = 9, "klad", "object"
 STAPPEN = "deel → maal → min → neer"  # staat bij de staartdeling in de rand van het vak
 VERSCHUIF = {"rooster": -6, "staart": -3}  # het object tekent op vaste kolommen: zo komt het in het vak
 KORTER = {"uitkomst  (typrichting ←)": "uitkomst", "uitkomst  (typrichting →)": "uitkomst"}  # de richting staat in de rand
+RUSTIG = {"bold": "", "cursor": "b_cursor"}  # de cijfers in het rooster gewoon (de vraag valt op), de cursor donkergeel
 GEEN_TIP = {"rooster": "F1 = een tip voor dit vakje.", "staart": "F1 = een tip voor deze stap."}
 
 
@@ -45,12 +46,14 @@ def oefenaar_klasse(domein):
 class InVak:
     """Het scherm zoals een invoer-object het ziet: verschoven met dx en afgeknipt aan de rand van het vak."""
 
-    def __init__(self, s, dx, links, rechts):
+    def __init__(self, s, dx, links, rechts, rollen=None):
         self.s, self.dx, self.links, self.rechts = s, dx, links, rechts
+        self.rollen = rollen or {}  # andere rollen dan het object vraagt (bv. een rustiger rooster)
         self.zones = self
 
     def put(self, y, x, tekst, rol=""):
         tekst = KORTER.get(tekst, tekst)
+        rol = self.rollen.get(rol, rol)
         if tekst.startswith(STAPPEN[:6]):  # "deel → maal …": in de rand van het vak
             return
         x += self.dx
@@ -252,15 +255,16 @@ class BetaOefenaar(Oefenaar):
         vb = max(vb, links - KLAD_MAX)
         tw = vb - 6
         pw = 1 if getattr(obj, "toont_plaatswaarden", lambda: False)() else 0
-        vy = ry + 1 + groot      # de vraag (op een groot scherm met een lege rij erboven)
-        oy = vy + 2 + pw          # het object
+        vy = ry + 1 + groot           # de vraag, op een band (op een groot scherm 3 rijen hoog)
+        oy = vy + 2 + groot + pw      # het object
         onder = oy + obj.hoogte(not bezig)  # de eerste rij onder het object: daar komt de rand (of de melding)
         mel = regels(obj.melding, tw)[:2] if bezig and obj.melding else []
         tekst_hint = obj.hint.replace("Tab = volgende rij", "↓ = volgende rij") if vb < links else obj.hint
         hint = hint_regels(tekst_hint, tw)[:2] if bezig else []
-        while hint and onder + max(1, len(mel)) + len(hint) + 3 > h - 1:  # het vak Tip heeft 3 rijen nodig
+        while hint and onder + 1 + max(1, len(mel)) + len(hint) + 3 > h - 1:  # het vak Tip heeft 3 rijen nodig
             hint.pop()
-        if bezig:
+        if bezig:  # een lege rij onder het object, dan de melding en de hint
+            onder += 1
             for i, stuk in enumerate(mel):
                 s.put(onder + i, 3, stuk, obj.melding_rol)
             for i, stuk in enumerate(hint):
@@ -276,8 +280,10 @@ class BetaOefenaar(Oefenaar):
                        STAPPEN if v.invoer == "staart" else "")
         vak.teken(s, ry, 0, onder - ry + 1, vb, titel, niveau, onder_label if bezig else "",
                   ord("r") if bezig and richting is not None else None)
-        s.put(vy, 3, vraag, "bold")
-        obj.teken(InVak(s, VERSCHUIF[v.invoer], 2, vb - 2), oy, goed, tip)
+        for r in range(vy - groot, vy + groot + 1):  # de band: één spatie van de rand
+            s.put(r, 2, " " * (vb - 4), "b_band")
+        s.put(vy, 4, vraag[:vb - 8], "b_vraag")
+        obj.teken(InVak(s, VERSCHUIF[v.invoer], 2, vb - 2, RUSTIG), oy, goed, tip)
         # het klad: een kolom van de vraag tot onderaan
         self.kb_plek, plek = None, None
         if vb < links:
