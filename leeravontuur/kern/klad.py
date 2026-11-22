@@ -102,7 +102,7 @@ def _tokens(tekst):
         if c.isspace():
             i += 1
             continue
-        if c.isdigit():
+        if c.isdecimal():  # niet isdigit: dan telt ook ² als cijfer, en dat leest de regex niet (een crash)
             k = re.match(r"(\d{1,2})(?::(\d{2})(?:\s*u(?![A-Za-z]))?|\.(\d{2})\s*u(?![A-Za-z]))(?![\d.,])", t[i:])
             if k and int(k.group(1)) < 24 and int(k.group(2) or k.group(3)) < 60:  # een tijdstip: 9.45 u of 9:45
                 uit.append(("tijdstip", int(k.group(1)) * 60 + int(k.group(2) or k.group(3)), k.group(0)))
