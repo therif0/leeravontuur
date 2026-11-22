@@ -9,7 +9,7 @@ from ...kern import catalogus
 from ...kern import snelrekenen as SR
 from ..beta import oefenaar_klasse
 from ..oefenaar import Oefenaar
-from ..schermen.eenheden import Eenheden
+from ..schermen import eenheden as EH
 from ..schermen.snelrekenen import Snelrekenen
 
 _VORM_NAAM = {"vrij": "Vrij oefenen", "reeks": "Reeks van 10"}
@@ -28,7 +28,7 @@ def _oefenaar(vid, vorm, domein, app, kr):
 
 
 def _eenheden(maat, vorm, app, kr):
-    Eenheden(app, kr).oefen(vorm, maat, kr + [_EENHEDEN_VORM[vorm]])
+    EH.MatenOefenaar(app, kr).oefen(vorm, maat, kr + [_EENHEDEN_VORM[vorm]])
 
 
 def _snel(soort, modus, app, kr):
@@ -41,7 +41,7 @@ def _spiek_oefenaar(vid, app, kr):
 
 
 def _spiek_eenheden(app, kr):
-    Eenheden(app, kr).spiekbrief(kr)
+    EH.spiekbrief(app, kr)
 
 
 def oefenaar(vid, vorm, domein):

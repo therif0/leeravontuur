@@ -13,20 +13,17 @@ import textwrap
 
 from . import avatar as AV
 from . import vak
-from .kladblad import LEEG_ENTER, Kladblad
 from ..kern import avatar as A
 from .oefenaar import INVOER, KORT_HULP, LOF, Oefenaar, vraagtekst
-from .scherm import ENTER, ESC, HULP, teken_van
+from .scherm import ENTER, ESC, HULP
 
 DOMEINEN = {"Cijferen"}       # waar de beta geldt (het label van het domein in het leerplan)
 INVOER_BETA = {"rooster", "staart"}
 RECHTS = 20                   # de rechterkolom: het maatje
 MAATJE_H = 11                 # 8 rijen pixels, het tekstje en de rand
 TIP_H, UITLEG_H = 6, 14       # hoogstens zo hoog als de spiekbrief eronder past
-KLAD_MIN, KLAD_MAX = 24, 34   # de kolom van het klad: zoveel kolommen moeten over zijn, en hoogstens zo breed
 SPIEK_MIN = 4                 # de spiekbrief komt onderaan als er zoveel rijen over zijn (anders: scrollen)
 GROOT_H = 30                  # vanaf zoveel rijen: de reeks in een vak en lucht rond de vraag
-TAB, KLAD, OBJECT = 9, "klad", "object"
 STAPPEN = "deel → maal → min → neer"  # staat bij de staartdeling in de rand van het vak
 VERSCHUIF = {"rooster": -6, "staart": -3}  # het object tekent op vaste kolommen: zo komt het in het vak
 KORTER = {"uitkomst  (typrichting ←)": "uitkomst", "uitkomst  (typrichting →)": "uitkomst"}  # de richting staat in de rand
@@ -71,24 +68,6 @@ class InVak:
         return getattr(self.s, naam)
 
 
-class Meter:
-    """Een nepscherm dat alleen meet hoe breed een invoer-object tekent (om het vak Vraag zo breed te maken)."""
-
-    def __init__(self):
-        self.rechts = 0
-        self.zones = self
-
-    def put(self, y, x, tekst, rol=""):
-        if tekst.strip():
-            self.rechts = max(self.rechts, x + len(tekst.rstrip()))
-
-    def voeg(self, *_):
-        pass
-
-    def tekstvak(self, y, x, tekst, breedte, rol, actie=None):
-        self.rechts = max(self.rechts, x + breedte + 2)
-
-
 def ruim(tekst):
     """De vraag met meer lucht rond + − × : = (ze moet opvallen; groter kan niet in een terminal)."""
     return re.sub(r" ?([+−×:=]) ?", r"  \1  ", tekst).strip()
@@ -122,8 +101,6 @@ class BetaOefenaar(Oefenaar):
         laatste_hulp = None  # nog eens F1 op dezelfde plek = de spiekbrief
         gezicht, ballon, spring = "normaal", "", False
         kop, rol, uitleg = "", "", []
-        self.kb, self.focus = Kladblad(), OBJECT  # het klad naast de som (alleen waar het past)
-        self.kb_plek = None
         self.spiek_top, self.spiek_zicht = None, None  # None = bij het stuk van de vraag; zicht = (top, plaats, n)
         self.herkansing = False
         ses.vraag_getoond()
@@ -135,9 +112,6 @@ class BetaOefenaar(Oefenaar):
                 laatste = not vrij and nr == self.totaal - 1
                 knoppen = [("Enter", "naar je resultaat" if laatste else "volgende vraag", 10),
                            ("Esc", "stoppen", ESC)]
-            elif self.focus == KLAD:
-                knoppen = [("Tab", "naar de som", TAB), ("Enter", "regel nakijken", 10), ("F1", "tip", HULP),
-                           ("Esc", "stoppen", ESC)]
             else:
                 knoppen = obj.knoppen()
             if not self.hulp.tips:  # zonder hulp (een examen): geen F1
@@ -145,8 +119,6 @@ class BetaOefenaar(Oefenaar):
             s.nieuw(kr, knoppen)
             self.teken(o, v, obj, soort, ses, nr, resultaten, vrij, goed, tip, spiek, kop, rol, uitleg,
                        gezicht, ballon, spring)
-            if goed is None and self.focus == OBJECT and self.kb_plek:  # pas na het tekenen weten we of het klad past
-                s.voet([("Tab", "klad", TAB)] + [kn for kn in knoppen if kn[0] != "r"])  # r staat ook in de rand
             if spring:
                 s.pauze(170)
                 spring = False
@@ -170,27 +142,6 @@ class BetaOefenaar(Oefenaar):
             if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
                 s.cursor(False)
                 return None
-            if self.kb_plek and isinstance(k, tuple) and k[0] in ("klad", "focus"):  # een klik in het klad
-                self.focus = KLAD
-                if k[0] == "klad":
-                    self.kb.haal_terug(k[1])
-                continue
-            if self.focus == KLAD and k != HULP:
-                if isinstance(k, tuple):  # een klik op de som: terug naar de som
-                    self.kb.rond_af()
-                    self.focus = OBJECT
-                elif k == TAB or self.kb.toets(k, teken_van(k), self.kb_plek[2]) == LEEG_ENTER:
-                    self.kb.rond_af()
-                    self.focus = OBJECT
-                    continue
-                else:
-                    continue
-            elif self.kb_plek and k == TAB:  # Tab = het klad, zoals in elke oefening
-                self.focus = KLAD
-                continue
-            elif self.kb_plek and v.invoer == "rooster" and k == curses.KEY_DOWN and \
-                    0 <= obj.rij < len(obj.r.invul) - 1:
-                k = TAB  # ↓ = de volgende rij, rechts beginnen (wat Tab in het rooster deed)
             if k == HULP:
                 if not self.hulp.tips:
                     continue
@@ -209,14 +160,11 @@ class BetaOefenaar(Oefenaar):
             if uit is None:
                 continue
             buf, getal = uit
-            self.kb.rond_af()
-            self.focus = OBJECT
             goed = o.nakijken(v, getal) and not obj.fouten
             d = (obj.diagnose or o.diagnose_rijen(v, obj.rijen())) or o.diagnose(v, getal)
             self.laatste_d = d
             ses.antwoord(v.sleutel, vraagtekst(v), buf.strip(), goed, d[0] if d else None, hulp=tip_gebruikt,
-                         extra={k_: w for k_, w in (("stapfouten", obj.fouten), ("klad", self.kb.teksten)) if w}
-                         or None, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
+                         extra={"stapfouten": obj.fouten} if obj.fouten else None, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
             extra = self.tijd_tekst(ses) + (f"  +{ses.laatste_punten} punten" if ses.laatste_punten else "")
             gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
             spring = goed and self.app.inst.animaties and self.app.inst.avatar
@@ -233,34 +181,27 @@ class BetaOefenaar(Oefenaar):
                 kop, rol, uitleg = "Je antwoord is bewaard.", "info", []
 
     # ---- tekenen in vakken -------------------------------------------------------------
-    # bovenaan de reeks; links Vraag, Tip (of de uitleg) en de Spiekbrief; ernaast het klad van boven tot onder;
-    # rechts het maatje
+    # bovenaan de reeks; links Vraag, Tip (of de uitleg) en de Spiekbrief; rechts het maatje. Cijferen heeft geen klad
+    # (de vader 22/11: het rooster is het rekenwerk; de klad-kolom was een test van de indeling)
 
     def teken(self, o, v, obj, soort, ses, nr, resultaten, vrij, goed, tip, spiek, kop, rol, uitleg,
               gezicht, ballon, spring):
         s = self.s
         h, w = s.maat()
         rechts = RECHTS if self.app.inst.avatar else 0
-        links = w - rechts  # tot hier: reeks, vraag, tip, spiekbrief en klad
+        links = w - rechts  # tot hier: reeks, vraag, tip en spiekbrief
         bezig = goed is None
         groot = h >= GROOT_H
         ry = self.teken_reeks(links, groot, ses, nr, resultaten, vrij, goed)
-        # het vak Vraag zo breed als nodig; wat overblijft (genoeg?) is voor het klad
         vraag = ruim(v.tekst)
-        meter = Meter()
-        obj.teken(InVak(meter, VERSCHUIF[v.invoer], 0, 10 ** 4), 5, goed, tip)
-        vb = max(meter.rechts + 3, len(vraag) + 6, 36)
-        if links - vb < KLAD_MIN:
-            vb = links
-        vb = max(vb, links - KLAD_MAX)
+        vb = links  # de breedte van Vraag, Tip en Spiekbrief
         tw = vb - 6
         pw = 1 if getattr(obj, "toont_plaatswaarden", lambda: False)() else 0
         vy = ry + 1 + groot           # de vraag, op een band (op een groot scherm 3 rijen hoog)
         oy = vy + 2 + groot + pw      # het object
         onder = oy + obj.hoogte(not bezig)  # de eerste rij onder het object: daar komt de rand (of de melding)
         mel = regels(obj.melding, tw)[:2] if bezig and obj.melding else []
-        tekst_hint = obj.hint.replace("Tab = volgende rij", "↓ = volgende rij") if vb < links else obj.hint
-        hint = hint_regels(tekst_hint, tw)[:2] if bezig else []
+        hint = hint_regels(obj.hint, tw)[:2] if bezig else []
         while hint and onder + 1 + max(1, len(mel)) + len(hint) + 3 > h - 1:  # het vak Tip heeft 3 rijen nodig
             hint.pop()
         if bezig:  # een lege rij onder het object, dan de melding en de hint
@@ -284,18 +225,6 @@ class BetaOefenaar(Oefenaar):
             s.put(r, 2, " " * (vb - 4), "b_band")
         s.put(vy, 4, vraag[:vb - 8], "b_vraag")
         obj.teken(InVak(s, VERSCHUIF[v.invoer], 2, vb - 2, RUSTIG), oy, goed, tip)
-        # het klad: een kolom van de vraag tot onderaan
-        self.kb_plek, plek = None, None
-        if vb < links:
-            kx, kw, kh = vb, links - vb, h - 1 - ry
-            actief = bezig and self.focus == KLAD
-            vak.teken(s, ry, kx, kh, kw, "▸ Klad" if actief else "Klad", "",
-                      ("Tab = naar de som" if actief else "Tab") if bezig else "", TAB)
-            self.kb_plek = (kx + 2, kh, kw - 4)
-            plek = self.kb.teken(s, ry + 1, kx + 2, kw - 4, max(1, kh - 4), actief, ("focus", KLAD) if bezig else None)
-            if actief and self.kb.melding:
-                for i, stuk in enumerate(regels(self.kb.melding, kw - 4)[:2]):
-                    s.put(ry + kh - 3 + i, kx + 2, stuk, self.kb.melding_rol or "dim")
         # eronder: de tip tijdens het rekenen, de uitleg na het nakijken
         ty = onder + 1
         th = min(h - 1 - ty, TIP_H if bezig else UITLEG_H)
@@ -332,9 +261,7 @@ class BetaOefenaar(Oefenaar):
             self.teken_spiek(o, v, sy, h - 1 - sy, vb)
         if rechts:
             self.teken_maatje(links, h, goed, tip, gezicht, ballon, spring)
-        if plek and bezig and self.focus == KLAD:
-            s.cursor(True, *plek)
-        elif bezig and obj.cursor_pos:
+        if bezig and obj.cursor_pos:
             y, x = obj.cursor_pos
             s.cursor(True, y, x + VERSCHUIF[v.invoer])
         else:

@@ -83,46 +83,7 @@ def gewicht(st):
     return {FRIS: GEWICHT_FRIS, herhaling.BEZIG: GEWICHT_BEZIG}.get(st, GEWICHT_BEHEERST)
 
 
-class _Maten:
-    """Maten (de eenheden omzetten) met dezelfde namen als een Onderwerp, zodat een gemengde reeks (herhaalbak,
-    fouten opnieuw, gelijkaardige vragen, het resultaat) er niets apart voor hoeft te doen. Het scherm blijft dat
-    van de eenheden (terminal/schermen/eenheden.py)."""
-    id = E.OMZETTEN.id
-    naam = "Maten"
-    lang = False
-
-    @staticmethod
-    def diagnose(v, gegeven):
-        return E.diagnose(v, gegeven) if gegeven is not None else None
-
-    @staticmethod
-    def uitleg(v):
-        return E.regel_uitleg(v)
-
-    @staticmethod
-    def lees_vraag(v, tekst):
-        from .getal import lees_getal
-        return lees_getal(tekst)
-
-    @staticmethod
-    def onderwerp(v):
-        return E.onderwerp(v)
-
-    @staticmethod
-    def herhaal_data(v):
-        return E.herhaal_data(v)
-
-    @staticmethod
-    def maak_herhaling(data, leerjaar, vermijd=()):
-        return E.maak_herhaling(data, leerjaar, vermijd)
-
-    @staticmethod
-    def verwacht_tekst(v):
-        from .getal import fmt
-        return f"{fmt(v.antwoord)} {v.naar}"
-
-
-MATEN = _Maten()
+MATEN = E.Maten()  # Maten in een gemengde reeks (zelfde namen als een Onderwerp)
 
 
 def onderwerp_van(vaardigheid):
@@ -195,7 +156,7 @@ def maak_vraag(opslag, kind_id, vaardigheid, leerjaar, vermijd):
     """Eén vraag van een vaardigheid (ook Maten), niet recent al gezien."""
     gew = _gewichten(opslag, kind_id, vaardigheid)
     if vaardigheid == E.OMZETTEN.id:
-        return E.maak_vraag(E.eenheden_voor(leerjaar), leerjaar, vermijd=vermijd, gewichten=gew)
+        return E.als_vraag(E.maak_vraag(E.eenheden_voor(leerjaar), leerjaar, vermijd=vermijd, gewichten=gew), leerjaar)
     return ONDERWERPEN[vaardigheid].maak(leerjaar, vermijd, gew)
 
 

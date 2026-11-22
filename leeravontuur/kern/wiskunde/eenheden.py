@@ -450,3 +450,97 @@ def spiekbrief():
         ("  1 m³ = 1000 dm³      1 dm³ = 1 l      1 cm³ = 1 ml", "accent2"),
         ("  De literkolommen staan onder dm³ en cm³: zo zie je meteen dat 1 l = 1 dm³.", "dim"),
     ]
+
+
+# ---- Maten als onderwerp van de Oefenaar ------------------------------------------------------------
+
+def als_vraag(om, leerjaar, tabel=False):
+    """Een omzetting als gewone Vraag (zo speelt de Oefenaar ze): invoer "tabel" (in de eenhedentabel) of "eenheid"
+    (een getal typen). De omzetting zelf zit in data["omzetting"]."""
+    from ..onderwerp import Vraag
+    return Vraag(OMZETTEN.id, om.sleutel, om.tekst, om.antwoord, data={"omzetting": om}, leerjaar=leerjaar,
+                 invoer="tabel" if tabel else "eenheid", verwacht_tekst=f"{fmt(om.antwoord)} {om.naar}")
+
+
+def omzetting(v):
+    """De Omzetting van een vraag (een Vraag van als_vraag, of al een Omzetting)."""
+    return v.data["omzetting"] if hasattr(v, "data") else v
+
+
+class Maten:
+    """Maten (de eenheden omzetten) als onderwerp van de Oefenaar: dezelfde namen als een Onderwerp. eenheden = de
+    gekozen eenheden (None = alle eenheden van het leerjaar), tabel = in de eenhedentabel. Een reeks maakt de vragen
+    één voor één (een_voor_een): de vorige vraag bepaalt mee de volgende."""
+    id = OMZETTEN.id
+    naam = "Maten"
+    omschrijving = OMZETTEN.omschrijving
+    lang = False
+    een_voor_een = True
+
+    def __init__(self, eenheden=None, tabel=False):
+        self.eenheden, self.tabel, self.vorige = eenheden, tabel, None
+
+    def maak(self, leerjaar, vermijd=(), gewichten=None):
+        om = maak_vraag(self.eenheden or eenheden_voor(leerjaar), leerjaar, self.tabel, self.vorige,
+                        vermijd=vermijd, gewichten=gewichten)
+        self.vorige = om
+        return als_vraag(om, leerjaar, self.tabel)
+
+    def maak_herhaling(self, data, leerjaar, vermijd=()):
+        return als_vraag(maak_herhaling(data, leerjaar, vermijd), leerjaar, self.tabel)
+
+    @staticmethod
+    def alle_onderwerpen():
+        """Elk paar van/naar (de gewichten kennen ook de paren die nog niet geoefend werden)."""
+        return {f"{a}>{b}" for c in SOORTEN for a in EENHEDEN[c] for b in EENHEDEN[c] if a != b}
+
+    @staticmethod
+    def onderwerp_van_sleutel(sleutel):
+        return onderwerp_van_sleutel(sleutel)
+
+    def onderwerp(self, v):
+        return onderwerp(omzetting(v), self.tabel)
+
+    def herhaal_data(self, v):
+        return herhaal_data(omzetting(v), self.tabel)
+
+    @staticmethod
+    def nakijken(v, gegeven):
+        return gegeven == v.antwoord
+
+    @staticmethod
+    def lees_vraag(v, tekst):
+        from ..getal import lees_getal
+        return lees_getal(tekst)
+
+    @staticmethod
+    def diagnose(v, gegeven):
+        return diagnose(omzetting(v), gegeven) if gegeven is not None else None
+
+    @staticmethod
+    def diagnose_rijen(v, rijen):
+        return None
+
+    @staticmethod
+    def uitleg(v):
+        return regel_uitleg(omzetting(v))
+
+    @staticmethod
+    def uitleg_tabel(v):
+        return tabel_uitleg(omzetting(v))
+
+    @staticmethod
+    def verwacht_tekst(v):
+        return v.verwacht
+
+    @staticmethod
+    def spiekbrief():
+        return spiekbrief()
+
+    @staticmethod
+    def kop_op_spiekbrief(v):
+        return None
+
+    @staticmethod
+    def klad_voor(v):
+        return None

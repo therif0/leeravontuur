@@ -21,7 +21,7 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
 - [ ] ✔ **Tab = het klad** en terug, zoals overal (geen K). In het rooster deed Tab "volgende rij": dat is nu ↓.
 - [ ] ✔ Het **klad is een kolom** van boven tot onder, rechts naast Vraag/Tip/Spiekbrief (24 tot 34 breed), **alleen
       bij onderwerpen die vandaag een klad hebben** (gekozen 22/11, vraag 20).
-- [ ] **Uit de beta halen:** de klad-kolom bij Cijferen (de vader 22/11: was een test van de indeling, Cijferen
+- [x] **Uit de beta halen:** de klad-kolom bij Cijferen (de vader 22/11: was een test van de indeling, Cijferen
       heeft geen klad nodig; het rooster is het rekenwerk).
 - [ ] ✔ De **spiekbrief staat altijd open** waar er plaats is, met het stuk van de vraag in het licht; scrollt
       (PgUp, PgDn, wiel, klik in de rand); niet in een examen.
@@ -135,9 +135,11 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 ---
 
 ## E. Andere oefenschermen
-- [ ] **Eenheden** (`schermen/eenheden.py`, 678 regels, 48 keer `put`): een **eigen kopie van de Oefenaar** (eigen
+- [x] **Eenheden** (`schermen/eenheden.py`, 678 regels, 48 keer `put`): een **eigen kopie van de Oefenaar** (eigen
       `stel_vraag`, `voortgang`, `reeks`, `rapport`, `vrij_oefenen`, `herhalen`, `spiekbrief`) + de tabelvraag
       (`teken_tabel`, "Antwoord:" op een vaste rij). ◐ Eerst laten opgaan in de Oefenaar (gekozen) (vraag 7)
+      **Fase 1 (0.27.0):** opgegaan in de Oefenaar (`terminal/tabel.py`, `MatenOefenaar`); dezelfde schermen en
+      antwoorden als vroeger (vergelijking in tmux op een kopie van echte gegevens).
 - [ ] **Snelrekenen** (`schermen/snelrekenen.py`): tijd, ronde, uitslag; geen klad, geen tips. ✘ Niet geschetst
       (vraag 16).
 - [ ] **Gemengd** (`schermen/gemengd.py`): een afvinklijst en dan de gewone Oefenaar. ◐ (volgt de Oefenaar);

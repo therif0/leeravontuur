@@ -221,7 +221,7 @@ echte gegevens. De schakelaar `LEERAVONTUUR_BETA=1` blijft tot fase 8: zonder is
 niet netjes op te lossen is, en bij elke **schets** (★).
 
 0. ✔ **Inventaris** (22/11): [schermen-inventaris.md](schermen-inventaris.md).
-1. **Opruimen vooraf (het kind ziet niets):**
+1. ✔ **Opruimen vooraf (het kind ziet niets)** (0.27.0, branch `schermen-1-opruimen`):
    - Eenheden in de Oefenaar: de tabel wordt een invoer-object; `schermen/eenheden.py` verdwijnt grotendeels.
    - De klad-kolom uit de Cijferen-beta halen.
    - Bewijs: dezelfde schermen en dezelfde bewaarde antwoorden als vóór de stap.

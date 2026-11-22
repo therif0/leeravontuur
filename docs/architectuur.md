@@ -89,7 +89,10 @@ waaraan je werkt. Uit CLAUDE.md gehaald op 16/11/2026, woord voor woord, zodat C
   onderwerp_van_sleutel, vast) + een leerlijn-JSON + import in `kern/catalogus.py` + een regel in het leerplan
   (`terminal/curriculum/<vak>.py`, zie "Menu's"). Het scherm is dan
   automatisch `terminal/oefenaar.py` (vrij, reeks, rapport, fouten opnieuw, herhaalbak, punten, maatje).
-  Eenheden heeft (nog) een eigen scherm vanwege de tabel. Die tabel is data (`TABELLEN` in `kern/wiskunde/eenheden.py`):
+  Maten (eenheden omzetten) speelt ook in de Oefenaar: `kern/wiskunde/eenheden.Maten` (zelfde namen als een Onderwerp; een
+  `Omzetting` wordt een `Vraag` met `invoer="eenheid"` of `"tabel"`) en de invoer-objecten in `terminal/tabel.py`, die
+  het scherm onder de voortgang zelf tekenen (`eigen_scherm`). `terminal/schermen/eenheden.MatenOefenaar` heeft alleen
+  wat Maten anders heeft (zelf kiezen, het niveau, de tabel in het resultaat). De tabel is data (`TABELLEN` in `kern/wiskunde/eenheden.py`):
   een eenheid kan meer vakjes hebben (oppervlakte 2, volume 3) en aliassen (ha, l …) via `ALIASSEN`.
   Een `Vraag` kan `invoer="janee"` (typ ja/nee), `"lijn"` (aanduiden op de getallenlijn, met zoom),
   `"rooster"` (cijferen onder elkaar) of `"staart"` (staartdeling stap voor stap) hebben, en een visueel

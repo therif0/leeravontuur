@@ -100,17 +100,15 @@ class TestScherm(Basis):
         rij = app.opslag.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["vaardigheid"], o.id)
 
-    def test_klad_naast_het_rooster_wordt_bewaard(self):
-        """Vermenigvuldigen past in 80×24 met een klad ernaast: Tab = naar het klad en terug (zoals in elke oefening); het klad gaat mee
-        met het antwoord (extra["klad"])."""
+    def test_geen_klad_bij_cijferen_tab_is_volgende_rij(self):
+        """De vader 22/11: Cijferen krijgt geen klad-kolom (het rooster is het rekenwerk); Tab houdt in het rooster zijn
+        betekenis (volgende rij)."""
         o = ONDERWERPEN["wiskunde.cijferen.vermenigvuldigen"]
         with MetBeta("1"):
-            scherm, app = self.speel([*naar(o, "Enter"), TAB, *"2 x 3 = 6", OK, TAB, OK])
-        self.assertTrue(self.ergens(scherm, "┤ ▸ Klad ├"))
-        self.assertTrue(self.ergens(scherm, "[Tab] klad"))
-        rij = app.opslag.antwoorden(app.kind.id)
-        self.assertEqual(rij, [])  # Enter met een leeg rooster: nog niets nagekeken
-        self.assertIn("2 × 3 = 6", [b for b in scherm.beelden if "▸ Klad" in b][-1])
+            scherm, _ = self.speel([*naar(o, "Enter"), TAB], hoogte=40, breedte=120)
+        self.assertFalse(self.ergens(scherm, "┤ Klad ├"))
+        self.assertFalse(self.ergens(scherm, "[Tab] klad"))
+        self.assertTrue(self.ergens(scherm, "Tab = volgende rij"))
 
     def test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen(self):
         from leeravontuur.kern.reeks import Hulp

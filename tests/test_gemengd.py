@@ -109,7 +109,7 @@ class TestDeReeks(Basis):
         with mock.patch.object(reeks, "gemengd_plan", return_value=plan):
             scherm, _ = self.speel([*NAAR_GEMENGD, OK, *"0", OK, OK, "f", *juist, OK, OK, ESC, ESC, ESC], opslag=o)
         self.assertTrue(self.ergens(scherm, "Gemengd oefenen › Fouten opnieuw"))
-        self.assertTrue(self.ergens(scherm, f"Juist is: {juist} {plan.vragen[0].vraag.naar}"))
+        self.assertTrue(self.ergens(scherm, f"Juist is: {juist} {E.omzetting(plan.vragen[0].vraag).naar}"))
 
     def test_de_keuze_van_het_kind_wordt_bewaard(self):
         o = self.met_oefeningen()
