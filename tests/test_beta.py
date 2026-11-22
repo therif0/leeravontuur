@@ -93,7 +93,7 @@ class TestScherm(Basis):
         beeld = next(b for b in scherm.beelden if "Vraag 1 van 10" in b)
         self.assertIn("╭─┤ Vraag 1 van 10 ├", beeld)
         self.assertIn("┤ Tip ├", beeld)
-        self.assertIn("┤ Reeks ├", beeld)
+        self.assertTrue(beeld.splitlines()[1].startswith(" Reeks "))  # 24 rijen: de reeks is één regel bovenaan
         self.assertTrue(all(len(r) <= 80 for r in beeld.splitlines()))
         self.assertTrue(self.ergens(scherm, "┤ Wat ging er mis? ├") or self.ergens(scherm, "┤ Uitleg ├")
                         or self.ergens(scherm, "┤ Goed! ├"))
@@ -101,13 +101,13 @@ class TestScherm(Basis):
         self.assertEqual(rij["vaardigheid"], o.id)
 
     def test_klad_naast_het_rooster_wordt_bewaard(self):
-        """Vermenigvuldigen past in 80×24 met een klad ernaast: K = naar het klad, Tab = terug; het klad gaat mee
+        """Vermenigvuldigen past in 80×24 met een klad ernaast: Tab = naar het klad en terug (zoals in elke oefening); het klad gaat mee
         met het antwoord (extra["klad"])."""
         o = ONDERWERPEN["wiskunde.cijferen.vermenigvuldigen"]
         with MetBeta("1"):
-            scherm, app = self.speel([*naar(o, "Enter"), "k", *"2 x 3 = 6", OK, TAB, OK])
+            scherm, app = self.speel([*naar(o, "Enter"), TAB, *"2 x 3 = 6", OK, TAB, OK])
         self.assertTrue(self.ergens(scherm, "┤ ▸ Klad ├"))
-        self.assertTrue(self.ergens(scherm, "[K] klad"))
+        self.assertTrue(self.ergens(scherm, "[Tab] klad"))
         rij = app.opslag.antwoorden(app.kind.id)
         self.assertEqual(rij, [])  # Enter met een leeg rooster: nog niets nagekeken
         self.assertIn("2 × 3 = 6", [b for b in scherm.beelden if "▸ Klad" in b][-1])
@@ -121,6 +121,18 @@ class TestScherm(Basis):
         self.assertIn("┤ Spiekbrief ├", beeld)
         self.assertIn("▸ OPTELLEN", beeld)
         self.assertFalse(Hulp.EXAMEN.spiekbrief)  # in een examen: geen spiekbrief (spiek = ... and hulp.spiekbrief)
+
+    def test_spiekbrief_scrollt(self):
+        """Past de spiekbrief niet: PgDn en het scrollwiel tonen de rest."""
+        import curses
+        o = ONDERWERPEN["wiskunde.cijferen.vermenigvuldigen"]
+        with MetBeta("1"):
+            scherm, _ = self.speel([*naar(o, "Enter"), curses.KEY_NPAGE, ("wiel", 1)], hoogte=34, breedte=110)
+        beelden = [b for b in scherm.beelden if "┤ Spiekbrief ├" in b]
+        self.assertIn("PgUp PgDn", beelden[0])
+        self.assertIn("▸ VERMENIGVULDIGEN", beelden[0])
+        self.assertNotIn("▸ VERMENIGVULDIGEN", beelden[-1])
+        self.assertTrue(all("[Esc] stoppen" in b for b in beelden))
 
     def test_zonder_beta_het_gewone_scherm(self):
         o = ONDERWERPEN["wiskunde.cijferen.delen"]

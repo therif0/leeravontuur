@@ -147,11 +147,20 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
 - Vakken: Vraag (met de typrichting in de rand), Tip (F1 in de rand; na het nakijken "Wat ging er mis?" of "Goed!"),
   Maatje, Reeks (✔ ✘ per vraag, punten, op rij). Op een groter scherm wordt het vak breder; Tip blijft hoogstens 8
   rijen.
-- 22/11: **Klad** naast het rooster waar er minstens 24 kolommen over zijn (hoogstens 44 breed): K of een klik = naar
+- 22/11: **Klad** naast het rooster waar er minstens 24 kolommen over zijn (hoogstens 44 breed): Tab of een klik = naar
   het klad, Tab of Enter op een lege regel = terug. Elke regel krijgt ✔ ✘ (klopt de rekenregel?), niet tegenover
   een oplossing; het klad gaat mee met het antwoord (`extra["klad"]`). Keuze van Claude, nog te bevestigen.
   **Spiekbrief** onderaan als er minstens 5 rijen over zijn (op 80×24 meestal niet). "deel → maal → min → neer"
   staat nu in de rand van het vak Vraag.
+- 22/11, tweede ronde (de vader, met een schermafdruk): **Reeks bovenaan** onder de broodkruimel (een vak vanaf 30
+  rijen, anders één regel); de vraag valt op door **meer lucht** rond + − × : = (groter typen kan niet in een terminal,
+  de vader: dan laten vallen); het **klad is een kolom van boven tot onder** naast Vraag, Tip en Spiekbrief (hoogstens
+  34 breed); de **spiekbrief scrollt** (PgUp, PgDn, het scrollwiel, of een klik op PgUp/PgDn in de rand); het maatje
+  heeft de rechterkolom.
+- **Eén werkwijze voor alle oefeningen** (de vader: geen K, die typen ze in woorden): **Tab = het klad** en terug,
+  zoals overal. In het rooster deed Tab "volgende rij": in de beta doet ↓ dat nu (de volgende rij, rechts
+  beginnen). Zonder plaats voor het klad blijft Tab "volgende rij". De voetregel laat [r] weg als het klad er is
+  (r staat in de rand), zodat [Esc] stoppen altijd past.
 - Tests: `tests/test_beta.py` (elk rooster en elke staartdeling in elk leerjaar past in het vak).
 
 ## Wat het makkelijk maakt (architectuur)
