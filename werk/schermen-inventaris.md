@@ -230,8 +230,8 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 ## Open vragen (met de aanbeveling van Claude)
 *1 tot 6 staan al in `schermen.md`; hier kort herhaald, 7 tot 24 zijn nieuw uit deze inventaris.*
 
-**22/11, de vader: akkoord met de aanbevelingen van 2, 4, 6, 9, 10, 12–18, 21, 22 en 23.** Nog open: **3** en
-**7** (uitleg gevraagd), **24** (nieuw). 1, 5, 11, 19 en 20: zie hieronder.
+**22/11, de vader: akkoord met de aanbevelingen van 2, 4, 6, 9, 10, 12–18, 21, 22 en 23.** Nog open: **7** en
+**24**. 1, 3, 5, 11, 19 en 20: zie hieronder.
 
 1. **Beantwoord 22/11:** de zoon heeft een scherm van 1920×1080, en vaak start de vader het programma in een tty
    op Fedora (Ctrl+Alt+F3). Dat is ongeveer **240×67** tekens (lettertype `eurlatgr`, 8×16). Kleinere schermen
@@ -239,10 +239,10 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 2. Grote modellen en objecten (getallenlijn 72, balk 52, groepjes 68, klok 21×11, digitaal klokje 33, schatkaart,
    cm²-veld) → **aanbeveling:** zo'n model krijgt de volle breedte links; de klad-kolom schuift eronder of wordt
    smaller; op 80×24 is het klad dan een paar regels onder het model.
-3. **Rustig of uitgebreid** (uitleg gevraagd 22/11): op een groot scherm is er plaats voor extra vakken (Reeks met
-   cijfers, Vandaag, Herhaalbak, Stappen, een groot maatje, de spiekbrief open). Rustig = alleen Vraag, Klad en Tip;
-   uitgebreid = alles. Nieuwe aanbeveling: **geen instelling**; eerst één indeling bouwen en zien of de zoon ze
-   druk vindt. Pas dan een keuze bij Weergave.
+3. **Rustig** — **gekozen 22/11 (de vader):** een schakelaar die het kind zelf aan en uit zet als het scherm te druk
+   is. Rustig = alleen **Vraag, Antwoord en Klad**; geen vak Tip, geen spiekbrief, geen cijfers. **Alle toetsen
+   blijven werken** en staan in de voetregel. *Nog te bevestigen:* F1 geeft in Rustig toch een tip (even, op de plaats
+   van de vraag), zodat Rustig geen hulp wegneemt; de toets **F3** (F1 = tip, F2 = klok); onthouden per kind.
 4. Tip-vak vóór F1 → alleen "F1 = tip 1 van 3".
 5. **Gekozen 22/11:** T2 nog niet: overslaan, `docs/koers.md` niet aanpassen.
 6. Hoofdmenu en titelscherm in vakken → apart beslissen.
@@ -314,19 +314,9 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 
 ---
 
-## M. De tty (Linux-console, Ctrl+Alt+F3): nieuw, 22/11
-De vader start het programma vaak in een tty. Nagekeken op het lettertype `eurlatgr` (Fedora):
-- [ ] **Deze tekens bestaan niet in de tty** (je ziet een ruitje of niets): `✔ ✘` (juist/fout, verplicht volgens
-      CLAUDE.md!), `○ ◉` (de bolletjes van de reeks), `▸ ◂`, `▼ ▲ ▶ ◀`, `★ ☆` (punten), `□ ▪`, `⌫`, `✦`, `◷`, `⋮`
-      en de ronde hoeken `╭ ╮ ╰ ╯` van de beta.
-- [ ] **Wel:** `─ │ ┌ ┐ └ ┘ ├ ┤ ┬ ┴ ┼ ━ ┃ ═ ║ ● • · › → ← ↑ ↓ × █ ░ ▒ ▀ ▄ ■ − ÷ … € ² ³`.
-- [ ] Dit geldt **ook voor `main` vandaag**: `tekens.ascii_nodig()` kijkt alleen of de terminal UTF-8 is, en de tty
-      is UTF-8. **Een fout die het kind kan merken → apart melden, niet in de schermen-verbouwing.** Voorstel: bij
-      `TERM=linux` een derde tekenreeks (bv. ✔ → `√` of `v`, ○ → `·`, ╭ → `┌`) in `tekens.py`.
-- [ ] Vakken in de tty: rechte hoeken `┌┐└┘` in plaats van `╭╮╰╯`.
-- [ ] Kleuren: de tty heeft 8 kleuren (16 met vet). De grijze band (`b_band`, kleur 236) wordt zwart: de vraag
-      valt dan niet meer op. Elk thema ook in de tty nakijken.
-- [ ] De pixel-avatar (▀▄ met kleuren) werkt met 8 kleuren: nakijken hoe hij eruitziet.
-- [ ] De muis werkt in de tty alleen met `gpm`. Klikken mag nooit de enige weg zijn (al zo: toets = klik).
-- [ ] Testen: naast tmux 80×24 ook een echte tty (of `TERM=linux` in tmux, al zijn de lettertekens daar wel
-      zichtbaar) en een groot scherm (240×67).
+## M. De tty (Linux-console, Ctrl+Alt+F3)
+- [ ] **De vader 22/11: in de tty werkt vandaag alles perfect** (Fedora 45 gebruikt een nieuwe console). **Daar
+      niets aan veranderen.** (Een eerste controle op het oude lettertype `eurlatgr` gaf ontbrekende tekens: dat
+      klopt niet voor deze console.)
+- [ ] Nieuwe vakken en tekens wel in de tty bekijken voor ze klaar heten (ook ╭╮╰╯ en de kleuren van de band).
+- [ ] Een groot scherm (ongeveer 240×67): zie vraag 24.
