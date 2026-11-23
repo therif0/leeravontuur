@@ -120,9 +120,10 @@ def teken_groepjes(s, y, g, x0=8, breedte=68):
     return yy - y + 1, rechts - x0
 
 
-def teken_model(s, y, model, x0=8, uitslag=None, tekst=""):
+def teken_model(s, y, model, x0=8, uitslag=None, tekst="", breedte=None):
     """Tekent een model uit kern/modellen.py. Geeft (hoogte, breedte). uitslag (True/False/None, na het nakijken)
-    en tekst (de vraag) gebruikt alleen de klok, voor het klokvenster."""
+    en tekst (de vraag) gebruikt alleen de klok, voor het klokvenster. breedte = zoveel kolommen vanaf x0 (een vak);
+    None = de vaste breedte van vroeger (de gewone schermen)."""
     if isinstance(model, Breukbalk):
         rechts = teken_balk(s, y, model.noemer, model.gearceerd, x0, model.label)
         return 2, rechts - x0 + 2 + len(model.label)
@@ -133,12 +134,15 @@ def teken_model(s, y, model, x0=8, uitslag=None, tekst=""):
                          + 2 + len(balk.label))
         return 2 * len(model.balken) - 1, rechts - x0
     if isinstance(model, Groepjes):
-        return teken_groepjes(s, y, model, x0)
+        return teken_groepjes(s, y, model, x0) if breedte is None else teken_groepjes(s, y, model, x0, min(68, breedte))
     if isinstance(model, Getallenlijn):
-        teken_getallenlijn(s, y + 1, model)
-        return 5, 76
+        if breedte is None:
+            teken_getallenlijn(s, y + 1, model)
+            return 5, 76
+        teken_getallenlijn(s, y + 1, model, x0=x0, breedte=breedte - LIJN_MARGE)
+        return 5, breedte
     if isinstance(model, Honderdveld):
-        return teken_veld(s, y, model.gekleurd)
+        return teken_veld(s, y, model.gekleurd) if breedte is None else teken_veld(s, y, model.gekleurd, x0)
     if isinstance(model, Procentstrook):
         return teken_strook(s, y, model, x0)
     if isinstance(model, Figuur):

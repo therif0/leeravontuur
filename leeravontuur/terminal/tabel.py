@@ -14,12 +14,14 @@ import textwrap
 
 from ..kern.getal import fmt, lees_getal
 from ..kern.wiskunde import eenheden as E
+from .invoer import Plaats
 from .scherm import BACKSPACE, ENTER, ESC, HULP
 
-TABEL_X, TABEL_Y = 12, 7
+TABEL_X, TABEL_Y = 12, 7  # waar de tabel staat op het gewone scherm (x0 = 4, y0 = 0)
 
 
-class _Maat:
+class _Maat(Plaats):
+    y0 = 0  # de bovenkant: de rijen van vroeger tellen vanaf hier (de voortgang staat erboven)
     eigen_scherm = True
     geen_tweede_kans = True
     vraag_is_zin = True  # "3 km = ? m" eindigt niet op een vraagteken, maar is wel de hele vraag
@@ -44,9 +46,21 @@ class _Maat:
     def nagekeken(self, goed, d, tijd, punten, lof, uitleg_na):
         self.goed, self.d, self.tijd, self.punten, self.lof_tekst, self.uitleg_na = goed, d, tijd, punten, lof, uitleg_na
 
+    def plaats(self, x, breed, y=0):
+        super().plaats(x, breed)
+        self.y0 = y
+
+    def teken_voor_maat(self, s, uitslag):
+        self.teken(s, uitslag)
+
+    def hoogte(self, nagekeken=False):
+        """Gemeten: tot de onderste rij die het object tekent, vanaf y0."""
+        return max(0, self.meet(staten=(False,) if nagekeken else (None,)).onder - self.y0)
+
 
 class EenheidInvoer(_Maat):
     """Een getal typen: 3 km = [     ] m."""
+    x0 = 6
 
     def __init__(self, v, o):
         super().__init__(v, o)
@@ -65,7 +79,7 @@ class EenheidInvoer(_Maat):
     def teken(self, s, goed):
         self.s = s
         v = self.om
-        y, x = 6, 6
+        y, x = self.y0 + 6, self.x0
         links = f"{fmt(v.getal)} {v.van}  =  "
         s.put(y, x, links, "bold")
         vx = x + len(links)
@@ -120,6 +134,7 @@ class EenheidInvoer(_Maat):
 
 class TabelInvoer(_Maat):
     """De eenhedentabel: cijfers in de vakjes, de komma verzetten, dan het antwoord aflezen."""
+    x0 = 4
     volgende = "volgende oefening"
     lof = springt = maatje_ruim = False
 
@@ -137,40 +152,59 @@ class TabelInvoer(_Maat):
     def buf(self):
         return self.antw
 
+    def randtekst(self):
+        richting = self.app.inst.typrichting if self.app else 1
+        return "typrichting →" if richting == 1 else "typrichting ←"
+
+    def teken_voor_maat(self, s, uitslag):
+        """Na het nakijken: met een fout in de tabel en de komma op een verkeerde plaats (de langste regels)."""
+        if uitslag is not None:
+            self.oordeel = E.controleer_tabel(self.om, self.cellen)
+            self.eigen_komma = (self.komma_naar + 1) % self.n
+        self.teken(s, uitslag)
+
     def knoppen(self):
         return [("Tab", "verder", 9), ("←", "terug", curses.KEY_LEFT), (",", "komma", ord(",")),
                 ("↓", "antwoord", curses.KEY_DOWN), ("Enter", "nakijken", 10), ("Esc", "stop", ESC)]
 
     def teken(self, s, goed):
         self.s = s
-        v, n, inst = self.om, self.n, self.app.inst
+        v, n = self.om, self.n
+        richting = self.app.inst.typrichting if self.app else 1  # zonder app (meten): naar rechts
         cw = E.cw(v.cat)
         kop_hoogte = 2 if E.ALIASSEN.get(v.cat) else 1
-        x = 4
+        x, y0 = self.x0, self.y0
         for stuk, rol in ((fmt(v.getal) + " ", "bold"), (v.van, "accent"), ("  =  ?  ", "bold"), (v.naar, "accent2")):
-            s.put(4, x, stuk, rol)
+            s.put(y0 + 4, x, stuk, rol)
             x += len(stuk)
-        s.put(5, 4, f"Komma achter {v.van} · nullen aanvullen tot {v.naar} · zet met , de komma achter {v.naar}", "dim")
-        if goed is None:
-            pijl = "→ naar rechts" if inst.typrichting == 1 else "← naar links"
-            s.put(6, 4, "Typrichting: ", "dim")
-            s.put(6, 17, pijl, "accent")
-            s.put(6, 32, "(r = omdraaien)", "dim")
-            s.zones.voeg(6, 4, 1, 43, ("richting",))
+        hint = f"Komma achter {v.van} · nullen aanvullen tot {v.naar} · zet met , de komma achter {v.naar}"
+        if self.in_vak:  # in een vak: over twee regels, en de typrichting staat in de rand (randtekst)
+            delen = hint.split(" · ")
+            s.put(y0 + 5, self.x0, " · ".join(delen[:2]), "dim")
+            s.put(y0 + 6, self.x0, delen[2], "dim")
+        else:
+            s.put(y0 + 5, self.x0, hint, "dim")
+        if goed is None and not self.in_vak:
+            pijl = "→ naar rechts" if richting == 1 else "← naar links"
+            s.put(y0 + 6, self.x0, "Typrichting: ", "dim")
+            s.put(y0 + 6, self.x0 + 13, pijl, "accent")
+            s.put(y0 + 6, self.x0 + 28, "(r = omdraaien)", "dim")
+            s.zones.voeg(y0 + 6, self.x0, 1, 43, ("richting",))
         komma_ok = self.eigen_komma == self.komma_naar
         rijen = [("Jij", self.cellen, self.komma_van, self.oordeel, self.eigen_komma, goed is not None and not komma_ok)]
         if goed is not None:
             verw = E.verwachte_cijfers(v)
             rijen.append(("Juist", [verw.get(k) for _, k, _ in E.TABELLEN[v.cat]], self.komma_naar, None, None, False))
-        ya = teken_tabel(s, TABEL_Y, TABEL_X, v, rijen, self.pos if goed is None and self.pos < n else None,
+        tx, ty = self.x0 + TABEL_X - 4, y0 + TABEL_Y
+        ya = teken_tabel(s, ty, tx, v, rijen, self.pos if goed is None and self.pos < n else None,
                          klikbaar=goed is None) + 1
-        s.put(ya, 4, "Antwoord:", "bold")
+        s.put(ya, self.x0, "Antwoord:", "bold")
         if goed is None:
             rol = "cursor" if self.pos == n else "veld"
         else:
             rol = "goedvak" if goed else "foutvak"
-        s.tekstvak(ya, 15, self.antw, 14, rol, ("cel", n) if goed is None else None)
-        s.put(ya, 33, v.naar, "accent2")
+        s.tekstvak(ya, self.x0 + 11, self.antw, 14, rol, ("cel", n) if goed is None else None)
+        s.put(ya, self.x0 + 29, v.naar, "accent2")
         if goed is None:
             if self.eigen_komma is not None:
                 gelezen = E.aflezen(self.cellen, self.eigen_komma)
@@ -181,35 +215,35 @@ class TabelInvoer(_Maat):
                     tekst = f"Aflezen met de komma achter {plek}: {gelezen} {plek}"
                 else:
                     tekst = f"Aflezen: {gelezen}, maar bij {plek} hoort geen eenheid."
-                s.put(ya + 2, 4, tekst, "accent2")
-            s.put(ya + 3, 4, self.melding, "fout")
+                s.put(ya + 2, self.x0, tekst, "accent2")
+            s.put(ya + 3, self.x0, self.melding, "fout")
             if self.pos < n:
-                s.cursor(True, TABEL_Y + 2 + kop_hoogte, TABEL_X + 1 + self.pos * (cw + 1) + cw // 2)
+                s.cursor(True, ty + 2 + kop_hoogte, tx + 1 + self.pos * (cw + 1) + cw // 2)
             else:
-                s.cursor(True, ya, 16 + len(self.antw))
+                s.cursor(True, ya, self.x0 + 12 + len(self.antw))
             return
         s.cursor(False)
         cijfers_ok = all(o is not False for o in self.oordeel)
         if goed:
-            s.put(ya + 2, 4, "✔ Je antwoord is juist!" + self.tijd + self.punten, "goed")
+            s.put(ya + 2, self.x0, "✔ Je antwoord is juist!" + self.tijd + self.punten, "goed")
         else:
-            s.put(ya + 2, 4, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{self.tijd}", "fout")
+            s.put(ya + 2, self.x0, f"✘ Niet juist. Het juiste antwoord is {fmt(v.antwoord)} {v.naar}.{self.tijd}", "fout")
         yy = ya + 3
         if self.tabel_ok:
-            s.put(yy, 4, "✔ Je tabel en je komma zijn juist.", "goed")
+            s.put(yy, self.x0, "✔ Je tabel en je komma zijn juist.", "goed")
             yy += 1
         if not cijfers_ok:
-            s.put(yy, 4, "✘ Kijk naar de vakjes met ! : de rij 'Juist' toont hoe het moet.", "fout")
+            s.put(yy, self.x0, "✘ Kijk naar de vakjes met ! : de rij 'Juist' toont hoe het moet.", "fout")
             yy += 1
         if self.eigen_komma is None:
-            s.put(yy, 4, f"✘ Je hebt de komma niet verzet: die moet achter {v.naar}.", "fout")
+            s.put(yy, self.x0, f"✘ Je hebt de komma niet verzet: die moet achter {v.naar}.", "fout")
             yy += 1
         elif not komma_ok:
-            s.put(yy, 4, f"✘ Je komma stond achter {E.eenheid_bij(v.cat, self.eigen_komma) or 'een leeg vakje'}, "
+            s.put(yy, self.x0, f"✘ Je komma stond achter {E.eenheid_bij(v.cat, self.eigen_komma) or 'een leeg vakje'}, "
                   f"maar moest achter {v.naar}.", "fout")
             yy += 1
-        s.put(yy, 4, E.regel_uitleg(v)[0], "accent")
-        s.put(yy + 1, 4, f"De komma springt van {v.van} naar {v.naar}: lees af → {fmt(v.antwoord)} {v.naar}.",
+        s.put(yy, self.x0, E.regel_uitleg(v)[0], "accent")
+        s.put(yy + 1, self.x0, f"De komma springt van {v.van} naar {v.naar}: lees af → {fmt(v.antwoord)} {v.naar}.",
               "accent")
 
     def toets(self, k):

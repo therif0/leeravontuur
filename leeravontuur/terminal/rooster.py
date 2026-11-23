@@ -1,6 +1,6 @@
 """Invullen in een rooster (cijferen onder elkaar) en de staartdeling stap voor stap.
 
-Beide zijn 'invoer-objecten' voor terminal/oefenaar.py:
+Beide zijn 'invoer-objecten' voor terminal/oefenaar.py (met de rechthoek van terminal/invoer.Plaats):
   teken(s, y, uitslag, hulp)  tekent (uitslag = None tijdens het invullen, anders True/False)
   toets(k)                    verwerkt een toets of klik; geeft None of (getypt antwoord, getal) als het kind klaar is
   hoogte(nagekeken), knoppen(), hint, melding, fouten, diagnose, cursor_pos, hulp(o), rijen()
@@ -9,15 +9,16 @@ Beide zijn 'invoer-objecten' voor terminal/oefenaar.py:
 import curses
 
 from ..kern.getal import lees_getal
+from .invoer import Plaats
 from .scherm import BACKSPACE, ENTER, ESC, HULP
 
 TAB = 9
 MAATJE_X, MAATJE_ONDER = 60, 9  # tot rij 9 staat rechts het maatje (vanaf kolom 60)
 
 
-class RoosterInvoer:
+class RoosterInvoer(Plaats):
     geen_tweede_kans = True  # het object kijkt zelf stap voor stap na
-    X0 = 12
+    x0 = 9  # de linkerkant: het teken (+ − ×); de eerste kolom staat 3 verder
 
     def __init__(self, v, o):
         self.v, self.o, self.r = v, o, v.model
@@ -36,7 +37,14 @@ class RoosterInvoer:
     # ---- vorm --------------------------------------------------------------------------
     def hoogte(self, nagekeken=False):
         n = len(self.r.invul)
-        return 1 + len(self.r.gegeven) + 1 + n + (1 if n > 1 else 0)
+        return self.boven() + 1 + len(self.r.gegeven) + 1 + n + (1 if n > 1 else 0)
+
+    def boven(self):
+        """In een vak staat de rij E T H … binnen de hoogte van het object (op de gewone schermen erboven)."""
+        return 1 if self.in_vak and self.toont_plaatswaarden() else 0
+
+    def randtekst(self):
+        return "typrichting ←" if self.links else "typrichting →"
 
     def rij_y(self, y):
         n = len(self.r.invul)
@@ -50,7 +58,7 @@ class RoosterInvoer:
         return self.plaatswaarden and self.r.plaatswaarden_kloppen()
 
     def x(self, kol):
-        return self.X0 + (3 if self.toont_plaatswaarden() else 2) * kol  # met plaatswaarden iets breder (TD, HD)
+        return self.x0 + 3 + (3 if self.toont_plaatswaarden() else 2) * kol  # met plaatswaarden iets breder (TD, HD)
 
     def knoppen(self):
         k = [("Enter", "klaar", 10), ("F1", "hulp", HULP), ("r", "richting", ord("r"))]
@@ -63,9 +71,11 @@ class RoosterInvoer:
     # ---- tekenen ------------------------------------------------------------------------
     def teken(self, s, y, uitslag=None, hulp=False):
         r = self.r
+        y += self.boven()
         ys = self.rij_y(y)
         bezig = uitslag is None
-        links, rechts = self.x(0) - 3, self.x(r.breedte - 1)
+        links, rechts = self.x0, self.x(r.breedte - 1)
+        cursor, cijfer = ("invulcursor", "") if self.in_vak else ("cursor", "bold")  # in een vak: rustiger
         if self.toont_plaatswaarden():
             self.teken_plaatswaarden(s, y - 1, rechts, bezig)
         # welke vakjes van de gegeven getallen oplichten bij hulp: {(rij, kolom)}
@@ -80,7 +90,7 @@ class RoosterInvoer:
         # onthouden-rij
         for c in range(r.breedte):
             tekst = self.onth.get(c, "·")
-            rol = "cursor" if bezig and self.rij == -1 and c == self.kol else ("accent2" if c in self.onth else "dim")
+            rol = cursor if bezig and self.rij == -1 and c == self.kol else ("accent2" if c in self.onth else "dim")
             s.put(y, self.x(c), tekst, rol)
             if bezig:
                 s.zones.voeg(y, self.x(c), 1, 1, ("cel", -1, c))
@@ -90,8 +100,8 @@ class RoosterInvoer:
         for i, tekst in enumerate(r.gegeven):
             yy = y + 1 + i
             cellen, komma = r.plaats(tekst)
-            for c, cijfer in cellen.items():
-                s.put(yy, self.x(c), cijfer, "accent" if (i, c) in licht else "bold")
+            for c, cijfer_tekst in cellen.items():
+                s.put(yy, self.x(c), cijfer_tekst, "accent" if (i, c) in licht else cijfer)
             if komma is not None:
                 s.put(yy, self.x(komma) + 1, ",", "bold")
             if i == len(r.gegeven) - 1:
@@ -107,7 +117,7 @@ class RoosterInvoer:
             laatste = i == n - 1
             for c in range(r.breedte):
                 if bezig and self.rij == i and c == self.kol:
-                    rol = "cursor"
+                    rol = cursor
                 elif not bezig and laatste:
                     rol = "goedvak" if uitslag else "foutvak"
                 else:
@@ -122,19 +132,21 @@ class RoosterInvoer:
                 s.put(yy, self.x(komma) + 1, ",", "bold")
             if n > 1 and not laatste:
                 s.put(yy, rechts + 3, r.invul[i], "dim")
-        if bezig:
+        if bezig:  # in een vak staat de typrichting in de rand (randtekst)
             pijl = "←" if self.links else "→"
-            s.put(ys[n - 1], rechts + 3, f"uitkomst  (typrichting {pijl})", "dim")
+            s.put(ys[n - 1], rechts + 3, "uitkomst" if self.in_vak else f"uitkomst  (typrichting {pijl})", "dim")
 
     def teken_plaatswaarden(self, s, y, rechts, bezig):
         """De rij E T H … boven de kolommen (#18); de letter van je kolom licht op, erachter wat ze betekent."""
         for c in range(self.r.breedte):
             naam = self.r.plaats_naam(c)
             if naam:
-                s.put(y, self.x(c) + 1 - len(naam[0]), naam[0], "cursor" if bezig and c == self.kol else "dim")
+                s.put(y, self.x(c) + 1 - len(naam[0]), naam[0],
+                      ("invulcursor" if self.in_vak else "cursor") if bezig and c == self.kol else "dim")
         naam = self.r.plaats_naam(self.kol)
         zin = f"◂ je staat bij de {naam[0]} ({naam[1]})" if naam else ""
-        if bezig and zin and rechts + 3 + len(zin) <= (MAATJE_X if y <= MAATJE_ONDER else 79):
+        grens = self.x0 + self.breed if self.in_vak else (MAATJE_X if y <= MAATJE_ONDER else 79)
+        if bezig and zin and rechts + 3 + len(zin) <= grens:
             s.put(y, rechts + 3, zin, "dim")
 
     # ---- invoer -------------------------------------------------------------------------
@@ -230,10 +242,11 @@ class RoosterInvoer:
         return uit
 
 
-class StaartInvoer:
+class StaartInvoer(Plaats):
     geen_tweede_kans = True  # het object kijkt zelf stap voor stap na
-    X0 = 8
+    x0 = 6  # de linkerkant: de vraag van de stap; de staartdeling zelf staat 2 verder
     VENSTER = 7  # zoveel regels van de staartdeling passen tijdens het rekenen
+    STAPPEN = "deel → maal → min → neer"
 
     def __init__(self, v, o):
         self.v, self.o, self.m = v, o, v.model
@@ -250,6 +263,9 @@ class StaartInvoer:
     def knoppen(self):
         return [("Enter", "ok", 10), ("F1", "tip", HULP), ("Esc", "stoppen", ESC)]
 
+    def randtekst(self):
+        return self.STAPPEN
+
     def teken(self, s, y, uitslag=None, hulp=False):
         m = self.m
         bezig = uitslag is None
@@ -257,9 +273,10 @@ class StaartInvoer:
         venster = self.VENSTER if bezig else self.VENSTER + 2
         if len(regels) > venster:
             regels = [regels[0], "  ⋮"] + regels[-(venster - 2):]
+        x2 = self.x0 + 2
         for j, regel in enumerate(regels):
-            s.put(y + j, self.X0, regel, "bold" if j == 0 else "")
-        xb = self.X0 + m.kolom(len(m.cijfers()) - 1) + 3
+            s.put(y + j, x2, regel, "bold" if j == 0 else "")
+        xb = x2 + m.kolom(len(m.cijfers()) - 1) + 3
         for j in range(max(3, len(regels))):
             s.put(y + j, xb, "│" if j != 1 else "├", "dim")
         breed = max(len(str(m.deler)), len(quotient), 3) + 2
@@ -273,10 +290,12 @@ class StaartInvoer:
             st = m.stappen[self.i]
             yy = y + self.VENSTER + 1
             vraag = f"Stap {self.i + 1}: {st.vraag}"
-            s.put(yy, 6, vraag, "bold")
-            s.tekstvak(yy, 6 + len(vraag) + 2, self.buf, 6, "veld")
-            self.cursor_pos = (yy, 6 + len(vraag) + 3 + len(self.buf))
-            s.put(yy, 6 + len(vraag) + 12, "deel → maal → min → neer"[:max(0, 78 - len(vraag) - 18)], "dim")
+            x = self.x0
+            s.put(yy, x, vraag, "bold")
+            s.tekstvak(yy, x + len(vraag) + 2, self.buf, 6, "veld")
+            self.cursor_pos = (yy, x + len(vraag) + 3 + len(self.buf))
+            if not self.in_vak:  # in een vak staat het in de rand (randtekst)
+                s.put(yy, x + len(vraag) + 12, self.STAPPEN[:max(0, 78 - len(vraag) - 18)], "dim")
 
     def toets(self, k):
         m = self.m

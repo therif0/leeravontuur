@@ -12,22 +12,15 @@ import re
 import textwrap
 
 from . import avatar as AV
+from . import indeling as I
 from . import vak
 from ..kern import avatar as A
+from ..kern import overzicht as OZ
 from .oefenaar import INVOER, KORT_HULP, LOF, Oefenaar, vraagtekst
 from .scherm import ENTER, ESC, HULP
 
 DOMEINEN = {"Cijferen"}       # waar de beta geldt (het label van het domein in het leerplan)
 INVOER_BETA = {"rooster", "staart"}
-RECHTS = 20                   # de rechterkolom: het maatje
-MAATJE_H = 11                 # 8 rijen pixels, het tekstje en de rand
-TIP_H, UITLEG_H = 6, 14       # hoogstens zo hoog als de spiekbrief eronder past
-SPIEK_MIN = 4                 # de spiekbrief komt onderaan als er zoveel rijen over zijn (anders: scrollen)
-GROOT_H = 30                  # vanaf zoveel rijen: de reeks in een vak en lucht rond de vraag
-STAPPEN = "deel → maal → min → neer"  # staat bij de staartdeling in de rand van het vak
-VERSCHUIF = {"rooster": -6, "staart": -3}  # het object tekent op vaste kolommen: zo komt het in het vak
-KORTER = {"uitkomst  (typrichting ←)": "uitkomst", "uitkomst  (typrichting →)": "uitkomst"}  # de richting staat in de rand
-RUSTIG = {"bold": "", "cursor": "invulcursor"}  # de cijfers in het rooster gewoon (de vraag valt op), de cursor donkergeel
 GEEN_TIP = {"rooster": "F1 = een tip voor dit vakje.", "staart": "F1 = een tip voor deze stap."}
 
 
@@ -38,34 +31,6 @@ def aan():
 def oefenaar_klasse(domein):
     """De Oefenaar voor een domein: de beta voor Cijferen als ze aan staat, anders de gewone."""
     return BetaOefenaar if aan() and domein in DOMEINEN else Oefenaar
-
-
-class InVak:
-    """Het scherm zoals een invoer-object het ziet: verschoven met dx en afgeknipt aan de rand van het vak."""
-
-    def __init__(self, s, dx, links, rechts, rollen=None):
-        self.s, self.dx, self.links, self.rechts = s, dx, links, rechts
-        self.rollen = rollen or {}  # andere rollen dan het object vraagt (bv. een rustiger rooster)
-        self.zones = self
-
-    def put(self, y, x, tekst, rol=""):
-        tekst = KORTER.get(tekst, tekst)
-        rol = self.rollen.get(rol, rol)
-        if tekst.startswith(STAPPEN[:6]):  # "deel → maal …": in de rand van het vak
-            return
-        x += self.dx
-        if x < self.links:
-            tekst, x = tekst[self.links - x:], self.links
-        self.s.put(y, x, tekst[:max(0, self.rechts - x)], rol)
-
-    def voeg(self, y, x, h, w, actie):
-        self.s.zones.voeg(y, x + self.dx, h, w, actie)
-
-    def tekstvak(self, y, x, tekst, breedte, rol, actie=None):
-        self.s.tekstvak(y, x + self.dx, tekst, breedte, rol, actie)
-
-    def __getattr__(self, naam):
-        return getattr(self.s, naam)
 
 
 def ruim(tekst):
@@ -101,7 +66,7 @@ class BetaOefenaar(Oefenaar):
         laatste_hulp = None  # nog eens F1 op dezelfde plek = de spiekbrief
         gezicht, ballon, spring = "normaal", "", False
         kop, rol, uitleg = "", "", []
-        self.spiek_top, self.spiek_zicht = None, None  # None = bij het stuk van de vraag; zicht = (top, plaats, n)
+        self.spiek_top, self.spiek_zicht = None, None  # None = bij het stuk van de vraag; zicht = (top, plaats)
         self.herkansing = False
         ses.vraag_getoond()
         lof = random.choice(LOF)
@@ -127,11 +92,8 @@ class BetaOefenaar(Oefenaar):
             k = s.toets()
             if k == curses.KEY_RESIZE:
                 continue
-            if self.spiek_zicht and (k in (curses.KEY_PPAGE, curses.KEY_NPAGE) or
-                                     (isinstance(k, tuple) and k[0] == "scroll")):  # de spiekbrief scrollen
-                top, plaats, n = self.spiek_zicht
-                stap = k[1] * 3 if isinstance(k, tuple) else (plaats - 1) * (-1 if k == curses.KEY_PPAGE else 1)
-                self.spiek_top = max(0, min(n - plaats, top + stap))
+            if self.spiek_zicht and (top := vak.scroll_stap(k, *self.spiek_zicht)) is not None:  # de spiekbrief
+                self.spiek_top = max(0, top)
                 continue
             if goed is not None:
                 if k in ENTER or k == ord(" "):
@@ -181,167 +143,143 @@ class BetaOefenaar(Oefenaar):
                 kop, rol, uitleg = "Je antwoord is bewaard.", "info", []
 
     # ---- tekenen in vakken -------------------------------------------------------------
-    # bovenaan de reeks; links Vraag, Tip (of de uitleg) en de Spiekbrief; rechts het maatje. Cijferen heeft geen klad
-    # (de vader 22/11: het rooster is het rekenwerk; de klad-kolom was een test van de indeling)
+    # bovenaan de reeks; links Vraag, Tip (of de uitleg) en de Spiekbrief; rechts het maatje (terminal/indeling.py).
+    # Cijferen heeft geen klad (de vader 22/11: het rooster is het rekenwerk).
+
+    def indeling(self, obj):
+        """De vakken voor deze vraag; het object krijgt zijn plaats links in het vak Vraag. Is het breder dan dat vak,
+        dan krijgt het de volle breedte (zonder maatje)."""
+        s = self.s
+        h, w = s.maat()
+        klok = s.klokvenster is not None and s.klokvenster.toont()
+        ind = I.oefenscherm(h, w, maatje=self.app.inst.avatar, klokvenster=klok)
+        obj.plaats(ind.links.binnen.x, ind.links.binnen.w)
+        if ind.maatje and obj.breedte(s) > ind.links.binnen.w:
+            ind = I.oefenscherm(h, w, maatje=False)
+            obj.plaats(ind.links.binnen.x, ind.links.binnen.w)
+        return ind
 
     def teken(self, o, v, obj, soort, ses, nr, resultaten, vrij, goed, tip, spiek, kop, rol, uitleg,
               gezicht, ballon, spring):
         s = self.s
-        h, w = s.maat()
-        rechts = RECHTS if self.app.inst.avatar else 0
-        links = w - rechts  # tot hier: reeks, vraag, tip en spiekbrief
+        ind = self.indeling(obj)
+        links, b, groot = ind.links, ind.links.binnen, ind.groot
         bezig = goed is None
-        groot = h >= GROOT_H
-        ry = self.teken_reeks(links, groot, ses, nr, resultaten, vrij, goed)
-        vraag = ruim(v.tekst)
-        vb = links  # de breedte van Vraag, Tip en Spiekbrief
-        tw = vb - 6
-        pw = 1 if getattr(obj, "toont_plaatswaarden", lambda: False)() else 0
-        vy = ry + 1 + groot           # de vraag, op een band (op een groot scherm 3 rijen hoog)
-        oy = vy + 2 + groot + pw      # het object
+        self.teken_reeks(ind, ses, nr, resultaten, vrij, goed)
+        vy = links.y + 1 + groot      # de vraag, op een band (op een groot scherm 3 rijen hoog)
+        oy = vy + 2 + groot           # het object, na een lege rij
         onder = oy + obj.hoogte(not bezig)  # de eerste rij onder het object: daar komt de rand (of de melding)
-        mel = regels(obj.melding, tw)[:2] if bezig and obj.melding else []
-        hint = hint_regels(obj.hint, tw)[:2] if bezig else []
-        while hint and onder + 1 + max(1, len(mel)) + len(hint) + 3 > h - 1:  # het vak Tip heeft 3 rijen nodig
+        mel = regels(obj.melding, b.w)[:2] if bezig and obj.melding else []
+        hint = hint_regels(obj.hint, b.w)[:2] if bezig else []
+        while hint and onder + 1 + max(1, len(mel)) + len(hint) + 3 > links.onder:  # Tip heeft 3 rijen nodig
             hint.pop()
         if bezig:  # een lege rij onder het object, dan de melding en de hint
             onder += 1
             for i, stuk in enumerate(mel):
-                s.put(onder + i, 3, stuk, obj.melding_rol)
+                s.put(onder + i, b.x, stuk, obj.melding_rol)
             for i, stuk in enumerate(hint):
-                s.put(onder + max(1, len(mel)) + i, 3, stuk, "dim")
+                s.put(onder + max(1, len(mel)) + i, b.x, stuk, "dim")
             onder += max(1, len(mel)) + len(hint)
+        vraag_r, tip_r, spiek_r = I.verdeel(links, onder - links.y + 1, bezig, spiek)
         titel = (f"Vrij oefenen: {self.vrij_goed + bool(goed)} van {self.vrij_aantal + (goed is not None)} juist"
                  if vrij else f"Vraag {nr + 1} van {self.totaal}")
         niveau = soort.split(" · ")[-1]  # het onderwerp staat al in de broodkruimel
-        if len(niveau) + len(titel) + 14 > vb:
+        if len(niveau) + len(titel) + 14 > links.w:
             niveau = niveau.split(" (")[0]
-        richting = getattr(obj, "links", None)
-        onder_label = (("typrichting ←" if richting else "typrichting →") if richting is not None else
-                       STAPPEN if v.invoer == "staart" else "")
-        vak.teken(s, ry, 0, onder - ry + 1, vb, titel, niveau, onder_label if bezig else "",
+        richting = getattr(obj, "links", None)  # het rooster: een klik op de typrichting = r
+        vak.teken(s, vraag_r.y, vraag_r.x, vraag_r.h, vraag_r.w, titel, niveau, obj.randtekst() if bezig else "",
                   ord("r") if bezig and richting is not None else None)
         for r in range(vy - groot, vy + groot + 1):  # de band: één spatie van de rand
-            s.put(r, 2, " " * (vb - 4), "band")
-        s.put(vy, 4, vraag[:vb - 8], "vraag")
-        obj.teken(InVak(s, VERSCHUIF[v.invoer], 2, vb - 2, RUSTIG), oy, goed, tip)
-        # eronder: de tip tijdens het rekenen, de uitleg na het nakijken
-        ty = onder + 1
-        th = min(h - 1 - ty, TIP_H if bezig else UITLEG_H)
-        if not spiek:  # geen spiekbrief (een examen): een groot scherm krijgt geen groot leeg vak
-            th = min(h - 1 - ty, 8 if bezig else UITLEG_H)
-        elif h - 1 - ty - th < SPIEK_MIN:  # te weinig plaats: de tip krijgt 3 rijen, de spiekbrief de rest
-            th = max(3, h - 1 - ty - SPIEK_MIN) if h - 1 - ty >= 3 + SPIEK_MIN else h - 1 - ty
+            s.put(r, links.x + 2, " " * (links.w - 4), "band")
+        s.put(vy, links.x + 4, ruim(v.tekst)[:links.w - 8], "vraag")
+        obj.teken(s, oy, goed, tip)
+        self.teken_tip(o, v, obj, tip_r, b.w, bezig, tip, spiek, kop, rol, uitleg)
+        self.spiek_zicht = None
+        if spiek_r:  # de spiekbrief, altijd open (de vader, 22/11); in een examen niet
+            self.teken_spiek(o, v, spiek_r)
+        if ind.maatje:
+            self.teken_maatje(ind.maatje, goed, tip, gezicht, ballon, spring)
+        if bezig and obj.cursor_pos:
+            s.cursor(True, *obj.cursor_pos)
+        else:
+            s.cursor(False)
+
+    def teken_tip(self, o, v, obj, r, tw, bezig, tip, spiek, kop, rol, uitleg):
+        """Het vak onder de vraag: de tip tijdens het rekenen, de uitleg na het nakijken."""
+        s, x = self.s, r.binnen.x
         if bezig:
-            vak.teken(s, ty, 0, th, vb, "Tip", "", "F1" if self.hulp.tips else "", HULP)
+            vak.teken(s, r.y, r.x, r.h, r.w, "Tip", "", "F1" if self.hulp.tips else "", HULP)
             if not self.hulp.tips:
                 tekst, trol = "Geen tips in deze reeks.", "dim"
             elif tip:
                 tekst, trol = obj.hulp(o), "accent"
-                if spiek and len(regels(tekst + KORT_HULP, tw)) <= th - 2:
+                if spiek and len(regels(tekst + KORT_HULP, tw)) <= r.h - 2:
                     tekst += KORT_HULP
             else:
                 tekst, trol = GEEN_TIP[v.invoer], "dim"
-            for i, stuk in enumerate(regels(tekst, tw)[:th - 2]):
-                s.put(ty + 1 + i, 3, stuk, trol)
-        else:
-            vak.teken(s, ty, 0, th, vb, "Goed!" if goed else "Wat ging er mis?" if rol == "fout" else "Uitleg")
-            uit = [(stuk, rol) for stuk in regels(kop, tw)] + [("", "")]
-            for regel in uitleg:
-                tekst, r = regel if isinstance(regel, tuple) else (regel, "accent")
-                uit += [(stuk, r) for stuk in regels(tekst, tw, "  " if r == "" else "")]
-            plaats = th - 2
-            if len(uit) > plaats:
-                uit = uit[:plaats - 1] + [("…", "dim")]
-            for i, (stuk, r) in enumerate(uit):
-                s.put(ty + 1 + i, 3, stuk, r)
-        sy = ty + th
-        self.spiek_zicht = None
-        if spiek and h - 1 - sy >= SPIEK_MIN:  # de spiekbrief, altijd open (de vader, 22/11); in een examen niet
-            self.teken_spiek(o, v, sy, h - 1 - sy, vb)
-        if rechts:
-            self.teken_maatje(links, h, goed, tip, gezicht, ballon, spring)
-        if bezig and obj.cursor_pos:
-            y, x = obj.cursor_pos
-            s.cursor(True, y, x + VERSCHUIF[v.invoer])
-        else:
-            s.cursor(False)
+            vak.lijst(s, r.y + 1, x, r.h - 2, tw, [(stuk, trol) for stuk in regels(tekst, tw)])
+            return
+        titel = {"goed": "Goed!", "fout": "Wat ging er mis?"}.get(rol, "Uitleg")  # een examen ("info"): niets verklappen
+        vak.teken(s, r.y, r.x, r.h, r.w, titel)
+        uit = [(stuk, rol) for stuk in regels(kop, tw)] + [("", "")]
+        for regel in uitleg:
+            tekst, ro = regel if isinstance(regel, tuple) else (regel, "accent")
+            uit += [(stuk, ro) for stuk in regels(tekst, tw, "  " if ro == "" else "")]
+        if len(uit) > r.h - 2:
+            uit = uit[:r.h - 3] + [("…", "dim")]
+        vak.lijst(s, r.y + 1, x, r.h - 2, tw, uit)
 
-    def teken_reeks(self, breed, groot, ses, nr, resultaten, vrij, goed):
-        """Bovenaan, onder de broodkruimel: hoe ver je bent. Op een groot scherm in een vak, anders één regel.
-        Geeft de eerste vrije rij."""
-        s = self.s
-        if vrij:
-            delen = [f"juist {self.vrij_goed + bool(goed)} van {self.vrij_aantal + (goed is not None)}"]
-            bolletjes = []
+    def teken_reeks(self, ind, ses, nr, resultaten, vrij, goed):
+        """Bovenaan, onder de broodkruimel: hoe ver je bent (de regel komt uit kern/overzicht.py). Op een groot scherm
+        in een vak, anders één regel."""
+        s, r = self.s, ind.reeks
+        naam = "Vrij oefenen" if vrij else "Reeks"
+        goed_lijst = [x["goed"] for x in resultaten] + ([goed] if goed is not None else [])
+        regel = OZ.reeks_regel(goed_lijst, nr, self.totaal, ses.punten if ses.met_punten else None, ses.op_rij,
+                               (self.vrij_goed + bool(goed), self.vrij_aantal + (goed is not None)) if vrij else None)
+        if ind.groot:
+            vak.teken(s, r.y, r.x, r.h, r.w, naam)
+            y, x = r.y + 1, r.x + 3
         else:
-            bolletjes = []
-            for i in range(self.totaal):
-                if i < len(resultaten) or (i == nr and goed is not None):
-                    bolletjes.append(("✔", "goed") if (resultaten[i]["goed"] if i < len(resultaten) else goed)
-                                     else ("✘", "fout"))
-                else:
-                    bolletjes.append(("◉", "accent") if i == nr else ("○", "dim"))
-            juist, gedaan = sum(r["goed"] for r in resultaten) + bool(goed), len(resultaten) + (goed is not None)
-            delen = [f"vraag {nr + 1} van {self.totaal}"] + ([f"juist {juist} van {gedaan}"] if gedaan else [])
-        if ses.met_punten:
-            delen.append(f"punten +{ses.punten}")
-        if ses.op_rij >= 2:
-            delen.append(f"{ses.op_rij} op rij")
-        y = 2 if groot else 1
-        x = 3 if groot else 1
-        if groot:
-            vak.teken(s, 1, 0, 3, breed, "Vrij oefenen" if vrij else "Reeks")
-        else:
-            s.put(y, x, "Vrij oefenen" if vrij else "Reeks", "accent")
-            x += 8 if not vrij else 14
-        for i, (ch, r) in enumerate(bolletjes[:20]):
-            s.put(y, x + i, ch, r)
-        x += len(bolletjes[:20]) + (3 if bolletjes else 0)
-        s.put(y, x, "  ·  ".join(delen)[:max(0, breed - x - 2)], "dim")
-        return 4 if groot else 2
+            s.put(r.y, r.x + 1, naam, "accent")
+            y, x = r.y, r.x + 1 + len(naam) + 3
+        for tekst, rol in regel:
+            s.put(y, x, tekst[:max(0, r.rechts - 2 - x)], rol)
+            x += len(tekst)
 
-    def teken_spiek(self, o, v, y, h, breed):
+    def teken_spiek(self, o, v, r):
         """De spiekbrief in een vak, met het stuk van deze vraag in het licht (de rest gedimd). Past ze niet: PgUp,
-        PgDn of het scrollwiel."""
-        s = self.s
+        PgDn, het scrollwiel of een klik op PgUp/PgDn in de rand (vak.scroll_rand)."""
+        s, b = self.s, r.binnen
         kop = o.kop_op_spiekbrief(v)
         brief, i_kop = [], None  # de regels, gebroken op de breedte van het vak (met dezelfde inspringing)
-        for tekst, r in o.spiekbrief():
+        for tekst, ro in o.spiekbrief():
             if tekst == kop:
                 i_kop = len(brief)
             inspring = " " * (len(tekst) - len(tekst.lstrip()))
-            brief += [(stuk, r) for stuk in (textwrap.wrap(tekst, breed - 6, initial_indent="",
-                                                           subsequent_indent=inspring + "  ") if tekst.strip()
-                                             else [""])]
-        plaats = h - 2
-        top = self.spiek_top if self.spiek_top is not None else (i_kop or 0)
-        top = max(0, min(len(brief) - plaats, top))
-        meer = len(brief) > plaats
-        vak.teken(s, y, 0, h, breed, "Spiekbrief", o.naam,
-                  f"{'▲' if top else ' '}{'▼' if top + plaats < len(brief) else ' '} PgUp PgDn" if meer else "")
-        if meer:
-            self.spiek_zicht = (top, plaats, len(brief))
-            s.zones.voeg(y + h - 1, breed - 13, 1, 4, curses.KEY_PPAGE)  # "PgUp" en "PgDn" in de rand
-            s.zones.voeg(y + h - 1, breed - 8, 1, 4, curses.KEY_NPAGE)
-        stuk = False
-        for i, (tekst, r) in enumerate(brief):
+            brief += [(stuk, ro) for stuk in (textwrap.wrap(tekst, b.w + 2, subsequent_indent=inspring + "  ")
+                                              if tekst.strip() else [""])]
+        stuk, getoond = False, []
+        for i, (tekst, ro) in enumerate(brief):
             if i_kop is not None:  # het stuk van de vraag: van het kopje tot de volgende lege regel
                 stuk = i >= i_kop and (stuk or i == i_kop) and not (i > i_kop and not tekst.strip())
-            if top <= i < top + plaats:
-                voor = "▸ " if i == i_kop else "  "
-                s.put(y + 1 + i - top, 2, (voor + tekst)[:breed - 4],
-                      (r or "") if stuk or i_kop is None else "dim")
+            getoond.append((("▸ " if i == i_kop else "  ") + tekst, (ro or "") if stuk or i_kop is None else "dim"))
+        vak.teken(s, r.y, r.x, r.h, r.w, "Spiekbrief", o.naam)
+        top = self.spiek_top if self.spiek_top is not None else (i_kop or 0)
+        top, boven, onder = vak.lijst(s, r.y + 1, r.x + 2, r.h - 2, r.w - 4, getoond, top)
+        if boven or onder:
+            self.spiek_zicht = (top, r.h - 2)
+            vak.scroll_rand(s, r.y, r.x, r.h, r.w, boven, onder)
 
-    def teken_maatje(self, x, h, goed, tip, gezicht, ballon, spring):
+    def teken_maatje(self, r, goed, tip, gezicht, ballon, spring):
         """De rechterkolom: het maatje, van boven tot onder."""
         s = self.s
-        vak.teken(s, 1, x, h - 2, RECHTS, "Maatje")
+        vak.teken(s, r.y, r.x, r.h, r.w, "Maatje")
         uitdrukking = "denken" if tip and goed is None else gezicht
         if AV.kan_pixels(s):
-            AV.teken(s, 2 - spring, x + 2, self.app.avatar_config(), uitdrukking)
+            AV.teken(s, r.y + 1 - spring, r.x + 2, self.app.avatar_config(), uitdrukking)
         else:
-            s.put(5, x + 2, A.TEKSTGEZICHT.get(uitdrukking, A.TEKSTGEZICHT["normaal"]), "accent")
+            s.put(r.y + 4, r.x + 2, A.TEKSTGEZICHT.get(uitdrukking, A.TEKSTGEZICHT["normaal"]), "accent")
         if ballon:
-            for i, stuk in enumerate(regels(ballon, RECHTS - 4)[:3]):
-                s.put(MAATJE_H - 1 + i, x + 2, stuk, "accent")
+            for i, stuk in enumerate(regels(ballon, r.w - 4)[:3]):
+                s.put(r.y + I.MAATJE_H - 2 + i, r.x + 2, stuk, "accent")
