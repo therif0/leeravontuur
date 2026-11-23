@@ -1,0 +1,280 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/snelrekenen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 62,
+ "source_sha256": "a1f843a6b1abfe9b86979be69134e3add9f46acc10df15dcfc69c72891265d52",
+ "purpose": "Speed practice: 60 seconds as many as possible, or 20 sums as fast as possible, with records and history.",
+ "details": "Questions come from the hoofdrekenen topics (tables, plus and minus, doubles and halves). A round's score is the number correct for 60 s, or negative time with 5 s penalty per mistake for 20 sums (only complete rounds count). Bonus points: a new record (+25) and the first round of the day with at least 10 correct (+10). Rounds are stored as sessions in the storage with skill id 'snelrekenen.<kind>'.",
+ "module_docstring": "Snelrekenen: 60 seconden zoveel mogelijk, of 20 sommen om het snelst. Met records en een verloop.",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/terminal/curriculum/modi.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "leeravontuur/terminal/schermen/snelrekenen.py",
+  "tests/test_hoofdrekenen.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "SOORTEN",
+   "line": 8,
+   "value_type": "Dict",
+   "value_preview": "{'tafels': ('Tafels', [H.TAFELS]), 'plusmin': ('Plus en min', [H.PLUS…",
+   "explanation": "Kind id to (display name, list of hoofdrekenen topic classes it draws from)."
+  },
+  {
+   "name": "MODI",
+   "line": 13,
+   "value_type": "Dict",
+   "value_preview": "{'snel60': '60 seconden', 'snel20': '20 sommen'}",
+   "explanation": "Mode id to display name (60 seconds, 20 sums)."
+  },
+  {
+   "name": "SECONDEN",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "60",
+   "explanation": "Length of the timed mode."
+  },
+  {
+   "name": "SOMMEN",
+   "line": 15,
+   "value_type": "Constant",
+   "value_preview": "20",
+   "explanation": "Number of sums in the sprint mode."
+  },
+  {
+   "name": "BONUS_RECORD",
+   "line": 16,
+   "value_type": "Constant",
+   "value_preview": "25",
+   "explanation": "Points for a new record."
+  },
+  {
+   "name": "BONUS_DAG",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "10",
+   "explanation": "Points for the first round of the day with at least 10 correct."
+  }
+ ],
+ "registries": [
+  {
+   "name": "SOORTEN",
+   "line": 8,
+   "description": "Maps a speed-practice kind to the list of Onderwerp classes (H.TAFELS, H.PLUSMIN, H.DUBBELHELFT) from which vraag() picks one at random and calls its maak method."
+  }
+ ],
+ "classes": [],
+ "functions": [
+  {
+   "name": "vaardigheid",
+   "qualname": "vaardigheid",
+   "kind": "function",
+   "lines": [20, 21],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Skill id of a speed-practice kind: 'snelrekenen.<kind>'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [106]},
+    {"caller": "leeravontuur/kern/snelrekenen.py::beloon", "lines": [56]},
+    {"caller": "leeravontuur/kern/snelrekenen.py::record", "lines": [41]},
+    {"caller": "leeravontuur/kern/snelrekenen.py::verloop", "lines": [46]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [70]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [24]},
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde", "lines": [29]},
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel", "lines": [51]}
+   ]
+  },
+  {
+   "name": "vraag",
+   "qualname": "vraag",
+   "kind": "function",
+   "lines": [24, 26],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Picks a random topic of this kind and makes a question for the year; returns (topic, question).",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "onderwerp.maak",
+     "lines": [26],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel", "lines": [54, 97]}
+   ]
+  },
+  {
+   "name": "score",
+   "qualname": "score",
+   "kind": "function",
+   "lines": [29, 36],
+   "params": [
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ronde", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoe goed een ronde was: hoger = beter. 60 s: aantal juist; 20 sommen: snel én juist.",
+   "explanation": "Higher is better: number correct for the 60-second mode; for 20 sums minus (time in ms + 5000 per mistake), or None when fewer than 20 were answered.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/snelrekenen.py::beloon", "lines": [52, 53]},
+    {"caller": "leeravontuur/kern/snelrekenen.py::record", "lines": [41, 42]}
+   ]
+  },
+  {
+   "name": "record",
+   "qualname": "record",
+   "kind": "function",
+   "lines": [39, 42],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De beste ronde tot nu toe (of None).",
+   "explanation": "The best earlier round of this mode and kind (by score), or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/snelrekenen.py::score", "lines": [41, 42]},
+    {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [41]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.sessie_overzicht",
+     "lines": [41],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessie_overzicht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde", "lines": [22]},
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_snelrekenen_20_sommen", "lines": [133]}
+   ]
+  },
+  {
+   "name": "verloop",
+   "qualname": "verloop",
+   "kind": "function",
+   "lines": [45, 46],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "aantal", "kind": "positional", "default": "8", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The last few rounds (default 8) of this mode and kind, oldest first, for the progress view.",
+   "calls": [
+    {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [46]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.sessie_overzicht",
+     "lines": [46],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessie_overzicht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.uitslag", "lines": [120]}
+   ]
+  },
+  {
+   "name": "beloon",
+   "qualname": "beloon",
+   "kind": "function",
+   "lines": [49, 62],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ronde", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorig_record", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bonuspunten na een ronde. Geeft [(punten, reden)].",
+   "explanation": "Awards and stores the bonus points after a round (new record, first good round of the day) and returns them as (points, reason) tuples.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::dag", "lines": [55]},
+    {"target": "leeravontuur/kern/snelrekenen.py::score", "lines": [52, 53]},
+    {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [56]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.punten_bij",
+     "lines": [61],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.sessie_overzicht",
+     "lines": [56],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessie_overzicht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde", "lines": [32]}
+   ]
+  }
+ ]
+}

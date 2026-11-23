@@ -1,0 +1,364 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/herhaling.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 84,
+ "source_sha256": "5578ae6ad3318e986dd8a763f51b79e4c53f82da7d6f2252ea88f2fa6b0bdbb9",
+ "purpose": "The repeat bin (Leitner system) and the mastery status per skill.",
+ "details": "A wrong topic enters bin 1 and returns tomorrow; each correct repeat moves it to bin 2 (after 3 days) and bin 3 (after 7 days), and a correct answer after bin 3 removes it. A wrong repeat starts again in bin 1. Repeating always uses new numbers so the child learns the rule, not the answer. Mastery: at least 10 answers and at least 80 percent of the last 20 correct; a mastered skill not practised for 14 days becomes 'fris houden' (keep fresh). Storage goes through Opslag.",
+ "module_docstring": "De herhaalbak (Leitner-systeem) en de beheersing per vaardigheid.",
+ "imports": [
+  {
+   "module": "datetime",
+   "names": ["date", "timedelta"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/overzicht.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/reeks.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "tests/test_gemengd.py",
+  "tests/test_herhaling.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_reeks.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "WACHTDAGEN",
+   "line": 13,
+   "value_type": "Dict",
+   "value_preview": "{1: 1, 2: 3, 3: 7}",
+   "explanation": "Days until the next time for each bin (1, 3, 7)."
+  },
+  {
+   "name": "LAATSTE_BAK",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "The last bin number; a correct answer there finishes the topic."
+  },
+  {
+   "name": "MIN_VRAGEN_BEHEERST",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "10",
+   "explanation": "Minimum number of answers before a skill can count as mastered."
+  },
+  {
+   "name": "DREMPEL_BEHEERST",
+   "line": 18,
+   "value_type": "Constant",
+   "value_preview": "0.8",
+   "explanation": "Fraction correct (of the last 20) needed for mastery."
+  },
+  {
+   "name": "NIET_GEZIEN",
+   "line": 47,
+   "value_type": "Tuple",
+   "value_preview": "('nog niet gezien', 'bezig', 'beheerst')",
+   "explanation": "Status text: not seen yet."
+  },
+  {
+   "name": "BEZIG",
+   "line": 47,
+   "value_type": "Tuple",
+   "value_preview": "('nog niet gezien', 'bezig', 'beheerst')",
+   "explanation": "Status text: busy."
+  },
+  {
+   "name": "BEHEERST",
+   "line": 47,
+   "value_type": "Tuple",
+   "value_preview": "('nog niet gezien', 'bezig', 'beheerst')",
+   "explanation": "Status text: mastered."
+  },
+  {
+   "name": "FRIS_HOUDEN",
+   "line": 48,
+   "value_type": "Constant",
+   "value_preview": "'fris houden'",
+   "explanation": "Status text: mastered but not practised for FRIS_DAGEN days, so it fades."
+  },
+  {
+   "name": "FRIS_DAGEN",
+   "line": 49,
+   "value_type": "Constant",
+   "value_preview": "14",
+   "explanation": "Days without practice after which a mastered skill needs freshening."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "vandaag",
+   "qualname": "vandaag",
+   "kind": "function",
+   "lines": [21, 22],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Today's date from the program clock.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [22]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".date"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [42]},
+    {"caller": "leeravontuur/kern/herhaling.py::fout", "lines": [27]},
+    {"caller": "leeravontuur/kern/herhaling.py::juist", "lines": [37]}
+   ]
+  },
+  {
+   "name": "fout",
+   "qualname": "fout",
+   "kind": "function",
+   "lines": [25, 27],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null},
+    {"name": "data", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een fout: (terug) naar bak 1, morgen opnieuw.",
+   "explanation": "Puts (or puts back) a wrongly answered topic in bin 1, due tomorrow.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::vandaag", "lines": [27]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.herhaal_zet",
+     "lines": [27],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaal_zet"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["datetime.timedelta"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [196]},
+    {"caller": "leeravontuur/kern/rapporten.py::zet_in_herhaalbak", "lines": [472]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.verwerk", "lines": [646, 648]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_fout_begint_opnieuw", "lines": [51, 54]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_leitner", "lines": [33]},
+    {"caller": "tests/test_herhaling.py::TestSchermen.test_herhalen_en_verder", "lines": [113]}
+   ]
+  },
+  {
+   "name": "juist",
+   "qualname": "juist",
+   "kind": "function",
+   "lines": [30, 38],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "item", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Juist bij het herhalen: een bak verder, of klaar na de laatste bak. Geeft True als het onderwerp klaar is.",
+   "explanation": "A correct repeat: moves the item one bin further with its new due date, or removes it after the last bin; returns True when the topic is finished.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::vandaag", "lines": [37]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.herhaal_weg",
+     "lines": [33],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaal_weg"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.herhaal_zet",
+     "lines": [36],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaal_zet"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["datetime.timedelta"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.verwerk", "lines": [643]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_fout_begint_opnieuw", "lines": [53]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_leitner", "lines": [38, 44, 47]}
+   ]
+  },
+  {
+   "name": "aan_de_beurt",
+   "qualname": "aan_de_beurt",
+   "kind": "function",
+   "lines": [41, 42],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The repeat items of this child that are due today or earlier.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::vandaag", "lines": [42]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.herhaalbak",
+     "lines": [42],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".isoformat"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/overzicht.py::herhaalbak_regel", "lines": [51]},
+    {"caller": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [108]},
+    {"caller": "leeravontuur/terminal/app.py::App.herhaalvragen", "lines": [412]},
+    {"caller": "leeravontuur/terminal/app.py::App.herhalen", "lines": [395]},
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [227]},
+    {"caller": "leeravontuur/terminal/app.py::App.voorstel", "lines": [336]},
+    {
+     "caller": "tests/test_gemengd.py::TestDeReeks.test_maten_in_de_reeks_en_het_resultaat_per_thema",
+     "lines": [101]
+    },
+    {
+     "caller": "tests/test_gemengd.py::TestZonderHulp.test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+     "lines": [173]
+    },
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_fout_begint_opnieuw", "lines": [53]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_leitner", "lines": [34, 36, 40, 42, 46]},
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_herhalen_tafel", "lines": [189]}
+   ]
+  },
+  {
+   "name": "status",
+   "qualname": "status",
+   "kind": "function",
+   "lines": [52, 59],
+   "params": [
+    {"name": "antwoorden", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Status van één vaardigheid op basis van de antwoorden (nieuwste eerst).",
+   "explanation": "Status of one skill from its answers (newest first): not seen, busy, or mastered (10+ answers and 80 percent of the last 20 correct).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/herhaling.py::_beheersing", "lines": [68]},
+    {"caller": "leeravontuur/kern/reeks.py::stand", "lines": [75]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_status", "lines": [60, 61, 62, 63, 64]}
+   ]
+  },
+  {
+   "name": "_beheersing",
+   "qualname": "_beheersing",
+   "kind": "function",
+   "lines": [62, 71],
+   "params": [
+    {"name": "rijen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(status, aantal, laatst geoefend (date of None), juist-% van de laatste 20) uit de nieuwste antwoorden. Beheerst maar al FRIS_DAGEN niet geoefend = \"fris houden\".",
+   "explanation": "Tuple (status, number of answers, last practised date or None, percent correct of the last 20); turns 'mastered' into 'fris houden' after 14 days without practice.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::status", "lines": [68]},
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [69]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".date", "datetime.date.fromisoformat", "len", "round", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/herhaling.py::overzicht", "lines": [77]},
+    {"caller": "leeravontuur/kern/herhaling.py::overzicht_sessies", "lines": [84]}
+   ]
+  },
+  {
+   "name": "overzicht",
+   "qualname": "overzicht",
+   "kind": "function",
+   "lines": [74, 77],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "zonder_modi", "kind": "positional", "default": "()", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(vaardigheid, status, aantal, laatst geoefend (date of None), juist-% van de laatste 20)]; zonder_modi: die antwoorden tellen niet mee (bv. snelrekenen, dat apart staat).",
+   "explanation": "Mastery tuple per given skill for one child, optionally ignoring answers of some modes (for example speed practice).",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::_beheersing", "lines": [77]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.recente_antwoorden",
+     "lines": [77],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [105]}
+   ]
+  },
+  {
+   "name": "overzicht_sessies",
+   "qualname": "overzicht_sessies",
+   "kind": "function",
+   "lines": [80, 84],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ids", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hetzelfde per sessie-vaardigheid (bv. snelrekenen.tafels): [(id, status, aantal, laatst, pct)], alleen wat al geoefend werd.",
+   "explanation": "The same overview per session-skill id (such as snelrekenen.tafels), only for ids that have answers.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::_beheersing", "lines": [84]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.recente_antwoorden_van_sessies",
+     "lines": [83],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden_van_sessies"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [106]}
+   ]
+  }
+ ]
+}

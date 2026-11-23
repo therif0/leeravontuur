@@ -1,0 +1,142 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/vaardigheden.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 33,
+ "source_sha256": "6eecf76e9d1c92ea8d25d7c5f72de0abb8e927849d935d42145780295254422e",
+ "purpose": "The registry of subjects, skills (Vak > Domein > Vaardigheid) and thinking-error codes.",
+ "details": "A skill id has the form vak.domein.naam (for example wiskunde.eenheden.omzetten) and doubles as the name of its leerlijn file. Subject modules register their skills at import time through registreer (loaded all at once by catalogus.py). DENKFOUTEN maps diagnosis codes to short descriptions for reports.",
+ "module_docstring": "Register van vakken, domeinen en vaardigheden: Vak → Domein → Vaardigheid.",
+ "imports": [
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/onderwerp.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/wiskunde/eenheden.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_rapporten.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "VAKKEN",
+   "line": 5,
+   "value_type": "Dict",
+   "value_preview": "{'wiskunde': 'Wiskunde', 'taal': 'Taal', 'frans': 'Frans'}",
+   "explanation": "The known subjects (wiskunde, taal, frans)."
+  },
+  {"name": "REGISTER", "line": 23, "value_type": "Dict", "value_preview": "{}", "explanation": ""},
+  {"name": "DENKFOUTEN", "line": 24, "value_type": "Dict", "value_preview": "{}", "explanation": ""}
+ ],
+ "registries": [
+  {
+   "name": "REGISTER",
+   "line": 23,
+   "description": "Dict skill id -> Vaardigheid, filled at import time by every subject module; read by reports, menus and the leerplan test."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 24,
+   "description": "Dict diagnosis code -> short description, filled at import time by the subjects; looked up by catalogus.denkfout."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Vaardigheid",
+   "qualname": "Vaardigheid",
+   "lines": [9, 20],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "Frozen dataclass with id, name and description of one skill; the subject and domain are derived from the id.",
+   "attributes": [
+    {"name": "id", "line": 10, "scope": "class", "value_preview": null},
+    {"name": "naam", "line": 11, "scope": "class", "value_preview": null},
+    {"name": "omschrijving", "line": 12, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [71]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::<module>", "lines": [19]}
+   ],
+   "methods": [
+    {
+     "name": "vak",
+     "qualname": "Vaardigheid.vak",
+     "kind": "property",
+     "lines": [15, 16],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The subject part of the id (before the first dot).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "domein",
+     "qualname": "Vaardigheid.domein",
+     "kind": "property",
+     "lines": [19, 20],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The domain part of the id (between the first and second dot).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "registreer",
+   "qualname": "registreer",
+   "kind": "function",
+   "lines": [27, 33],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Adds a skill to REGISTER; raises ValueError when the id already exists or its subject is not in VAKKEN; returns the skill.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["ValueError"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [71]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::<module>", "lines": [19]}
+   ]
+  }
+ ]
+}

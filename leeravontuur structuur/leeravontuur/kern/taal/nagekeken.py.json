@@ -1,0 +1,193 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/nagekeken.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 48,
+ "source_sha256": "0560fb7326047c861b110441228a84ed1e40b3b3a37edbf3aca8df461c8e5ff7",
+ "purpose": "Serves the hand-written, fully analysed sentences from inhoud/taal/zinnen.json for the sentence-analysis exercise.",
+ "details": "The sentence machine cannot make every tricky case well, so about 3 of 10 questions come from this hand-checked list: 'zinnen' (fully analysed, per school year 4, 5 or 6) and 'twee' (sentences with more than one finite verb, only pv and subject marked). Each item is written in the bracket notation and parsed with zinnen.lees_haakjes; extra data (tense, other-tense form, question word flags, preposition, first word) feeds the hints. The leerlijn says how often these come (kern/taal/zinsontleding.py).",
+ "module_docstring": "De nagekeken zinnen (inhoud/taal/zinnen.json): met de hand geschreven, voor wat de zinnenmachine niet goed maakt.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinnenmachine"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinnenmachine.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal.zinnen",
+   "names": ["lees_haakjes"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/taal/zinnen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/kern/taal/zinsontleding.py", "tests/test_taal_zinsontleding.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PAD",
+   "line": 14,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent.parent / 'inhoud' / 'taal' / '…",
+   "explanation": "Path of inhoud/taal/zinnen.json."
+  },
+  {
+   "name": "JAREN",
+   "line": 15,
+   "value_type": "Tuple",
+   "value_preview": "('4', '5', '6')",
+   "explanation": "School years for which the list has sentences."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_lijst",
+   "qualname": "_lijst",
+   "kind": "function",
+   "lines": [19, 20],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "Loads and caches the JSON file.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::twee", "lines": [42]},
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [36]}
+   ]
+  },
+  {
+   "name": "_zin",
+   "qualname": "_zin",
+   "kind": "function",
+   "lines": [23, 30],
+   "params": [
+    {"name": "item", "kind": "positional", "default": null, "annotation": null},
+    {"name": "zinsbouw", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het item uit de lijst als Zin, met de gegevens voor de proefjes (zoals de zinnenmachine ze geeft).",
+   "explanation": "Turns one list item into a Zin (via the bracket parser) and fills its data dict with the sentence structure name, tense, alternative-tense form and other hint data.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [25]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["bool"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::twee", "lines": [42]},
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [36]}
+   ]
+  },
+  {
+   "name": "zinnen",
+   "qualname": "zinnen",
+   "kind": "function",
+   "lines": [34, 36],
+   "params": [
+    {"name": "jaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "De volledig ontlede zinnen van dit leerjaar van de lijst (\"4\", \"5\" of \"6\").",
+   "explanation": "The fully analysed sentences of one school year ('4', '5' or '6'), cached as a tuple.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/nagekeken.py::_lijst", "lines": [36]},
+    {"target": "leeravontuur/kern/taal/nagekeken.py::_zin", "lines": [36]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::kies", "lines": [47]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kies_zinsbouw", "lines": [467]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.past", "lines": [481]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "lines": [246, 248, 249]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt",
+     "lines": [266, 267, 268, 269]
+    }
+   ]
+  },
+  {
+   "name": "twee",
+   "qualname": "twee",
+   "kind": "function",
+   "lines": [40, 42],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "De zinnen met meer dan één persoonsvorm.",
+   "explanation": "The sentences with more than one finite verb, cached as a tuple.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/nagekeken.py::_lijst", "lines": [42]},
+    {"target": "leeravontuur/kern/taal/nagekeken.py::_zin", "lines": [42]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_zin", "lines": [490]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "lines": [275, 276]
+    }
+   ]
+  },
+  {
+   "name": "kies",
+   "qualname": "kies",
+   "kind": "function",
+   "lines": [45, 48],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "jaren", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een nagekeken zin uit een van deze leerjaren van de lijst, of None als er geen zijn.",
+   "explanation": "A random hand-written sentence from the given years, or None when those years have none.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [47]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_zin", "lines": [488]}
+   ]
+  }
+ ]
+}

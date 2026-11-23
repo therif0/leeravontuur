@@ -1,0 +1,144 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wachtwoord.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 44,
+ "source_sha256": "fa7409085f4abb83c975feda4602b183bbcfd85400cf9b5047fc47e41ef616de",
+ "purpose": "Safe storage of passwords and PIN codes with PBKDF2-SHA256 and a random salt.",
+ "details": "The stored string carries its own method and iteration count ('pbkdf2_sha256$iterations$salt$hash') so a stronger method can be introduced later without anyone starting over. Passwords and PINs are only ever handled through this module (CLAUDE.md). The parent area uses a lower iteration count for the 4-digit PINs. Verification uses a constant-time comparison.",
+ "module_docstring": "Wachtwoorden en pincodes veilig opslaan: pbkdf2-sha256 met salt.",
+ "imports": [
+  {"module": "base64", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "hashlib", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "hmac", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 10, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/stopslot.py",
+  "leeravontuur/terminal/schermen/kinderen.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_ouder.py",
+  "tests/test_rapporten.py",
+  "tests/test_stopslot.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "METHODE",
+   "line": 12,
+   "value_type": "Constant",
+   "value_preview": "'pbkdf2_sha256'",
+   "explanation": "Name of the hash method stored in the string."
+  },
+  {
+   "name": "ITERATIES",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "600000",
+   "explanation": "Default number of PBKDF2 iterations."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_b64",
+   "qualname": "_b64",
+   "kind": "function",
+   "lines": [16, 17],
+   "params": [
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base64-encodes bytes to an ASCII string.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["base64.b64encode"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wachtwoord.py::maak", "lines": [24]}
+   ]
+  },
+  {
+   "name": "maak",
+   "qualname": "maak",
+   "kind": "function",
+   "lines": [20, 24],
+   "params": [
+    {"name": "wachtwoord", "kind": "positional", "default": null, "annotation": null},
+    {"name": "iteraties", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Hashes a password with a fresh 16-byte salt (default 600,000 iterations) and returns the storable string.",
+   "calls": [
+    {"target": "leeravontuur/kern/wachtwoord.py::_b64", "lines": [24]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["hashlib.pbkdf2_hmac", "os.urandom"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [179]},
+    {"caller": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [36]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuw_wachtwoord", "lines": [92]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.pincode", "lines": [623]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [69]},
+    {"caller": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [35]},
+    {"caller": "tests/test_rapporten.py::TestWachtwoord.test_maken_en_controleren", "lines": [16, 20]},
+    {"caller": "tests/test_stopslot.py::TestStartMetSlot.test_meteen_bij_het_kind", "lines": [59]}
+   ]
+  },
+  {
+   "name": "controleer",
+   "qualname": "controleer",
+   "kind": "function",
+   "lines": [27, 35],
+   "params": [
+    {"name": "wachtwoord", "kind": "positional", "default": null, "annotation": null},
+    {"name": "opgeslagen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "True when the password matches the stored string; False for a wrong password, another method or a malformed string.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["base64.b64decode", "hashlib.pbkdf2_hmac", "hmac.compare_digest", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [32]},
+    {"caller": "leeravontuur/terminal/schermen/kinderen.py::pincode_ok", "lines": [58]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [67]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_wijzigen", "lines": [99]},
+    {"caller": "tests/test_ouder.py::TestToegang.test_eerste_keer_wachtwoord_kiezen", "lines": [45]},
+    {"caller": "tests/test_rapporten.py::TestWachtwoord.test_maken_en_controleren", "lines": [18, 19, 22]}
+   ]
+  },
+  {
+   "name": "verouderd",
+   "qualname": "verouderd",
+   "kind": "function",
+   "lines": [38, 44],
+   "params": [
+    {"name": "opgeslagen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "True als het met een zwakkere instelling gemaakt werd dan wat we nu gebruiken.",
+   "explanation": "True when the stored string was made with another method or fewer iterations than the current setting (or is malformed), meaning it should be re-hashed.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [68]},
+    {"caller": "tests/test_rapporten.py::TestWachtwoord.test_maken_en_controleren", "lines": [21, 23]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,301 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/sessie.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 81,
+ "source_sha256": "887a89089a6446a7b73969297cea8d53bc3bcff7fee87659d8ef44e50b8c6455",
+ "purpose": "A practice session: times each question and stores every answer with its points.",
+ "details": "Every exercise runs through a Sessie (CLAUDE.md), so time, question key and diagnosis are always stored. vraag_getoond starts the stopwatch, pauze removes time spent in a dialog, antwoord stores the answer through Opslag, awards points via punten.voor_antwoord and a streak bonus every 5 correct in a row. It is a context manager that closes the stored session on exit. Points can be switched off (later for exams).",
+ "module_docstring": "Een oefensessie: houdt de tijd per vraag bij en bewaart elk antwoord.",
+ "imports": [
+  {"module": "time", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["punten"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/punten.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/terminal/app.py",
+  "tests/test_avatar.py",
+  "tests/test_gemengd.py",
+  "tests/test_opslag.py",
+  "tests/test_ouder.py",
+  "tests/test_rapporten.py",
+  "tests/test_reeks.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Sessie",
+   "qualname": "Sessie",
+   "lines": [8, 81],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "One run of questions of one child in one mode; owns the timing, the streak and the points of that run.",
+   "attributes": [
+    {"name": "opslag", "line": 11, "scope": "instance", "value_preview": null},
+    {"name": "kind_id", "line": 12, "scope": "instance", "value_preview": null},
+    {"name": "modus", "line": 13, "scope": "instance", "value_preview": null},
+    {"name": "vaardigheid", "line": 14, "scope": "instance", "value_preview": null},
+    {"name": "leerjaar", "line": 15, "scope": "instance", "value_preview": null},
+    {"name": "na_antwoord", "line": 16, "scope": "instance", "value_preview": null},
+    {"name": "id", "line": 17, "scope": "instance", "value_preview": null},
+    {"name": "aantal", "line": 18, "scope": "instance", "value_preview": null},
+    {"name": "juist", "line": 19, "scope": "instance", "value_preview": null},
+    {"name": "gesloten", "line": 20, "scope": "instance", "value_preview": null},
+    {"name": "_start", "line": 21, "scope": "instance", "value_preview": null},
+    {"name": "laatste_tijd_ms", "line": 22, "scope": "instance", "value_preview": null},
+    {"name": "eigen_leerjaar", "line": 23, "scope": "instance", "value_preview": null},
+    {"name": "laatste_punten", "line": 24, "scope": "instance", "value_preview": null},
+    {"name": "op_rij", "line": 25, "scope": "instance", "value_preview": null},
+    {"name": "punten", "line": 26, "scope": "instance", "value_preview": null},
+    {"name": "met_punten", "line": 27, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [188]},
+    {"caller": "leeravontuur/terminal/app.py::App.sessie", "lines": [149]},
+    {"caller": "tests/test_avatar.py::TestPunten.test_sessie_en_op_rij", "lines": [84]},
+    {"caller": "tests/test_gemengd.py::geoefend", "lines": [31]},
+    {"caller": "tests/test_opslag.py::TestAntwoorden.test_sessie", "lines": [91]},
+    {"caller": "tests/test_opslag.py::TestAntwoorden.test_sessie_pauze_telt_niet", "lines": [108]},
+    {"caller": "tests/test_ouder.py::TestAntwoorden.met_antwoorden", "lines": [227]},
+    {"caller": "tests/test_rapporten.py::TestLogboek.setUp", "lines": [128]},
+    {"caller": "tests/test_reeks.py::Basis.geoefend", "lines": [38]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Sessie.__init__",
+     "kind": "method",
+     "lines": [9, 27],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "na_antwoord", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "eigen_leerjaar", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "punten", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts a stored session in Opslag (getting its id) and initialises counters, streak, points and the optional callback called after each answer.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "opslag.start_sessie",
+       "lines": [17],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [188]},
+      {"caller": "leeravontuur/terminal/app.py::App.sessie", "lines": [149]},
+      {"caller": "tests/test_avatar.py::TestPunten.test_sessie_en_op_rij", "lines": [84]},
+      {"caller": "tests/test_gemengd.py::geoefend", "lines": [31]},
+      {"caller": "tests/test_opslag.py::TestAntwoorden.test_sessie", "lines": [91]},
+      {"caller": "tests/test_opslag.py::TestAntwoorden.test_sessie_pauze_telt_niet", "lines": [108]},
+      {"caller": "tests/test_ouder.py::TestAntwoorden.met_antwoorden", "lines": [227]},
+      {"caller": "tests/test_rapporten.py::TestLogboek.setUp", "lines": [128]},
+      {"caller": "tests/test_reeks.py::Basis.geoefend", "lines": [38]}
+     ]
+    },
+    {
+     "name": "vraag_getoond",
+     "qualname": "Sessie.vraag_getoond",
+     "kind": "method",
+     "lines": [29, 31],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Roep dit één keer op wanneer een nieuwe vraag verschijnt: daar start de tijdmeting.",
+     "explanation": "Starts the stopwatch for the question that was just shown.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["time.monotonic"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "pauze",
+     "qualname": "Sessie.pauze",
+     "kind": "method",
+     "lines": [33, 36],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "seconden", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Zoveel seconden tellen niet mee voor de vraag (bv. het kader \"Wil je stoppen?\", #33).",
+     "explanation": "Moves the start time forward so the given seconds (for example a 'Wil je stoppen?' dialog) do not count for this question.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "antwoord",
+     "qualname": "Sessie.antwoord",
+     "kind": "method",
+     "lines": [38, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gegeven", "kind": "positional", "default": null, "annotation": null},
+      {"name": "juist", "kind": "positional", "default": null, "annotation": null},
+      {"name": "diagnose", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "extra", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "verwacht", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bewaart een antwoord. vaardigheid/leerjaar: als ze per vraag verschillen (bv. snelrekenen gemengd).",
+     "explanation": "Stores one answer (with time, hint use, diagnosis and extra data), updates counters, awards points from punten.voor_antwoord (zero when points are off), adds a +10 streak bonus every 5th correct in a row, logs the points and calls the callback.",
+     "calls": [
+      {"target": "leeravontuur/kern/punten.py::voor_antwoord", "lines": [51]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.al_juist",
+       "lines": [45],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.al_juist"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.opslag.bewaar_antwoord",
+       "lines": [46],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.opslag.punten_bij",
+       "lines": [56, 58],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".na_antwoord", "bool", "int", "time.monotonic"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bonus",
+     "qualname": "Sessie.bonus",
+     "kind": "method",
+     "lines": [65, 69],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "punten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "reden", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Gives extra points with a reason without an answer (nothing when points are off).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.punten_bij",
+       "lines": [68],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sluit",
+     "qualname": "Sessie.sluit",
+     "kind": "method",
+     "lines": [71, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Closes the stored session once.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.sluit_sessie",
+       "lines": [74],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/sessie.py::Sessie.__exit__", "lines": [80]}
+     ]
+    },
+    {
+     "name": "__enter__",
+     "qualname": "Sessie.__enter__",
+     "kind": "method",
+     "lines": [76, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Context manager entry: returns the session.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__exit__",
+     "qualname": "Sessie.__exit__",
+     "kind": "method",
+     "lines": [79, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Context manager exit: closes the session and lets exceptions through.",
+     "calls": [
+      {"target": "leeravontuur/kern/sessie.py::Sessie.sluit", "lines": [80]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

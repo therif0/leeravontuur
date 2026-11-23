@@ -1,0 +1,136 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/catalogus.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 16,
+ "source_sha256": "c23b1a90cb67b379e4d69c1bef09db3f0f9ed2a10c890fb56baf55a18fa699a8",
+ "purpose": "Imports every subject module so that all skills register themselves, and offers two small name lookups on the registry.",
+ "details": "Importing this module is what fills vaardigheden.REGISTER and the ONDERWERPEN catalogue: each wiskunde and taal module creates its Onderwerp subclasses and registers them at import time. Screens and tests import it for that side effect (the imports carry noqa markers because they are unused on purpose). Adding a new subject means adding its import here (CLAUDE.md, 'Nieuwe onderwerpen').",
+ "module_docstring": "Laadt alle vaardigheden, zodat het register (kern/vaardigheden.py) volledig is.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["vaardigheden"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/vaardigheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": [
+    "breuken",
+    "cijferen",
+    "eenheden",
+    "getallen",
+    "grootheden",
+    "hoofdrekenen",
+    "klok",
+    "meetkunde",
+    "procenten",
+    "vraagstukken"
+   ],
+   "alias": null,
+   "line": 5,
+   "resolves_to": [
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["werkwoorden", "zinsontleding"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinsontleding.py"
+   ],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/reeks.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/curriculum/modi.py",
+  "tests/test_handleiding.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_rapporten.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_vakken.py",
+  "tests/test_werkwijze.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "naam",
+   "qualname": "naam",
+   "kind": "function",
+   "lines": [10, 12],
+   "params": [
+    {"name": "vaardigheid_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Returns the display name of a skill id from the registry, or the id itself when it is unknown.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::exporteer", "lines": [344]},
+    {"caller": "leeravontuur/kern/rapporten.py::naam", "lines": [173]}
+   ]
+  },
+  {
+   "name": "denkfout",
+   "qualname": "denkfout",
+   "kind": "function",
+   "lines": [15, 16],
+   "params": [
+    {"name": "code", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Returns the short description of a diagnosis (thinking-error) code from the DENKFOUTEN registry, or the code itself when unknown.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::antwoorden_lijst", "lines": [400]},
+    {"caller": "leeravontuur/kern/rapporten.py::exporteer", "lines": [347]},
+    {"caller": "leeravontuur/kern/rapporten.py::regels", "lines": [253]}
+   ]
+  }
+ ]
+}
