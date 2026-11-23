@@ -1,0 +1,23 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/zeg-het-ons.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 17,
+ "source_sha256": "1d4fcae109a987d89ab0798e826ddb0947615c692cd39ced5a4066cbe99b7f15",
+ "purpose": "Handbook page about 'Zeg het ons', the feedback form.",
+ "details": "The child or parent types a remark; it is stored in feedback.txt and shown in the parent area.",
+ "summary": "Explains the feedback entry: type what is nice, too hard, too easy or broken; the remark is saved locally (feedback.txt) and read in the parent area.",
+ "headings": [
+  {"level": 1, "text": "Zeg het ons", "line": 1}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Zeg het ons", "target": "beelden/zeg-het-ons.svg", "internal": true},
+  {"text": "Je opmerking is bewaard", "target": "beelden/zeg-het-ons-bedankt.svg", "internal": true},
+  {"text": "Problemen oplossen", "target": "problemen-oplossen.md#waar-staan-de-gegevens", "internal": true},
+  {"text": "ouderdeel", "target": "ouderdeel.md#opmerkingen", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md", "docs/handleiding/ouderdeel.md", "docs/handleiding/problemen-oplossen.md"],
+ "words": 133
+}

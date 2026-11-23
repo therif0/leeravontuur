@@ -1,0 +1,35 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/koers.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 45,
+ "source_sha256": "4f4764b98848f8c399d06b27f76852bde965fb7918ed383612d35a4edf7103c0",
+ "purpose": "One-page direction of the project: the goal, the fixed date, the periods, the building blocks and the rule for new ideas.",
+ "details": "Referenced from CLAUDE.md. The father decides; the page is adjusted at the end of each period. Two equal goals taken in turns (the son, and the product for all Flemish children), the fixed date 1 September 2027 (6th school year, levels shift), a periods table, why the order is mixed practice -> exams -> daily task, and the rule that a bug the child notices is fixed at once, an idea that fits the period is queued, everything else is parked in docs/todo.md.",
+ "summary": "Direction page. Goal: two equally weighted goals in turns (the son's needs and not forgetting; a free product for Flemish children). Fixed date: 1 September 2027. A table of periods (until Nov 2026: stop lock, mixed practice, then maths frozen apart from bugs). Building blocks: Gemengd oefenen then Examens then Dagtaak. Rule for new ideas: child-visible bug = now, fits the period = in line, the rest = parked in todo.md.",
+ "headings": [
+  {"level": 1, "text": "De koers: waar we naartoe gaan", "line": 1},
+  {"level": 2, "text": "Het doel", "line": 6},
+  {"level": 2, "text": "De vaste datum", "line": 17},
+  {"level": 2, "text": "De periodes", "line": 21},
+  {"level": 2, "text": "De bouwstenen (waarom deze volgorde)", "line": 31},
+  {"level": 2, "text": "De regel voor nieuwe ideeën", "line": 40}
+ ],
+ "links": [
+  {"text": "plan.md", "target": "plan.md", "internal": true},
+  {"text": "todo.md", "target": "todo.md", "internal": true},
+  {"text": "taal.md", "target": "taal.md", "internal": true},
+  {"text": "todo.md", "target": "todo.md", "internal": true}
+ ],
+ "referenced_by": [
+  "CLAUDE.md",
+  "docs/plan.md",
+  "docs/taal.md",
+  "docs/todo.md",
+  "werk/opruimen.md",
+  "werk/schermen-inventaris.md",
+  "werk/schermen.md"
+ ],
+ "words": 550
+}

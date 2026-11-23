@@ -1,0 +1,26 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/werkwijzen.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 155,
+ "source_sha256": "c131284003a0c2e90fa4a6bb9ceb3e7173ff79edcd31f2f5bf2f05412515efe0",
+ "purpose": "Inventory of the 'ways through the program' (leaving a question, after checking, where you end up, same method everywhere, footers that do not fit, small things) and the plan to fix them in phases.",
+ "details": "Started because bug #33 returned: a click on the breadcrumb in the middle of a question left the exercise without asking. Tables compare the exit routes for the Oefenaar, Maten and Snelrekenen; lists the footers that cut off [Esc]; proposes phases (phase 1: one guard for leaving, built as Scherm.bewaak in 0.21.5, PR #38); and records what the father chose on 27/10.",
+ "summary": "Inventory of exits and routes (leaving a question before checking, after checking, where you land, same method everywhere, footers that overflow 80 columns, small inconsistencies such as the q key), a phased proposal, the status (phase 1 done in 0.21.5) and the father's choices of 27/10.",
+ "headings": [
+  {"level": 1, "text": "Werkwijzen: inventaris (stap 1)", "line": 1},
+  {"level": 2, "text": "1. Eén vraag verlaten (vóór het nakijken)", "line": 17},
+  {"level": 2, "text": "2. Na het nakijken, en tussen de vragen", "line": 38},
+  {"level": 2, "text": "3. Waar je terechtkomt", "line": 55},
+  {"level": 2, "text": "4. Dezelfde werkwijze overal? (lees, klad, antwoord)", "line": 72},
+  {"level": 2, "text": "5. Voetregels die niet passen (scan over elke oefening)", "line": 89},
+  {"level": 2, "text": "6. Kleine dingen die erbij horen", "line": 103},
+  {"level": 2, "text": "Voorstel: de fasen", "line": 113},
+  {"level": 2, "text": "Stand", "line": 134},
+  {"level": 2, "text": "Wat de vader koos (27/10)", "line": 146}
+ ],
+ "links": [],
+ "referenced_by": ["docs/todo.md"],
+ "words": 1667
+}

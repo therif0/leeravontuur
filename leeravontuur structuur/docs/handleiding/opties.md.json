@@ -1,0 +1,31 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/opties.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 36,
+ "source_sha256": "e7c8bce9e82fee7e32d247b5139691155e7bb3f1c882b0afaef89f9f6f554455",
+ "purpose": "Handbook page about the old 'Opties' menu (settings of the active child).",
+ "details": "Lists the settings (colour theme, simple characters, mouse, timer, typing direction ...) and shows the colour themes side by side with screenshots. Since 0.20 the settings moved (display settings to the parent area, colours to Mijn avatar); this page is still the older description.",
+ "summary": "Describes the child's options (theme, simple characters, mouse, timer, typing direction, avatar, animations, clock window) and shows the same screen in each theme. Settings are stored per child at once.",
+ "headings": [
+  {"level": 1, "text": "Opties", "line": 1},
+  {"level": 2, "text": "De thema's naast elkaar", "line": 22}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Opties", "target": "beelden/opties.svg", "internal": true},
+  {"text": "ouderdeel", "target": "ouderdeel.md", "internal": true},
+  {"text": "niveaus", "target": "README.md#niveaus-makkelijk-tot-heel-moeilijk", "internal": true},
+  {"text": "De klok", "target": "wiskunde/tijd-geld-snelheid.md#het-klokvenster", "internal": true},
+  {"text": "standaard", "target": "beelden/start-standaard.svg", "internal": true},
+  {"text": "kleurenblind rood-groen", "target": "beelden/start-kleurenblind.svg", "internal": true},
+  {"text": "kleurenblind blauw-geel", "target": "beelden/start-blauw-geel.svg", "internal": true},
+  {"text": "hoog contrast", "target": "beelden/start-contrast.svg", "internal": true},
+  {"text": "geen kleur", "target": "beelden/start-geen-kleur.svg", "internal": true},
+  {"text": "ASCII", "target": "beelden/start-ascii.svg", "internal": true},
+  {"text": "Startargumenten", "target": "startargumenten.md", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md", "docs/handleiding/avatar-en-winkel.md", "docs/handleiding/startargumenten.md"],
+ "words": 359
+}

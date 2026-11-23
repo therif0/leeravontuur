@@ -1,0 +1,31 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/avatar-en-winkel.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 62,
+ "source_sha256": "b426d923a623539c613870d8415ea571f783267d9c63d9cab022910db7aed4f4",
+ "purpose": "Handbook page about the avatar, the shop and the wardrobe.",
+ "details": "Explains that every child has a pixel avatar that is also the practice buddy, how points buy parts, that each purchase asks a calculation (with discounts from year 5), what happens when a purchase answer is wrong (package on its way or shipping costs, parent setting), and how the wardrobe and saved combinations work.",
+ "summary": "Describes Mijn avatar: the avatar as buddy, the shop with layers (shape, colour, eyes, ears, hair, hats, accessories), buying with a calculation question (discounts from the 5th year), delivery penalties after wrong answers, and the wardrobe with saved outfits.",
+ "headings": [
+  {"level": 1, "text": "Mijn avatar en de winkel", "line": 1},
+  {"level": 2, "text": "De winkel", "line": 15},
+  {"level": 3, "text": "Kopen: eerst even rekenen", "line": 24},
+  {"level": 2, "text": "De kast", "line": 48}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Mijn avatar", "target": "beelden/avatar-hub.svg", "internal": true},
+  {"text": "De winkel", "target": "beelden/avatar-winkel.svg", "internal": true},
+  {"text": "De hoeden in de winkel", "target": "beelden/avatar-hoeden.svg", "internal": true},
+  {"text": "Bij elke aankoop een rekenvraag", "target": "beelden/avatar-kopen.svg", "internal": true},
+  {"text": "ouderdeel", "target": "ouderdeel.md", "internal": true},
+  {"text": "Gekocht!", "target": "beelden/avatar-gekocht.svg", "internal": true},
+  {"text": "De kast: kies wat je aantrekt", "target": "beelden/avatar-kast.svg", "internal": true},
+  {"text": "Combinaties", "target": "beelden/avatar-combinaties.svg", "internal": true},
+  {"text": "Opties", "target": "opties.md", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md", "docs/handleiding/ouderdeel.md"],
+ "words": 484
+}

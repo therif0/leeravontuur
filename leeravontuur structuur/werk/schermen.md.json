@@ -1,0 +1,45 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/schermen.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 273,
+ "source_sha256": "e9da2aa33a0b1417074540e13f87aaa7816cdfce14bccf0df304c03486aeac2b",
+ "purpose": "Work file: 'Schermen 1.0', panels like btop: the proposal, beta for Cijferen, architecture helpers, rollout choices and the phases.",
+ "details": "Status: ready for action (22/11/2026). The father (21/11) wanted better use of the screen: the buddy column, long questions, unclear tips, the klad position. Contains the choices, the 80×24 layout proposal (fixed panels: Vraag, Klad, Tip left; buddy right), the beta for Cijferen behind LEERAVONTUUR_BETA=1, supporting components (terminal/vak.py, terminal/indeling.py), the decision that the rollout is per child with a parent switch (23/11), choices after the inventory and the phases (each a branch with a PR and version from 0.27.0, proof at 80×24, 120×40 and 240×67).",
+ "summary": "Plan for the new panel-based screens: why (screen space is badly used), choices, the 80×24 layout, the Cijferen beta, building blocks (vak.py), rollout per child with a parent switch, one method for all exercises (Vraag, Klad with Tab, Tip with F1, cheat sheet), and the phase list with evidence rules.",
+ "headings": [
+  {"level": 1, "text": "Schermen 1.0: vakken zoals btop", "line": 1},
+  {"level": 2, "text": "Waarom", "line": 6},
+  {"level": 2, "text": "Gekozen", "line": 12},
+  {"level": 2, "text": "Het voorstel (80×24, het kleinste scherm)", "line": 18},
+  {
+   "level": 2,
+   "text": "Beta: Cijferen (21/11, de vader: \"een branch voor alleen cijferen, de huidige schermen niet aanpassen\")",
+   "line": 142
+  },
+  {"level": 2, "text": "Wat het makkelijk maakt (architectuur)", "line": 175},
+  {"level": 2, "text": "Gekozen over de uitrol (23/11, de vader)", "line": 184},
+  {"level": 2, "text": "Gekozen na de inventaris (22/11, de vader)", "line": 189},
+  {"level": 2, "text": "Fasen (klaar voor actie)", "line": 220}
+ ],
+ "links": [
+  {"text": "schermen-inventaris.md", "target": "schermen-inventaris.md", "internal": true},
+  {"text": "schermen-inventaris.md", "target": "schermen-inventaris.md", "internal": true},
+  {"text": "schermen-inventaris.md", "target": "schermen-inventaris.md", "internal": true}
+ ],
+ "referenced_by": [
+  "README.md",
+  "docs/architectuur.md",
+  "leeravontuur/terminal/beta.py",
+  "leeravontuur/terminal/indeling.py",
+  "leeravontuur/terminal/invoer.py",
+  "leeravontuur/terminal/thema.py",
+  "leeravontuur/terminal/vak.py",
+  "tests/test_beta.py",
+  "tests/test_vakken.py",
+  "werk/README.md",
+  "werk/schermen-inventaris.md"
+ ],
+ "words": 2877
+}

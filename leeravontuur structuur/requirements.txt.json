@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "requirements.txt",
+ "kind": "config",
+ "layer": "root",
+ "lines": 2,
+ "source_sha256": "01a27daa363ee7ef4c9f42031b52b5bc0441cefc2a99cc70c73cb3070391d61b",
+ "purpose": "Dependencies: none on Linux and macOS; on Windows the windows-curses package, which gives Python its curses module.",
+ "details": "A single line with an environment marker (sys_platform == 'win32', version 2.4 or newer). leeravontuur.py tells the user to run `pip install -r requirements.txt` when curses is missing; the CI workflow installs it before the tests. The program otherwise uses only the standard library."
+}

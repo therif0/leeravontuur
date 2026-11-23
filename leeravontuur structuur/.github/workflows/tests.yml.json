@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": ".github/workflows/tests.yml",
+ "kind": "config",
+ "layer": "ci",
+ "lines": 29,
+ "source_sha256": "0919c5e4183f92575539419f59ac23f7d37dc683a3321cc9b0933ea5a524119b",
+ "purpose": "GitHub Actions workflow 'tests': runs the test suite on Linux, macOS and Windows with Python 3.10 and 3.14 on every push and pull request.",
+ "details": "Steps: check out, set up Python, install requirements.txt, run `python tests/ci.py` (which reports failures as annotations; PYTHONIOENCODING=utf-8 so Dutch characters print on Windows), then check that `python leeravontuur.py --versie` and `python oefeningen.py --versie` start. fail-fast is off so every combination reports. The father merges only when this is green."
+}

@@ -1,0 +1,22 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/structuur.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 35,
+ "source_sha256": "0897f0654cf219b72bc04fbff83db84b7d805ebf9b64c83466e63a17a7981407",
+ "purpose": "Work file for this map: why, the choices, the method, phases and limits of 'leeravontuur structuur'.",
+ "details": "Status in progress at the time of writing; the choices of the father on 23/11 (the folder with a space, one JSON counterpart per file, Claude writes the explanations by hand, all files except images and LICENSE, English, no maintenance script or test), the method (a throwaway AST helper gives exact facts, Claude writes the prose), the phases and the limits (explanations are Claude's reading; dynamic calls are in dynamic-dispatch.json; the map describes main at the commit it was made from).",
+ "summary": "Plan for the structure map: the father wants to inspect all code in detail without asking; the folder 'leeravontuur structuur' mirrors the repo with a JSON counterpart per file; the facts come from a temporary syntax-tree helper (not committed), the explanations are written by hand in English; images and LICENSE are listed but not explained; no script or test maintains it; phases per layer; limits.",
+ "headings": [
+  {"level": 1, "text": "Leeravontuur structuur: een kaart van de hele code", "line": 1},
+  {"level": 2, "text": "Waarom", "line": 5},
+  {"level": 2, "text": "Gekozen (de vader, 23/11)", "line": 9},
+  {"level": 2, "text": "Hoe", "line": 19},
+  {"level": 2, "text": "Fasen (een tussentijdse commit per laag)", "line": 26},
+  {"level": 2, "text": "Grenzen", "line": 33}
+ ],
+ "links": [],
+ "referenced_by": [],
+ "words": 363
+}

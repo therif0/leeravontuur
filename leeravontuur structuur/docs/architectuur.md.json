@@ -1,0 +1,28 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/architectuur.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 265,
+ "source_sha256": "8afd82bc611c674387d8b5b20c59d8b0b2ccc5d91b54b3cdd310bf0e16ea42ef",
+ "purpose": "The architecture in detail: the long-form rules that CLAUDE.md summarises.",
+ "details": "Moved word for word out of CLAUDE.md on 16/11/2026 so CLAUDE.md stays short. Read the part about the area you work on. It is the reference for any change: layers, storage and stability rules, the fixed method (klad, tips, cheat sheet, second chance, stopping), how to add a topic or an input kind, word problems, points/passwords/reports/the stop lock, mixed practice (kern/reeks.py), Taal (StappenHulp), Werkwoordspelling data, the beta screens with panels, and the menu structure (Vak > Domein > Onderwerp from terminal/curriculum).",
+ "summary": "Detailed architecture notes: layers (kern without curses, terminal, venster, inhoud), data/storage/stability rules, the fixed work method with F1 tips and the cheat sheet, how to add a topic (Onderwerp subclass + learning-line JSON + catalogus + curriculum line) or an input object, the word-problem machine (structure × world × wording), points/passwords/reports/stop lock, mixed practice, Taal and Werkwoordspelling building blocks, the beta panel screens and the curriculum-driven menus.",
+ "headings": [
+  {"level": 1, "text": "Architectuur in detail", "line": 1},
+  {"level": 2, "text": "Lagen", "line": 6},
+  {"level": 2, "text": "Gegevens, opslag en stabiliteit", "line": 29},
+  {"level": 2, "text": "De vaste werkwijze", "line": 61},
+  {"level": 2, "text": "Nieuwe onderwerpen en soorten invoer", "line": 87},
+  {"level": 2, "text": "Vraagstukken", "line": 119},
+  {"level": 2, "text": "Punten, wachtwoorden, rapporten en het slot", "line": 133},
+  {"level": 2, "text": "Gemengd oefenen (een reeks uit verschillende onderwerpen)", "line": 145},
+  {"level": 2, "text": "Taal", "line": 163},
+  {"level": 2, "text": "Werkwoordspelling", "line": 188},
+  {"level": 2, "text": "Schermen met vakken (schermen 1.0, in opbouw: werk/schermen.md)", "line": 218},
+  {"level": 2, "text": "Menu's (Vak › Domein › Onderwerp)", "line": 240}
+ ],
+ "links": [],
+ "referenced_by": ["CLAUDE.md", "docs/plan.md", "werk/opruimen.md", "werk/schermen-inventaris.md", "werk/schermen.md"],
+ "words": 3437
+}

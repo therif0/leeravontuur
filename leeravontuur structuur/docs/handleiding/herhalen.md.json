@@ -1,0 +1,22 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/herhalen.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 28,
+ "source_sha256": "d44ad4df0f105d1dc03bc741e4d6f6be0a7e5ddd5759c40178a4effcb71d0324",
+ "purpose": "Handbook page about the repeat bin (Herhalen).",
+ "details": "Explains the Leitner system per topic: wrong answers come back on later days as similar questions with new numbers; a table lists what happens after right and wrong repeats and when an item counts as mastered.",
+ "summary": "Explains Herhalen: mistakes return in following days as similar questions, handled with a Leitner box system per topic (e.g. 'km to m', 'tafel 7'); a table shows what happens after right or wrong repeats and mastery gives bonus points.",
+ "headings": [
+  {"level": 1, "text": "Herhalen (de herhaalbak)", "line": 1},
+  {"level": 2, "text": "Hoe het werkt", "line": 11}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Herhalen", "target": "beelden/herhalen-start.svg", "internal": true},
+  {"text": "reeks", "target": "README.md#een-reeks-van-10-en-fouten-opnieuw", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md"],
+ "words": 251
+}

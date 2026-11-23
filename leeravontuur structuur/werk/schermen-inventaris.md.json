@@ -1,0 +1,41 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/schermen-inventaris.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 325,
+ "source_sha256": "3df364d52e39c8d05690b691cc75e4ca54f2157f1301b3c5bf0cd03f4efe9a02",
+ "purpose": "Work file: the inventory (phase 0) of everything the beta screens must change, with checkboxes and the 24 open questions and answers.",
+ "details": "Made on the state of the beta after commit 35dbcdf. Sections A-M: rules the beta already fixes, shared building blocks, the Oefenaar's paths, input objects, other exercise screens, menus, child/shop/parent screens, the clock window, the kern, tests, documents, from beta to everyone, open questions with recommendations (all answered 22/11) and the tty (Linux console: leave as is).",
+ "summary": "Checklist inventory for the panel screens: per file or area what exists, what must change and its state; the open questions 1-24 with Claude's recommendations and the father's answers; a note that the Linux tty works perfectly and must not be changed.",
+ "headings": [
+  {"level": 1, "text": "Schermen 1.0: inventaris van wat de beta overal moet veranderen", "line": 1},
+  {"level": 2, "text": "A. Wat de beta al vastlegt (de regels die straks voor elk scherm gelden)", "line": 17},
+  {"level": 2, "text": "B. Gedeelde bouwstenen (`terminal/`)", "line": 49},
+  {
+   "level": 2,
+   "text": "C. De Oefenaar (`terminal/oefenaar.py`, `_stel_vraag`): elke weg door het scherm",
+   "line": 73
+  },
+  {"level": 2, "text": "D. De invoer-objecten (elk tekent nu zelf op vaste rijen en kolommen)", "line": 107},
+  {"level": 2, "text": "E. Andere oefenschermen", "line": 137},
+  {"level": 2, "text": "F. Menu's en navigatie", "line": 152},
+  {
+   "level": 2,
+   "text": "G. Kind-, winkel- en ouderschermen (als laatste: alleen een kader, vraag 17)",
+   "line": 165
+  },
+  {"level": 2, "text": "H. Het klokvenster (`venster/`, `terminal/venster.py`)", "line": 175},
+  {"level": 2, "text": "I. De kern (wat de vakken nodig hebben; gouden regels 1 en 2)", "line": 180},
+  {"level": 2, "text": "J. Tests", "line": 197},
+  {"level": 2, "text": "K. Documenten", "line": 212},
+  {"level": 2, "text": "L. Van beta naar iedereen", "line": 223},
+  {"level": 2, "text": "Open vragen (met de aanbeveling van Claude)", "line": 233},
+  {"level": 2, "text": "M. De tty (Linux-console, Ctrl+Alt+F3)", "line": 320}
+ ],
+ "links": [
+  {"text": "schermen.md", "target": "schermen.md", "internal": true}
+ ],
+ "referenced_by": ["docs/architectuur.md", "werk/README.md", "werk/schermen.md"],
+ "words": 4689
+}

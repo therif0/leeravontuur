@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": ".gitignore",
+ "kind": "config",
+ "layer": "root",
+ "lines": 2,
+ "source_sha256": "862263fa1f46c20f0d1e4dac5ffcc75abd55c08211b2c3864c5f8764b9d87793",
+ "purpose": "Files git ignores: Python caches.",
+ "details": "Two patterns: __pycache__/ and *.pyc. Data folders are outside the repository (see LEERAVONTUUR_DATA and the README)."
+}
