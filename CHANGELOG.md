@@ -7,11 +7,13 @@ In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
   oefenscherm als alle andere onderwerpen. Dat is nodig voor de nieuwe schermen met vakken (de verbouwing
   "schermen 1.0"): zo moet alles maar één keer gebouwd worden. Dezelfde schermen en dezelfde bewaarde antwoorden als
   vroeger (nagekeken op een kopie van echte gegevens).
-- **Een fout in het klad hersteld:** wie een ² of ³ los achter een getal typte (bv. `2²=4`), kreeg "Oei, er ging iets
-  mis". Nu zegt het klad dat het die regel niet kan lezen (dezelfde oplossing als 0.26.3).
 - **Voor wie wil proberen (de ouder):** met `LEERAVONTUUR_BETA=1` krijgt Wiskunde › Cijferen al de nieuwe schermen
   met vakken (de reeks bovenaan, de vraag op een band, het vak Tip, de spiekbrief open waar er plaats is). Zonder die
   instelling is alles zoals altijd.
+
+## 0.26.3 — Een fout in het klad hersteld
+- Wie in het klad een ² of ³ los achter een getal typte (bv. `2²=4`), kreeg "Oei, er ging iets mis" en moest terug
+  naar het menu. Nu zegt het klad gewoon dat het die regel niet kan lezen. m² en cm³ blijven werken.
 
 ## 0.26.2 — Werkwoordspelling: zet in de verleden tijd
 - **Taal › Werkwoordspelling › Zet in de verleden tijd:** een zin in de tegenwoordige tijd ("Daarna fietst Noor in

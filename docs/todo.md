@@ -27,6 +27,7 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
       Woordsoorten; later T6 de tekstoefening (het taaldossier). Zie [taal.md](taal.md).
 
 ## Geparkeerd: vragen voor later
+- [ ] Machten in het klad (`2² = 4`, `10³ = 1000`): pas als het kind machten leert (de vader, 22/11).
 - [ ] Dagtaak: ook in schoolweken, in een lichtere vorm (bv. 15 minuten), om de gewoonte te bouwen? Of alleen in de
       vakanties?
 - [ ] Begrijpend lezen: wie schrijft de leesteksten? (Claude schrijft, de ouders kijken na; of teksten van school)
