@@ -1,0 +1,568 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_klokvenster.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 188,
+ "source_sha256": "723c8eed9f8cf261c5b1eee217fd62f0f909ad0cc2548cd4b637dcc296eea58e",
+ "purpose": "Tests the clock window: clock shapes, window placement, key translation and the talk with the subprocess including fallbacks.",
+ "details": "TestKlokbeeld checks venster/klokbeeld shapes; TestPlek checks the pure placement functions of venster/klokvenster; TestToetsenUitHetVenster checks Scherm._van_venster; TestBeheerder starts terminal/venster.Klokvenster with fake child processes (`python -c` snippets) and with the real window without a display.",
+ "module_docstring": "Het klokvenster: de vormen van de klok, het praten met het proces, en terugvallen als er geen venster kan.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "xml.etree.ElementTree",
+   "names": [],
+   "alias": "ET",
+   "line": 10,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["Scherm"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.venster",
+   "names": ["Klokvenster"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/venster.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.venster",
+   "names": ["klokbeeld"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/venster/__init__.py", "leeravontuur/venster/klokbeeld.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.venster",
+   "names": ["klokvenster"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/venster/__init__.py", "leeravontuur/venster/klokvenster.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []},
+  {
+   "scope": "<class TestBeheerder>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["sys.platform.startswith", "unittest.skipUnless"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "NEP",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "'\\nimport json, sys\\nprint(json.dumps({\"klaar\": True}), flush=True)\\n…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestKlokbeeld",
+   "qualname": "TestKlokbeeld",
+   "lines": [36, 62],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shape tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_wijzers_op_de_juiste_plek",
+     "qualname": "TestKlokbeeld.test_wijzers_op_de_juiste_plek",
+     "kind": "method",
+     "lines": [37, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For many times the hour and minute hand shapes point at the angles K.hoeken gives.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokbeeld.py::hoeken", "lines": [40]},
+      {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [39]},
+      {"target": "tests/test_klokvenster.py::hoek", "lines": [41, 42]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertAlmostEqual", ".assertGreater", ".assertLess", "math.hypot", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_alle_cijfers_en_minuten",
+     "qualname": "TestKlokbeeld.test_alle_cijfers_en_minuten",
+     "kind": "method",
+     "lines": [47, 50],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The clock has the numbers 1-12 and the small minute numbers 05, 30, 55.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [48]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zo_moest_het",
+     "qualname": "TestKlokbeeld.test_zo_moest_het",
+     "kind": "method",
+     "lines": [52, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Dashed green 'correct' hands appear only when the correct time differs (two lines).",
+     "calls": [
+      {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [53, 54, 57]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", "all", "any", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_svg",
+     "qualname": "TestKlokbeeld.test_svg",
+     "kind": "method",
+     "lines": [59, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "naar_svg produces valid XML with an svg root.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokbeeld.py::naar_svg", "lines": [60]},
+      {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [60]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "ET.fromstring"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestPlek",
+   "qualname": "TestPlek",
+   "lines": [65, 111],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Het venster mag de oefening nooit bedekken.",
+   "explanation": "Placement tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_rechtsboven_nooit_over_de_tekst",
+     "qualname": "TestPlek.test_rechtsboven_nooit_over_de_tekst",
+     "kind": "method",
+     "lines": [68, 75],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "On many screen sizes the default position is top right and never covers the text column (at most a quarter of the width).",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [71]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreaterEqual", ".assertLessEqual", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_naast_de_terminal",
+     "qualname": "TestPlek.test_naast_de_terminal",
+     "kind": "method",
+     "lines": [77, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With a known terminal window the clock goes right next to it (or left when there is no room).",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [79, 82, 84]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreaterEqual", ".assertLessEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_bewaarde_plek",
+     "qualname": "TestPlek.test_bewaarde_plek",
+     "kind": "method",
+     "lines": [87, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A saved position is used when fully on screen; strange or off-screen values are ignored.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [89, 92]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_meer_monitors",
+     "qualname": "TestPlek.test_meer_monitors",
+     "kind": "method",
+     "lines": [94, 106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A very wide screen is split into monitors under the mouse; one monitor or ultra-wide stays whole.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [105]},
+      {
+       "target": "leeravontuur/venster/klokvenster.py::monitor_van",
+       "lines": [96, 97, 99, 100, 102, 103, 105]
+      }
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geometrie",
+     "qualname": "TestPlek.test_geometrie",
+     "kind": "method",
+     "lines": [108, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Geometry strings like '320x416+1030+16' parse; garbage gives None.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::lees_geometrie", "lines": [109, 110, 111]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestToetsenUitHetVenster",
+   "qualname": "TestToetsenUitHetVenster",
+   "lines": [114, 125],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Key translation.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_vertaling",
+     "qualname": "TestToetsenUitHetVenster.test_vertaling",
+     "kind": "method",
+     "lines": [115, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Messages from the window (Enter, Escape, arrows, characters) translate to the same key codes as in the terminal.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "van",
+       "lines": [117, 118, 119, 120, 121, 122, 123, 125],
+       "candidates": [],
+       "candidates_count": 0
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestBeheerder",
+   "qualname": "TestBeheerder",
+   "lines": [128, 184],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Subprocess controller tests.",
+   "attributes": [
+    {"name": "tmp", "line": 130, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestBeheerder.setUp",
+     "kind": "method",
+     "lines": [129, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Uses a temporary data folder.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "patch.start",
+       "lines": [132],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", "tempfile.TemporaryDirectory", "unittest.mock.patch.dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "wacht_op",
+     "qualname": "TestBeheerder.wacht_op",
+     "kind": "method",
+     "lines": [136, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kv", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": "5.0", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Collects n messages from the window queue with a time limit.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "kv.volgende",
+       "lines": [139],
+       "candidates": [
+        "leeravontuur/terminal/nepscherm.py::NepKlokvenster.volgende",
+        "leeravontuur/terminal/venster.py::Klokvenster.volgende",
+        "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.volgende",
+        "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende"
+       ],
+       "candidates_count": 4
+      }
+     ],
+     "external_calls": ["len", "time.sleep", "time.time"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_klokvenster.py::TestBeheerder.test_praten_met_het_proces", "lines": [152, 154]},
+      {
+       "caller": "tests/test_klokvenster.py::TestBeheerder.test_proces_stopt_dan_klok_in_de_terminal",
+       "lines": [167]
+      }
+     ]
+    },
+    {
+     "name": "test_praten_met_het_proces",
+     "qualname": "TestBeheerder.test_praten_met_het_proces",
+     "kind": "method",
+     "lines": [146, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Talks JSON lines with a fake window process: show, key and click messages arrive.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [147]},
+      {"target": "tests/test_klokvenster.py::TestBeheerder.wacht_op", "lines": [152, 154]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "kv.beeld_klaar",
+       "lines": [156],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.beeld_klaar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "kv.nieuw_beeld",
+       "lines": [155],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.nieuw_beeld"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "kv.stop",
+       "lines": [159],
+       "candidates": [
+        "docs/tools/schermafdrukken.py::Draai.stop",
+        "leeravontuur/terminal/nepscherm.py::NepKlokvenster.stop",
+        "leeravontuur/terminal/venster.py::Klokvenster.stop"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "kv.toon",
+       "lines": [150, 151],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".addCleanup", ".assertEqual", ".assertFalse", ".assertIsNotNone", ".assertTrue", ".poll"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_proces_stopt_dan_klok_in_de_terminal",
+     "qualname": "TestBeheerder.test_proces_stopt_dan_klok_in_de_terminal",
+     "kind": "method",
+     "lines": [162, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "When the process stops the controller reports it broken and the terminal draws the clock itself.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [163]},
+      {"target": "tests/test_klokvenster.py::TestBeheerder.wacht_op", "lines": [167]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "kv.toon",
+       "lines": [166, 168],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".addCleanup", ".assertEqual", ".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geen_start",
+     "qualname": "TestBeheerder.test_geen_start",
+     "kind": "method",
+     "lines": [170, 176],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A {fout} message at start means no window (no tkinter) and no error for the child.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [171]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "kv.toon",
+       "lines": [174],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".addCleanup", ".assertEqual", ".assertFalse", "os.path.exists", "os.path.join"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_het_echte_venster_zonder_beeldscherm",
+     "qualname": "TestBeheerder.test_het_echte_venster_zonder_beeldscherm",
+     "kind": "method",
+     "lines": [179, 184],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["unittest.skipUnless(sys.platform.starts…"],
+     "docstring": "",
+     "explanation": "The real window module without a display exits cleanly and the controller falls back.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [181]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "kv.toon",
+       "lines": [183],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".addCleanup", ".assertFalse", ".assertTrue", "unittest.mock.patch.dict"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "hoek",
+   "qualname": "hoek",
+   "kind": "function",
+   "lines": [32, 33],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Angle in degrees clockwise from 12 of a hand line.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["math.atan2", "math.degrees"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_wijzers_op_de_juiste_plek", "lines": [41, 42]}
+   ]
+  }
+ ]
+}

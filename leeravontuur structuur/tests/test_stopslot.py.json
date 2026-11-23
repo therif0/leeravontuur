@@ -1,0 +1,923 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_stopslot.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 210,
+ "source_sha256": "9bcfde0383ad5084526aba8dc679d027aa65209eac4a288e0b90d2dcef1263d4",
+ "purpose": "Tests the stop lock on the child's side: start straight at the child, the lock screen and Ctrl-C handling.",
+ "details": "SlotBasis (an OuderBasis) speeds up PIN hashing and creates a database with a parent PIN and a locked child. Tests cover app start, the lock screen with the parent PIN, three wrong PINs, the parent turning the lock off, SIGINT being ignored while locked (and restored after errors), and a monkey test.",
+ "module_docstring": "Het slot op Stoppen aan de kant van het kind (0.23.2): meteen starten bij het kind, het slotscherm en Ctrl-C.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "signal", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["stopslot", "wachtwoord"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/stopslot.py", "leeravontuur/kern/wachtwoord.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["app"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App", "zonder_onderbreken"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["HangtFout", "NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_ouder",
+   "names": ["WW", "OuderBasis"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["tests/test_ouder.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "hm"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests",
+   "names": ["test_stabiliteit"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["tests/__init__.py", "tests/test_stabiliteit.py"],
+   "internal": true
+  },
+  {
+   "module": "test_ouder",
+   "names": ["WW", "OuderBasis"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "hm"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "test_stabiliteit", "names": [], "alias": null, "line": 20, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []},
+  {
+   "scope": "<class TestAapjesMetSlot>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "max", "range"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {"name": "PIN", "line": 22, "value_type": "Constant", "value_preview": "'4321'", "explanation": ""},
+  {
+   "name": "TITEL",
+   "line": 23,
+   "value_type": "Constant",
+   "value_preview": "'Druk op een toets om te beginnen'",
+   "explanation": ""
+  },
+  {
+   "name": "SLOT",
+   "line": 24,
+   "value_type": "Constant",
+   "value_preview": "'Stoppen staat op slot.'",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "SlotBasis",
+   "qualname": "SlotBasis",
+   "lines": [27, 51],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared setup.",
+   "attributes": [
+    {"name": "oude_pin_iteraties", "line": 30, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "SlotBasis.setUp",
+     "kind": "method",
+     "lines": [28, 31],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Lowers PIN iterations for speed.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".setUp", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "SlotBasis.tearDown",
+     "kind": "method",
+     "lines": [33, 35],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Restores them.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".tearDown", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "met_slot",
+     "qualname": "SlotBasis.met_slot",
+     "kind": "method",
+     "lines": [37, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kinderen", "kind": "vararg", "default": null, "annotation": null},
+      {"name": "pin", "kind": "keyword-only", "default": "PIN", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een databank met een ouderpin; het eerste kind staat op slot.",
+     "explanation": "A database with a parent PIN and the first child locked.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [41]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_slot", "lines": [43]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [43],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".met_wachtwoord", "next"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [187]},
+      {
+       "caller": "tests/test_stopslot.py::TestCtrlC.test_genegeerd_zolang_het_kind_met_slot_actief_is",
+       "lines": [142]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+       "lines": [126]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_drie_keer_fout_is_terug_naar_het_hoofdmenu",
+       "lines": [103]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_een_kind_zonder_slot_stopt_gewoon",
+       "lines": [116]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_esc_in_het_slotscherm_is_terug_naar_het_hoofdmenu",
+       "lines": [97]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_esc_vraagt_de_ouderpin_en_juist_is_het_titelscherm",
+       "lines": [82]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_opnieuw_gekozen_kind_met_slot_heeft_weer_het_slot",
+       "lines": [110]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_stoppen_in_het_menu_vraagt_ook_de_pin",
+       "lines": [91]
+      },
+      {"caller": "tests/test_stopslot.py::TestStartMetSlot.test_meteen_bij_het_kind", "lines": [57]},
+      {
+       "caller": "tests/test_stopslot.py::TestStartMetSlot.test_zonder_ouderpin_een_gewone_start",
+       "lines": [68]
+      }
+     ]
+    },
+    {
+     "name": "keren",
+     "qualname": "SlotBasis.keren",
+     "kind": "method",
+     "lines": [46, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hoe vaak een scherm met de tekst verschijnt (opeenvolgende beelden tellen één keer).",
+     "explanation": "How often a text appears in the screen sequence (consecutive frames count once).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "sum"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_stopslot.py::SlotBasis.titels", "lines": [51]},
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_een_kind_zonder_slot_stopt_gewoon",
+       "lines": [120]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_opnieuw_gekozen_kind_met_slot_heeft_weer_het_slot",
+       "lines": [113]
+      }
+     ]
+    },
+    {
+     "name": "titels",
+     "qualname": "SlotBasis.titels",
+     "kind": "method",
+     "lines": [50, 51],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "scherm", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "How often the title screen appeared.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.keren", "lines": [51]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_drie_keer_fout_is_terug_naar_het_hoofdmenu",
+       "lines": [106]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_esc_in_het_slotscherm_is_terug_naar_het_hoofdmenu",
+       "lines": [99]
+      },
+      {
+       "caller": "tests/test_stopslot.py::TestSlotscherm.test_esc_vraagt_de_ouderpin_en_juist_is_het_titelscherm",
+       "lines": [86]
+      },
+      {"caller": "tests/test_stopslot.py::TestStartMetSlot.test_meteen_bij_het_kind", "lines": [61]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TestStartMetSlot",
+   "qualname": "TestStartMetSlot",
+   "lines": [54, 77],
+   "bases": ["SlotBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Start tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_meteen_bij_het_kind",
+     "qualname": "TestStartMetSlot.test_meteen_bij_het_kind",
+     "kind": "method",
+     "lines": [55, 65],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With a lock the program starts directly at that child (after the child PIN if set).",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [59]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [57]},
+      {"target": "tests/test_stopslot.py::SlotBasis.titels", "lines": [61]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [58],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.zet_pincode",
+       "lines": [59],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_pincode"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [60],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", ".ergens", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_ouderpin_een_gewone_start",
+     "qualname": "TestStartMetSlot.test_zonder_ouderpin_een_gewone_start",
+     "kind": "method",
+     "lines": [67, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A lock without a parent PIN is ignored: normal start.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [68]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [69],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_slot_een_gewone_start",
+     "qualname": "TestStartMetSlot.test_zonder_slot_een_gewone_start",
+     "kind": "method",
+     "lines": [73, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No lock: normal start.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [75]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [76],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".met_wachtwoord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSlotscherm",
+   "qualname": "TestSlotscherm",
+   "lines": [80, 121],
+   "bases": ["SlotBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Lock-screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_esc_vraagt_de_ouderpin_en_juist_is_het_titelscherm",
+     "qualname": "TestSlotscherm.test_esc_vraagt_de_ouderpin_en_juist_is_het_titelscherm",
+     "kind": "method",
+     "lines": [81, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Esc asks the parent PIN; the right PIN shows the title/goodbye screen.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [88]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [82]},
+      {"target": "tests/test_stopslot.py::SlotBasis.titels", "lines": [86]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [88],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [83],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".ergens", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_stoppen_in_het_menu_vraagt_ook_de_pin",
+     "qualname": "TestSlotscherm.test_stoppen_in_het_menu_vraagt_ook_de_pin",
+     "kind": "method",
+     "lines": [90, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Stoppen' in the menu also asks the PIN.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [91]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [92],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".assertTrue", ".ergens", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_in_het_slotscherm_is_terug_naar_het_hoofdmenu",
+     "qualname": "TestSlotscherm.test_esc_in_het_slotscherm_is_terug_naar_het_hoofdmenu",
+     "kind": "method",
+     "lines": [96, 100],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Esc on the lock screen goes back to the main menu.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [97]},
+      {"target": "tests/test_stopslot.py::SlotBasis.titels", "lines": [99]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [98],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_drie_keer_fout_is_terug_naar_het_hoofdmenu",
+     "qualname": "TestSlotscherm.test_drie_keer_fout_is_terug_naar_het_hoofdmenu",
+     "kind": "method",
+     "lines": [102, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Three wrong PINs return to the main menu.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [103]},
+      {"target": "tests/test_stopslot.py::SlotBasis.titels", "lines": [106]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [104],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_opnieuw_gekozen_kind_met_slot_heeft_weer_het_slot",
+     "qualname": "TestSlotscherm.test_opnieuw_gekozen_kind_met_slot_heeft_weer_het_slot",
+     "kind": "method",
+     "lines": [109, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Choosing the locked child again restores the lock.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.keren", "lines": [113]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [110]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [112],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_kind_zonder_slot_stopt_gewoon",
+     "qualname": "TestSlotscherm.test_een_kind_zonder_slot_stopt_gewoon",
+     "kind": "method",
+     "lines": [115, 121],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A child without a lock can quit normally.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.keren", "lines": [120]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [116]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [117, 118],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [119],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "next", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestOuderOpentHetSlot",
+   "qualname": "TestOuderOpentHetSlot",
+   "lines": [124, 137],
+   "bases": ["SlotBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Parent unlock test.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_met_ouder_slot_af_dan_een_gewone_start",
+     "qualname": "TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+     "kind": "method",
+     "lines": [125, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After the parent turns the lock off the next start is normal.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [135]},
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [131]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [129]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [126]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "App(scherm, o, kleuren=False).start",
+       "lines": [131],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [127],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [136],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertIn", ".assertTrue", ".ergens", "next"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestCtrlC",
+   "qualname": "TestCtrlC",
+   "lines": [140, 175],
+   "bases": ["SlotBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Signal tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_genegeerd_zolang_het_kind_met_slot_actief_is",
+     "qualname": "TestCtrlC.test_genegeerd_zolang_het_kind_met_slot_actief_is",
+     "kind": "method",
+     "lines": [141, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "SIGINT is ignored while a locked child is active.",
+     "calls": [
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [142]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [151],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIs", "signal.getsignal", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kijk",
+     "qualname": "TestCtrlC.test_genegeerd_zolang_het_kind_met_slot_actief_is.kijk",
+     "kind": "nested",
+     "lines": [147, 149],
+     "params": [
+      {"name": "app", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Replacement for App.hoofdmenu that records the SIGINT handler then calls the real one.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "echt", "lines": [149], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["signal.getsignal"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_slot_blijft_ctrl_c",
+     "qualname": "TestCtrlC.test_zonder_slot_blijft_ctrl_c",
+     "kind": "method",
+     "lines": [155, 166],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Without a lock Ctrl-C keeps its normal effect.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [164],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNot", ".met_wachtwoord", "len", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kijk",
+     "qualname": "TestCtrlC.test_zonder_slot_blijft_ctrl_c.kijk",
+     "kind": "nested",
+     "lines": [160, 162],
+     "params": [
+      {"name": "app", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same recorder for the no-lock case.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "echt", "lines": [162], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["signal.getsignal"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ook_na_een_fout_teruggezet",
+     "qualname": "TestCtrlC.test_ook_na_een_fout_teruggezet",
+     "kind": "method",
+     "lines": [168, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The signal handlers are restored even after an exception.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::zonder_onderbreken", "lines": [171]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertRaises", "RuntimeError", "signal.getsignal"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestAapjesMetSlot",
+   "qualname": "TestAapjesMetSlot",
+   "lines": [178, 206],
+   "bases": ["SlotBasis"],
+   "decorators": [],
+   "docstring": "De aap met Stoppen op slot: hij mag niet vastlopen in het slotscherm (en raadt soms de pin).",
+   "explanation": "Monkey test.",
+   "attributes": [
+    {"name": "STAPPEN", "line": 180, "scope": "class", "value_preview": "test_stabiliteit.TestAapjes.STAPPEN"},
+    {
+     "name": "SEEDS",
+     "line": 181,
+     "scope": "class",
+     "value_preview": "range(max(3, len(test_stabiliteit.TestAapjes.SEEDS) // 2))"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_aapjes_met_slot",
+     "qualname": "TestAapjesMetSlot.test_aapjes_met_slot",
+     "kind": "method",
+     "lines": [183, 206],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A monkey test with the lock never gets stuck in the lock screen (sometimes guessing the PIN).",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::zet_slot", "lines": [189]},
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [197]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [194]},
+      {"target": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [187]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "App(scherm, o, kleuren=False).start",
+       "lines": [197],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [188],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "scherm.tekst",
+       "lines": [201, 203],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [
+      ".choice",
+      ".fail",
+      "AssertionError",
+      "len",
+      "random.Random",
+      "range",
+      "test_stabiliteit.TestAapjes.gebeurtenissen",
+      "type",
+      "unittest.mock.patch.dict"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

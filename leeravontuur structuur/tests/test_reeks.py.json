@@ -1,0 +1,799 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_reeks.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 216,
+ "source_sha256": "ff3b7c1d943d7246fe47c9d53ea1cd51ff444da6a1ff4e78e7e193e3cd439cc0",
+ "purpose": "Tests kern/reeks.py: the state of a skill, choosing topics for a mixed series, the plan, results per theme and who chooses the themes.",
+ "details": "Basis creates storage with a child and a fixed clock and helps to create practice history N days ago. TestKiezen uses fixed seeds to check the selection weights (keep-fresh topics most often, not too many in a row, deterministic).",
+ "module_docstring": "kern/reeks.py: de gemengde reeks (Gemengd oefenen nu, de examens later).",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "collections",
+   "names": ["Counter"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "dataclasses",
+   "names": ["replace"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "datetime",
+   "names": ["datetime", "timedelta", "timezone"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["herhaling", "klok", "reeks"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/reeks.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["rapporten"],
+   "alias": null,
+   "line": 61,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/rapporten.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 146,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 147,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["datetime.datetime", "datetime.timedelta", "datetime.timezone", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "CET",
+   "line": 15,
+   "value_type": "Call",
+   "value_preview": "timezone(timedelta(hours=1))",
+   "explanation": ""
+  },
+  {
+   "name": "DAG",
+   "line": 16,
+   "value_type": "Call",
+   "value_preview": "datetime(2026, 11, 7, 15, 0, tzinfo=CET)",
+   "explanation": ""
+  },
+  {
+   "name": "TAFELS",
+   "line": 18,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.hoofdrekenen.tafels'",
+   "explanation": ""
+  },
+  {
+   "name": "PLUSMIN",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.hoofdrekenen.plusmin'",
+   "explanation": ""
+  },
+  {
+   "name": "BREUK_HERKENNEN",
+   "line": 20,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.breuken.herkennen'",
+   "explanation": ""
+  },
+  {
+   "name": "VRAAGSTUK",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.vraagstukken.oplossen'",
+   "explanation": ""
+  },
+  {
+   "name": "STAART",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.cijferen.delen'",
+   "explanation": ""
+  },
+  {
+   "name": "MATEN",
+   "line": 23,
+   "value_type": "Attribute",
+   "value_preview": "E.OMZETTEN.id",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Basis",
+   "qualname": "Basis",
+   "lines": [26, 41],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared setup.",
+   "attributes": [
+    {"name": "o", "line": 28, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 29, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "Basis.setUp",
+     "kind": "method",
+     "lines": [27, 30],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Storage, child and fixed clock.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [30]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [28]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [29],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "Basis.tearDown",
+     "kind": "method",
+     "lines": [32, 33],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Resets the clock.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [33]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "geoefend",
+     "qualname": "Basis.geoefend",
+     "kind": "method",
+     "lines": [35, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": "20", "annotation": null},
+      {"name": "juist", "kind": "positional", "default": "True", "annotation": null},
+      {"name": "dagen_geleden", "kind": "positional", "default": "0", "annotation": null},
+      {"name": "modus", "kind": "positional", "default": "'reeks'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "n antwoorden op deze vaardigheid, zoveel dagen geleden.",
+     "explanation": "Stores n answers for a skill a number of days ago.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [37, 41]},
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [38]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "ses.antwoord",
+       "lines": [40],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["datetime.timedelta", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_reeks.py::TestFrisInHetRapport.test_status_per_vaardigheid", "lines": [62, 63]},
+      {"caller": "tests/test_reeks.py::TestKiezen.test_alleen_wat_al_geoefend_werd", "lines": [80]},
+      {"caller": "tests/test_reeks.py::TestKiezen.test_deterministisch_met_een_vaste_seed", "lines": [107]},
+      {"caller": "tests/test_reeks.py::TestKiezen.test_fris_houden_komt_het_vaakst", "lines": [86, 87]},
+      {"caller": "tests/test_reeks.py::TestKiezen.test_niet_te_veel_na_elkaar_en_lang", "lines": [97]},
+      {"caller": "tests/test_reeks.py::TestKiezen.test_onbekende_vaardigheid_doet_niet_mee", "lines": [113]},
+      {"caller": "tests/test_reeks.py::TestPlan.test_vragen_ook_maten_en_een_vraagstuk", "lines": [122]},
+      {"caller": "tests/test_reeks.py::TestStand.test_snelrekenen_telt_niet", "lines": [55]},
+      {"caller": "tests/test_reeks.py::TestStand.test_standen", "lines": [47, 49, 51]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TestStand",
+   "qualname": "TestStand",
+   "lines": [44, 56],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "State tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_standen",
+     "qualname": "TestStand.test_standen",
+     "kind": "method",
+     "lines": [45, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The state of a skill: None when unpractised, (mastered, days) after practice.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::stand", "lines": [46, 48, 50, 52]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [47, 49, 51]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_snelrekenen_telt_niet",
+     "qualname": "TestStand.test_snelrekenen_telt_niet",
+     "kind": "method",
+     "lines": [54, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Speed-arithmetic sessions do not count towards the state.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::stand", "lines": [56]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [55]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestFrisInHetRapport",
+   "qualname": "TestFrisInHetRapport",
+   "lines": [59, 71],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Report freshness.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_status_per_vaardigheid",
+     "qualname": "TestFrisInHetRapport.test_status_per_vaardigheid",
+     "kind": "method",
+     "lines": [60, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The report marks a skill 'fresh' for FRIS_DAGEN days.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [64]},
+      {"target": "leeravontuur/kern/rapporten.py::periodes", "lines": [64]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [68]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [62, 63]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKiezen",
+   "qualname": "TestKiezen",
+   "lines": [74, 115],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Selection tests.",
+   "attributes": [
+    {
+     "name": "THEMAS",
+     "line": 75,
+     "scope": "class",
+     "value_preview": "{'wiskunde.hoofdrekenen': (PLUSMIN, TAFELS), 'wiskunde.breu…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alleen_wat_al_geoefend_werd",
+     "qualname": "TestKiezen.test_alleen_wat_al_geoefend_werd",
+     "kind": "method",
+     "lines": [78, 83],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Only practised skills are chosen.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [79, 81]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [80]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "len", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fris_houden_komt_het_vaakst",
+     "qualname": "TestKiezen.test_fris_houden_komt_het_vaakst",
+     "kind": "method",
+     "lines": [85, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Skills that need to be kept fresh come up most.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [90]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [86, 87]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreater", "collections.Counter", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niet_te_veel_na_elkaar_en_lang",
+     "qualname": "TestKiezen.test_niet_te_veel_na_elkaar_en_lang",
+     "kind": "method",
+     "lines": [95, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No skill appears too often in a row.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::is_lang", "lines": [100]},
+      {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [99]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [97]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreater", ".assertLessEqual", "len", "random.Random", "range", "set", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_deterministisch_met_een_vaste_seed",
+     "qualname": "TestKiezen.test_deterministisch_met_een_vaste_seed",
+     "kind": "method",
+     "lines": [105, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The same seed gives the same selection.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [108, 109]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [107]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_onbekende_vaardigheid_doet_niet_mee",
+     "qualname": "TestKiezen.test_onbekende_vaardigheid_doet_niet_mee",
+     "kind": "method",
+     "lines": [112, 115],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Unknown skill ids are ignored.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [114]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [113]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestPlan",
+   "qualname": "TestPlan",
+   "lines": [118, 140],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Plan tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_vragen_ook_maten_en_een_vraagstuk",
+     "qualname": "TestPlan.test_vragen_ook_maten_en_een_vraagstuk",
+     "kind": "method",
+     "lines": [119, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A plan includes questions of Maten and word problems.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [123]},
+      {"target": "tests/test_reeks.py::Basis.geoefend", "lines": [122]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreater", ".assertIn", ".assertTrue", "len", "random.Random", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niets_geoefend_geen_plan",
+     "qualname": "TestPlan.test_niets_geoefend_geen_plan",
+     "kind": "method",
+     "lines": [134, 135],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No practice means no plan (None).",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [135]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hulp_voor_een_examen",
+     "qualname": "TestPlan.test_hulp_voor_een_examen",
+     "kind": "method",
+     "lines": [137, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Hulp.EXAMEN turns every help off; Hulp.ALLES turns all on.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", "all", "any"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestElkOnderwerp",
+   "qualname": "TestElkOnderwerp",
+   "lines": [143, 158],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Per-skill coverage.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_vaardigheid_van_het_leerplan_in_elk_leerjaar",
+     "qualname": "TestElkOnderwerp.test_elke_vaardigheid_van_het_leerplan_in_elk_leerjaar",
+     "kind": "method",
+     "lines": [144, 158],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Elk onderwerp met een reeks in het leerplan geeft in een gemengde reeks een vraag, in elk leerjaar.",
+     "explanation": "Every skill with a series in the curriculum gives a question in a mixed series in every year.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::bestaat", "lines": [153, 155]},
+      {"target": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [157]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", ".assertTrue", "set", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestUitslag",
+   "qualname": "TestUitslag",
+   "lines": [161, 168],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Result tally.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_per_thema",
+     "qualname": "TestUitslag.test_per_thema",
+     "kind": "method",
+     "lines": [162, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Uitslag sums correct, total and time and gives a per-theme tally.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::Reeksvraag", "lines": [163]},
+      {"target": "leeravontuur/kern/reeks.py::Uitslag.van", "lines": [164]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "list"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWieKiest",
+   "qualname": "TestWieKiest",
+   "lines": [171, 212],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Who-chooses tests.",
+   "attributes": [
+    {
+     "name": "ALLE",
+     "line": 172,
+     "scope": "class",
+     "value_preview": "['wiskunde.getallen', 'wiskunde.breuken', 'wiskunde.meten']"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_het_kind_kiest",
+     "qualname": "TestWieKiest.test_het_kind_kiest",
+     "kind": "method",
+     "lines": [174, 180],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "By default the child chooses; its chosen themes are used.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [175]},
+      {"target": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [176, 178, 180]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vast",
+     "qualname": "TestWieKiest.test_vast",
+     "kind": "method",
+     "lines": [182, 186],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A fixed parent choice cannot be changed by the child.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [183]},
+      {"target": "leeravontuur/kern/reeks.py::na_reeks", "lines": [186]},
+      {"target": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [185]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIs"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_keer_vervalt_na_de_reeks",
+     "qualname": "TestWieKiest.test_een_keer_vervalt_na_de_reeks",
+     "kind": "method",
+     "lines": [188, 193],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A one-time choice expires after the series.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [189]},
+      {"target": "leeravontuur/kern/reeks.py::na_reeks", "lines": [191]},
+      {"target": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [190, 192]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ongeldige_keuze_van_de_ouder",
+     "qualname": "TestWieKiest.test_ongeldige_keuze_van_de_ouder",
+     "kind": "method",
+     "lines": [195, 199],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Invalid stored parent choices fall back to the child's choice.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [198]},
+      {"target": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [199]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "dataclasses.replace"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_bewaard_en_gecontroleerd",
+     "qualname": "TestWieKiest.test_bewaard_en_gecontroleerd",
+     "kind": "method",
+     "lines": [201, 212],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The parent choice is stored and validated when loaded.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [210]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [202]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Instellingen(gemengd_themas='meten', gemengd_ouder=[1]).gec…",
+       "lines": [210],
+       "candidates": ["leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.bewaar_instellingen",
+       "lines": [207],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.instellingen_van",
+       "lines": [204, 208],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [203],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

@@ -1,0 +1,813 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_getallen.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 214,
+ "source_sha256": "dd5315600497fa3e5643b0b6ebcd9f4d06de916123b15e23946f7a70bec8ac8e",
+ "purpose": "Tests the Getallen (numbers) topics: place value, rounding, divisibility, number line; generators, diagnosis, model and screens.",
+ "details": "Covers kern/wiskunde/getallen (G.ALLE, G.PLAATSWAARDE, G.AFRONDEN, G.DEELBAARHEID, G.GETALLENLIJN), the Getallenlijn model (zooming) and the number-line screen with clicks, zoom and yes/no answers.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "decimal",
+   "names": ["ROUND_HALF_UP", "Decimal"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Getallenlijn", "lijn_rond"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["getallen"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/getallen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.naar", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {"name": "D", "line": 20, "value_type": "Name", "value_preview": "Decimal", "explanation": ""},
+  {
+   "name": "LINKS",
+   "line": 21,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_LEFT, curses.KEY_RIGHT)",
+   "explanation": ""
+  },
+  {
+   "name": "RECHTS",
+   "line": 21,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_LEFT, curses.KEY_RIGHT)",
+   "explanation": ""
+  },
+  {
+   "name": "NAAR_LIJN",
+   "line": 160,
+   "value_type": "Call",
+   "value_preview": "naar_onderwerp(G.GETALLENLIJN)",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [34, 101],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generators.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerjaren",
+     "qualname": "TestGeneratoren.test_alle_leerjaren",
+     "kind": "method",
+     "lines": [35, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic makes valid questions in every year; the value is reachable on the line.",
+     "calls": [
+      {"target": "tests/test_getallen.py::TestGeneratoren.controleer", "lines": [48]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [39],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.diagnose", "lines": [46], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "o.maak",
+       "lines": [42],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [47], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [45], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [44], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertIsNotNone", ".assertTrue", "isinstance", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "controleer",
+     "qualname": "TestGeneratoren.controleer",
+     "kind": "method",
+     "lines": [50, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per topic, checks that the data matches the answer.",
+     "calls": [
+      {"target": "tests/test_getallen.py::bereikbaar", "lines": [76]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [53, 58, 60, 62, 63, 76], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "lijn.streepjes",
+       "lines": [70, 73],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.streepjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIn",
+      ".assertIsInstance",
+      ".assertLessEqual",
+      ".assertTrue",
+      ".quantize",
+      ".scaleb",
+      "abs",
+      "int",
+      "len",
+      "sum"
+     ],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_getallen.py::TestGeneratoren.test_alle_leerjaren", "lines": [48]}
+     ]
+    },
+    {
+     "name": "test_negatief_pas_vanaf_5",
+     "qualname": "TestGeneratoren.test_negatief_pas_vanaf_5",
+     "kind": "method",
+     "lines": [83, 89],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Negative numbers on the line only from the 5th year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "G.GETALLENLIJN.maak",
+       "lines": [86, 89],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertGreaterEqual", ".assertNotEqual", ".assertTrue", "any", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ggd_kgv_pas_vanaf_6",
+     "qualname": "TestGeneratoren.test_ggd_kgv_pas_vanaf_6",
+     "kind": "method",
+     "lines": [91, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "gcd and lcm questions only from the 6th year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "G.DEELBAARHEID.maak",
+       "lines": [93, 94],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhaling_behoudt_soort",
+     "qualname": "TestGeneratoren.test_herhaling_behoudt_soort",
+     "kind": "method",
+     "lines": [96, 101],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeat data keeps the kind of divisibility question.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "G.DEELBAARHEID.herhaal_data",
+       "lines": [98],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "G.DEELBAARHEID.maak",
+       "lines": [97],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "G.DEELBAARHEID.maak_herhaling",
+       "lines": [101],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [104, 133],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Diagnosis.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_plaatswaarde",
+     "qualname": "TestDiagnose.test_plaatswaarde",
+     "kind": "method",
+     "lines": [105, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Place-value errors (digit instead of value) are recognised.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [107, 108], "candidates": [], "candidates_count": 0},
+      {"expr": "G.PLAATSWAARDE.diagnose", "lines": [110], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "G.PLAATSWAARDE.maak",
+       "lines": [106],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".scaleb", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_afronden",
+     "qualname": "TestDiagnose.test_afronden",
+     "kind": "method",
+     "lines": [112, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Cut off' and 'wrong place' rounding errors are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [113]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [113, 114, 115], "candidates": [], "candidates_count": 0},
+      {"expr": "G.AFRONDEN.diagnose", "lines": [114, 115], "candidates": [], "candidates_count": 37},
+      {"expr": "G.AFRONDEN.uitleg", "lines": [116], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_deelbaarheid_uitleg",
+     "qualname": "TestDiagnose.test_deelbaarheid_uitleg",
+     "kind": "method",
+     "lines": [118, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The divisibility explanation shows the digit sum (2 + 8 + 5 + 3 = 18).",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [119]}
+     ],
+     "unresolved_calls": [
+      {"expr": "G.DEELBAARHEID.diagnose", "lines": [122], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "G.DEELBAARHEID.lees_vraag",
+       "lines": [123, 124, 125],
+       "candidates": [],
+       "candidates_count": 11
+      },
+      {"expr": "G.DEELBAARHEID.uitleg", "lines": [121], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_getallenlijn",
+     "qualname": "TestDiagnose.test_getallenlijn",
+     "kind": "method",
+     "lines": [127, 133],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Jump direction errors on the line are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::lijn_rond", "lines": [130]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [130]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [129, 130, 132, 133], "candidates": [], "candidates_count": 0},
+      {"expr": "G.GETALLENLIJN.diagnose", "lines": [129, 132, 133], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "G.GETALLENLIJN.maak",
+       "lines": [128],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestModel",
+   "qualname": "TestModel",
+   "lines": [136, 150],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Model tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_inzoomen",
+     "qualname": "TestModel.test_inzoomen",
+     "kind": "method",
+     "lines": [137, 145],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Zooming in on a line divides the interval into ten.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::lijn_rond", "lines": [138]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [140, 141, 142, 143, 144, 145], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "lijn.dichtst",
+       "lines": [145],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.dichtst"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "lijn.inzoomen",
+       "lines": [140],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.inzoomen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "lijn.streepjes",
+       "lines": [139],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.streepjes"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.kan_inzoomen",
+       "lines": [143, 144],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.kan_inzoomen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.streepjes",
+       "lines": [142],
+       "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.streepjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", ".assertTrue", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_posities_passen_in_80",
+     "qualname": "TestModel.test_posities_passen_in_80",
+     "kind": "method",
+     "lines": [147, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The tick positions fit in 80 columns.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::lijn_rond", "lines": [148]},
+      {"target": "leeravontuur/terminal/modellen.py::posities", "lines": [149]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [163, 210],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screens.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_aanduiden_met_inzoomen",
+     "qualname": "TestSchermen.test_aanduiden_met_inzoomen",
+     "kind": "method",
+     "lines": [164, 174],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Pointing at 23,7 by moving the arrow, zooming in with + and confirming.",
+     "calls": [
+      {"target": "tests/test_getallen.py::aanduid_vraag", "lines": [166]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [169],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [167],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "len", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klikken_en_niet_ingezoomd",
+     "qualname": "TestSchermen.test_klikken_en_niet_ingezoomd",
+     "kind": "method",
+     "lines": [176, 184],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on a tick chooses it without zooming.",
+     "calls": [
+      {"target": "tests/test_getallen.py::aanduid_vraag", "lines": [178]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [180],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [179],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_uitzoomen",
+     "qualname": "TestSchermen.test_uitzoomen",
+     "kind": "method",
+     "lines": [186, 191],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "- zooms out again.",
+     "calls": [
+      {"target": "tests/test_getallen.py::aanduid_vraag", "lines": [188]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [191],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [189],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ja_nee",
+     "qualname": "TestSchermen.test_ja_nee",
+     "kind": "method",
+     "lines": [193, 206],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Yes/no divisibility questions: typing ja/nee is checked.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [195]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [203],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [200],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "test_schermen.naar", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestSchermen.test_spiekbrief",
+     "kind": "method",
+     "lines": [208, 210],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet shows 'DEELBAAR DOOR'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [209],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar_spiekbrief"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "bereikbaar",
+   "qualname": "bereikbaar",
+   "kind": "function",
+   "lines": [24, 31],
+   "params": [
+    {"name": "lijn", "kind": "positional", "default": null, "annotation": null},
+    {"name": "waarde", "kind": "positional", "default": null, "annotation": null},
+    {"name": "minste", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Kan je waarde aanduiden door (eventueel herhaald) in te zoomen?",
+   "explanation": "Whether a value can be pointed at by (repeatedly) zooming in on a number line.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "lijn.inzoomen",
+     "lines": [31],
+     "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.inzoomen"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "lijn.kan_inzoomen",
+     "lines": [29],
+     "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.kan_inzoomen"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "lijn.streepjes",
+     "lines": [27],
+     "candidates": ["leeravontuur/kern/modellen.py::Getallenlijn.streepjes"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_getallen.py::TestGeneratoren.controleer", "lines": [76]}
+   ]
+  },
+  {
+   "name": "aanduid_vraag",
+   "qualname": "aanduid_vraag",
+   "kind": "function",
+   "lines": [153, 156],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A fixed 'point at 23,7' question.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::lijn_rond", "lines": [155]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [154]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [155], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_getallen.py::TestSchermen.test_aanduiden_met_inzoomen", "lines": [166]},
+    {"caller": "tests/test_getallen.py::TestSchermen.test_klikken_en_niet_ingezoomd", "lines": [178]},
+    {"caller": "tests/test_getallen.py::TestSchermen.test_uitzoomen", "lines": [188]}
+   ]
+  }
+ ]
+}

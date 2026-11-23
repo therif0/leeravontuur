@@ -1,0 +1,798 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_meetkunde.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 221,
+ "source_sha256": "a021792ff8d58069d0c9e5317f75730c8b59962f5d2c9983d45f2653979a5085",
+ "purpose": "Tests Meetkunde: models (figure, map), the grid pixel drawing, generators, thinking errors and screens.",
+ "details": "Covers kern/modellen (Figuur, Kaart), terminal/modellen drawing helpers, kern/wiskunde/meetkunde (MK.ALLE topics) and the cross-placing screen.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Figuur", "Kaart"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["meetkunde"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/meetkunde.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "curses", "names": [], "alias": null, "line": 189, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "D", "line": 19, "value_type": "Name", "value_preview": "Decimal", "explanation": ""},
+  {"name": "STOP", "line": 174, "value_type": "BinOp", "value_preview": "[ESC] * 7", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestModellen",
+   "qualname": "TestModellen",
+   "lines": [22, 77],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Model tests.",
+   "attributes": [
+    {"name": "punten", "line": 70, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_figuur",
+     "qualname": "TestModellen.test_figuur",
+     "kind": "method",
+     "lines": [23, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Area and perimeter of an L-shaped figure.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [24, 28]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [29], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "driehoek.oppervlakte",
+       "lines": [29],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.oppervlakte"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "l_vorm.binnenranden",
+       "lines": [27],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.binnenranden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "l_vorm.omtrek",
+       "lines": [26],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.omtrek"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "l_vorm.oppervlakte",
+       "lines": [25],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.oppervlakte"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kaart",
+     "qualname": "TestModellen.test_kaart",
+     "kind": "method",
+     "lines": [31, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Map names and reading coordinates ('c 4' -> (3, 4)).",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Kaart", "lines": [32, 37]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::lees_coord", "lines": [34, 35, 36, 39, 40, 41]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "a.naam",
+       "lines": [38],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "k.naam",
+       "lines": [33],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rooster_vakjes_zijn_vierkant",
+     "qualname": "TestModellen.test_rooster_vakjes_zijn_vierkant",
+     "kind": "method",
+     "lines": [43, 55],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The grid raster has 4×4 pixel cells (square) with half cells as triangles.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [44]},
+      {"target": "leeravontuur/terminal/modellen.py::figuur_pixels", "lines": [45]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "len", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rand_ligt_op_de_omtrek",
+     "qualname": "TestModellen.test_rand_ligt_op_de_omtrek",
+     "kind": "method",
+     "lines": [57, 65],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The outline marks lie on the perimeter.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [58]},
+      {"target": "leeravontuur/terminal/modellen.py::figuur_pixels", "lines": [59]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "fig.omtrek",
+       "lines": [65],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.omtrek"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", "all", "len", "range", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hoek_tekening_past",
+     "qualname": "TestModellen.test_hoek_tekening_past",
+     "kind": "method",
+     "lines": [67, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The angle drawing fits its size for many angles.",
+     "calls": [
+      {"target": "leeravontuur/terminal/modellen.py::teken_hoek", "lines": [76]},
+      {"target": "tests/test_meetkunde.py::TestModellen.test_hoek_tekening_past.S", "lines": [75]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "all", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "S",
+   "qualname": "TestModellen.test_hoek_tekening_past.S",
+   "lines": [68, 73],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A recording fake screen defined inside the test.",
+   "attributes": [
+    {"name": "punten", "line": 70, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_hoek_tekening_past", "lines": [75]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "TestModellen.test_hoek_tekening_past.TestModellen.test_hoek_tekening_past.S.__init__",
+     "kind": "method",
+     "lines": [69, 70],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts an empty list of drawn points.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "put",
+     "qualname": "TestModellen.test_hoek_tekening_past.TestModellen.test_hoek_tekening_past.S.put",
+     "kind": "method",
+     "lines": [72, 73],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records every cell a text would cover.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [80, 110],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generators.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerjaren",
+     "qualname": "TestGeneratoren.test_alle_leerjaren",
+     "kind": "method",
+     "lines": [81, 99],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic makes valid questions in every year it is offered.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [85],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.diagnose", "lines": [94], "candidates": [], "candidates_count": 37},
+      {"expr": "o.lees_vraag", "lines": [93], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [88],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [93],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [90], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [92], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [91], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "v.model.omtrek",
+       "lines": [99],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.omtrek"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "v.model.oppervlakte",
+       "lines": [98],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.oppervlakte"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIsNone",
+      ".assertIsNotNone",
+      ".assertTrue",
+      "all",
+      "isinstance",
+      "random.Random",
+      "range"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niveaus",
+     "qualname": "TestGeneratoren.test_niveaus",
+     "kind": "method",
+     "lines": [101, 106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Which topics are offered from which year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "MK.FORMULES.maak",
+       "lines": [106],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "MK.ROOSTER.aangeboden",
+       "lines": [102],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "MK.SCHAAL.aangeboden",
+       "lines": [103, 104],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertNotIn", ".assertTrue", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_past",
+     "qualname": "TestGeneratoren.test_spiekbrief_past",
+     "kind": "method",
+     "lines": [108, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cheat-sheet lines fit in 78 characters.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [113, 161],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Diagnosis.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_rooster",
+     "qualname": "TestDiagnose.test_rooster",
+     "kind": "method",
+     "lines": [114, 122],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Perimeter/area confusion on the grid is recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [115]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [116, 120]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [116, 118, 119, 120, 121, 122], "candidates": [], "candidates_count": 0},
+      {"expr": "MK.ROOSTER.diagnose", "lines": [118, 119, 121, 122], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_formules",
+     "qualname": "TestDiagnose.test_formules",
+     "kind": "method",
+     "lines": [124, 135],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forgetting to halve for a triangle is recognised; the explanation shows the sum.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [125, 128, 130, 133]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "D",
+       "lines": [125, 126, 128, 129, 130, 131, 132, 133, 134],
+       "candidates": [],
+       "candidates_count": 0
+      },
+      {
+       "expr": "MK.FORMULES.diagnose",
+       "lines": [126, 129, 131, 132, 134],
+       "candidates": [],
+       "candidates_count": 37
+      },
+      {"expr": "MK.FORMULES.uitleg", "lines": [127, 135], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hoeken",
+     "qualname": "TestDiagnose.test_hoeken",
+     "kind": "method",
+     "lines": [137, 145],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Angle kind words are read leniently ('Scherpe hoek' -> scherp).",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [138, 144]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [144, 145], "candidates": [], "candidates_count": 0},
+      {"expr": "MK.HOEKEN.diagnose", "lines": [142, 145], "candidates": [], "candidates_count": 37},
+      {"expr": "MK.HOEKEN.lees_vraag", "lines": [139, 140, 141], "candidates": [], "candidates_count": 11},
+      {"expr": "MK.HOEKEN.uitleg", "lines": [143], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_coordinaten_en_schaal",
+     "qualname": "TestDiagnose.test_coordinaten_en_schaal",
+     "kind": "method",
+     "lines": [147, 161],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Swapped coordinates and counting rows from the top are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Kaart", "lines": [148, 151]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [148, 151, 154, 158]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [154, 156, 158, 161], "candidates": [], "candidates_count": 0},
+      {"expr": "MK.COORDINATEN.diagnose", "lines": [149, 150, 153], "candidates": [], "candidates_count": 37},
+      {"expr": "MK.SCHAAL.diagnose", "lines": [156, 161], "candidates": [], "candidates_count": 37},
+      {"expr": "MK.SCHAAL.lees", "lines": [160], "candidates": [], "candidates_count": 10},
+      {"expr": "MK.SCHAAL.uitleg", "lines": [157], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [177, 217],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screens.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_kruisje_met_een_klik",
+     "qualname": "TestSchermen.test_kruisje_met_een_klik",
+     "kind": "method",
+     "lines": [178, 186],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on a point chooses it.",
+     "calls": [
+      {"target": "tests/test_meetkunde.py::kruis_vraag", "lines": [180]},
+      {"target": "tests/test_meetkunde.py::naar", "lines": [181]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [183],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [181],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kruisje_met_pijltjes",
+     "qualname": "TestSchermen.test_kruisje_met_pijltjes",
+     "kind": "method",
+     "lines": [188, 195],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Arrow keys move the cross, Enter chooses.",
+     "calls": [
+      {"target": "tests/test_meetkunde.py::kruis_vraag", "lines": [193]},
+      {"target": "tests/test_meetkunde.py::naar", "lines": [194]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [195],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [194],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_figuur_op_het_scherm",
+     "qualname": "TestSchermen.test_figuur_op_het_scherm",
+     "kind": "method",
+     "lines": [197, 208],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A figure question draws the grid and the legend.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [199, 201]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [200]},
+      {"target": "tests/test_meetkunde.py::naar", "lines": [205]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [200], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "o.antwoorden",
+       "lines": [206],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [205],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestSchermen.test_spiekbrief",
+     "kind": "method",
+     "lines": [210, 217],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Meten: oppervlakte en formules; Meetkunde: hoeken, coördinaten en schaal.",
+     "explanation": "The Meetkunde cheat sheet shows HOEKEN and not FORMULES.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [212, 215],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens", "test_schermen.naar_spiekbrief"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "kruis_vraag",
+   "qualname": "kruis_vraag",
+   "kind": "function",
+   "lines": [164, 166],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A fixed 'put a cross on B3' question.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Kaart", "lines": [166]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [165]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_kruisje_met_een_klik", "lines": [180]},
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_kruisje_met_pijltjes", "lines": [193]}
+   ]
+  },
+  {
+   "name": "naar",
+   "qualname": "naar",
+   "kind": "function",
+   "lines": [169, 171],
+   "params": [
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wiskunde › domein › het onderwerp met dit nummer in MK.ALLE › V (vrij oefenen) › Normaal.",
+   "explanation": "Key sequence to free practice of the n-th topic.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.naar"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_figuur_op_het_scherm", "lines": [205]},
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_kruisje_met_een_klik", "lines": [181]},
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_kruisje_met_pijltjes", "lines": [194]}
+   ]
+  }
+ ]
+}

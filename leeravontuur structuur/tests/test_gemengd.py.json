@@ -1,0 +1,920 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_gemengd.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 210,
+ "source_sha256": "9822bbd3475c5de81ac2b2c61615e8cb347c607a2fe87f4d60ee9c0995ba1e16",
+ "purpose": "Tests Herhalen › Gemengd oefenen: themes, the mixed series with Maten, the result per theme, the parent's control, exam help and a monkey test.",
+ "details": "Basis extends OuderBasis (test_ouder) with helpers to create practice history and fixed plans. Covers terminal/schermen/gemengd, kern/reeks (Hulp.EXAMEN), the parent's three modes (child chooses, fixed, once), and a monkey test that presses random keys.",
+ "module_docstring": "Herhalen › Gemengd oefenen (0.24): de thema's, de reeks met Maten erin, het resultaat per thema, de ouder.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["herhaling", "reeks"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/herhaling.py", "leeravontuur/kern/reeks.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["HangtFout", "NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen",
+   "names": ["gemengd"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/schermen/__init__.py", "leeravontuur/terminal/schermen/gemengd.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_ouder",
+   "names": ["WW", "OuderBasis"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["tests/test_ouder.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "F1", "OK", "hm"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_ouder",
+   "names": ["WW", "OuderBasis"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "F1", "OK", "hm"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 182,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_stabiliteit",
+   "names": ["TestAapjes"],
+   "alias": null,
+   "line": 184,
+   "resolves_to": ["tests/test_stabiliteit.py"],
+   "internal": true
+  },
+  {
+   "module": "test_stabiliteit",
+   "names": ["TestAapjes"],
+   "alias": null,
+   "line": 186,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.hm", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "TAFELS",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.hoofdrekenen.tafels'",
+   "explanation": ""
+  },
+  {
+   "name": "MATEN",
+   "line": 23,
+   "value_type": "Attribute",
+   "value_preview": "E.OMZETTEN.id",
+   "explanation": ""
+  },
+  {
+   "name": "HOOFDREKENEN",
+   "line": 24,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.hoofdrekenen'",
+   "explanation": ""
+  },
+  {
+   "name": "METEN",
+   "line": 25,
+   "value_type": "Constant",
+   "value_preview": "'wiskunde.meten'",
+   "explanation": ""
+  },
+  {
+   "name": "NAAR_GEMENGD",
+   "line": 26,
+   "value_type": "List",
+   "value_preview": "[OK, OK, hm('Herhalen'), '2']",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Basis",
+   "qualname": "Basis",
+   "lines": [43, 53],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared setup.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "met_oefeningen",
+     "qualname": "Basis.met_oefeningen",
+     "kind": "method",
+     "lines": [44, 47],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheden", "kind": "vararg", "default": null, "annotation": null},
+      {"name": "inst", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Storage with a password and practice on the given skills.",
+     "calls": [
+      {"target": "tests/test_gemengd.py::geoefend", "lines": [46]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [46],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".met_wachtwoord"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_gemengd.py::TestDeOuderKiest.test_een_keer_vervalt_na_het_resultaat",
+       "lines": [134]
+      },
+      {"caller": "tests/test_gemengd.py::TestDeOuderKiest.test_in_het_ouderdeel", "lines": [144]},
+      {"caller": "tests/test_gemengd.py::TestDeOuderKiest.test_vast_geen_afvinklijst", "lines": [126]},
+      {
+       "caller": "tests/test_gemengd.py::TestDeReeks.test_de_keuze_van_het_kind_wordt_bewaard",
+       "lines": [115]
+      },
+      {"caller": "tests/test_gemengd.py::TestDeReeks.test_fouten_opnieuw_ook_met_maten", "lines": [106]},
+      {
+       "caller": "tests/test_gemengd.py::TestDeReeks.test_maten_in_de_reeks_en_het_resultaat_per_thema",
+       "lines": [88]
+      },
+      {"caller": "tests/test_gemengd.py::TestDeReeks.test_twintig_vragen_met_het_thema_erbij", "lines": [73]},
+      {"caller": "tests/test_gemengd.py::TestGerichteAap.test_aapjes_in_gemengd_oefenen", "lines": [194]},
+      {
+       "caller": "tests/test_gemengd.py::TestZonderHulp.test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+       "lines": [161]
+      }
+     ]
+    },
+    {
+     "name": "vast_plan",
+     "qualname": "Basis.vast_plan",
+     "kind": "method",
+     "lines": [49, 53],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "keuze", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "reeks.Hulp.ALLES", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een plan met vaste vaardigheden (geen toeval), zodat de test de antwoorden kent.",
+     "explanation": "A plan with fixed skills (no randomness) so the test knows the answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::Reeksplan", "lines": [53]},
+      {"target": "leeravontuur/kern/reeks.py::maak_vragen", "lines": [53]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [52],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["random.seed"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_gemengd.py::TestDeOuderKiest.test_een_keer_vervalt_na_het_resultaat",
+       "lines": [136]
+      },
+      {"caller": "tests/test_gemengd.py::TestDeReeks.speel_vast", "lines": [83]},
+      {"caller": "tests/test_gemengd.py::TestDeReeks.test_fouten_opnieuw_ook_met_maten", "lines": [107]},
+      {
+       "caller": "tests/test_gemengd.py::TestDeReeks.test_maten_in_de_reeks_en_het_resultaat_per_thema",
+       "lines": [90]
+      },
+      {
+       "caller": "tests/test_gemengd.py::TestZonderHulp.test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+       "lines": [163]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TestHerhalenMenu",
+   "qualname": "TestHerhalenMenu",
+   "lines": [56, 68],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Menu tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_herhalen_is_een_menu",
+     "qualname": "TestHerhalenMenu.test_herhalen_is_een_menu",
+     "kind": "method",
+     "lines": [57, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Herhalen' is a menu with 'Mijn herhaalvragen (0)'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [58],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_iets_geoefend",
+     "qualname": "TestHerhalenMenu.test_zonder_iets_geoefend",
+     "kind": "method",
+     "lines": [64, 68],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Without practice the theme list shows 'nog niet geoefend'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [65],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDeReeks",
+   "qualname": "TestDeReeks",
+   "lines": [71, 121],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Series tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_twintig_vragen_met_het_thema_erbij",
+     "qualname": "TestDeReeks.test_twintig_vragen_met_het_thema_erbij",
+     "kind": "method",
+     "lines": [72, 80],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A mixed series has 20 questions with the theme on each.",
+     "calls": [
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [73]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [74],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertLessEqual", ".assertTrue", ".ergens", "any", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "speel_vast",
+     "qualname": "TestDeReeks.speel_vast",
+     "kind": "method",
+     "lines": [82, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "keuze", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plays a fixed plan with the given keys.",
+     "calls": [
+      {"target": "tests/test_gemengd.py::Basis.vast_plan", "lines": [83]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [85],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_maten_in_de_reeks_en_het_resultaat_per_thema",
+     "qualname": "TestDeReeks.test_maten_in_de_reeks_en_het_resultaat_per_thema",
+     "kind": "method",
+     "lines": [87, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Maten questions appear in the mixed series; the result shows 'Per thema'.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [101]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [88]},
+      {"target": "tests/test_gemengd.py::Basis.vast_plan", "lines": [90]},
+      {"target": "tests/test_gemengd.py::antwoord", "lines": [91]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.laatste_oefening",
+       "lines": [102],
+       "candidates": ["leeravontuur/terminal/app.py::App.laatste_oefening"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "app.voorstel",
+       "lines": [103],
+       "candidates": ["leeravontuur/terminal/app.py::App.voorstel"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [97],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.recente_antwoorden",
+       "lines": [98],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [93],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", "len", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fouten_opnieuw_ook_met_maten",
+     "qualname": "TestDeReeks.test_fouten_opnieuw_ook_met_maten",
+     "kind": "method",
+     "lines": [105, 112],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Fouten opnieuw' also works with Maten questions.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [112]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [106]},
+      {"target": "tests/test_gemengd.py::Basis.vast_plan", "lines": [107]},
+      {"target": "tests/test_gemengd.py::antwoord", "lines": [108]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [110],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_keuze_van_het_kind_wordt_bewaard",
+     "qualname": "TestDeReeks.test_de_keuze_van_het_kind_wordt_bewaard",
+     "kind": "method",
+     "lines": [114, 121],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The child's ticked themes are stored in the settings.",
+     "calls": [
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [115]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [118],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [118],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [117, 120],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDeOuderKiest",
+   "qualname": "TestDeOuderKiest",
+   "lines": [124, 154],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Parent control tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_vast_geen_afvinklijst",
+     "qualname": "TestDeOuderKiest.test_vast_geen_afvinklijst",
+     "kind": "method",
+     "lines": [125, 131],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With fixed themes there is no tick list.",
+     "calls": [
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [126]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [127],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_keer_vervalt_na_het_resultaat",
+     "qualname": "TestDeOuderKiest.test_een_keer_vervalt_na_het_resultaat",
+     "kind": "method",
+     "lines": [133, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A one-time choice is gone after the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [139, 141]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [134]},
+      {"target": "tests/test_gemengd.py::Basis.vast_plan", "lines": [136]},
+      {"target": "tests/test_gemengd.py::antwoord", "lines": [140]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [139, 141],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [135],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [138, 140],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_in_het_ouderdeel",
+     "qualname": "TestDeOuderKiest.test_in_het_ouderdeel",
+     "kind": "method",
+     "lines": [143, 154],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The parent can set the mode and themes in the parent area.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [154]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [144]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [149, 154],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [145],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [147, 153],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestZonderHulp",
+   "qualname": "TestZonderHulp",
+   "lines": [157, 175],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Hulp.EXAMEN (voor de examens later): nu al getest, zodat het examen op een geteste basis bouwt.",
+   "explanation": "Exam-help tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+     "qualname": "TestZonderHulp.test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+     "kind": "method",
+     "lines": [160, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With Hulp.EXAMEN there are no tips, no second chance, no explanation, no repeat bin and no points.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [173]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [161]},
+      {"target": "tests/test_gemengd.py::Basis.vast_plan", "lines": [163]},
+      {"target": "tests/test_gemengd.py::antwoord", "lines": [166]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [162],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [164, 174],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.recente_antwoorden",
+       "lines": [175],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [166],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", ".ergens", "len", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGerichteAap",
+   "qualname": "TestGerichteAap",
+   "lines": [178, 206],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Willekeurig drukken in Gemengd oefenen: geen fout en niets mag blijven hangen.",
+   "explanation": "Monkey test.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_aapjes_in_gemengd_oefenen",
+     "qualname": "TestGerichteAap.test_aapjes_in_gemengd_oefenen",
+     "kind": "method",
+     "lines": [181, 206],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A monkey test of random keys in Gemengd oefenen never crashes or hangs.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [199]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [197]},
+      {"target": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [194]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "App(scherm, o, kleuren=False).start",
+       "lines": [199],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "scherm.tekst",
+       "lines": [203, 205],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [
+      ".addCleanup",
+      ".assertTrue",
+      ".fail",
+      "AssertionError",
+      "any",
+      "int",
+      "os.environ.get",
+      "random.Random",
+      "range",
+      "tempfile.TemporaryDirectory",
+      "test_stabiliteit.TestAapjes.gebeurtenissen",
+      "type",
+      "unittest.mock.patch.dict"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "geoefend",
+   "qualname": "geoefend",
+   "kind": "function",
+   "lines": [29, 34],
+   "params": [
+    {"name": "o", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheden", "kind": "vararg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Stores 12 answers for each given skill so it counts as practised.",
+   "calls": [
+    {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [31]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "ses.antwoord",
+     "lines": [33],
+     "candidates": [
+      "leeravontuur/kern/sessie.py::Sessie.antwoord",
+      "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "ses.sluit",
+     "lines": [34],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_gemengd.py::Basis.met_oefeningen", "lines": [46]}
+   ]
+  },
+  {
+   "name": "antwoord",
+   "qualname": "antwoord",
+   "kind": "function",
+   "lines": [37, 40],
+   "params": [
+    {"name": "rv", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat je typt voor een juist antwoord.",
+   "explanation": "The right typed answer for a plan question (Maten answers are numbers).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [40]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_gemengd.py::TestDeOuderKiest.test_een_keer_vervalt_na_het_resultaat",
+     "lines": [140]
+    },
+    {"caller": "tests/test_gemengd.py::TestDeReeks.test_fouten_opnieuw_ook_met_maten", "lines": [108]},
+    {
+     "caller": "tests/test_gemengd.py::TestDeReeks.test_maten_in_de_reeks_en_het_resultaat_per_thema",
+     "lines": [91]
+    },
+    {
+     "caller": "tests/test_gemengd.py::TestZonderHulp.test_geen_tip_geen_tweede_kans_geen_uitleg_geen_herhaalbak_geen_punten",
+     "lines": [166]
+    }
+   ]
+  }
+ ]
+}

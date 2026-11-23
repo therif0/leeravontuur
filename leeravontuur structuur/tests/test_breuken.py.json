@@ -1,0 +1,855 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_breuken.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 230,
+ "source_sha256": "ff96f46e008c978bc79498d88e681f35202492e684e7d1828ff9dbbf8d8f8a0d",
+ "purpose": "Tests the Breuken (fractions) topics: reading typed fractions, generators, thinking errors, the bar model and the screens.",
+ "details": "Covers kern/getal.lees_breuk / GetypteBreuk, kern/wiskunde/breuken (B.ALLE, B.HERKENNEN, B.OPTELLEN, B.GELIJKWAARDIG, B.VERGELIJKEN, B.BREUK_VAN), the Breukbalk model and the bar screens (shading with keys and clicks, choosing the denominator, simplifying with v).",
+ "module_docstring": "",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["GetypteBreuk", "fmt_breuk", "lees_breuk"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Breukbalk", "Breukbalken", "Groepjes"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["breuken"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/breuken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "F", "line": 22, "value_type": "Name", "value_preview": "Fraction", "explanation": ""},
+  {"name": "D", "line": 23, "value_type": "Name", "value_preview": "Decimal", "explanation": ""},
+  {
+   "name": "RECHTS",
+   "line": 24,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_RIGHT, curses.KEY_UP)",
+   "explanation": ""
+  },
+  {
+   "name": "OP",
+   "line": 24,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_RIGHT, curses.KEY_UP)",
+   "explanation": ""
+  },
+  {"name": "STOP", "line": 167, "value_type": "BinOp", "value_preview": "[ESC] * 7", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestLezen",
+   "qualname": "TestLezen",
+   "lines": [27, 37],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Typed-fraction reading.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_lees_breuk",
+     "qualname": "TestLezen.test_lees_breuk",
+     "kind": "method",
+     "lines": [28, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typed fractions read to a numerator/denominator and exact value: '3/4', mixed '1 3/4', negative '-2/5'.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::GetypteBreuk", "lines": [29]},
+      {"target": "leeravontuur/kern/getal.py::fmt_breuk", "lines": [36, 37]},
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [29, 30, 31, 32, 33, 35]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [30, 31, 36, 37], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [40, 99],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generators.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerjaren",
+     "qualname": "TestGeneratoren.test_alle_leerjaren",
+     "kind": "method",
+     "lines": [41, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic makes valid questions in every year offered.",
+     "calls": [
+      {"target": "tests/test_breuken.py::TestGeneratoren.controleer", "lines": [53]},
+      {"target": "tests/test_breuken.py::TestGeneratoren.past", "lines": [57]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [45],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.lees_vraag", "lines": [55], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [48],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [55],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [50], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [52], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [51], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertIsNotNone", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "past",
+     "qualname": "TestGeneratoren.past",
+     "kind": "method",
+     "lines": [59, 66],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "model", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Checks a bar model stays within BALK_MAX (and bar sets within limits).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", "all", "isinstance"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_breuken.py::TestGeneratoren.test_alle_leerjaren", "lines": [57]}
+     ]
+    },
+    {
+     "name": "controleer",
+     "qualname": "TestGeneratoren.controleer",
+     "kind": "method",
+     "lines": [68, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per topic and kind, checks that the question data matches the answer.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [72, 76, 80, 83, 87, 89, 92], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_breuken.py::TestGeneratoren.test_alle_leerjaren", "lines": [53]}
+     ]
+    },
+    {
+     "name": "test_niveaus",
+     "qualname": "TestGeneratoren.test_niveaus",
+     "kind": "method",
+     "lines": [94, 99],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Which topics are offered from which year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "B.BREUK_VAN.maak",
+       "lines": [98],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "B.HERKENNEN.aangeboden",
+       "lines": [96],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "B.OPTELLEN.aangeboden",
+       "lines": [95],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [102, 134],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Diagnosis.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_tellers_en_noemers",
+     "qualname": "TestDiagnose.test_tellers_en_noemers",
+     "kind": "method",
+     "lines": [103, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adding numerators and denominators is recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [106, 107]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [104]}
+     ],
+     "unresolved_calls": [
+      {"expr": "B.OPTELLEN.diagnose", "lines": [106, 107], "candidates": [], "candidates_count": 37},
+      {"expr": "B.OPTELLEN.uitleg", "lines": [108], "candidates": [], "candidates_count": 39},
+      {"expr": "F", "lines": [104], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niet_vereenvoudigd",
+     "qualname": "TestDiagnose.test_niet_vereenvoudigd",
+     "kind": "method",
+     "lines": [110, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An unsimplified but equal fraction is diagnosed as not simplified.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [113, 116]}
+     ],
+     "unresolved_calls": [
+      {"expr": "B.GELIJKWAARDIG.diagnose", "lines": [115], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "B.GELIJKWAARDIG.maak",
+       "lines": [111],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "B.GELIJKWAARDIG.nakijken",
+       "lines": [114, 116],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_waarde_telt_bij_herkennen",
+     "qualname": "TestDiagnose.test_waarde_telt_bij_herkennen",
+     "kind": "method",
+     "lines": [118, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "When recognising, an equal-value fraction is accepted; swapped numerator/denominator is diagnosed.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [120, 121, 123]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [119, 122]}
+     ],
+     "unresolved_calls": [
+      {"expr": "B.HERKENNEN.diagnose", "lines": [121, 123], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "B.HERKENNEN.nakijken",
+       "lines": [120],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "F", "lines": [119, 122], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vergelijken_en_van",
+     "qualname": "TestDiagnose.test_vergelijken_en_van",
+     "kind": "method",
+     "lines": [125, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Comparing errors (bigger denominator thought bigger) and 'fraction of' errors.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [132]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [126, 128, 130, 133]}
+     ],
+     "unresolved_calls": [
+      {"expr": "B.BREUK_VAN.diagnose", "lines": [129, 132], "candidates": [], "candidates_count": 37},
+      {"expr": "B.KOMMAGETAL.diagnose", "lines": [134], "candidates": [], "candidates_count": 37},
+      {"expr": "B.VERGELIJKEN.diagnose", "lines": [127], "candidates": [], "candidates_count": 37},
+      {"expr": "D", "lines": [128, 129, 133, 134], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [130], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestModel",
+   "qualname": "TestModel",
+   "lines": [137, 147],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Bar model.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_vereenvoudig",
+     "qualname": "TestModel.test_vereenvoudig",
+     "kind": "method",
+     "lines": [138, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Breukbalk.vereenvoudig halves 4/8 to 2/4 and gives None when it cannot be simplified.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk.van", "lines": [139, 141]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Breukbalk.van(3, 5).vereenvoudig",
+       "lines": [141],
+       "candidates": ["leeravontuur/kern/modellen.py::Breukbalk.vereenvoudig"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.vereenvoudig",
+       "lines": [140],
+       "candidates": ["leeravontuur/kern/modellen.py::Breukbalk.vereenvoudig"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_balk_past",
+     "qualname": "TestModel.test_balk_past",
+     "kind": "method",
+     "lines": [143, 147],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bars of 1 to 20 pieces fit the bar width.",
+     "calls": [
+      {"target": "leeravontuur/terminal/modellen.py::stuk_grenzen", "lines": [145]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [170, 226],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screens.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_arceren_met_toetsen_en_klik",
+     "qualname": "TestSchermen.test_arceren_met_toetsen_en_klik",
+     "kind": "method",
+     "lines": [171, 178],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shading pieces with Space/arrows and a click, then checking.",
+     "calls": [
+      {"target": "tests/test_breuken.py::arceer_vraag", "lines": [173]},
+      {"target": "tests/test_breuken.py::naar", "lines": [174]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [175],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [174],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_noemer_kiezen",
+     "qualname": "TestSchermen.test_noemer_kiezen",
+     "kind": "method",
+     "lines": [180, 187],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Choosing the denominator with ↑↓ and shading.",
+     "calls": [
+      {"target": "tests/test_breuken.py::naar", "lines": [184]},
+      {"target": "tests/test_breuken.py::toon_vraag", "lines": [183]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [185],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [184],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vereenvoudigen_met_v",
+     "qualname": "TestSchermen.test_vereenvoudigen_met_v",
+     "kind": "method",
+     "lines": [189, 197],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Pressing v simplifies 4/8 to 2/4 to 1/2.",
+     "calls": [
+      {"target": "tests/test_breuken.py::naar", "lines": [193]},
+      {"target": "tests/test_breuken.py::toon_vraag", "lines": [192]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [195],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [193],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_getypte_breuk_niet_vereenvoudigd",
+     "qualname": "TestSchermen.test_getypte_breuk_niet_vereenvoudigd",
+     "kind": "method",
+     "lines": [199, 211],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A typed unsimplified fraction gets the right hint.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [201]},
+      {"target": "tests/test_breuken.py::naar", "lines": [205]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [201], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "o.antwoorden",
+       "lines": [207],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [205],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertFalse",
+      ".assertIn",
+      ".assertTrue",
+      ".ergens",
+      ".opslag",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vergelijken",
+     "qualname": "TestSchermen.test_vergelijken",
+     "kind": "method",
+     "lines": [213, 222],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A comparison question accepts < > = and explains.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [215]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [218]},
+      {"target": "tests/test_breuken.py::naar", "lines": [220]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [218], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "o.antwoorden",
+       "lines": [221],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [220],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestSchermen.test_spiekbrief",
+     "kind": "method",
+     "lines": [224, 226],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet shows 'DE BREUKBALK'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [225],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar_spiekbrief"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "arceer_vraag",
+   "qualname": "arceer_vraag",
+   "kind": "function",
+   "lines": [150, 153],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A fixed 'shade 3/5' question.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [152]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [151]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [151], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_breuken.py::TestSchermen.test_arceren_met_toetsen_en_klik", "lines": [173]}
+   ]
+  },
+  {
+   "name": "toon_vraag",
+   "qualname": "toon_vraag",
+   "kind": "function",
+   "lines": [156, 159],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A fixed 'show 3/4 with 8 pieces' question.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [158]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [157]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [157], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_breuken.py::TestSchermen.test_noemer_kiezen", "lines": [183]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_vereenvoudigen_met_v", "lines": [192]}
+   ]
+  },
+  {
+   "name": "naar",
+   "qualname": "naar",
+   "kind": "function",
+   "lines": [162, 164],
+   "params": [
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wiskunde › domein › het onderwerp met dit nummer in B.ALLE › V (vrij oefenen) › Normaal.",
+   "explanation": "Key sequence to free practice of the n-th topic.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.naar"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_breuken.py::TestSchermen.test_arceren_met_toetsen_en_klik", "lines": [174]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_getypte_breuk_niet_vereenvoudigd", "lines": [205]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_noemer_kiezen", "lines": [184]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_vereenvoudigen_met_v", "lines": [193]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_vergelijken", "lines": [220]}
+   ]
+  }
+ ]
+}
