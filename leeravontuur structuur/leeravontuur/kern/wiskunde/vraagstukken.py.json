@@ -1,0 +1,3564 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 1435,
+ "source_sha256": "cdfb49350a3a4147d5861e00aebfc3de1d2121d44d45be83e19313f618208ef6",
+ "purpose": "The word-problem machine: a calculation structure times a world times a wording times numbers, the automatic wrong paths, the klad check, and the topics Vraagstukken, Speurneus and Schatten.",
+ "details": "A structure (Samen, Verschil, Groepen, ... 20 classes, as Python) chooses nice numbers and describes the solution as steps (operation, operands, what it finds, a hint without numbers, an explanation with numbers). A world (inhoud/vraagstukken/werelden.json) supplies words and realistic ranges (a baker with trays of rolls, a mason with rows of bricks); the wordings (zinnen.json, templates of kern/verhaal.py) make sentences, sometimes in another order or with a superfluous fact. The wrong paths (thinking errors) follow automatically from the steps (foute_paden). The topic is the structure, so repetition gives another world. Vraagstukken makes the questions (input kind 'vraagstuk', terminal/vraagstuk.py); Speurneus (another child's klad with one fault or none; method chosen at run time with getattr('_' + kind) at line 1213) and Schatten (estimate, can this be right) build on it. The klad is checked by analyseer_klad using kern/klad.analyseer, including the 'where does this number come from' rule. Names such as Snelheid, Schaal, Korting, BreukVan and Rest also exist as topic classes in other modules; here they are structures.",
+ "module_docstring": "Vraagstukken: een verhaalmachine (rekenstructuur × wereld × verwoording × getallen) en het nakijken van het klad.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 16, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 17, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 19, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["verhaal"],
+   "alias": null,
+   "line": 21,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/verhaal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "fmt_groot", "lees_getal"],
+   "alias": null,
+   "line": 22,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["analyseer", "lees_regel"],
+   "alias": null,
+   "line": 23,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Gegeven", "Keuze", "Rekenstap", "Speur", "Verhaal"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 25,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["duur_tekst", "klok_tekst", "lees_duur", "lees_klok"],
+   "alias": null,
+   "line": 26,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.procenten",
+   "names": ["geld"],
+   "alias": null,
+   "line": 27,
+   "resolves_to": ["leeravontuur/kern/wiskunde/procenten.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "leeravontuur/terminal/vraagstuk.py",
+  "tests/test_klok.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_vraagstukken.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [1145, 1322, 1434]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::BreukVan", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Gemiddelde", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Groepen", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Korting", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Lint", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Omtrek", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::PerKg", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::PerStuk", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Recept", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Rest", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Samen", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::SamenDelen", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Schaal", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Snelheid", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Sparen", "lines": [797]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Tegels", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Tijdsduur", "lines": [798]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::TweeSoorten", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Verschil", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Wisselgeld", "lines": [796]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_laad", "lines": [43, 44]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [1000], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".resolve", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 29,
+   "value_type": "Tuple",
+   "value_preview": "(Decimal, Fraction)",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "F",
+   "line": 29,
+   "value_type": "Tuple",
+   "value_preview": "(Decimal, Fraction)",
+   "explanation": "Short alias for Fraction."
+  },
+  {
+   "name": "MAP",
+   "line": 30,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent.parent / 'inhoud' / 'vraagstuk…",
+   "explanation": "Folder inhoud/vraagstukken."
+  },
+  {
+   "name": "BREEDTE",
+   "line": 31,
+   "value_type": "Tuple",
+   "value_preview": "(56, 4)",
+   "explanation": "Characters per story line (56)."
+  },
+  {
+   "name": "REGELS",
+   "line": 31,
+   "value_type": "Tuple",
+   "value_preview": "(56, 4)",
+   "explanation": "Lines of a story (4)."
+  },
+  {
+   "name": "VOLTOOID",
+   "line": 33,
+   "value_type": "Dict",
+   "value_preview": "{'+': 'opgeteld', '−': 'afgetrokken', '×': 'vermenigvuldigd', ':': 'g…",
+   "explanation": "Operation to past participle ('opgeteld', ...), used in the wrong-operation messages."
+  },
+  {
+   "name": "NAAM_OP",
+   "line": 34,
+   "value_type": "Dict",
+   "value_preview": "{'+': 'plus', '−': 'min', '×': 'maal', ':': 'deel'}",
+   "explanation": "Operation to name used in thinking-error codes."
+  },
+  {
+   "name": "BRIEFJES",
+   "line": 35,
+   "value_type": "List",
+   "value_preview": "[5, 10, 20, 50, 100, 200, 500]",
+   "explanation": "Note values for change questions."
+  },
+  {
+   "name": "WERELDEN",
+   "line": 43,
+   "value_type": "Call",
+   "value_preview": "_laad('werelden.json')",
+   "explanation": "The loaded worlds JSON."
+  },
+  {
+   "name": "ZINNEN",
+   "line": 44,
+   "value_type": "Call",
+   "value_preview": "_laad('zinnen.json')",
+   "explanation": "The loaded wordings JSON."
+  },
+  {
+   "name": "NAMEN",
+   "line": 45,
+   "value_type": "Subscript",
+   "value_preview": "WERELDEN['namen']",
+   "explanation": "First names for stories."
+  },
+  {
+   "name": "STAPPENPLAN",
+   "line": 46,
+   "value_type": "Subscript",
+   "value_preview": "ZINNEN['stappenplan']",
+   "explanation": "The four-step plan shown on the cheat sheet."
+  },
+  {
+   "name": "DAGEN",
+   "line": 590,
+   "value_type": "List",
+   "value_preview": "['op maandag', 'op dinsdag', 'op woensdag', 'op donderdag']",
+   "explanation": "Weekdays for the average structure."
+  },
+  {
+   "name": "STRUCTUREN",
+   "line": 796,
+   "value_type": "DictComp",
+   "value_preview": "{s.id: s for s in [Samen(), Verschil(), Groepen(), Rest(), SamenDelen…",
+   "explanation": "Structure id to structure instance."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 802,
+   "value_type": "Dict",
+   "value_preview": "{'vs_omzetten': 'niet (goed) omgezet naar de juiste eenheid', 'vs_ove…",
+   "explanation": "All thinking-error codes of word problems with descriptions (including the generated 'wrong operation' codes)."
+  },
+  {
+   "name": "OMREKENEN",
+   "line": 1000,
+   "value_type": "Set",
+   "value_preview": "{F(10), F(100), F(1000), F(60)}",
+   "explanation": "Numbers a klad line may always use (10, 100, 1000, 60)."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 1033,
+   "value_type": "List",
+   "value_preview": "[('EEN VRAAGSTUK IN 4 STAPPEN', 'accent'), *[(f\" {s['nr']} {s['naam']…",
+   "explanation": "The word-problem cheat sheet."
+  },
+  {
+   "name": "VRAAGSTUKKEN",
+   "line": 1145,
+   "value_type": "Call",
+   "value_preview": "Vraagstukken()",
+   "explanation": "The one instance of the main topic."
+  },
+  {
+   "name": "REKENFOUT",
+   "line": 1150,
+   "value_type": "Constant",
+   "value_preview": "'een rekenfout: de uitkomst van die regel klopt niet'",
+   "explanation": "Reason text for a calculation error."
+  },
+  {
+   "name": "SPEUR_CODES",
+   "line": 1151,
+   "value_type": "Set",
+   "value_preview": "{'vs_tussenstap', 'vs_stap_vergeten', 'vs_omzetten', 'vs_overbodig', …",
+   "explanation": "Thinking-error codes the Speurneus can show."
+  },
+  {
+   "name": "REDENEN",
+   "line": 1153,
+   "value_type": "List",
+   "value_preview": "[REKENFOUT, DENKFOUTEN['vs_tussenstap'], DENKFOUTEN['vs_overbodig'], …",
+   "explanation": "Reasons offered in the Speurneus."
+  },
+  {
+   "name": "SPEURNEUS",
+   "line": 1322,
+   "value_type": "Call",
+   "value_preview": "Speurneus()",
+   "explanation": "The one instance of the Speurneus topic."
+  },
+  {
+   "name": "SCHATTEN",
+   "line": 1434,
+   "value_type": "Call",
+   "value_preview": "Schatten()",
+   "explanation": "The one instance of the estimating topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 1435,
+   "value_type": "List",
+   "value_preview": "[VRAAGSTUKKEN, SPEURNEUS, SCHATTEN]",
+   "explanation": "List of the three topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "STRUCTUREN",
+   "line": 796,
+   "description": "Dict structure id -> instance of the 20 Structuur subclasses; stel_samen looks the structure up here by the id from the leerlijn or repetition data, then calls its bouw method."
+  },
+  {
+   "name": "WERELDEN",
+   "line": 43,
+   "description": "Worlds loaded from inhoud/vraagstukken/werelden.json; items are picked by structure kind (the structure's soort)."
+  },
+  {
+   "name": "ZINNEN",
+   "line": 44,
+   "description": "Wordings loaded from inhoud/vraagstukken/zinnen.json, indexed by structure and variant."
+  },
+  {
+   "name": "ALLE",
+   "line": 1435,
+   "description": "The three topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Opnieuw",
+   "qualname": "Opnieuw",
+   "lines": [49, 50],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "De getallen zijn niet mooi (of het verhaal is te lang): kies opnieuw.",
+   "explanation": "Raised when the chosen numbers are not nice or the story is too long: choose again.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal", "lines": [128]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [147, 150]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::BreukVan.bouw", "lines": [542]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Gemiddelde.bouw", "lines": [606]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Groepen.bouw", "lines": [294]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Korting.bouw", "lines": [467]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Lint.bouw", "lines": [708]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Omtrek.bouw", "lines": [569]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::PerKg.bouw", "lines": [439]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::PerStuk.bouw", "lines": [730, 738]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Rest.bouw", "lines": [327]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Samen.bouw", "lines": [232, 236]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::SamenDelen.bouw", "lines": [358]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Sparen.bouw", "lines": [493]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Tegels.bouw", "lines": [661]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Tijdsduur.bouw", "lines": [761, 788]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::TweeSoorten.bouw", "lines": [410]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_briefje", "lines": [375]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [969, 972]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Bouw",
+   "qualname": "Bouw",
+   "lines": [108, 191],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Hier zet een rekenstructuur de gegevens en stappen in.",
+   "explanation": "Builder in which a structure puts the data and steps of a word problem.",
+   "attributes": [
+    {"name": "g", "line": 113, "scope": "instance", "value_preview": null},
+    {"name": "w", "line": 114, "scope": "instance", "value_preview": null},
+    {"name": "stappen", "line": 115, "scope": "instance", "value_preview": null},
+    {"name": "extra", "line": 116, "scope": "instance", "value_preview": null},
+    {"name": "ook_juist", "line": 117, "scope": "instance", "value_preview": null},
+    {"name": "controle", "line": 118, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [931]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Bouw.__init__",
+     "kind": "method",
+     "lines": [111, 118],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ctx", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The state of a story being built: random generator, parameters, context, data, values, steps, extra wrong paths, alternative right routes and the plausibility range.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [931]}
+     ]
+    },
+    {
+     "name": "getal",
+     "qualname": "Bouw.getal",
+     "kind": "method",
+     "lines": [121, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "lo", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hi", "kind": "positional", "default": null, "annotation": null},
+      {"name": "stap", "kind": "positional", "default": "1", "annotation": null},
+      {"name": "hoogstens", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A random number in a range with a step, optionally capped; raises Opnieuw when the range is empty.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [128]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [122, 124, 125], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", "math.ceil", "math.floor", "min", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag", "lines": [132]}
+     ]
+    },
+    {
+     "name": "bedrag",
+     "qualname": "Bouw.bedrag",
+     "kind": "method",
+     "lines": [131, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "lo", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hi", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A random amount in euros, in steps of the leerlijn's money step.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal", "lines": [132]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [132], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".normalize"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "geg",
+     "qualname": "Bouw.geg",
+     "kind": "method",
+     "lines": [135, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarde", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+      {"name": "eenheid", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "nodig", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Registers a datum (id, value, name and unit) in the data, the values and the context.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Gegeven", "lines": [137]},
+      {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [137]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [137]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [136], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [139], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "stap",
+     "qualname": "Bouw.stap",
+     "kind": "method",
+     "lines": [143, 158],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "op", "kind": "positional", "default": null, "annotation": null},
+      {"name": "operanden", "kind": "positional", "default": null, "annotation": null},
+      {"name": "id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hint", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarom", "kind": "positional", "default": null, "annotation": null},
+      {"name": "eenheid", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adds a calculation step: computes the result exactly, rejects zero or not-nice results (Opnieuw), and stores a Rekenstap with its hint (no numbers), explanation (with numbers) and the line as written in the klad.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Gegeven", "lines": [154]},
+      {"target": "leeravontuur/kern/modellen.py::Rekenstap", "lines": [152]},
+      {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [152, 156]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst", "lines": [155]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [147, 150]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::bereken", "lines": [145]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [148]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [154]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [144], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["isinstance", "list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "reken_tekst",
+     "qualname": "Bouw.reken_tekst",
+     "kind": "method",
+     "lines": [160, 185],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "st", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarden", "kind": "positional", "default": null, "annotation": null},
+      {"name": "d", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The klad line of a step, with numbers formatted per unit (money, clock time, duration).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [175, 180]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [172]},
+      {
+       "target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.t",
+       "lines": [177, 180, 183, 185]
+      },
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [180]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [180], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["divmod", "len", "math.floor", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [155]}
+     ]
+    },
+    {
+     "name": "getal",
+     "qualname": "Bouw.reken_tekst.getal",
+     "kind": "nested",
+     "lines": [161, 164],
+     "params": [
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "eenheid", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A number as written in the line for its unit.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [164]},
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [164]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [164]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [163]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["abs"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst", "lines": [172]},
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.t", "lines": [170, 171]}
+     ]
+    },
+    {
+     "name": "t",
+     "qualname": "Bouw.reken_tekst.t",
+     "kind": "nested",
+     "lines": [166, 171],
+     "params": [
+      {"name": "i", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The i-th operand of the step as text.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [170, 171]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [171], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst",
+       "lines": [177, 180, 183, 185]
+      }
+     ]
+    },
+    {
+     "name": "kan",
+     "qualname": "Bouw.kan",
+     "kind": "method",
+     "lines": [187, 188],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "lo", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hi", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitleg", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets the plausibility range (lowest, highest, explanation) of the answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [188]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "t",
+     "qualname": "Bouw.t",
+     "kind": "method",
+     "lines": [190, 191],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sjabloon", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Fills a template with the context.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [191]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Structuur",
+   "qualname": "Structuur",
+   "lines": [194, 201],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Een rekenstructuur. soort = welk item uit een wereld ze nodig heeft.",
+   "explanation": "Base class of the calculation structures: soort says which kind of world item it needs.",
+   "attributes": [
+    {"name": "id", "line": 196, "scope": "class", "value_preview": "''"},
+    {"name": "naam", "line": 197, "scope": "class", "value_preview": "''"},
+    {"name": "soort", "line": 198, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Structuur.bouw",
+     "kind": "method",
+     "lines": [200, 201],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Abstract: puts the data and steps of one variant of this structure into the Bouw for a world item.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Samen",
+   "qualname": "Samen",
+   "lines": [217, 255],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'samen tellen': together (a + b), the missing part (total minus a part) or the rest of a total after two parts (the child's 'apple' case), with the thinking error that subtracting the two parts from each other is caught.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Samen.bouw",
+     "kind": "method",
+     "lines": [220, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [232, 236]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [239], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [225, 226, 240, 241, 242, 250, 251],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [223, 234],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [229, 248, 255],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [227, 243, 245, 252],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["max", "min", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Verschil",
+   "qualname": "Verschil",
+   "lines": [258, 284],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'verschil en vergelijken': how many more, or more/less than (watching the signal word 'minder').",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Verschil.bouw",
+     "kind": "method",
+     "lines": [261, 284],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [282], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [267, 268, 274, 275],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [264, 265],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [272, 280],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [269, 278],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "b.t",
+       "lines": [283],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.t"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Groepen",
+   "qualname": "Groepen",
+   "lines": [287, 315],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'groepjes': groups times per group (total), total divided by groups, or total divided by per group.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Groepen.bouw",
+     "kind": "method",
+     "lines": [290, 315],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [294]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.geg",
+       "lines": [296, 297, 303, 304, 310, 311],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [291, 292],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [301, 308, 315],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [298, 305, 312],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Rest",
+   "qualname": "Rest",
+   "lines": [318, 347],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'delen met rest': the remainder, the number of full groups, or the number of containers needed.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Rest.bouw",
+     "kind": "method",
+     "lines": [321, 347],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [327]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [345], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [328, 329],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [322, 323, 324],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [334, 343, 347],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [331, 336, 340],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "b.t",
+       "lines": [345],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.t"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["max", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "SamenDelen",
+   "qualname": "SamenDelen",
+   "lines": [350, 368],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'samen en dan eerlijk verdelen': add first, then share equally.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "SamenDelen.bouw",
+     "kind": "method",
+     "lines": [353, 368],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [358]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.geg",
+       "lines": [360, 361, 362],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [354, 355, 359],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [368],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [363, 365],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Wisselgeld",
+   "qualname": "Wisselgeld",
+   "lines": [381, 401],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'wisselgeld': change from a note, for one thing or several.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Wisselgeld.bouw",
+     "kind": "method",
+     "lines": [384, 401],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_briefje", "lines": [388, 398]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.bedrag",
+       "lines": [385],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [387, 388, 393, 394, 398],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [392],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [401],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [389, 395, 399],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TweeSoorten",
+   "qualname": "TweeSoorten",
+   "lines": [404, 430],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'twee soorten kopen': two products with counts and prices, total or change.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [796]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "TweeSoorten.bouw",
+     "kind": "method",
+     "lines": [407, 430],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::woord", "lines": [411]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [410]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_briefje", "lines": [425]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.bedrag",
+       "lines": [413],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [414, 415, 416, 417, 425],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [412],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [428, 430],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [418, 420, 422, 426],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "PerKg",
+   "qualname": "PerKg",
+   "lines": [433, 457],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'prijs per kg': convert grams to kg, multiply by the price, optionally change.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "PerKg.bouw",
+     "kind": "method",
+     "lines": [436, 457],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [439]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_briefje", "lines": [450]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [443], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.bedrag",
+       "lines": [440],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [441, 442, 450],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [437],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [453, 455, 457],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [443, 446, 451],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Korting",
+   "qualname": "Korting",
+   "lines": [460, 481],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'korting': percent discount of a price (a percentage step then subtract), with the 'percent read as euro' error.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Korting.bouw",
+     "kind": "method",
+     "lines": [463, 481],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [467]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [466]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [466, 477], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [468, 469],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [465],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [476, 481],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [470, 474],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "b.t",
+       "lines": [478],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.t"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".choice", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Sparen",
+   "qualname": "Sparen",
+   "lines": [484, 508],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'sparen': how many weeks to save for a price (rounding up).",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Sparen.bouw",
+     "kind": "method",
+     "lines": [487, 508],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [493]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.geg",
+       "lines": [494, 495, 496],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [488, 489, 490],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [508],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [497, 500, 503, 505],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["math.ceil", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Recept",
+   "qualname": "Recept",
+   "lines": [511, 532],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'recept': scale a recipe from n1 persons to n2 persons (divide then multiply).",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Recept.bouw",
+     "kind": "method",
+     "lines": [514, 532],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "b.geg",
+       "lines": [520, 521, 522],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [517],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [530, 532],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [523, 526],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".choice", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "BreukVan",
+   "qualname": "BreukVan",
+   "lines": [535, 559],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'een breuk van een aantal': divide by the denominator, multiply by the numerator, optionally the other part.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "BreukVan.bouw",
+     "kind": "method",
+     "lines": [538, 559],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [542]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_breuk_tekst", "lines": [546]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [546], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [545, 546],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [544],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [559],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [547, 552, 556],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".choice", ".randint", "math.gcd", "max", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Omtrek",
+   "qualname": "Omtrek",
+   "lines": [562, 587],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'omtrek': perimeter of a rectangle (and its price per metre), with the 'area instead of perimeter' error.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Omtrek.bouw",
+     "kind": "method",
+     "lines": [565, 587],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [569]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [578], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.bedrag",
+       "lines": [581],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [570, 571, 582],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [566, 567],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [585, 587],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [573, 576, 583],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "b.t",
+       "lines": [578],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.t"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Gemiddelde",
+   "qualname": "Gemiddelde",
+   "lines": [593, 618],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'gemiddelde': average of 3 or 4 days (sum then divide), with the 'wrong divisor' error.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [797]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Gemiddelde.bouw",
+     "kind": "method",
+     "lines": [596, 618],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [606]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [615]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [615, 616], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [609],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [601],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [618],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [610, 612],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".randint", "enumerate", "len", "list", "max", "min", "range", "set", "str", "sum", "zip"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Snelheid",
+   "qualname": "Snelheid",
+   "lines": [621, 652],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'snelheid, afstand en tijd': distance from speed and time (also minutes), or time from distance.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Snelheid.bouw",
+     "kind": "method",
+     "lines": [624, 652],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [627]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [631], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [627, 630, 643, 648],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [626, 641],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [637, 639, 646, 652],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [631, 634, 644, 649],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".choice", "max"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Tegels",
+   "qualname": "Tegels",
+   "lines": [655, 680],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'oppervlakte (tegels)': area of a floor, then price or number of tiles, with the 'perimeter instead of area' error.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Tegels.bouw",
+     "kind": "method",
+     "lines": [658, 680],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [661]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [678], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.bedrag",
+       "lines": [667],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [662, 663, 668, 674],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [659, 673],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [680],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [664, 669, 675],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Schaal",
+   "qualname": "Schaal",
+   "lines": [683, 697],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'schaal': real length in km from map centimetres and a scale.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Schaal.bouw",
+     "kind": "method",
+     "lines": [686, 697],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [691, 694]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [695, 697], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [690, 691],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [688],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [697],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [692, 695],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Lint",
+   "qualname": "Lint",
+   "lines": [700, 720],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'in stukken knippen': convert metres to cm, then the number of pieces or the leftover.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Lint.bouw",
+     "kind": "method",
+     "lines": [703, 720],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [708]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.geg",
+       "lines": [709, 710],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [705],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [716, 720],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [711, 714, 718],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "PerStuk",
+   "qualname": "PerStuk",
+   "lines": [723, 747],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Structure 'de prijs van één (regel van drie)': price of one from a multi-pack, optionally for another number.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "PerStuk.bouw",
+     "kind": "method",
+     "lines": [726, 747],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [730, 738]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.bedrag",
+       "lines": [727],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.bedrag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.geg",
+       "lines": [731, 732, 739],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [728, 736],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [743, 745, 747],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [733, 740],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Tijdsduur",
+   "qualname": "Tijdsduur",
+   "lines": [750, 793],
+   "bases": ["Structuur"],
+   "decorators": [],
+   "docstring": "Tijdstippen en tijdsduur (alles in minuten na middernacht).",
+   "explanation": "Structure 'tijdsduur en aankomstuur': duration, start time, arrival time or a two-part trip, all in minutes after midnight.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [798]}
+   ],
+   "methods": [
+    {
+     "name": "bouw",
+     "qualname": "Tijdsduur.bouw",
+     "kind": "method",
+     "lines": [754, 793],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null},
+      {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the data and steps of the structure's variants into the builder for a world item.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [761, 788]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [775, 784], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "b.geg",
+       "lines": [763, 764, 770, 771, 778, 779, 789],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.getal",
+       "lines": [758, 759, 786],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.kan",
+       "lines": [768, 776, 793],
+       "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "b.stap",
+       "lines": [765, 772, 780, 790],
+       "candidates": [
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.stap",
+        "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.stap"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Vraagstukken",
+   "qualname": "Vraagstukken",
+   "lines": [1060, 1142],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.vraagstukken.oplossen: word problems from structure x world x wording (a long question, input kind 'vraagstuk').",
+   "attributes": [
+    {"name": "id", "line": 1061, "scope": "class", "value_preview": "'wiskunde.vraagstukken.oplossen'"},
+    {"name": "lang", "line": 1062, "scope": "class", "value_preview": "True"},
+    {"name": "naam", "line": 1063, "scope": "class", "value_preview": "'Vraagstukken oplossen'"},
+    {"name": "spiek_kop", "line": 1064, "scope": "class", "value_preview": "'EEN VRAAGSTUK IN 4 STAPPEN'"},
+    {
+     "name": "omschrijving",
+     "line": 1065,
+     "scope": "class",
+     "value_preview": "'verhaaltjes lezen, plannen, rekenen in je klad en controle…"
+    },
+    {"name": "denkfouten", "line": 1066, "scope": "class", "value_preview": "DENKFOUTEN"},
+    {"name": "vast", "line": 1067, "scope": "class", "value_preview": "('structuur', 'variant')"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "keuzes",
+     "qualname": "Vraagstukken.keuzes",
+     "kind": "method",
+     "lines": [1069, 1070],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The (structure, variant) pairs of the leerlijn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.kies_onderwerp", "lines": [1073]},
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.maak_met", "lines": [1078]}
+     ]
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Vraagstukken.kies_onderwerp",
+     "kind": "method",
+     "lines": [1072, 1075],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses a structure, weighted by past mistakes.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.keuzes", "lines": [1073]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choices", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Vraagstukken.maak_met",
+     "kind": "method",
+     "lines": [1077, 1099],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Up to 300 tries: chooses a structure and variant (from repetition data or random), a world and item, builds the story with stel_samen and returns the Vraag with input kind 'vraagstuk', the Verhaal as model and the right answer text.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [1096]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.keuzes", "lines": [1078]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_items", "lines": [1087]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [1090]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [1094]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice", "RuntimeError", "range", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Vraagstukken.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [1101, 1103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The structure name from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Vraagstukken.lees",
+     "kind": "method",
+     "lines": [1105, 1106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed answer with lees_antwoord.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::lees_antwoord", "lines": [1106]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Vraagstukken.lees_vraag",
+     "kind": "method",
+     "lines": [1108, 1114],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads the answer as a clock time, a duration (or minutes) or a number depending on the story's answer kind.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_duur", "lines": [1113]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [1111]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::lees_antwoord", "lines": [1113, 1114]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["getattr"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Vraagstukken.diagnose",
+     "kind": "method",
+     "lines": [1116, 1128],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The wrong path whose final value equals the answer, or 'vs_kan_niet' when the answer is outside the plausibility range.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [1120], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Vraagstukken.uitleg",
+     "kind": "method",
+     "lines": [1130, 1136],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "What was asked, each step with its line and reason, and the answer sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1135]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Vraagstukken.tip",
+     "kind": "method",
+     "lines": [1138, 1139],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The hint of the first step.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Vraagstukken.spiekbrief",
+     "kind": "method",
+     "lines": [1141, 1142],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word-problem cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Speurneus",
+   "qualname": "Speurneus",
+   "lines": [1187, 1319],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.vraagstukken.speurneus: find the error in another child's klad (a long question).",
+   "attributes": [
+    {"name": "id", "line": 1188, "scope": "class", "value_preview": "'wiskunde.vraagstukken.speurneus'"},
+    {"name": "lang", "line": 1189, "scope": "class", "value_preview": "True"},
+    {"name": "naam", "line": 1190, "scope": "class", "value_preview": "'Speurneus: zoek de fout'"},
+    {"name": "spiek_kop", "line": 1191, "scope": "class", "value_preview": "'IN HET KLAD'"},
+    {
+     "name": "omschrijving",
+     "line": 1192,
+     "scope": "class",
+     "value_preview": "'een ander kind loste het op: zit er een fout in, en waarom…"
+    },
+    {
+     "name": "denkfouten",
+     "line": 1193,
+     "scope": "class",
+     "value_preview": "{'vs_speur_regel': 'de foute regel niet gevonden', 'vs_speu…"
+    },
+    {"name": "vast", "line": 1195, "scope": "class", "value_preview": "('structuur', 'variant')"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Speurneus.kies_onderwerp",
+     "kind": "method",
+     "lines": [1197, 1198],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Delegates to Vraagstukken.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "VRAAGSTUKKEN.kies_onderwerp", "lines": [1198], "candidates": [], "candidates_count": 9}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Speurneus.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [1200, 1202],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The structure name from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Speurneus.maak_met",
+     "kind": "method",
+     "lines": [1204, 1231],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a story of up to 4 steps, picks a kind of fault ('alles_juist', 'rekenfout' or 'denkfout', with weights) and builds another child's klad through the method named '_' + kind (chosen at run time with getattr, line 1213); makes three possible reasons and the right answer ('2b' = line 2, reason b, or '0' = all correct).",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Speur", "lines": [1228]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [1229]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_naam", "lines": [1227]}
+     ],
+     "unresolved_calls": [
+      {"expr": "VRAAGSTUKKEN.maak_met", "lines": [1206], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".choices", ".sample", ".shuffle", "RuntimeError", "getattr", "len", "range", "tuple"],
+     "dynamic": [
+      {"kind": "getattr", "line": 1213, "expr": "getattr(self, '_' + soort)"}
+     ],
+     "called_by": []
+    },
+    {
+     "name": "_juiste_regels",
+     "qualname": "Speurneus._juiste_regels",
+     "kind": "staticmethod",
+     "lines": [1234, 1235],
+     "params": [
+      {"name": "m", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The lines of the right solution.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._alles_juist", "lines": [1238]},
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._denkfout", "lines": [1270]}
+     ]
+    },
+    {
+     "name": "_alles_juist",
+     "qualname": "Speurneus._alles_juist",
+     "kind": "method",
+     "lines": [1237, 1239],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "m", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A klad without a fault.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._juiste_regels", "lines": [1238]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1238]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_rekenfout",
+     "qualname": "Speurneus._rekenfout",
+     "kind": "method",
+     "lines": [1241, 1265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "m", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A klad with a calculation error in one line (the result off by 10, 60, a factor 10 and so on) and the later lines following from it.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1264]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_reken_alles", "lines": [1253]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1263]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [1250, 1263]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::regel_tekst", "lines": [1258, 1259]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [1263], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [1247, 1252, 1256], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", "enumerate", "float", "isinstance", "len", "round"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_denkfout",
+     "qualname": "Speurneus._denkfout",
+     "kind": "method",
+     "lines": [1267, 1286],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "m", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A klad that follows one of the story's known wrong paths (stopping early, a forgotten conversion, a wrong operation ...).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._juiste_regels", "lines": [1270]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1276, 1284]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [1268, 1276, 1284]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::regel_tekst", "lines": [1280]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [1273], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".shuffle", "enumerate", "len", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Speurneus.lees",
+     "kind": "method",
+     "lines": [1288, 1294],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "'2b', 'regel 2, reden b', '0' of 'alles is juist' → '2b' of '0'.",
+     "explanation": "Reads '2b', 'regel 2, reden b', '0' or 'alles is juist' into '2b' or '0'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".group", "re.fullmatch"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.lees_vraag", "lines": [1297]}
+     ]
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Speurneus.lees_vraag",
+     "kind": "method",
+     "lines": [1296, 1297],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same as lees.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.lees", "lines": [1297]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Speurneus.diagnose",
+     "kind": "method",
+     "lines": [1299, 1309],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises answering 'nothing wrong' when there was a fault, missing it, finding the wrong line, or finding the line but not the reason.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Speurneus.uitleg",
+     "kind": "method",
+     "lines": [1311, 1313],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The explanation of the fault plus the steps of the right solution.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [1313]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [1313], "candidates": [], "candidates_count": 0},
+      {"expr": "VRAAGSTUKKEN.uitleg", "lines": [1313], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Speurneus.tip",
+     "kind": "method",
+     "lines": [1315, 1316],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recalculate each line; does the operation fit the story; is the answer right?",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Speurneus.spiekbrief",
+     "kind": "method",
+     "lines": [1318, 1319],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word-problem cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Schatten",
+   "qualname": "Schatten",
+   "lines": [1337, 1431],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.vraagstukken.schatten: estimating and 'can this be right'.",
+   "attributes": [
+    {"name": "id", "line": 1338, "scope": "class", "value_preview": "'wiskunde.vraagstukken.schatten'"},
+    {"name": "naam", "line": 1339, "scope": "class", "value_preview": "'Schatten en controleren'"},
+    {"name": "spiek_kop", "line": 1340, "scope": "class", "value_preview": "'KAN DAT KLOPPEN?'"},
+    {
+     "name": "omschrijving",
+     "line": 1341,
+     "scope": "class",
+     "value_preview": "'ongeveer hoeveel? en: kan dat antwoord kloppen?'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 1342,
+     "scope": "class",
+     "value_preview": "{'vs_schat_10': '10 keer te groot of te klein geschat', 'vs…"
+    },
+    {"name": "vast", "line": 1345, "scope": "class", "value_preview": "('structuur', 'variant', 'soort')"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Schatten.kies_onderwerp",
+     "kind": "method",
+     "lines": [1347, 1348],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Delegates to Vraagstukken.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "VRAAGSTUKKEN.kies_onderwerp", "lines": [1348], "candidates": [], "candidates_count": 9}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Schatten.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [1350, 1352],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The structure name from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Schatten.maak_met",
+     "kind": "method",
+     "lines": [1354, 1367],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a story and turns it into a multiple-choice question: estimate roughly ('ongeveer') or 'can this answer be right' ('kan').",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Keuze", "lines": [1363]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [1364]}
+     ],
+     "unresolved_calls": [
+      {"expr": "VRAAGSTUKKEN.maak_met", "lines": [1356], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".choice", "RuntimeError", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_ongeveer",
+     "qualname": "Schatten._ongeveer",
+     "kind": "method",
+     "lines": [1369, 1387],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Three options: the rounded answer and ten times larger and smaller; not for time answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::schat", "lines": [1373, 1377]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [1381, 1384]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".shuffle", "len", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_kan",
+     "qualname": "Schatten._kan",
+     "kind": "method",
+     "lines": [1389, 1406],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Someone gives an answer (right, or a value outside the plausible range); the child says yes or no.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_naam", "lines": [1397]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1402]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [1395, 1399]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [1394], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Schatten.lees",
+     "kind": "method",
+     "lines": [1408, 1410],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads the first letter a, b or c.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten.lees_vraag", "lines": [1413]}
+     ]
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Schatten.lees_vraag",
+     "kind": "method",
+     "lines": [1412, 1413],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same as lees.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten.lees", "lines": [1413]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Schatten.diagnose",
+     "kind": "method",
+     "lines": [1415, 1422],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises ten times too large or small, believing an impossible answer, and rejecting a possible one.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Schatten.uitleg",
+     "kind": "method",
+     "lines": [1424, 1425],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The right answer and the plausibility reason.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Schatten.tip",
+     "kind": "method",
+     "lines": [1427, 1428],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Round the numbers and calculate roughly.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Schatten.spiekbrief",
+     "kind": "method",
+     "lines": [1430, 1431],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word-problem cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_laad",
+   "qualname": "_laad",
+   "kind": "function",
+   "lines": [38, 40],
+   "params": [
+    {"name": "naam", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Loads one JSON file from inhoud/vraagstukken.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["json.load", "open"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [43, 44]}
+   ]
+  },
+  {
+   "name": "bereken",
+   "qualname": "bereken",
+   "kind": "function",
+   "lines": [55, 77],
+   "params": [
+    {"name": "op", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "negatief", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Exact rekenen (Fraction). None als het niet kan (delen door 0, of negatief tenzij dat mag).",
+   "explanation": "Exact calculation of one step (+, -, x, :, 'omzet' conversion, 'pct' percent of, 'heel' whole division, 'rest' remainder, 'boven' rounded-up division) with Fractions; None for division by zero or a negative result unless allowed.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [58, 60, 62, 70, 74], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["ValueError", "math.ceil", "math.floor", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [145]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_reken_alles", "lines": [839]}
+   ]
+  },
+  {
+   "name": "mooi",
+   "qualname": "mooi",
+   "kind": "function",
+   "lines": [80, 85],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "decimalen", "kind": "positional", "default": "2", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Fraction → Decimal als het hoogstens zoveel cijfers na de komma heeft, anders None.",
+   "explanation": "A Fraction as Decimal if it has at most the given number of decimals, else None (used to keep numbers 'nice').",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [85], "candidates": [], "candidates_count": 0},
+    {"expr": "F", "lines": [82], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst", "lines": [180]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [148]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Gemiddelde.bouw", "lines": [615]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Korting.bouw", "lines": [466]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten._kan", "lines": [1395, 1399]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._denkfout", "lines": [1268, 1276, 1284]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._rekenfout", "lines": [1250, 1263]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1166]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::foute_paden", "lines": [873]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::schat", "lines": [1334]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_elke_structuur_in_elk_leerjaar",
+     "lines": [50]
+    }
+   ]
+  },
+  {
+   "name": "tekst_getal",
+   "qualname": "tekst_getal",
+   "kind": "function",
+   "lines": [88, 97],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "eenheid", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een getal zoals in het verhaal: '€ 3,20', '750 g', '1 250', '9.45 u' (klok), '1 u 35 min' (duur).",
+   "explanation": "A number as in the story: euro with symbol, clock time, duration, thousands with spaces, or with its unit.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [96]},
+    {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [96]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [95]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [93]},
+    {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [91]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["abs"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg", "lines": [137]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [163]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [154]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten._ongeveer", "lines": [1381, 1384]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.maak_met", "lines": [1094]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1164]},
+    {"caller": "tests/test_klok.py::TestTijdInVraagstukken.test_klad_en_antwoord", "lines": [145]}
+   ]
+  },
+  {
+   "name": "_breuk_tekst",
+   "qualname": "_breuk_tekst",
+   "kind": "function",
+   "lines": [100, 103],
+   "params": [
+    {"name": "teller", "kind": "positional", "default": null, "annotation": null},
+    {"name": "noemer", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "'de helft' for 1/2, otherwise 't/n'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::BreukVan.bouw", "lines": [546]}
+   ]
+  },
+  {
+   "name": "_woorden",
+   "qualname": "_woorden",
+   "kind": "function",
+   "lines": [204, 214],
+   "params": [
+    {"name": "item", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Puts the words and fixed phrases of a world item (thing, container, group, place ...) into the story context.",
+   "calls": [
+    {"target": "leeravontuur/kern/verhaal.py::woord", "lines": [207]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [932]}
+   ]
+  },
+  {
+   "name": "_briefje",
+   "qualname": "_briefje",
+   "kind": "function",
+   "lines": [371, 378],
+   "params": [
+    {"name": "b", "kind": "positional", "default": null, "annotation": null},
+    {"name": "bedrag", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een briefje (of bedrag) dat groter is dan wat je moet betalen.",
+   "explanation": "A note (or amount) bigger than the price, sometimes the next bigger one.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [375]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".random", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::PerKg.bouw", "lines": [450]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::TweeSoorten.bouw", "lines": [425]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Wisselgeld.bouw", "lines": [388, 398]}
+   ]
+  },
+  {
+   "name": "_reken_alles",
+   "qualname": "_reken_alles",
+   "kind": "function",
+   "lines": [825, 845],
+   "params": [
+    {"name": "stappen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "waarden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "i_wijzig", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "op_nieuw", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "ops_nieuw", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "resultaat", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Alle stappen opnieuw met één wijziging. Geeft {id: waarde} of None als het niet kan. Onder '_sig' staat per stap (bewerking, operanden, uitkomst): zo herkent het klad een fout pad.",
+   "explanation": "Recomputes all steps with one change (another operation, other operands, or a forced result) and returns {id: value} plus the signature of each step and the lines (for the Speurneus), or None when impossible.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::bereken", "lines": [839]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [831], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["dict", "enumerate", "isinstance", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._rekenfout", "lines": [1253]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/vraagstukken.py::foute_paden",
+     "lines": [856, 872, 880, 881, 884, 887, 895, 901]
+    }
+   ]
+  },
+  {
+   "name": "foute_paden",
+   "qualname": "foute_paden",
+   "kind": "function",
+   "lines": [848, 909],
+   "params": [
+    {"name": "b", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gevraagd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(code, tekst, eindwaarde, {stap-id: waarde}, [(op, operanden, uitkomst) van de stappen die anders zijn])].",
+   "explanation": "The known wrong paths of a story, derived automatically from its steps: another operation, a forgotten conversion, percent used as a plain number, remainder versus count, an unneeded datum, a forgotten step, stopping after an intermediate step, a misplaced comma, plus the structure's own extra paths; each with a message, final value and signature.",
+   "calls": [
+    {
+     "target": "leeravontuur/kern/wiskunde/vraagstukken.py::_reken_alles",
+     "lines": [856, 872, 880, 881, 884, 887, 895, 901]
+    },
+    {
+     "target": "leeravontuur/kern/wiskunde/vraagstukken.py::foute_paden.voeg",
+     "lines": [865, 876, 880, 881, 883, 886, 895, 900, 903, 907]
+    },
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [873]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [867, 893], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["enumerate", "isinstance", "len", "list"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [991]}
+   ]
+  },
+  {
+   "name": "voeg",
+   "qualname": "foute_paden.voeg",
+   "kind": "nested",
+   "lines": [858, 862],
+   "params": [
+    {"name": "code", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Adds a wrong path unless it gives the right answer, keeping only the steps that differ from the right solution.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/vraagstukken.py::foute_paden",
+     "lines": [865, 876, 880, 881, 883, 886, 895, 900, 903, 907]
+    }
+   ]
+  },
+  {
+   "name": "_items",
+   "qualname": "_items",
+   "kind": "function",
+   "lines": [914, 915],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "All (world, item) pairs of a kind needed by a structure.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.maak_met", "lines": [1087]}
+   ]
+  },
+  {
+   "name": "_naam",
+   "qualname": "_naam",
+   "kind": "function",
+   "lines": [918, 919],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "behalve", "kind": "positional", "default": "()", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A random first name, avoiding some.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten._kan", "lines": [1397]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.maak_met", "lines": [1227]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_wie", "lines": [924]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [934]}
+   ]
+  },
+  {
+   "name": "_wie",
+   "qualname": "_wie",
+   "kind": "function",
+   "lines": [922, 924],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "item", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Who is in the story: the item's fixed person or a random name.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_naam", "lines": [924]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [933]}
+   ]
+  },
+  {
+   "name": "stel_samen",
+   "qualname": "stel_samen",
+   "kind": "function",
+   "lines": [927, 995],
+   "params": [
+    {"name": "structuur", "kind": "positional", "default": null, "annotation": null},
+    {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+    {"name": "wereld", "kind": "positional", "default": null, "annotation": null},
+    {"name": "item", "kind": "positional", "default": null, "annotation": null},
+    {"name": "p", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "zin_keuze", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bouwt één vraagstuk. Geeft (Verhaal, gewone tekst, sleuteldeel) of gooit Opnieuw.",
+   "explanation": "Builds one word problem: context from a world item, runs the structure's bouw, chooses and fills the sentences (possibly shuffled, with a superfluous fact or an intro), checks the story fits 4 lines of 56 characters and shows every datum, builds three answer options, the answer sentence and the wrong paths; returns (Verhaal, plain text, key part) or raises Opnieuw. The parameter zin_keuze is not used.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [994]},
+    {"target": "leeravontuur/kern/modellen.py::Verhaal", "lines": [992]},
+    {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [965, 968]},
+    {"target": "leeravontuur/kern/verhaal.py::tekst", "lines": [987, 995]},
+    {"target": "leeravontuur/kern/verhaal.py::vul", "lines": [964, 987]},
+    {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [973, 978]},
+    {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [994]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.__init__", "lines": [931]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::Opnieuw", "lines": [969, 972]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_naam", "lines": [934]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_wie", "lines": [933]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_woorden", "lines": [932]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::foute_paden", "lines": [991]},
+    {
+     "target": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen.sjabloon",
+     "lines": [946, 961, 973, 978, 987]
+    }
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "b.geg",
+     "lines": [958],
+     "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "b.getal",
+     "lines": [956],
+     "candidates": ["leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.getal"],
+     "candidates_count": 1
+    },
+    {"expr": "s.bouw", "lines": [939], "candidates": [], "candidates_count": 21}
+   ],
+   "external_calls": [".choice", ".random", ".shuffle", "any", "isinstance", "len", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.maak_met", "lines": [1090]}
+   ]
+  },
+  {
+   "name": "sjabloon",
+   "qualname": "stel_samen.sjabloon",
+   "kind": "nested",
+   "lines": [943, 944],
+   "params": [
+    {"name": "t", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Resolves a sentence template that refers to an item's own text (@name) or its goal.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [946, 961, 973, 978, 987]}
+   ]
+  },
+  {
+   "name": "analyseer_klad",
+   "qualname": "analyseer_klad",
+   "kind": "function",
+   "lines": [1003, 1009],
+   "params": [
+    {"name": "model", "kind": "positional", "default": null, "annotation": null},
+    {"name": "regels", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Kijkt het klad na tegenover de stappen en de foute paden (kern/klad.analyseer).",
+   "explanation": "Judges a klad against a story: the superfluous data, the known numbers a line may start from (data, fixed numbers, step results, conversion factors), then kern/klad.analyseer with the story's steps and wrong paths.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::analyseer", "lines": [1009]}
+   ],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [1005, 1007, 1008], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controleer", "lines": [451]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.volgende_tip", "lines": [511]},
+    {"caller": "tests/test_klok.py::TestTijdInVraagstukken.test_klad_en_antwoord", "lines": [146]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestKlad.test_de_juiste_oplossing_is_nooit_een_verzonnen_getal",
+     "lines": [215, 218]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_denkfout_in_het_klad", "lines": [195, 197]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_een_andere_juiste_weg_is_geen_fout", "lines": [224]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_juist_klad", "lines": [187]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_rekenfout_in_het_klad", "lines": [201]},
+    {"caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_de_juiste_wegen", "lines": [242]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_de_twee_delen_van_elkaar_aftrekken",
+     "lines": [252]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_splitsen_is_geen_verzonnen_getal",
+     "lines": [294]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_waar_komt_dit_getal_vandaan",
+     "lines": [271, 274, 279]
+    }
+   ]
+  },
+  {
+   "name": "lees_antwoord",
+   "qualname": "lees_antwoord",
+   "kind": "function",
+   "lines": [1014, 1020],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een antwoord: '7,60', '€ 7,60', '7,60 euro', '135 broodjes' → Decimal of None.",
+   "explanation": "Reads an answer such as '7,60', 'EUR 7,60', '7,60 euro', '135 broodjes' by dropping trailing words until a number remains.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [1018, 1020]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.lees", "lines": [1106]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.lees_vraag", "lines": [1113, 1114]}
+   ]
+  },
+  {
+   "name": "antwoordzin",
+   "qualname": "antwoordzin",
+   "kind": "function",
+   "lines": [1023, 1030],
+   "params": [
+    {"name": "model", "kind": "positional", "default": null, "annotation": null},
+    {"name": "waarde", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The answer sentence with the right form of the answer filled in (clock time, duration, money or number).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [1030]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [1029]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [1027]},
+    {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [1030]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["getattr"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten._kan", "lines": [1402]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._alles_juist", "lines": [1238]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._denkfout", "lines": [1276, 1284]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._rekenfout", "lines": [1263]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.uitleg", "lines": [1135]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_uitwerking", "lines": [252]}
+   ]
+  },
+  {
+   "name": "_eenheden",
+   "qualname": "_eenheden",
+   "kind": "function",
+   "lines": [1158, 1159],
+   "params": [
+    {"name": "model", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "{id: unit} of the data and steps of a story.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::regel_tekst", "lines": [1172]}
+   ]
+  },
+  {
+   "name": "_getal",
+   "qualname": "_getal",
+   "kind": "function",
+   "lines": [1162, 1167],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "eenheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A number for a klad line of the Speurneus, with its unit, rounded sensibly.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [1167]},
+    {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [1167]},
+    {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [1167]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [1166]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [1164]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [1166], "candidates": [], "candidates_count": 0},
+    {"expr": "F", "lines": [1165], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".normalize", "abs", "float", "int", "round"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._rekenfout", "lines": [1264]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::regel_tekst", "lines": [1173, 1174, 1177, 1183]}
+   ]
+  },
+  {
+   "name": "regel_tekst",
+   "qualname": "regel_tekst",
+   "kind": "function",
+   "lines": [1170, 1184],
+   "params": [
+    {"name": "model", "kind": "positional", "default": null, "annotation": null},
+    {"name": "st", "kind": "positional", "default": null, "annotation": null},
+    {"name": "op", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ops", "kind": "positional", "default": null, "annotation": null},
+    {"name": "r", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Eén stap zoals een kind ze in zijn klad schrijft.",
+   "explanation": "One step as a child writes it in the klad (for the Speurneus): conversion, percent, division with remainder or an ordinary operation.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_eenheden", "lines": [1172]},
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1173, 1174, 1177, 1183]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance", "math.floor", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._denkfout", "lines": [1280]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus._rekenfout", "lines": [1258, 1259]}
+   ]
+  },
+  {
+   "name": "schat",
+   "qualname": "schat",
+   "kind": "function",
+   "lines": [1327, 1334],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Afronden op 1 beduidend cijfer: 336 → 300, 7,40 → 7, 0,73 → 0,7.",
+   "explanation": "Rounds to one significant digit: 336 to 300, 7,40 to 7, 0,73 to 0,7.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [1334]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [1331], "candidates": [], "candidates_count": 0},
+    {"expr": "F", "lines": [1329, 1333], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".normalize", "float", "math.floor", "math.log10", "round"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten._ongeveer", "lines": [1373, 1377]},
+    {"caller": "tests/test_vraagstukken.py::TestSchatten.test_schatten", "lines": [477, 478, 479]}
+   ]
+  }
+ ]
+}
