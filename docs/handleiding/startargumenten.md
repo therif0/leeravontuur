@@ -76,6 +76,7 @@ ging iets mis". Alleen nodig om een fout te zoeken.
 | `LEERAVONTUUR_DATA` | Een andere map voor de gegevens (de databank, reservekopieën, het foutenlogboek, `feedback.txt`). Bv. om op een USB-stick te werken of om iets uit te proberen zonder de echte gegevens. |
 | `LEERAVONTUUR_DOCUMENTEN` | Een andere map voor geëxporteerde rapporten. |
 | `LEERAVONTUUR_DEBUG=1` | Hetzelfde als `--debug`. |
+| `LEERAVONTUUR_BETA=1` | De nieuwe schermen met vakken uitproberen (nu alleen Wiskunde › Cijferen). Zonder deze instelling is alles zoals altijd. |
 | `LEERAVONTUUR_ZAAD` | Altijd dezelfde vragen (gebruikt voor de schermafdrukken van deze handleiding). |
 | `LEERAVONTUUR_AAP`, `LEERAVONTUUR_AAP_SEEDS`, `LEERAVONTUUR_AAP_RONDES` | Voor de automatische "aapjestest": hoe lang die willekeurig op toetsen drukt. |
 

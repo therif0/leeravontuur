@@ -16,8 +16,9 @@ from .scherm import ENTER, ESC, Scherm, TerugNaar, Vergrendeld
 from ..kern.wiskunde.eenheden import OMZETTEN
 from . import curriculum as CU
 from . import navigatie
+from .beta import oefenaar_klasse
 from .oefenaar import Oefenaar
-from .schermen.eenheden import Eenheden
+from .schermen import eenheden as EH
 from .schermen.kinderen import kies_kind
 from .venster import Klokvenster
 
@@ -377,14 +378,14 @@ class App:
                 vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10"}[vorige["vorm"]]
                 kr, d = self.kruimel_van(o.id)
                 return (f"{o.naam.lower()} · {vorm}",
-                        lambda: Oefenaar(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
+                        lambda: oefenaar_klasse(d.label)(self, kr, [o], d.label).start(o, vorige["vorm"], vorige["niveau"]))
         if vorige.get("onderwerp") == "gemengd":
             from ..kern.reeks import GEMENGD_AANTAL
             return f"gemengd oefenen · {GEMENGD_AANTAL} vragen", self.gemengd
         if vorige.get("onderwerp") == "eenheden":
             vorm = {"vrij": "vrij oefenen", "reeks": "reeks van 10", "tabel": "tabel-oefening"}[vorige["vorm"]]
             kr = self.kruimel_van(OMZETTEN.id)[0][:-1]
-            return f"eenheden · {vorm} · {vorige['soort'].lower()}", lambda: Eenheden(self, kr).hervat(vorige)
+            return f"eenheden · {vorm} · {vorige['soort'].lower()}", lambda: EH.MatenOefenaar(self, kr).hervat(vorige)
         return None
 
     def herhalen(self):
@@ -420,7 +421,7 @@ class App:
         andere = [i for i in items if i["vaardigheid"] in catalogus.ONDERWERPEN]
         res, gestopt = [], False
         if eenheden:
-            r, gestopt = Eenheden(self, kr).herhalen(kr, eenheden)
+            r, gestopt = EH.herhalen(self, kr, eenheden)
             res += r
         if andere and not gestopt:
             r, _ = Oefenaar(self, kr, [], "Herhalen").herhalen(kr, andere, catalogus.ONDERWERPEN)

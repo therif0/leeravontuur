@@ -7,8 +7,9 @@ from functools import partial
 
 from ...kern import catalogus
 from ...kern import snelrekenen as SR
+from ..beta import oefenaar_klasse
 from ..oefenaar import Oefenaar
-from ..schermen.eenheden import Eenheden
+from ..schermen import eenheden as EH
 from ..schermen.snelrekenen import Snelrekenen
 
 _VORM_NAAM = {"vrij": "Vrij oefenen", "reeks": "Reeks van 10"}
@@ -17,7 +18,7 @@ _EENHEDEN_VORM = {"vrij": "Vrij oefenen", "reeks": "Reeks van 10", "tabel": "Tab
 
 def _oefenaar(vid, vorm, domein, app, kr):
     o = catalogus.ONDERWERPEN[vid]
-    scherm = Oefenaar(app, kr, [o], domein)
+    scherm = oefenaar_klasse(domein)(app, kr, [o], domein)  # Cijferen: de beta als LEERAVONTUUR_BETA=1
     niveau = scherm.kies_niveau(kr + [_VORM_NAAM[vorm]], o)
     if niveau is None:
         return
@@ -27,7 +28,7 @@ def _oefenaar(vid, vorm, domein, app, kr):
 
 
 def _eenheden(maat, vorm, app, kr):
-    Eenheden(app, kr).oefen(vorm, maat, kr + [_EENHEDEN_VORM[vorm]])
+    EH.MatenOefenaar(app, kr).oefen(vorm, maat, kr + [_EENHEDEN_VORM[vorm]])
 
 
 def _snel(soort, modus, app, kr):
@@ -40,7 +41,7 @@ def _spiek_oefenaar(vid, app, kr):
 
 
 def _spiek_eenheden(app, kr):
-    Eenheden(app, kr).spiekbrief(kr)
+    EH.spiekbrief(app, kr)
 
 
 def oefenaar(vid, vorm, domein):

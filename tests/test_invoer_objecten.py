@@ -10,7 +10,7 @@ from leeravontuur.terminal.stappenhulp import StappenHulp
 class TestInvoerObjecten(unittest.TestCase):
     def test_geen_tweede_kans_zoals_voor_de_opkuis(self):
         self.assertEqual(OE.GEEN_TWEEDE_KANS, {"janee", "vergelijk", "keuze", "rooster", "staart", "vraagstuk",
-                                               "speur", "zinsdelen", "werkwoord"})
+                                               "speur", "zinsdelen", "werkwoord", "eenheid", "tabel"})
 
     def test_vraagtekst(self):
         def v(tekst, invoer):

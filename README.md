@@ -99,6 +99,9 @@ is licht en kan ook met de muis bediend worden. Het groeit stap voor stap uit to
   Tegenwoordige tijd (ik werk, hij wordt, word jij?), de verleden tijd van zwakke werkwoorden met 't kofschip en
   van sterke werkwoorden (de rijtjes: lopen – liep – gelopen), het voltooid deelwoord (gewerkt, gespeeld,
   gelopen), en een zin van de tegenwoordige naar de verleden tijd zetten.
+- **Nieuwe schermen (bèta, 0.27):** met `LEERAVONTUUR_BETA=1` krijgt Wiskunde › Cijferen schermen met vakken (zoals
+  btop): de reeks bovenaan, de vraag op een band, het vak Tip en de spiekbrief open waar er plaats is. Het plan:
+  [werk/schermen.md](werk/schermen.md).
 - **Niveaus volgens het leerjaar:**
   - Makkelijk = een jaar lager, Normaal = eigen leerjaar, Moeilijk = een jaar hoger, Heel moeilijk = twee jaar hoger.
   - Het leerjaar stelt de ouder in (Ouders › Kinderen). Volgend schooljaar schuift alles mee.

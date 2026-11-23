@@ -22,6 +22,7 @@ from . import voortgang as VG
 from . import modellen as M
 from . import balk as B
 from . import rooster as R
+from . import tabel as T
 from . import vraagstuk as VI
 from . import werkwoord as WW
 from . import zinsdelen as ZD
@@ -50,7 +51,8 @@ ONLEESBAAR = {"janee": "Typ ja of nee.", "breuk": "Typ een breuk, bv. 3/4 (of 1 
 VAK = {"klokwoord": 22}  # breedte van het antwoordvak (standaard 12)
 LINKS = 60  # met een klokvenster blijft de tekst links van deze kolom (het venster is hoogstens een kwart breed)
 # invoersoorten met een eigen invoer-object
-INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, "zinsdelen": ZD.ZinsdelenInvoer, "werkwoord": WW.WerkwoordInvoer}
+INVOER = {**R.INVOER, **B.INVOER, **VI.INVOER, **T.INVOER, "zinsdelen": ZD.ZinsdelenInvoer,
+          "werkwoord": WW.WerkwoordInvoer}
 # de vaste werkwijze: geen tweede kans waar raden te makkelijk is, of waar het object zelf stap voor stap nakijkt
 # (een invoer-object zegt dat zelf met `geen_tweede_kans = True`)
 GEEN_TWEEDE_KANS = {"janee", "vergelijk"} | {k for k, c in INVOER.items() if getattr(c, "geen_tweede_kans", False)}
@@ -82,6 +84,7 @@ class Oefenaar:
         self.herkansing = False  # het laatste antwoord was pas juist na een tweede kans (telt als fout om te herhalen)
         self.hulp = reeks.Hulp.ALLES  # welke hulp er is (een examen zet ze later uit: kern/reeks.py)
         self.per_thema = ""  # Gemengd oefenen: "Per thema: …" in het resultaat
+        self.uitslag_extra = {}  # wat een invoer-object over het laatste antwoord meegeeft (Maten: de tabel juist?)
 
     # ---- niveau en start ------------------------------------------------------------
 
@@ -131,19 +134,80 @@ class Oefenaar:
         """Eén vraag volgens de vaste werkwijze: lees, reken in het klad (Tab), antwoord. ? = de volgende tip,
         fout = één tweede kans. Geeft (getypt antwoord, goed?, stoppen?) of None bij Esc.
         Zolang ze niet nagekeken is, vragen Esc en de broodkruimel eerst "Wil je stoppen?" (Scherm.bewaak, #33).
-        Een vraag van Maten (in een gemengde reeks) krijgt het scherm van de eenheden."""
-        if reeks.is_maten(o):
-            from .schermen.eenheden import Eenheden
-            scherm = Eenheden(self.app, self.kruimel)
-            scherm.totaal, scherm.hulp = self.totaal, self.hulp
-            self.laatste_d, self.herkansing = None, False
-            uit = scherm.stel_vraag(kr, v, soort, ses, nr, resultaten, vrij)
-            if uit is not None and not uit[1]:
-                self.laatste_d = o.diagnose(v, o.lees_vraag(v, uit[0]))
-            return uit
+        Een invoer-object met een eigen scherm (Maten) tekent alles onder de voortgang zelf."""
         self.open = True
+        self.uitslag_extra = {}
         with self.s.bewaak(lambda: self.open, ses):
+            if getattr(INVOER.get(v.invoer), "eigen_scherm", False):
+                return self._stel_vraag_scherm(kr, o, v, soort, ses, nr, resultaten, vrij)
             return self._stel_vraag(kr, o, v, soort, ses, nr, resultaten, vrij)
+
+    def _stel_vraag_scherm(self, kr, o, v, soort, ses, nr, resultaten, vrij):
+        """Een vraag met een invoer-object dat het hele scherm onder de voortgang zelf tekent (terminal/tabel.py).
+        De Oefenaar tekent de voortgang en het maatje, en kijkt na, bewaart en geeft de punten."""
+        s = self.s
+        obj = INVOER[v.invoer](v, o)
+        obj.app, obj.vrij = self.app, vrij
+        goed, gezicht, ballon, spring = None, "normaal", "", False
+        self.herkansing = False
+        ses.vraag_getoond()
+        lof = random.choice(LOF) if obj.lof else ""
+        while True:
+            if s.te_klein():
+                continue
+            if goed is None:
+                knoppen = obj.knoppen()
+            else:
+                laatste = not vrij and nr == self.totaal - 1
+                knoppen = [("Enter", "naar je resultaat" if laatste else obj.volgende, 10), ("Esc", "stoppen", ESC)]
+            s.nieuw(kr, knoppen)
+            if vrij:
+                s.put(2, 4, f"Vrij oefenen: {self.vrij_goed + bool(goed)} van "
+                            f"{self.vrij_aantal + (goed is not None)} juist", "bold")
+                s.put(3, 4, soort, "dim")
+            else:
+                self.voortgang(2, nr, resultaten, soort)
+            obj.teken(s, goed)
+            maatje.teken(self.app, "denken" if obj.denkt and goed is None else gezicht, ballon, ruim=obj.maatje_ruim,
+                         hoog=spring)
+            if spring:
+                s.pauze(170)
+                spring = False
+                continue
+            self.open = goed is None  # voor de bewaker: nog niet nagekeken
+            k = s.toets()
+            if k == curses.KEY_RESIZE:  # opnieuw tekenen (ook na "Nee, verder" in het kader)
+                continue
+            if goed is not None:
+                if k in ENTER or k == ord(" "):
+                    return obj.buf, goed, False
+                if k == ESC:
+                    return obj.buf, goed, True
+                continue
+            if k == ESC:  # al bevestigd in het kader (Scherm.bewaak, #33)
+                s.cursor(False)
+                return None
+            uit = obj.toets(k)
+            if obj.wil_spiekbrief:  # na de tip: de spiekbrief (#20); Esc = terug naar de vraag
+                obj.wil_spiekbrief = False
+                self.spiekbrief(kr + ["Spiekbrief"], o, v)
+                continue
+            if uit is None:
+                continue
+            buf, getal = uit
+            goed = o.nakijken(v, getal)
+            d = o.diagnose(v, getal)
+            self.laatste_d = d
+            self.uitslag_extra = obj.uitslag or {}
+            ses.antwoord(v.sleutel, vraagtekst(v), buf.strip(), goed, d[0] if d else None, hulp=obj.hulp_gebruikt,
+                         extra=obj.extra, verwacht=v.verwacht, vaardigheid=o.id, leerjaar=v.leerjaar)
+            tijd = self.tijd_tekst(ses)
+            punten = f"  +{ses.laatste_punten} punten" if ses.laatste_punten else ""
+            gezicht, ballon = A.reactie(goed, ses.op_rij, d[0] if d else None)
+            spring = goed and obj.springt and self.app.inst.animaties and self.app.inst.avatar
+            if not self.hulp.uitleg_na:
+                gezicht, ballon, spring = "normaal", "", False
+            obj.nagekeken(goed, d, tijd, punten, lof, self.hulp.uitleg_na)
 
     def _stel_vraag(self, kr, o, v, soort, ses, nr, resultaten, vrij):
         s = self.s
@@ -585,6 +649,8 @@ class Oefenaar:
 
     def gewichten(self, o):
         recent = self.app.opslag.recente_antwoorden(self.app.kind.id, o.id, 100)
+        if hasattr(o, "alle_onderwerpen"):  # Maten: ook de paren die nog niet geoefend werden
+            return selectie.gewichten(recent, o.onderwerp_van_sleutel, o.alle_onderwerpen())
         onderwerpen = {o.onderwerp_van_sleutel(a["sleutel"]) for a in recent} - {None}
         return selectie.gewichten(recent, o.onderwerp_van_sleutel, onderwerpen) if onderwerpen else None
 
@@ -601,11 +667,11 @@ class Oefenaar:
                     if uit is None:
                         return resultaten, True
                     resultaten.append(dict(o=o, v=v, antw=uit[0], goed=uit[1], tijd=ses.laatste_tijd_ms,
-                                           d=self.laatste_d))
+                                           d=self.laatste_d, **self.uitslag_extra))
                     self.verwerk(o, v, uit[1] and not self.herkansing, items[nr] if items else None)
                     if uit[-1]:
                         return resultaten, True
-                volledig = (modus, len(vragen)) in (("reeks", REEKS), ("gemengd", reeks.GEMENGD_AANTAL))
+                volledig = (modus, len(vragen)) in (("reeks", REEKS), ("tabel", REEKS), ("gemengd", reeks.GEMENGD_AANTAL))
                 if volledig and self.hulp.punten and all(r["goed"] for r in resultaten):
                     ses.bonus(P.BONUS_PERFECT, f"reeks van {len(vragen)} zonder fout")
             finally:
@@ -615,6 +681,8 @@ class Oefenaar:
     def nieuwe_vragen(self, o, jaar, aantal=REEKS):
         vermijd = selectie.recent_gezien(self.app.opslag, self.app.kind.id, o.id)
         gew = self.gewichten(o)
+        if getattr(o, "een_voor_een", False):  # Maten: elke vraag pas als ze aan de beurt is
+            return EenVoorEen(o, jaar, vermijd, gew, aantal)
         uit = []
         for _ in range(aantal):
             v = o.maak(jaar, vermijd, gew)
@@ -622,11 +690,11 @@ class Oefenaar:
             uit.append((o, v))
         return uit
 
-    def reeks(self, o, jaar, soort):
-        kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + ["Reeks van 10"]
+    def reeks(self, o, jaar, soort, modus="reeks", naam="Reeks van 10"):
+        kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + [naam]
         while True:
             self.app.oefening_af(False)
-            res, gestopt = self.speel(kr, soort, "reeks", jaar, self.nieuwe_vragen(o, jaar))
+            res, gestopt = self.speel(kr, soort, modus, jaar, self.nieuwe_vragen(o, jaar))
             self.app.oefening_af(not gestopt)  # helemaal af: Verder stelt daarna eerst herhalen voor
             if (gestopt and not res) or not self.na_reeks(kr, soort, jaar, res, gestopt):
                 return
@@ -636,7 +704,7 @@ class Oefenaar:
         gelijkaardige vragen. True = nog een reeks."""
         while True:
             keuze = self.rapport(kr, soort, res, gestopt)
-            fouten = [r for r in res if not r["goed"]]
+            fouten = [r for r in res if self.is_fout(r)]
             if keuze == "fouten" and fouten:
                 res, gestopt = self.speel(kr + ["Fouten opnieuw"], soort, "fouten_opnieuw", jaar,
                                           [(r["o"], r["v"]) for r in fouten])
@@ -676,23 +744,15 @@ class Oefenaar:
             regels.append((f"Gemiddeld {round(sum(r['tijd'] for r in resultaten) / totaal / 1000)} seconden "
                            "per vraag.", "info"))
         regels += [("", ""), (f"Vandaag in totaal: {j} van {n} juist.", "info"), ("", "")]
-        fouten = [(i, r) for i, r in enumerate(resultaten) if not r["goed"]]
+        fouten = [(i, r) for i, r in enumerate(resultaten) if self.is_fout(r)]
         if not fouten:
             regels.append(("Geen enkele fout. Proficiat!", "goed"))
         else:
-            regels += [("Wat ging er mis? Lees de uitleg goed:", "accent"),
-                       ("Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen.", "dim"), ("", "")]
+            regels += [("Wat ging er mis? Lees de uitleg goed:", "accent"), (self.FG_UITLEG, "dim"), ("", "")]
         for i, r in fouten:
-            o, v = r["o"], r["v"]
-            regels.append((f"Vraag {i + 1}:  {v.tekst if reeks.is_maten(o) else vraagtekst(v)}", "bold"))
-            juist = getattr(v, "verwacht", None) or o.verwacht_tekst(v)
-            regels.append((f"   ✘ Jij schreef: {r['antw'].strip()}    Juist is: {juist}", "fout"))
-            d = r.get("d") or o.diagnose(v, o.lees_vraag(v, r["antw"]))
-            if d:
-                regels.append(("   " + d[1], "accent"))
-            regels += [("   " + l, "") for l in o.uitleg(v)]
-            regels.append(("", ""))
-        toetsen = {ord("n"): "nieuw", ord("N"): "nieuw", ESC: "menu", ("nieuw",): "nieuw", ("menu",): "menu"}
+            regels += self.fout_regels(i, r)
+        toetsen = {ord("n"): "nieuw", ord("N"): "nieuw", ESC: "menu", ("nieuw",): "nieuw", ("menu",): "menu",
+                   **self.rapport_toetsen}
         toetsen.update({k: "nieuw" for k in ENTER})
         knoppen = [("Enter", "nieuw", ("nieuw",))]
         if fouten:
@@ -701,6 +761,26 @@ class Oefenaar:
             knoppen = [("F", "fouten opnieuw", ("fouten",)), ("G", "gelijkaardig", ("gelijk",))] + knoppen
         knoppen.append(("Esc", "menu", ("menu",)))
         return self.s.lezer(kr + ["Resultaat"], regels, knoppen, toetsen, scroll_uitleg="")
+
+    FG_UITLEG = "Met F probeer je dezelfde vragen opnieuw, met G gelijkaardige vragen."
+    rapport_toetsen = {}  # extra toetsen in het resultaat (Maten: m = menu)
+
+    @staticmethod
+    def is_fout(r):
+        """Telt dit antwoord als een fout in het resultaat (fouten opnieuw, gelijkaardige vragen)?"""
+        return not r["goed"]
+
+    @staticmethod
+    def fout_regels(i, r):
+        """De regels bij een fout in het resultaat: de vraag, wat het kind schreef, de denkfout en de uitleg."""
+        o, v = r["o"], r["v"]
+        regels = [(f"Vraag {i + 1}:  {vraagtekst(v)}", "bold")]
+        juist = getattr(v, "verwacht", None) or o.verwacht_tekst(v)
+        regels.append((f"   ✘ Jij schreef: {r['antw'].strip()}    Juist is: {juist}", "fout"))
+        d = r.get("d") or o.diagnose(v, o.lees_vraag(v, r["antw"]))
+        if d:
+            regels.append(("   " + d[1], "accent"))
+        return regels + [("   " + l, "") for l in o.uitleg(v)] + [("", "")]
 
     def vrij_oefenen(self, o, jaar, soort):
         kr = self.kruimel + ([o.naam] if len(self.onderwerpen) > 1 else []) + ["Vrij oefenen"]
@@ -757,11 +837,34 @@ class Oefenaar:
             self.per_thema = ""
         return not gestopt, nog
 
-    def herhalen(self, kr, items, onderwerp_van):
+    def herhalen(self, kr, items, onderwerp_van, soort="Herhalen"):
         """Herhaalbak-items (met nieuwe getallen), op het eigen leerjaar."""
         jaar = self.app.inst.leerjaar
         vragen = []
         for i in items:
             o = onderwerp_van[i["vaardigheid"]]
             vragen.append((o, o.maak_herhaling(i["data"], jaar)))
-        return self.speel(kr, "Herhalen", "herhaalbak", jaar, vragen, items)
+        return self.speel(kr, soort, "herhaalbak", jaar, vragen, items)
+
+
+class EenVoorEen:
+    """De vragen van een reeks die pas gemaakt worden als ze aan de beurt zijn (Maten: de vorige vraag bepaalt mee
+    de volgende, zoals vroeger in het scherm van de eenheden)."""
+
+    def __init__(self, o, jaar, vermijd, gewichten, aantal):
+        self.o, self.jaar, self.vermijd, self.gew, self.aantal = o, jaar, vermijd, gewichten, aantal
+        self.vragen = []
+        o.vorige = None  # een nieuwe reeks begint opnieuw
+
+    def __len__(self):
+        return self.aantal
+
+    def __getitem__(self, i):
+        while len(self.vragen) <= i < self.aantal:
+            v = self.o.maak(self.jaar, self.vermijd, self.gew)
+            self.vermijd.add(v.sleutel)
+            self.vragen.append((self.o, v))
+        return self.vragen[i]
+
+    def __iter__(self):
+        return (self[i] for i in range(self.aantal))
