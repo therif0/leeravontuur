@@ -1,0 +1,327 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/gemengd.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 107,
+ "source_sha256": "016afbc12f7fb91dacb675325e830ccde9ab5bdabbd5083ea44bd698b2ba2a73",
+ "purpose": "Herhalen › Gemengd oefenen: questions from several themes mixed in one series so the child forgets nothing.",
+ "details": "The plan (which questions, which themes) comes from kern/reeks.py; the themes are the domains of the curriculum (curriculum.gemengd_themas). The Gemengd class lets the child tick themes (afvinklijst) or, if the parent fixed them, shows them and starts. Then it builds a Reeksplan with reeks.gemengd_plan and plays it with Oefenaar.speel_plan; after a finished series a one-time parent choice expires (reeks.na_reeks) and the new settings are stored. The child can play 'another series' with the same themes without choosing again.",
+ "module_docstring": "Herhalen › Gemengd oefenen: vragen uit verschillende thema's door elkaar, zodat het kind niets vergeet.",
+ "imports": [
+  {
+   "module": "dataclasses",
+   "names": ["replace"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["reeks"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/reeks.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/schermen/ouder.py", "tests/test_gemengd.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "TITEL",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "'Gemengd oefenen'",
+   "explanation": "Title of the mixed series."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Gemengd",
+   "qualname": "Gemengd",
+   "lines": [43, 107],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The Gemengd oefenen screen controller.",
+   "attributes": [
+    {"name": "app", "line": 45, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 46, "scope": "instance", "value_preview": null},
+    {"name": "kruimel", "line": 47, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.gemengd", "lines": [408]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Gemengd.__init__",
+     "kind": "method",
+     "lines": [44, 47],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the app, the Scherm and the breadcrumb up to 'Gemengd oefenen'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.gemengd", "lines": [408]}
+     ]
+    },
+    {
+     "name": "geoefend",
+     "qualname": "Gemengd.geoefend",
+     "kind": "method",
+     "lines": [49, 50],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ids", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Whether the child has any history for at least one of the skill ids.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::bestaat", "lines": [50]},
+      {"target": "leeravontuur/kern/reeks.py::stand", "lines": [50]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["any"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.kies", "lines": [54]}
+     ]
+    },
+    {
+     "name": "kies",
+     "qualname": "Gemengd.kies",
+     "kind": "method",
+     "lines": [52, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "items", "kind": "positional", "default": null, "annotation": null},
+      {"name": "koppen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ids", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gekozen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De afvinklijst voor het kind. Geeft de gekozen thema's (en bewaart ze), of None bij Esc.",
+     "explanation": "Shows the tick list of themes ('nog niet geoefend' marked), stores the choice in the child's settings (None = all) and returns it, or None on Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.geoefend", "lines": [54]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.bewaar",
+       "lines": [60],
+       "candidates": ["leeravontuur/terminal/app.py::App.bewaar", "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.s.afvink",
+       "lines": [55],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.afvink"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [81]}
+     ]
+    },
+    {
+     "name": "ouder_koos",
+     "qualname": "Gemengd.ouder_koos",
+     "kind": "method",
+     "lines": [63, 70],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "namen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gekozen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De ouder legde de thema's vast: tonen, Enter = starten. False bij Esc.",
+     "explanation": "Shows the themes the parent fixed with a Start button. Returns True to start, False on Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::namen_tekst", "lines": [65]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [69],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [84]}
+     ]
+    },
+    {
+     "name": "open",
+     "qualname": "Gemengd.open",
+     "kind": "method",
+     "lines": [72, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The whole flow: choose or confirm themes, build the plan (a message when nothing was practised yet), remember the exercise, play it, mark it done and expire a one-time choice, and loop while the child wants another series.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [86]},
+      {"target": "leeravontuur/kern/reeks.py::na_reeks", "lines": [101]},
+      {"target": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [77]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.__init__", "lines": [98]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.kies", "lines": [81]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.ouder_koos", "lines": [84]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::labels", "lines": [98]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::themas", "lines": [73]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Oefenaar(self.app, self.kruimel, [], TITEL).speel_plan",
+       "lines": [98],
+       "candidates": ["leeravontuur/terminal/oefenaar.py::Oefenaar.speel_plan"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.app.bewaar",
+       "lines": [104],
+       "candidates": ["leeravontuur/terminal/app.py::App.bewaar", "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.app.oefening_af",
+       "lines": [97, 100],
+       "candidates": ["leeravontuur/terminal/app.py::App.oefening_af"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.app.onthoud_oefening",
+       "lines": [96],
+       "candidates": ["leeravontuur/terminal/app.py::App.onthoud_oefening"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [89],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "themas",
+   "qualname": "themas",
+   "kind": "function",
+   "lines": [17, 26],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(items voor de afvinklijst zonder uitleg, kopjes, {thema: label}, {thema: ids}) uit het leerplan.",
+   "explanation": "Reads the mixable themes from the curriculum: returns the items for the tick list, section headings per subject (only when there is more than one subject), a map theme → label and a map theme → stored skill ids.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::gemengd_themas", "lines": [19]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [73]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.gemengd_oefenen", "lines": [559]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::gemengd_waarde", "lines": [28]}
+   ]
+  },
+  {
+   "name": "labels",
+   "qualname": "labels",
+   "kind": "function",
+   "lines": [29, 36],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{bewaarde id: het label in het menu} (bv. \"Tafels\", \"Maten\"), voor de regel boven elke vraag.",
+   "explanation": "Map from stored id to the menu label (for the line above each question).",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::gemengd_themas", "lines": [32]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [98]}
+   ]
+  },
+  {
+   "name": "namen_tekst",
+   "qualname": "namen_tekst",
+   "kind": "function",
+   "lines": [39, 40],
+   "params": [
+    {"name": "namen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gekozen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Joins the names of the chosen themes with commas.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.ouder_koos", "lines": [65]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.gemengd_oefenen", "lines": [568]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::gemengd_waarde", "lines": [30]}
+   ]
+  }
+ ]
+}

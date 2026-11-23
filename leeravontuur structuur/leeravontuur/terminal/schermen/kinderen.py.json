@@ -1,0 +1,230 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/kinderen.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 84,
+ "source_sha256": "86bdc3de37e3c7ed77bd4303287ac8c3b57009f721390689b917ce1822a68abf",
+ "purpose": "The 'Wie ben jij?' screens: choose a child, enter a PIN, create a new child.",
+ "details": "kies_kind loops over _kies_kind and turns a click on the breadcrumb into the right result. The menu lists the children, '+ Nieuw kind' and 'Ouders' (which opens the parent area from terminal/schermen/ouder.py through a local import to avoid a cycle). A PIN, if set, is checked with kern/wachtwoord (three tries); a new child is created in the storage after asking a name (unique, case-insensitive) and school year.",
+ "module_docstring": "Schermen om een kind te kiezen of een nieuw kind aan te maken.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren", "wachtwoord"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py", "leeravontuur/kern/wachtwoord.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["TerugNaar"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.ouder",
+   "names": ["Ouderdeel"],
+   "alias": null,
+   "line": 43,
+   "resolves_to": ["leeravontuur/terminal/schermen/ouder.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "KRUIMEL",
+   "line": 6,
+   "value_type": "List",
+   "value_preview": "['Leeravontuur', 'Wie ben jij?']",
+   "explanation": "The breadcrumb of these screens."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "kies_kind",
+   "qualname": "kies_kind",
+   "kind": "function",
+   "lines": [9, 17],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Geeft het gekozen Kind, of None als er niets gekozen werd (Esc). Een klik op de broodkruimel (\"Wie ben jij?\") brengt terug naar de keuze; op \"Leeravontuur\" terug naar het hoofdmenu (of, bij het starten, hier).",
+   "explanation": "Returns the chosen Kind, or None when nothing was chosen. A click on the 'Leeravontuur' breadcrumb returns None when a child is already active (back to the main menu).",
+   "calls": [
+    {"target": "leeravontuur/terminal/schermen/kinderen.py::_kies_kind", "lines": [14]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [215]},
+    {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [167]}
+   ]
+  },
+  {
+   "name": "_kies_kind",
+   "qualname": "_kies_kind",
+   "kind": "function",
+   "lines": [20, 45],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The menu loop: with no children goes straight to nieuw_kind; otherwise lists children (with school year), '+ Nieuw kind' and 'Ouders', starts on the last used child, shows a storage problem message if there is one, and returns the child when the PIN is right; the Ouders item opens the parent area and reloads the child afterwards.",
+   "calls": [
+    {"target": "leeravontuur/terminal/schermen/kinderen.py::nieuw_kind", "lines": [25, 39]},
+    {"target": "leeravontuur/terminal/schermen/kinderen.py::pincode_ok", "lines": [36]},
+    {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.__init__", "lines": [44]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "Ouderdeel(app).open",
+     "lines": [44],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.open",
+      "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open"
+     ],
+     "candidates_count": 3
+    },
+    {
+     "expr": "app.herlaad_kind",
+     "lines": [45],
+     "candidates": ["leeravontuur/terminal/app.py::App.herlaad_kind"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.algemeen",
+     "lines": [26],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.kinderen",
+     "lines": [23],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.kinderen",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "s.menu",
+     "lines": [32],
+     "candidates": [
+      "leeravontuur/terminal/scherm.py::Scherm.menu",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["enumerate", "len", "next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/kinderen.py::kies_kind", "lines": [14]}
+   ]
+  },
+  {
+   "name": "pincode_ok",
+   "qualname": "pincode_ok",
+   "kind": "function",
+   "lines": [48, 60],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Asks the PIN (hidden, 4 digits) up to three times; returns True with no PIN set or the right PIN, False on Esc or three failures.",
+   "calls": [
+    {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [58]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.opslag.pincode",
+     "lines": [49],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.pincode",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.pincode"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "app.s.invoer",
+     "lines": [54],
+     "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/kinderen.py::_kies_kind", "lines": [36]}
+   ]
+  },
+  {
+   "name": "nieuw_kind",
+   "qualname": "nieuw_kind",
+   "kind": "function",
+   "lines": [63, 84],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Naam en leerjaar vragen en het kind aanmaken. None bij Esc.",
+   "explanation": "Asks a unique name, then the school year (default the 5th), and creates the child in storage. Returns the Kind or None on Esc.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.kinderen",
+     "lines": [68],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.kinderen",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "opslag.nieuw_kind",
+     "lines": [84],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "s.invoer",
+     "lines": [70],
+     "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "s.menu",
+     "lines": [81],
+     "candidates": [
+      "leeravontuur/terminal/scherm.py::Scherm.menu",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/kinderen.py::_kies_kind", "lines": [25, 39]}
+   ]
+  }
+ ]
+}

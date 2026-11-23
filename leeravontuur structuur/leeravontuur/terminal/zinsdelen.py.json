@@ -1,0 +1,818 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/zinsdelen.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 437,
+ "source_sha256": "1e05ef5d0b31d9232a5ac733cccb394994d286d1483ee7df8bc023c219a8a6e3",
+ "purpose": "The sentence parser input object (Taal › Zinsdelen): shows a sentence as word blocks and lets the child mark the parts of the sentence step by step or by free colouring.",
+ "details": "ZinsdelenInvoer plugs into terminal/oefenaar.py through INVOER['zinsdelen'] and builds on StappenHulp (tips, cheat sheet, second-chance switches). Steps come from kern/taal/zinsontleding.py (pv, o, wwg/nwg, lv, mv, bwb, and optionally 'verdelen' first). Modes: step by step (default), free colouring with letter keys (Tab toggles; on Moeilijk free colouring is on from the start) and, for a sentence with several finite verbs, a special 'pick all pv' step. All checking is done in kern (Z.nakijken, Z.nakijken_vrij, Z.nakijken_verdeling, Z.diagnose); the object only collects the selection and shows messages. A sentence counts as correct if every part is correct, even after the second chance (then it enters the repeat bin). At the end it returns ('juist'/'fout') as the answer and fills `extra` and `uitleg_na`.",
+ "module_docstring": "De zinsontleder: een zin als woordblokjes, de zinsdelen aanduiden (Taal, docs/taal.md). Een invoer-object voor terminal/oefenaar.py, zoals het vraagstuk (eigen_tekst, eigen_tip, extra, uitleg_na).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinsontleding"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinsontleding.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "HULP", "teken_van"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.stappenhulp",
+   "names": ["StappenHulp"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/terminal/stappenhulp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "tests/test_taal_scherm.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "TAB",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "9",
+   "explanation": "Key code of Tab."
+  },
+  {
+   "name": "RIJ",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "6",
+   "explanation": "Rows between the assignment and the sentence."
+  },
+  {
+   "name": "OPDRACHT_BREED",
+   "line": 23,
+   "value_type": "Constant",
+   "value_preview": "56",
+   "explanation": "Maximum width of the assignment text (the buddy stands at the right until row 9)."
+  },
+  {
+   "name": "VERDELEN",
+   "line": 24,
+   "value_type": "Constant",
+   "value_preview": "'verdelen'",
+   "explanation": "Label of the optional first step 'divide the sentence into parts'."
+  },
+  {
+   "name": "LETTERS",
+   "line": 25,
+   "value_type": "Dict",
+   "value_preview": "{'p': 'pv', 'o': 'o', 'g': 'wwg', 'n': 'nwg', 'l': 'lv', 'm': 'mv', '…",
+   "explanation": "Key letter → part label for free colouring (p, o, g, n, l, m, b)."
+  },
+  {
+   "name": "VRAAG",
+   "line": 26,
+   "value_type": "Dict",
+   "value_preview": "{'pv': 'Zoek de persoonsvorm (pv).', 'o': 'Zoek het onderwerp (o).', …",
+   "explanation": "Part label → the question shown in a step."
+  },
+  {
+   "name": "KAN_GEEN",
+   "line": 30,
+   "value_type": "Set",
+   "value_preview": "{'lv', 'mv', 'bwb'}",
+   "explanation": "Parts that need not occur in a sentence (lv, mv, bwb): the child may answer 'none'."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "ZinsdelenInvoer",
+   "qualname": "ZinsdelenInvoer",
+   "lines": [37, 437],
+   "bases": ["StappenHulp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The input object for sentence parsing, one instance per question. Built on StappenHulp.",
+   "attributes": [
+    {"name": "gevraagd", "line": 41, "scope": "instance", "value_preview": null},
+    {"name": "stappen", "line": 42, "scope": "instance", "value_preview": null},
+    {"name": "stap_voor_stap", "line": 43, "scope": "instance", "value_preview": null},
+    {"name": "vrij", "line": 44, "scope": "instance", "value_preview": null},
+    {"name": "woorden", "line": 45, "scope": "instance", "value_preview": null},
+    {"name": "gekozen", "line": 47, "scope": "instance", "value_preview": null},
+    {"name": "gevonden", "line": 48, "scope": "instance", "value_preview": null},
+    {"name": "markering", "line": 49, "scope": "instance", "value_preview": null},
+    {"name": "grenzen", "line": 50, "scope": "instance", "value_preview": null},
+    {"name": "verdeeld", "line": 51, "scope": "instance", "value_preview": null},
+    {"name": "gat", "line": 52, "scope": "instance", "value_preview": null},
+    {"name": "vrij_poging", "line": 54, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 59, "scope": "instance", "value_preview": null},
+    {"name": "cursor_pos", "line": 107, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 259, "scope": "instance", "value_preview": null},
+    {"name": "cur", "line": 237, "scope": "instance", "value_preview": null},
+    {"name": "anker", "line": 237, "scope": "instance", "value_preview": null},
+    {"name": "stap", "line": 307, "scope": "instance", "value_preview": null},
+    {"name": "melding_rol", "line": 323, "scope": "instance", "value_preview": null},
+    {"name": "eerste_fout", "line": 333, "scope": "instance", "value_preview": null},
+    {"name": "diagnose", "line": 335, "scope": "instance", "value_preview": null},
+    {"name": "mislukt", "line": 404, "scope": "instance", "value_preview": null},
+    {"name": "tiptekst", "line": 415, "scope": "instance", "value_preview": null},
+    {"name": "extra", "line": 426, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 435, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_taal_scherm.py::TestDeTekstPast.test_hints_en_legende_passen", "lines": [247]},
+    {"caller": "tests/test_taal_scherm.py::TestZonderTweedeKans.test_meteen_de_uitleg", "lines": [267]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "ZinsdelenInvoer.__init__",
+     "kind": "method",
+     "lines": [39, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds the exercise from the question: which parts are asked, the list of steps (with 'verdelen' first when requested), whether it is step-by-step or free colouring, the selectable word positions (punctuation excluded), cursor and anchor, and all state for found parts, marks, boundaries, attempts and failures. Initialises the shared help state and, in free mode, drops the 'verdelen' step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [42]},
+      {"target": "leeravontuur/terminal/stappenhulp.py::StappenHulp.begin_hulp", "lines": [55]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "list", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_taal_scherm.py::TestDeTekstPast.test_hints_en_legende_passen", "lines": [247]},
+      {"caller": "tests/test_taal_scherm.py::TestZonderTweedeKans.test_meteen_de_uitleg", "lines": [267]}
+     ]
+    },
+    {
+     "name": "label",
+     "qualname": "ZinsdelenInvoer.label",
+     "kind": "property",
+     "lines": [65, 66],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: the label of the current step, or None when all steps are done.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "meer",
+     "qualname": "ZinsdelenInvoer.meer",
+     "kind": "property",
+     "lines": [69, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De stap \"alle persoonsvormen\" van een zin met meer dan één pv: Spatie duidt een woord aan (of wist het).",
+     "explanation": "Property: True in the special first step of a sentence with more than one finite verb, where Space marks or unmarks words.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vraag",
+     "qualname": "ZinsdelenInvoer.vraag",
+     "kind": "method",
+     "lines": [73, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question text of the current step ('Zoek de persoonsvorm', 'Zoek het onderwerp bij ‘...’', or 'Zoek alle persoonsvormen (n)').",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [77]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [76]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [75]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_opdracht", "lines": [132]}
+     ]
+    },
+    {
+     "name": "groep",
+     "qualname": "ZinsdelenInvoer.groep",
+     "kind": "method",
+     "lines": [80, 82],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word positions between the anchor and the cursor: the group the child is about to choose.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["sorted", "tuple"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kleur", "lines": [382]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_zin", "lines": [154]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [246, 251]}
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "ZinsdelenInvoer.hoogte",
+     "kind": "method",
+     "lines": [85, 86],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height in rows: short after checking, taller while working (the sentence, progress and tip).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "ZinsdelenInvoer.knoppen",
+     "kind": "method",
+     "lines": [88, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons depending on the mode: boundaries for 'verdelen', colour letters for free mode, marking for the multi-pv step, else Space/Enter (plus N 'geen' for parts that may be absent), F1, Tab and Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "ZinsdelenInvoer.teken",
+     "kind": "method",
+     "lines": [106, 122],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "While working: draws the assignment, the sentence in current colours, the progress row, the tip and sets the hint. After checking: 'Zo ontleed je deze zin:' and the correct analysis in colour.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [120]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.hint_tekst", "lines": [114]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kleuren_nu", "lines": [110]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_opdracht", "lines": [109]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_voortgang", "lines": [111]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_zin", "lines": [110, 122]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [113, 116],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_opdracht",
+     "qualname": "ZinsdelenInvoer.teken_opdracht",
+     "kind": "method",
+     "lines": [124, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the assignment line: in free mode 'Kleur de zinsdelen.' with the letter legend, in step mode 'Stap n van m: <question>' and the 'press N if there is none' note.",
+     "calls": [
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.vraag", "lines": [132]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [127, 130, 132, 134],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [109]}
+     ]
+    },
+    {
+     "name": "kleuren_nu",
+     "qualname": "ZinsdelenInvoer.kleuren_nu",
+     "kind": "method",
+     "lines": [136, 147],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "positie -> label van wat er nu gekleurd staat (nagekeken stappen, of wat het kind vrij kleurde).",
+     "explanation": "Returns position → label for what is coloured now: parts already checked, free marks, or the pv's chosen in the multi-pv step.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [110]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.wissel", "lines": [303]}
+     ]
+    },
+    {
+     "name": "teken_zin",
+     "qualname": "ZinsdelenInvoer.teken_zin",
+     "kind": "method",
+     "lines": [149, 189],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kleuren", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bezig", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De woorden (rij y), gemarkeerd als met een markeerstift in de kleur van het zinsdeel, met de afkorting eronder (y+2). Waar het kind staat (de groep die het kiest), staat een streep onder de woorden (y+1): zo lijkt de cursor niet op de gele…",
+     "explanation": "Draws the sentence word by word as highlighter blocks in the colour of each part, the abbreviation under each part, a bar under the group the cursor selects, click zones for words, and in 'verdelen' the boundary marks and gap cursor.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [176, 181]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.groep", "lines": [154]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::rol", "lines": [159, 180, 182]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [159, 161, 163, 180, 182, 188],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [165, 189],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len", "max", "range", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [110, 122]}
+     ]
+    },
+    {
+     "name": "teken_voortgang",
+     "qualname": "ZinsdelenInvoer.teken_voortgang",
+     "kind": "method",
+     "lines": [191, 207],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the row 'pv word  o words  lv …' of the parts found so far (and '…' for the rest); nothing in free mode or 'verdelen'.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::kort", "lines": [200]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [201, 203]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::rol", "lines": [201]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [206],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [111]}
+     ]
+    },
+    {
+     "name": "hint_tekst",
+     "qualname": "ZinsdelenInvoer.hint_tekst",
+     "kind": "method",
+     "lines": [209, 217],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The grey hint line for the current mode and step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [216]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [114]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "ZinsdelenInvoer.toets",
+     "kind": "method",
+     "lines": [220, 260],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key entry: clicks go to klik; F1 gives a tip; Tab switches mode; 'verdelen' and the multi-pv step have their own handlers; otherwise arrows move the cursor/anchor, Space extends the group, Backspace shrinks or erases, Enter chooses the group (or checks in free mode), N means 'there is none', letters colour the group in free mode.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [253]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.groep", "lines": [246, 251]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [251, 255]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kleur", "lines": [257]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klik", "lines": [222]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [251]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_meer", "lines": [233]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_verdelen", "lines": [231]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende_tip", "lines": [224]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.wissel", "lines": [228]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["getattr", "isinstance", "len", "max", "min", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets_meer",
+     "qualname": "ZinsdelenInvoer.toets_meer",
+     "kind": "method",
+     "lines": [262, 281],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Alle persoonsvormen van een zin met meer pv's: ←→ = woord, Spatie = aanduiden of wissen, Enter = klaar.",
+     "explanation": "Keys in the 'all finite verbs' step: arrows move, Space or Backspace marks or unmarks, Enter confirms (needs at least one).",
+     "calls": [
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [277]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "max", "min", "ord", "sorted", "tuple"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [233]}
+     ]
+    },
+    {
+     "name": "klik",
+     "qualname": "ZinsdelenInvoer.klik",
+     "kind": "method",
+     "lines": [283, 298],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Handles clicks: a gap toggles a boundary in 'verdelen'; a word toggles marking in the multi-pv step; otherwise selects a word or extends the group when the neighbour is clicked.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["sorted"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [222]}
+     ]
+    },
+    {
+     "name": "wissel",
+     "qualname": "ZinsdelenInvoer.wissel",
+     "kind": "method",
+     "lines": [300, 309],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tab: van stap voor stap naar vrij kleuren en terug. Wat al juist gevonden was, blijft staan.",
+     "explanation": "Tab: switches between step-by-step and free colouring, converting what is found into marks (or back, skipping steps already done).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [303]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kleuren_nu", "lines": [303]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len", "next", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [228]}
+     ]
+    },
+    {
+     "name": "kies",
+     "qualname": "ZinsdelenInvoer.kies",
+     "kind": "method",
+     "lines": [312, 328],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "keuze", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Checks the chosen group for the current step through kern. Correct: stores the found positions, shows a ✔ message and moves on. Wrong: records the attempt and diagnosis; the first time (if a second chance applies) gives a hint and stays; otherwise records the step as failed, shows the explanation and moves on.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [319]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::kort", "lines": [316]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::naam_van_stap", "lines": [317]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [314]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [327]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [315, 326]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.fout", "lines": [320]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende", "lines": [318, 328]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [251, 255]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_meer", "lines": [277]}
+     ]
+    },
+    {
+     "name": "fout",
+     "qualname": "ZinsdelenInvoer.fout",
+     "kind": "method",
+     "lines": [330, 335],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "label", "kind": "positional", "default": null, "annotation": null},
+      {"name": "d", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records an attempt for a label: counts it, remembers the first wrong part and the first diagnosis.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [333]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [320]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [398]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_verdelen", "lines": [363]}
+     ]
+    },
+    {
+     "name": "volgende",
+     "qualname": "ZinsdelenInvoer.volgende",
+     "kind": "method",
+     "lines": [337, 344],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves to the next step: resets tip, cursor and chosen words; returns the final answer from klaar() after the last step, else None.",
+     "calls": [
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar", "lines": [344]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [318, 328]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_verdelen", "lines": [362, 374]}
+     ]
+    },
+    {
+     "name": "toets_verdelen",
+     "qualname": "ZinsdelenInvoer.toets_verdelen",
+     "kind": "method",
+     "lines": [347, 375],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Keys in the 'divide into parts' step: ←/→ move over the gaps, Space sets or removes a boundary, Enter checks the division; a wrong first try gives a hint naming a wrong chunk; a second try shows the right division.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_verdeling", "lines": [358]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verdeling", "lines": [371]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.fout", "lines": [363]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende", "lines": [362, 374]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "max", "min", "ord", "sorted", "tuple", "zip"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [231]}
+     ]
+    },
+    {
+     "name": "kleur",
+     "qualname": "ZinsdelenInvoer.kleur",
+     "kind": "method",
+     "lines": [378, 388],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "label", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Free mode: colours the selected words with a part label if the exercise asks for it (a pv is one word only).",
+     "calls": [
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.groep", "lines": [382]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [257]}
+     ]
+    },
+    {
+     "name": "nakijken_vrij",
+     "qualname": "ZinsdelenInvoer.nakijken_vrij",
+     "kind": "method",
+     "lines": [390, 406],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Free mode check: asks kern whether every asked part is right. All right finishes; otherwise records the wrong parts, first time gives a hint naming them, second time shows the answer and finishes.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [391]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [400]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [394, 405]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.fout", "lines": [398]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar", "lines": [395, 406]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [251]}
+     ]
+    },
+    {
+     "name": "volgende_tip",
+     "qualname": "ZinsdelenInvoer.volgende_tip",
+     "kind": "method",
+     "lines": [409, 419],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Gives the next tip of the current step (or of the first not-yet-correct part in free mode) from kern, with the cheat-sheet heading for the Oefenaar.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [412]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::tips", "lines": [417]},
+      {"target": "leeravontuur/terminal/stappenhulp.py::StappenHulp.geef_tip", "lines": [419]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["next"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [224]}
+     ]
+    },
+    {
+     "name": "klaar",
+     "qualname": "ZinsdelenInvoer.klaar",
+     "kind": "method",
+     "lines": [422, 437],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ends the sentence: builds `extra` (tips, first wrong part, failed parts, free mode) and the after-check explanation lines (one headline plus ✔/✘ per part). Returns ('juist' or 'fout') as typed answer and number.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [427]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [435]},
+      {"target": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar.namen", "lines": [431, 433]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [395, 406]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende", "lines": [344]}
+     ]
+    },
+    {
+     "name": "namen",
+     "qualname": "ZinsdelenInvoer.klaar.namen",
+     "kind": "nested",
+     "lines": [424, 425],
+     "params": [
+      {"name": "labels", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Joins the unique part names of a list of labels into a comma-separated text.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [425]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar", "lines": [431, 433]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "rol",
+   "qualname": "rol",
+   "kind": "function",
+   "lines": [33, 34],
+   "params": [
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Maps a label (like 'pv' or a pv-specific label) to the theme role name 'z_<soort>' used to colour that part of the sentence.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [34]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_voortgang", "lines": [201]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_zin", "lines": [159, 180, 182]}
+   ]
+  }
+ ]
+}

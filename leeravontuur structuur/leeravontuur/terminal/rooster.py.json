@@ -1,0 +1,803 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/rooster.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 350,
+ "source_sha256": "9df54468a7ef5a22c2ec8b2c3f4b8c150dfb1ccdd6f8090abf032eb47ccaf12f",
+ "purpose": "Input objects for column arithmetic ('rooster') and long division step by step ('staart').",
+ "details": "RoosterInvoer lets the child fill the cells of a column sum (add, subtract, multiply, with a carry row, typing direction, decimal comma, place-value letters E T H); StaartInvoer builds a long division by answering one small question per step (divide, multiply, subtract, bring down), with two attempts per step. Both follow the input-object protocol (hoogte, knoppen, teken, toets, hulp, rijen; attributes melding, melding_rol, fouten, diagnose, cursor_pos, hint) and check themselves (geen_tweede_kans) step by step; the Oefenaar only checks the final answer, uses `fouten` and diagnose, and in tests the rows via rijen(). The sums come from kern models (v.model: a Rooster or Staartdeling object); the explanations come from the topic (o.kolom_hulp, o.stap_fout). terminal/beta.py draws the same objects in a bordered panel (in_vak).",
+ "module_docstring": "Invullen in een rooster (cijferen onder elkaar) en de staartdeling stap voor stap.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["lees_getal"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.invoer",
+   "names": ["Plaats"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/invoer.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "HULP"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "tests/test_cijferen.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "TAB",
+   "line": 15,
+   "value_type": "Constant",
+   "value_preview": "9",
+   "explanation": "Key code of Tab."
+  },
+  {
+   "name": "MAATJE_X",
+   "line": 16,
+   "value_type": "Tuple",
+   "value_preview": "(60, 9)",
+   "explanation": "Column from which the buddy stands at the right."
+  },
+  {
+   "name": "MAATJE_ONDER",
+   "line": 16,
+   "value_type": "Tuple",
+   "value_preview": "(60, 9)",
+   "explanation": "Row up to which the buddy is at the right."
+  },
+  {
+   "name": "INVOER",
+   "line": 350,
+   "value_type": "Dict",
+   "value_preview": "{'rooster': RoosterInvoer, 'staart': StaartInvoer}",
+   "explanation": "See registries."
+  }
+ ],
+ "registries": [
+  {
+   "name": "INVOER",
+   "line": 350,
+   "description": "Maps answer types 'rooster' and 'staart' to RoosterInvoer and StaartInvoer; merged into terminal/oefenaar.py's INVOER (and used by terminal/beta.py through that table)."
+  }
+ ],
+ "classes": [
+  {
+   "name": "RoosterInvoer",
+   "qualname": "RoosterInvoer",
+   "lines": [19, 242],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Fill-in grid for column addition, subtraction and multiplication.",
+   "attributes": [
+    {"name": "geen_tweede_kans", "line": 20, "scope": "class", "value_preview": "True"},
+    {"name": "x0", "line": 21, "scope": "class", "value_preview": "9"},
+    {"name": "cellen", "line": 25, "scope": "instance", "value_preview": null},
+    {"name": "onth", "line": 26, "scope": "instance", "value_preview": null},
+    {"name": "komma", "line": 27, "scope": "instance", "value_preview": null},
+    {"name": "rij", "line": 28, "scope": "instance", "value_preview": null},
+    {"name": "typ_rij", "line": 29, "scope": "instance", "value_preview": null},
+    {"name": "kol", "line": 30, "scope": "instance", "value_preview": null},
+    {"name": "links", "line": 31, "scope": "instance", "value_preview": null},
+    {"name": "plaatswaarden", "line": 32, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 35, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 227, "scope": "instance", "value_preview": null},
+    {"name": "melding_rol", "line": 207, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_aan_en_uit", "lines": [181]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_klik_met_plaatswaarden", "lines": [198]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_maal_met_komma", "lines": [208]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_past_overal", "lines": [226]},
+    {"caller": "tests/test_cijferen.py::TestRooster.test_onthouden_blijft_in_de_kolom", "lines": [136]},
+    {
+     "caller": "tests/test_cijferen.py::TestRooster.test_onthouden_en_terug_naar_dezelfde_rij",
+     "lines": [144]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "RoosterInvoer.__init__",
+     "kind": "method",
+     "lines": [23, 35],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds empty cells for each row to fill in, the carry ('onthouden') row, the cursor at the rightmost column, typing direction right-to-left, and no comma yet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_aan_en_uit", "lines": [181]},
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_klik_met_plaatswaarden", "lines": [198]},
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_maal_met_komma", "lines": [208]},
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_past_overal", "lines": [226]},
+      {"caller": "tests/test_cijferen.py::TestRooster.test_onthouden_blijft_in_de_kolom", "lines": [136]},
+      {
+       "caller": "tests/test_cijferen.py::TestRooster.test_onthouden_en_terug_naar_dezelfde_rij",
+       "lines": [144]
+      }
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "RoosterInvoer.hoogte",
+     "kind": "method",
+     "lines": [38, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height in rows: the optional place-value row, the carry row, the given numbers, the line, the rows to fill in (plus the '+' line when there are several).",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.boven", "lines": [40]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "boven",
+     "qualname": "RoosterInvoer.boven",
+     "kind": "method",
+     "lines": [42, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "In een vak staat de rij E T H … binnen de hoogte van het object (op de gewone schermen erboven).",
+     "explanation": "Rows needed above for the place-value letters when drawn inside a panel (1) or 0 on the normal screens.",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.toont_plaatswaarden", "lines": [44]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.hoogte", "lines": [40]},
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken", "lines": [74]}
+     ]
+    },
+    {
+     "name": "randtekst",
+     "qualname": "RoosterInvoer.randtekst",
+     "kind": "method",
+     "lines": [46, 47],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Text for the panel border: the typing direction.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rij_y",
+     "qualname": "RoosterInvoer.rij_y",
+     "kind": "method",
+     "lines": [49, 55],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Maps row numbers (−1 = carry row, 0.. = answer rows) to screen rows from the top row y.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken", "lines": [75]}
+     ]
+    },
+    {
+     "name": "toont_plaatswaarden",
+     "qualname": "RoosterInvoer.toont_plaatswaarden",
+     "kind": "method",
+     "lines": [57, 58],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "True when the child chose place values and they make sense for this sum.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.r.plaatswaarden_kloppen",
+       "lines": [58],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.plaatswaarden_kloppen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.boven", "lines": [44]},
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken", "lines": [79]},
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.x", "lines": [61]}
+     ]
+    },
+    {
+     "name": "x",
+     "qualname": "RoosterInvoer.x",
+     "kind": "method",
+     "lines": [60, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kol", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Screen column of a grid column (a little wider with place-value letters).",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.toont_plaatswaarden", "lines": [61]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken",
+       "lines": [77, 94, 96, 104, 106, 125, 127, 129, 132]
+      },
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken_plaatswaarden", "lines": [144]}
+     ]
+    },
+    {
+     "name": "knoppen",
+     "qualname": "RoosterInvoer.knoppen",
+     "kind": "method",
+     "lines": [63, 69],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: Enter, F1, r (direction), comma (when the child places it), p (place values).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.r.plaatswaarden_kloppen",
+       "lines": [67],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.plaatswaarden_kloppen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "RoosterInvoer.teken",
+     "kind": "method",
+     "lines": [72, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the sum: place-value letters, the carry row, the given numbers with the operator, the line, the answer rows with cells (and a '+' line) and the decimal comma; highlights the digits that matter for the current cell when a tip is shown; registers click zones for cells and comma positions; marks the answer row right or wrong after checking.",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.boven", "lines": [74]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.rij_y", "lines": [75]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken_plaatswaarden", "lines": [80]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.toont_plaatswaarden", "lines": [79]},
+      {
+       "target": "leeravontuur/terminal/rooster.py::RoosterInvoer.x",
+       "lines": [77, 94, 96, 104, 106, 125, 127, 129, 132]
+      }
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "r.plaats",
+       "lines": [102],
+       "candidates": [
+        "leeravontuur/kern/modellen.py::Rooster.plaats",
+        "leeravontuur/terminal/invoer.py::Plaats.plaats",
+        "leeravontuur/terminal/tabel.py::_Maat.plaats",
+        "leeravontuur/venster/klokvenster.py::Venster.plaats"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "r.vaste_komma",
+       "lines": [130],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.vaste_komma"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [94, 98, 104, 106, 108, 109, 113, 114, 125, 132, 134, 137],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [96, 127, 129],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len", "max", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_plaatswaarden",
+     "qualname": "RoosterInvoer.teken_plaatswaarden",
+     "kind": "method",
+     "lines": [139, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rechts", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bezig", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De rij E T H … boven de kolommen (#18); de letter van je kolom licht op, erachter wat ze betekent.",
+     "explanation": "Draws the letters E T H ... above the columns, with the column of the cursor lit and a note 'je staat bij de ...' if there is room.",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.x", "lines": [144]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [144, 150],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.r.plaats_naam",
+       "lines": [142, 146],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.plaats_naam"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.teken", "lines": [80]}
+     ]
+    },
+    {
+     "name": "rijen_lijst",
+     "qualname": "RoosterInvoer.rijen_lijst",
+     "kind": "method",
+     "lines": [153, 154],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The row numbers the cursor can visit: −1 (carry) then the answer rows.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "list", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.toets", "lines": [183, 187]}
+     ]
+    },
+    {
+     "name": "stap",
+     "qualname": "RoosterInvoer.stap",
+     "kind": "method",
+     "lines": [156, 159],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "richting", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een vakje verder in de typrichting (richting = +1) of terug (−1).",
+     "explanation": "Moves the cursor one cell in (or against) the typing direction, clamped to the grid.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.toets", "lines": [192, 196, 224]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "RoosterInvoer.toets",
+     "kind": "method",
+     "lines": [161, 228],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clicks move the cursor or set the comma; Enter reads the answer row (message if it cannot be read) and returns (text, number); arrows, Tab (next row, rightmost column), Backspace, Space/Delete, 'r' (flip direction), 'p' (place values, with messages), ',' (place the comma in the last row), digits (fill a cell and advance; in the carry row stay in the column).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [175]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.rijen_lijst", "lines": [183, 187]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.stap", "lines": [192, 196, 224]},
+      {"target": "leeravontuur/terminal/rooster.py::RoosterInvoer.zet_komma", "lines": [168, 211]}
+     ],
+     "unresolved_calls": [
+      {"expr": "r.lees", "lines": [171], "candidates": [], "candidates_count": 10},
+      {
+       "expr": "r.plaatswaarden_kloppen",
+       "lines": [202],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.plaatswaarden_kloppen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["chr", "isinstance", "len", "max", "min", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_komma",
+     "qualname": "RoosterInvoer.zet_komma",
+     "kind": "method",
+     "lines": [230, 232],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kol", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets or removes the decimal comma at a column (not at the far right) and moves the cursor to the answer row.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.toets", "lines": [168, 211]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "RoosterInvoer.hulp",
+     "kind": "method",
+     "lines": [234, 235],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Column-specific hint from the topic (o.kolom_hulp) for the cell under the cursor.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.kolom_hulp",
+       "lines": [235],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.kolom_hulp",
+        "leeravontuur/kern/wiskunde/cijferen.py::Optellen.kolom_hulp",
+        "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.kolom_hulp",
+        "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.kolom_hulp"
+       ],
+       "candidates_count": 4
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "RoosterInvoer.rijen",
+     "kind": "method",
+     "lines": [237, 242],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The text of every answer row as read from the cells; used by the topic to diagnose errors from the shape of the work.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.r.lees", "lines": [241], "candidates": [], "candidates_count": 10}
+     ],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "StaartInvoer",
+   "qualname": "StaartInvoer",
+   "lines": [245, 347],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Long division as a sequence of small step questions.",
+   "attributes": [
+    {"name": "geen_tweede_kans", "line": 246, "scope": "class", "value_preview": "True"},
+    {"name": "x0", "line": 247, "scope": "class", "value_preview": "6"},
+    {"name": "VENSTER", "line": 248, "scope": "class", "value_preview": "7"},
+    {"name": "STAPPEN", "line": 249, "scope": "class", "value_preview": "'deel → maal → min → neer'"},
+    {"name": "i", "line": 253, "scope": "instance", "value_preview": null},
+    {"name": "buf", "line": 254, "scope": "instance", "value_preview": null},
+    {"name": "pogingen", "line": 255, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 258, "scope": "instance", "value_preview": null},
+    {"name": "cursor_pos", "line": 288, "scope": "instance", "value_preview": null},
+    {"name": "fouten", "line": 321, "scope": "instance", "value_preview": null},
+    {"name": "diagnose", "line": 324, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "StaartInvoer.__init__",
+     "kind": "method",
+     "lines": [251, 258],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts at step 0 with an empty typed number and no attempts.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "StaartInvoer.hoogte",
+     "kind": "method",
+     "lines": [260, 261],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Fixed height: the seven-line window plus two.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "StaartInvoer.knoppen",
+     "kind": "method",
+     "lines": [263, 264],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: Enter, F1, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "randtekst",
+     "qualname": "StaartInvoer.randtekst",
+     "kind": "method",
+     "lines": [266, 267],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Text for the panel border: the step cycle 'deel → maal → min → neer'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "StaartInvoer.teken",
+     "kind": "method",
+     "lines": [269, 298],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the long division as built so far (longest part collapsed with '⋮' when it is too tall), the divisor and quotient with a bracket, the remainder after checking, and the current step's question with the answer box.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "m.beeld",
+       "lines": [272],
+       "candidates": ["leeravontuur/kern/modellen.py::Staartdeling.beeld"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "m.cijfers",
+       "lines": [279],
+       "candidates": ["leeravontuur/kern/modellen.py::Staartdeling.cijfers"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "m.kolom",
+       "lines": [279],
+       "candidates": ["leeravontuur/kern/modellen.py::Staartdeling.kolom"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [278, 281, 283, 284, 285, 287, 294, 298],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [295],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "len", "max", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "StaartInvoer.toets",
+     "kind": "method",
+     "lines": [300, 330],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Digits and Backspace edit the number (at most 6 digits); Enter checks the step: right moves on; wrong records an error with the topic's explanation, the first time asks to retry, the second time shows the answer and moves on. Returns (text, answer) after the last step.",
+     "calls": [
+      {"target": "leeravontuur/terminal/rooster.py::StaartInvoer.verder", "lines": [320, 328]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.stap_fout",
+       "lines": [322],
+       "candidates": ["leeravontuur/kern/wiskunde/cijferen.py::Delen.stap_fout"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["chr", "int", "isinstance", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verder",
+     "qualname": "StaartInvoer.verder",
+     "kind": "method",
+     "lines": [332, 339],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves to the next step; after the last one returns the final answer with the number of mistakes made on the way.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/rooster.py::StaartInvoer.toets", "lines": [320, 328]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "StaartInvoer.hulp",
+     "kind": "method",
+     "lines": [341, 344],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The tip of the current step, or the topic's tip when all steps are done.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [344], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "StaartInvoer.rijen",
+     "kind": "method",
+     "lines": [346, 347],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

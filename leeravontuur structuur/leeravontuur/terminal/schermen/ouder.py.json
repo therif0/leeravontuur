@@ -1,0 +1,1443 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/ouder.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 659,
+ "source_sha256": "465924d5bbdfb601e67eb5afd5946a48f58de1d8149309a3ec096896df9bb2c3",
+ "purpose": "The parent area behind a password: reports, calendar, export, answers log, points, managing children, display settings, password and parent PIN.",
+ "details": "Ouderdeel is opened from the 'Wie ben jij?' screen (kinderen.py). open() asks the parent password (or creates it on first use, upgrading an outdated hash), sets a 10-minute inactivity lock (Scherm.slot; Vergrendeld is caught and shown as a message), and shows the menu. Everything it reads or writes goes through storage (app.opslag) or kern modules (rapporten, stopslot, wachtwoord, reeks, feedback, foutlog); this file only asks and shows. The per-child settings list (kind_beheren) uses `lijst()`, a generic 'name: value' list screen. Passwords and PINs are stored hashed (kern/wachtwoord); the child PIN uses fewer iterations (PIN_ITERATIES) for speed. Dangerous actions (wipe a child) require typing the child's name.",
+ "module_docstring": "Het ouderdeel (achter een wachtwoord): rapporten, kalender, export, kinderen beheren.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "datetime", "names": ["date"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["feedback", "foutlog", "klok", "leerjaren", "rapporten", "reeks", "stopslot", "wachtwoord"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/wachtwoord.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["STRAFFEN"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.paden",
+   "names": ["documenten_map"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/paden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC", "TerugNaar", "Vergrendeld"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.gemengd",
+   "names": ["namen_tekst"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/schermen/gemengd.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.gemengd",
+   "names": ["themas"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": ["leeravontuur/terminal/schermen/gemengd.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.gemengd",
+   "names": ["themas"],
+   "alias": null,
+   "line": 545,
+   "resolves_to": ["leeravontuur/terminal/schermen/gemengd.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/schermen/kinderen.py", "tests/test_ouder.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "HOOFD",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "'Leeravontuur'",
+   "explanation": "Name of the root breadcrumb."
+  },
+  {
+   "name": "KR",
+   "line": 15,
+   "value_type": "List",
+   "value_preview": "[HOOFD, 'Ouders']",
+   "explanation": "Breadcrumb of the parent area."
+  },
+  {
+   "name": "SLOT_SECONDEN",
+   "line": 16,
+   "value_type": "Constant",
+   "value_preview": "600",
+   "explanation": "Inactivity time after which the parent area locks (10 minutes)."
+  },
+  {
+   "name": "PIN_ITERATIES",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "100000",
+   "explanation": "Hash iterations for a child PIN (fewer than a password: a 4-digit PIN is guessable anyway)."
+  },
+  {
+   "name": "VERGETEN",
+   "line": 18,
+   "value_type": "Constant",
+   "value_preview": "'Vergeten? Start dan met: python3 leeravontuur.py --wachtwoord-verget…",
+   "explanation": "Help text for a forgotten password."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Ouderdeel",
+   "qualname": "Ouderdeel",
+   "lines": [33, 659],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The parent area controller, created per visit by the child-selection screen.",
+   "attributes": [
+    {"name": "app", "line": 35, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 36, "scope": "instance", "value_preview": null},
+    {"name": "o", "line": 37, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [164]},
+    {"caller": "leeravontuur/terminal/schermen/kinderen.py::_kies_kind", "lines": [44]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Ouderdeel.__init__",
+     "kind": "method",
+     "lines": [34, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the app, its Scherm and storage.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [164]},
+      {"caller": "leeravontuur/terminal/schermen/kinderen.py::_kies_kind", "lines": [44]}
+     ]
+    },
+    {
+     "name": "open",
+     "qualname": "Ouderdeel.open",
+     "kind": "method",
+     "lines": [41, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Vraagt het wachtwoord en toont het ouderdeel. Komt terug als de ouder klaar is.",
+     "explanation": "Entry point: checks access, sets the inactivity lock and shows the menu; shows a message when the lock closes it; always clears the lock at the end; a breadcrumb click just returns.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [51]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [48]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [44]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toegang",
+     "qualname": "Ouderdeel.toegang",
+     "kind": "method",
+     "lines": [58, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asks the parent password (three tries; first-time setup if none exists); rehashes an outdated stored hash on success; after three failures shows 'Geen toegang'. Returns True when access is granted.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [67]},
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [69]},
+      {"target": "leeravontuur/kern/wachtwoord.py::verouderd", "lines": [68]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [71]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuw_wachtwoord", "lines": [61]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.ouder_wachtwoord",
+       "lines": [59],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.zet_ouder_wachtwoord",
+       "lines": [69],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [64],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open", "lines": [44]}
+     ]
+    },
+    {
+     "name": "nieuw_wachtwoord",
+     "qualname": "Ouderdeel.nieuw_wachtwoord",
+     "kind": "method",
+     "lines": [74, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "eerste", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asks a new password (at least 4 characters) twice and stores its hash. Returns False on Esc.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [92]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.zet_ouder_wachtwoord",
+       "lines": [92],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [78, 85],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [61]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_wijzigen", "lines": [102]}
+     ]
+    },
+    {
+     "name": "wachtwoord_wijzigen",
+     "qualname": "Ouderdeel.wachtwoord_wijzigen",
+     "kind": "method",
+     "lines": [95, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asks the current password, then runs nieuw_wachtwoord, and confirms.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [99]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [100, 103]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuw_wachtwoord", "lines": [102]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.ouder_wachtwoord",
+       "lines": [99],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [96],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_en_pin", "lines": [119]}
+     ]
+    },
+    {
+     "name": "wachtwoord_en_pin",
+     "qualname": "Ouderdeel.wachtwoord_en_pin",
+     "kind": "method",
+     "lines": [105, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Menu for the password and the parent PIN: change password, choose/change the PIN, or remove it (which also switches off every child's stop lock and reloads the child).",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::zet_alle_sloten_af", "lines": [124]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [122, 127]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuwe_ouderpin", "lines": [121]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_wijzigen", "lines": [119]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.herlaad_kind",
+       "lines": [126],
+       "candidates": ["leeravontuur/terminal/app.py::App.herlaad_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.ouder_pin",
+       "lines": [108],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.zet_ouder_pin",
+       "lines": [125],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_pin"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [113],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["bool"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [231]}
+     ]
+    },
+    {
+     "name": "nieuwe_ouderpin",
+     "qualname": "Ouderdeel.nieuwe_ouderpin",
+     "kind": "method",
+     "lines": [129, 148],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De ouderpin kiezen (twee keer typen). True als ze bewaard is.",
+     "explanation": "Asks a 4-digit parent PIN twice and stores it through kern/stopslot. True when saved.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [147]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.invoer",
+       "lines": [133, 140],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.stoppen_op_slot", "lines": [634]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_en_pin", "lines": [121]}
+     ]
+    },
+    {
+     "name": "melding",
+     "qualname": "Ouderdeel.melding",
+     "kind": "method",
+     "lines": [152, 155],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "titel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shows a titled message page with Enter to close; ✘ lines in the error role, ✔ in the good role.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [153],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer", "lines": [311, 313]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer_alles", "lines": [646]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [160]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open", "lines": [51]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.stoppen_op_slot", "lines": [632]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toegang", "lines": [71]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_en_pin", "lines": [122, 127]},
+      {
+       "caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_wijzigen",
+       "lines": [100, 103]
+      },
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wissen", "lines": [655, 658]}
+     ]
+    },
+    {
+     "name": "kies_kind",
+     "qualname": "Ouderdeel.kies_kind",
+     "kind": "method",
+     "lines": [157, 165],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Menu to choose a child (with school year and '· op slot'); a message and None when there are no children.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [163]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [160]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.kinderen",
+       "lines": [158],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [162],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden", "lines": [349]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen", "lines": [475]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.punten", "lines": [447]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.rapporten", "lines": [252]}
+     ]
+    },
+    {
+     "name": "lijst",
+     "qualname": "Ouderdeel.lijst",
+     "kind": "method",
+     "lines": [167, 200],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "titel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "items", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sel", "kind": "positional", "default": "0", "annotation": null},
+      {"name": "melding", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een lijst 'naam: waarde' om te wijzigen. Geeft de gekozen index of None (Esc).",
+     "explanation": "Generic list screen of 'label  value' lines to change; ↑↓/jk/Tab/clicks/wheel move, Enter or Space picks, Esc leaves; the message wraps over three lines. Returns the chosen index or None.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [174],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.maat",
+       "lines": [176],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [175],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [177, 181, 182, 185],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [172],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [186], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [183],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "ord", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [499]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.weergave", "lines": [586]}
+     ]
+    },
+    {
+     "name": "fouten_info",
+     "qualname": "Ouderdeel.fouten_info",
+     "kind": "staticmethod",
+     "lines": [205, 207],
+     "params": [],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Info line for the menu: the number of stored unexpected errors (with the hint to view them with --fouten), or nothing.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::aantal", "lines": [206]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [219]}
+     ]
+    },
+    {
+     "name": "menu",
+     "qualname": "Ouderdeel.menu",
+     "kind": "method",
+     "lines": [209, 233],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The parent menu: Rapporten, Antwoorden, Kinderen, Punten, Wachtwoord en ouderpin, Opmerkingen (with count), Sluiten; dispatches to the methods below.",
+     "calls": [
+      {"target": "leeravontuur/kern/feedback.py::lees", "lines": [217]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden", "lines": [225]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.fouten_info", "lines": [219]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen", "lines": [227]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.opmerkingen", "lines": [233]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.punten", "lines": [229]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.rapporten", "lines": [223]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_en_pin", "lines": [231]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [211],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open", "lines": [48]}
+     ]
+    },
+    {
+     "name": "opmerkingen",
+     "qualname": "Ouderdeel.opmerkingen",
+     "kind": "method",
+     "lines": [235, 245],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shows the remarks written through 'Zeg het ons', newest first, with the file they are stored in.",
+     "calls": [
+      {"target": "leeravontuur/kern/feedback.py::lees", "lines": [237]},
+      {"target": "leeravontuur/kern/feedback.py::pad", "lines": [239]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [245],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [233]}
+     ]
+    },
+    {
+     "name": "rapporten",
+     "qualname": "Ouderdeel.rapporten",
+     "kind": "method",
+     "lines": [249, 259],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Loop: choose a child, then a period, and show the report.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [252]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_periode", "lines": [256]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toon_rapport", "lines": [259]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [223]}
+     ]
+    },
+    {
+     "name": "kies_periode",
+     "qualname": "Ouderdeel.kies_periode",
+     "kind": "method",
+     "lines": [261, 277],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Menu of the standard periods plus 'Zelf kiezen' (two typed dates, swapped if reversed). Returns a Periode or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::nu", "lines": [269]},
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [277]},
+      {"target": "leeravontuur/kern/rapporten.py::periodes", "lines": [262]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.vraag_datum", "lines": [270, 273]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [263],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".date", "len", "max", "min"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.rapporten", "lines": [256]}
+     ]
+    },
+    {
+     "name": "vraag_datum",
+     "qualname": "Ouderdeel.vraag_datum",
+     "kind": "method",
+     "lines": [279, 290],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leeg", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asks a date (dd/mm/yyyy) until it parses; an empty answer gives the default when allowed; Esc gives None.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::lees_datum", "lines": [287]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.invoer",
+       "lines": [282],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_periode", "lines": [270, 273]}
+     ]
+    },
+    {
+     "name": "toon_rapport",
+     "qualname": "Ouderdeel.toon_rapport",
+     "kind": "method",
+     "lines": [292, 305],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "periode", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds the report with kern/rapporten and shows it in a reader with E (export) and K (calendar) actions until Esc.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [293]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [299]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [299]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer", "lines": [303]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kalender", "lines": [305]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [299],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.rapporten", "lines": [259]}
+     ]
+    },
+    {
+     "name": "exporteer",
+     "qualname": "Ouderdeel.exporteer",
+     "kind": "method",
+     "lines": [307, 314],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Exports the report as text and CSV into the documents folder and shows the paths, or the error.",
+     "calls": [
+      {"target": "leeravontuur/kern/paden.py::documenten_map", "lines": [309]},
+      {"target": "leeravontuur/kern/rapporten.py::exporteer", "lines": [309]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [309]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [311, 313]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toon_rapport", "lines": [303]}
+     ]
+    },
+    {
+     "name": "kalender",
+     "qualname": "Ouderdeel.kalender",
+     "kind": "method",
+     "lines": [316, 342],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "dag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Month calendar with coloured practice days and a list of the first eight days with counts and percentage; ←/→ change month, Esc leaves.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::kalender", "lines": [324]},
+      {"target": "leeravontuur/kern/rapporten.py::kalender_regels", "lines": [328]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [325],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [326],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [329, 331, 332, 335],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [322],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [336], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": ["enumerate", "round", "sorted"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toon_rapport", "lines": [305]}
+     ]
+    },
+    {
+     "name": "antwoorden",
+     "qualname": "Ouderdeel.antwoorden",
+     "kind": "method",
+     "lines": [346, 352],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Loop: choose a child and show their answers.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden_van", "lines": [352]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [349]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [225]}
+     ]
+    },
+    {
+     "name": "antwoorden_van",
+     "qualname": "Ouderdeel.antwoorden_van",
+     "kind": "method",
+     "lines": [354, 407],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De laatste antwoorden (nieuwste eerst): ↑↓ kiezen, Enter = details, H = in de herhaalbak.",
+     "explanation": "The latest answers newest first with scrolling (arrows, PgUp/PgDn, wheel, click): Enter shows details, H puts the question in the repeat bin, Esc leaves.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::antwoord_tekst", "lines": [376]},
+      {"target": "leeravontuur/kern/rapporten.py::antwoorden_lijst", "lines": [361]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoord_details", "lines": [390, 403]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.herhaal", "lines": [405]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [365],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.maat",
+       "lines": [367],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [366],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [368, 370, 377, 378, 380, 383, 384],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [363],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [385], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [381],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "max", "min", "ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden", "lines": [352]}
+     ]
+    },
+    {
+     "name": "herhaal",
+     "qualname": "Ouderdeel.herhaal",
+     "kind": "method",
+     "lines": [409, 415],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "a", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "H: de vraag in de herhaalbak. Geeft de melding.",
+     "explanation": "Puts an answered question's skill and key in the repeat bin and returns the message (already in, success, or not possible).",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::in_herhaalbak", "lines": [411]},
+      {"target": "leeravontuur/kern/rapporten.py::zet_in_herhaalbak", "lines": [413]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoord_details", "lines": [440]},
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden_van", "lines": [405]}
+     ]
+    },
+    {
+     "name": "antwoord_details",
+     "qualname": "Ouderdeel.antwoord_details",
+     "kind": "method",
+     "lines": [417, 440],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "a", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Detail page for one answer: skill, level, mode, question, answer, verdict, thinking error, time and tip use, klad lines, repeat-bin state; H adds to the repeat bin.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::in_herhaalbak", "lines": [432]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.herhaal", "lines": [440]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [436],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden_van", "lines": [390, 403]}
+     ]
+    },
+    {
+     "name": "punten",
+     "qualname": "Ouderdeel.punten",
+     "kind": "method",
+     "lines": [444, 468],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Loop: choose a child, show their points balance and last 30 changes, and offer B to give bonus points with a reason (stored as 'bonus van de ouders').",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::punten_regels", "lines": [453]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [447]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.punten_bij",
+       "lines": [468],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.punten_saldo",
+       "lines": [451],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [462, 465],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [456],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["int", "len", "ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [229]}
+     ]
+    },
+    {
+     "name": "kinderen",
+     "qualname": "Ouderdeel.kinderen",
+     "kind": "method",
+     "lines": [472, 478],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Loop: choose a child and manage them.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [475]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [478]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [227]}
+     ]
+    },
+    {
+     "name": "kind_beheren",
+     "qualname": "Ouderdeel.kind_beheren",
+     "kind": "method",
+     "lines": [480, 541],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The settings list of one child: name (unique), school year, display settings, timer visibility, PIN, stop lock, mixed-practice mode, shop penalty, export everything, wipe everything. Each choice stores its change right away and reloads the active child.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [493]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer_alles", "lines": [537]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.gemengd_oefenen", "lines": [530]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.lijst", "lines": [499]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.pincode", "lines": [526]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.stoppen_op_slot", "lines": [528]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.weergave", "lines": [521]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wissen", "lines": [539]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::gemengd_waarde", "lines": [495]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.herlaad_kind",
+       "lines": [541],
+       "candidates": ["leeravontuur/terminal/app.py::App.herlaad_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.bewaar_instellingen",
+       "lines": [510, 519, 524, 534],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.instellingen_van",
+       "lines": [486],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.kind",
+       "lines": [483],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kind",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kind"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.kinderen",
+       "lines": [506],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.pincode",
+       "lines": [487],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.pincode",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.pincode"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [504],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [512],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["bool", "len", "list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen", "lines": [478]}
+     ]
+    },
+    {
+     "name": "gemengd_oefenen",
+     "qualname": "Ouderdeel.gemengd_oefenen",
+     "kind": "method",
+     "lines": [543, 568],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Wie kiest de thema's van Gemengd oefenen: het kind, vast (de ouder), of één keer (de volgende reeks).",
+     "explanation": "Chooses who picks the themes of Gemengd oefenen (child, fixed, or once) and, for parent modes, which themes; stores it in the child's settings and returns a message.",
+     "calls": [
+      {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [547]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::namen_tekst", "lines": [568]},
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::themas", "lines": [559]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_instellingen",
+       "lines": [557, 566],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.instellingen_van",
+       "lines": [546],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.afvink",
+       "lines": [561],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.afvink"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [549],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [530]}
+     ]
+    },
+    {
+     "name": "weergave",
+     "qualname": "Ouderdeel.weergave",
+     "kind": "method",
+     "lines": [570, 604],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hoe het programma eruitziet voor dit kind (vroeger Opties bij het kind). Elke keuze wordt meteen bewaard en geldt meteen als dit kind het actieve is; een startargument (--ascii …) gaat voor zolang het programma loopt.",
+     "explanation": "The display settings of a child (simple characters, mouse, typing direction in tables, avatar, animations, clock in a separate window, place values); each toggle is stored and applied at once.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.lijst", "lines": [586]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.herlaad_kind",
+       "lines": [604],
+       "candidates": ["leeravontuur/terminal/app.py::App.herlaad_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.bewaar_instellingen",
+       "lines": [603],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.instellingen_van",
+       "lines": [577],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [521]}
+     ]
+    },
+    {
+     "name": "pincode",
+     "qualname": "Ouderdeel.pincode",
+     "kind": "method",
+     "lines": [606, 624],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "heeft_pin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets or removes a child's PIN (four digits typed twice, stored hashed) and returns the message.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [623]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.zet_pincode",
+       "lines": [612, 623],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_pincode"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [614, 620],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [608],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [526]}
+     ]
+    },
+    {
+     "name": "stoppen_op_slot",
+     "qualname": "Ouderdeel.stoppen_op_slot",
+     "kind": "method",
+     "lines": [626, 637],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Aan of uit. Aanzetten zonder ouderpin vraagt eerst een ouderpin (zonder pin geldt geen slot).",
+     "explanation": "Turns the stop lock of a child on or off; switching on needs a parent PIN (asked first if none exists).",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [628]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_slot", "lines": [629, 636]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [632]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuwe_ouderpin", "lines": [634]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.ouder_pin",
+       "lines": [631],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [528]}
+     ]
+    },
+    {
+     "name": "exporteer_alles",
+     "qualname": "Ouderdeel.exporteer_alles",
+     "kind": "method",
+     "lines": [639, 647],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Exports all data of a child (CSV report over all time plus a JSON file with everything) and shows the paths, or returns the error.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::nu", "lines": [641]},
+      {"target": "leeravontuur/kern/paden.py::documenten_map", "lines": [642, 643]},
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [641]},
+      {"target": "leeravontuur/kern/rapporten.py::exporteer", "lines": [642]},
+      {"target": "leeravontuur/kern/rapporten.py::exporteer_alles", "lines": [643]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [641]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [642]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [646]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".date", "datetime.date"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [537]}
+     ]
+    },
+    {
+     "name": "wissen",
+     "qualname": "Ouderdeel.wissen",
+     "kind": "method",
+     "lines": [649, 659],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Wipes a child completely after the parent types the child's name; returns True when wiped.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.melding", "lines": [655, 658]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.verwijder_kind",
+       "lines": [657],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.verwijder_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.invoer",
+       "lines": [650],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [539]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "gemengd_waarde",
+   "qualname": "gemengd_waarde",
+   "kind": "function",
+   "lines": [22, 31],
+   "params": [
+    {"name": "inst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat er bij Kinderen › kind › Gemengd oefenen staat: wie de thema's kiest.",
+   "explanation": "Text for the 'Gemengd oefenen' line in the child list: 'het kind kiest', or the parent's mode with theme names (or a count when more than two).",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [25]},
+    {"target": "leeravontuur/terminal/schermen/gemengd.py::namen_tekst", "lines": [30]},
+    {"target": "leeravontuur/terminal/schermen/gemengd.py::themas", "lines": [28]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [495]}
+   ]
+  }
+ ]
+}

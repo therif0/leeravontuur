@@ -1,0 +1,637 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/beta.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 285,
+ "source_sha256": "bb8403e5cc398f7a7b14ed3bf879d49cf9a2bba99a314c26deb405a4313e6bda",
+ "purpose": "The beta screen layout ('schermen 1.0') for Cijferen: an Oefenaar subclass that draws the question, tip and cheat sheet in bordered panels. Only active with LEERAVONTUUR_BETA=1.",
+ "details": "BetaOefenaar overrides only _stel_vraag (for the grid and long-division answer types in INVOER_BETA; every other question goes to Oefenaar._stel_vraag through super()), so everything else (level, series, result, repeat bin, points) is the normal Oefenaar. Checking and storing follow the same steps as the normal code path for an input object (no second chance, answer stored through the Sessie). Drawing uses the layout rectangles of terminal/indeling.py and panel drawing of terminal/vak.py; the series line comes from kern/overzicht.py. oefenaar_klasse(domein) is how the curriculum chooses between the normal and the beta class. Per the father (22/11), Cijferen has no klad in the beta and the cheat sheet is always open.",
+ "module_docstring": "Beta van de schermen 1.0 (werk/schermen.md): Cijferen in vakken, zoals btop. Alleen met LEERAVONTUUR_BETA=1.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["indeling"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/indeling.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["vak"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/vak.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["overzicht"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/overzicht.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["INVOER", "KORT_HULP", "LOF", "Oefenaar", "vraagtekst"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC", "HULP"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/curriculum/modi.py", "tests/test_beta.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "DOMEINEN",
+   "line": 22,
+   "value_type": "Set",
+   "value_preview": "{'Cijferen'}",
+   "explanation": "Domain labels where the beta applies."
+  },
+  {
+   "name": "INVOER_BETA",
+   "line": 23,
+   "value_type": "Set",
+   "value_preview": "{'rooster', 'staart'}",
+   "explanation": "Answer types that get the panel layout."
+  },
+  {
+   "name": "GEEN_TIP",
+   "line": 24,
+   "value_type": "Dict",
+   "value_preview": "{'rooster': 'F1 = een tip voor dit vakje.', 'staart': 'F1 = een tip v…",
+   "explanation": "Placeholder text in the Tip panel per answer type before F1 is pressed."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "BetaOefenaar",
+   "qualname": "BetaOefenaar",
+   "lines": [55, 285],
+   "bases": ["Oefenaar"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The Oefenaar variant with the panel layout, used for Cijferen when LEERAVONTUUR_BETA=1.",
+   "attributes": [
+    {"name": "herkansing", "line": 70, "scope": "instance", "value_preview": null},
+    {"name": "open", "line": 91, "scope": "instance", "value_preview": null},
+    {"name": "laatste_d", "line": 127, "scope": "instance", "value_preview": null},
+    {"name": "spiek_top", "line": 96, "scope": "instance", "value_preview": null},
+    {"name": "spiek_zicht", "line": 197, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "_stel_vraag",
+     "qualname": "BetaOefenaar._stel_vraag",
+     "kind": "method",
+     "lines": [56, 143],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ses", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "resultaten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vrij", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Question loop in panels for 'rooster' and 'staart' questions: builds the input object, runs the draw / key loop (F1 = tip, then the cheat sheet on the same tip; scrolling the open cheat sheet; Esc/Enter handling), checks the answer, stores it in the Sessie with the number of step mistakes, picks the buddy reaction and sets the verdict and explanation texts. Other input types are handed to the parent class.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::reactie", "lines": [131]},
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [85]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [58]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.spiekbrief", "lines": [114]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.tijd_tekst", "lines": [130]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.uitwerking", "lines": [134, 140]},
+      {"target": "leeravontuur/terminal/oefenaar.py::vraagtekst", "lines": [128]},
+      {"target": "leeravontuur/terminal/vak.py::scroll_stap", "lines": [95]}
+     ],
+     "unresolved_calls": [
+      {"expr": "o.diagnose", "lines": [126], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "o.diagnose_rijen",
+       "lines": [126],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.diagnose_rijen",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.diagnose_rijen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [125],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.spiekbrief", "lines": [63], "candidates": [], "candidates_count": 22},
+      {"expr": "o.uitleg", "lines": [137], "candidates": [], "candidates_count": 39},
+      {"expr": "obj.hulp", "lines": [111], "candidates": [], "candidates_count": 10},
+      {"expr": "obj.knoppen", "lines": [81], "candidates": [], "candidates_count": 13},
+      {"expr": "obj.rijen", "lines": [126], "candidates": [], "candidates_count": 10},
+      {"expr": "obj.toets", "lines": [118], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.cursor",
+       "lines": [105],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [84],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.pauze",
+       "lines": [88],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.pauze", "leeravontuur/terminal/scherm.py::Scherm.pauze"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [74],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [92], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "self.app.bewaar",
+       "lines": [121],
+       "candidates": ["leeravontuur/terminal/app.py::App.bewaar", "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [128],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [71],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["bool", "getattr", "hasattr", "max", "ord", "random.choice", "super"],
+     "dynamic": [
+      {"kind": "subscript-call", "line": 60, "expr": "INVOER[v.invoer]"}
+     ],
+     "called_by": []
+    },
+    {
+     "name": "indeling",
+     "qualname": "BetaOefenaar.indeling",
+     "kind": "method",
+     "lines": [149, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "obj", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vakken voor deze vraag; het object krijgt zijn plaats links in het vak Vraag. Is het breder dan dat vak, dan krijgt het de volle breedte (zonder maatje).",
+     "explanation": "Computes the panel layout for the screen size (with or without buddy and clock window) and positions the input object in the left panel; falls back to the full width without the buddy when the object is wider than the panel.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [155, 158]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "obj.breedte",
+       "lines": [157],
+       "candidates": ["leeravontuur/terminal/invoer.py::Plaats.breedte"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "obj.plaats",
+       "lines": [156, 159],
+       "candidates": [
+        "leeravontuur/kern/modellen.py::Rooster.plaats",
+        "leeravontuur/terminal/invoer.py::Plaats.plaats",
+        "leeravontuur/terminal/tabel.py::_Maat.plaats",
+        "leeravontuur/venster/klokvenster.py::Venster.plaats"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "s.klokvenster.toont",
+       "lines": [154],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toont"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.maat",
+       "lines": [153],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [165]}
+     ]
+    },
+    {
+     "name": "teken",
+     "qualname": "BetaOefenaar.teken",
+     "kind": "method",
+     "lines": [162, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "obj", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ses", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "resultaten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vrij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tip", "kind": "positional", "default": null, "annotation": null},
+      {"name": "spiek", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kop", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitleg", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gezicht", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ballon", "kind": "positional", "default": null, "annotation": null},
+      {"name": "spring", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws one frame: series line, question panel with the question on a band, the input object, melding and hint lines, the Tip (or explanation) panel, the always-open cheat sheet panel and the buddy panel; sets the cursor.",
+     "calls": [
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.indeling", "lines": [165]},
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_maatje", "lines": [201]},
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_reeks", "lines": [168]},
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_spiek", "lines": [199]},
+      {"target": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_tip", "lines": [196]},
+      {"target": "leeravontuur/terminal/beta.py::hint_regels", "lines": [173]},
+      {"target": "leeravontuur/terminal/beta.py::regels", "lines": [172]},
+      {"target": "leeravontuur/terminal/beta.py::ruim", "lines": [194]},
+      {"target": "leeravontuur/terminal/indeling.py::verdeel", "lines": [183]},
+      {"target": "leeravontuur/terminal/vak.py::teken", "lines": [190]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.hoogte", "lines": [171], "candidates": [], "candidates_count": 12},
+      {
+       "expr": "obj.randtekst",
+       "lines": [190],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::Plaats.randtekst",
+        "leeravontuur/terminal/rooster.py::RoosterInvoer.randtekst",
+        "leeravontuur/terminal/rooster.py::StaartInvoer.randtekst",
+        "leeravontuur/terminal/tabel.py::TabelInvoer.randtekst"
+       ],
+       "candidates_count": 4
+      },
+      {"expr": "obj.teken", "lines": [195], "candidates": [], "candidates_count": 16},
+      {
+       "expr": "s.cursor",
+       "lines": [203, 205],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.put",
+       "lines": [179, 181, 193, 194],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["bool", "enumerate", "getattr", "len", "max", "ord", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar._stel_vraag", "lines": [85]}
+     ]
+    },
+    {
+     "name": "teken_tip",
+     "qualname": "BetaOefenaar.teken_tip",
+     "kind": "method",
+     "lines": [207, 230],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "obj", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tw", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bezig", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tip", "kind": "positional", "default": null, "annotation": null},
+      {"name": "spiek", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kop", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitleg", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het vak onder de vraag: de tip tijdens het rekenen, de uitleg na het nakijken.",
+     "explanation": "Draws the Tip panel while working (tip text, with the hint to the cheat sheet when it fits) or the result panel after checking ('Goed!', 'Wat ging er mis?' or 'Uitleg') with the explanation lines, cut to fit.",
+     "calls": [
+      {"target": "leeravontuur/terminal/beta.py::regels", "lines": [216, 220, 224, 227]},
+      {"target": "leeravontuur/terminal/vak.py::lijst", "lines": [220, 230]},
+      {"target": "leeravontuur/terminal/vak.py::teken", "lines": [211, 223]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.hulp", "lines": [215], "candidates": [], "candidates_count": 10}
+     ],
+     "external_calls": ["isinstance", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [196]}
+     ]
+    },
+    {
+     "name": "teken_reeks",
+     "qualname": "BetaOefenaar.teken_reeks",
+     "kind": "method",
+     "lines": [232, 248],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ind", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ses", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "resultaten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vrij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bovenaan, onder de broodkruimel: hoe ver je bent (de regel komt uit kern/overzicht.py). Op een groot scherm in een vak, anders één regel.",
+     "explanation": "Draws the progress line at the top (in a panel on big screens) from kern/overzicht.reeks_regel: results so far, points and streak, or the free-practice counter.",
+     "calls": [
+      {"target": "leeravontuur/kern/overzicht.py::reeks_regel", "lines": [238]},
+      {"target": "leeravontuur/terminal/vak.py::teken", "lines": [241]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [244, 247],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["bool", "len", "max"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [168]}
+     ]
+    },
+    {
+     "name": "teken_spiek",
+     "qualname": "BetaOefenaar.teken_spiek",
+     "kind": "method",
+     "lines": [250, 272],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De spiekbrief in een vak, met het stuk van deze vraag in het licht (de rest gedimd). Past ze niet: PgUp, PgDn, het scrollwiel of een klik op PgUp/PgDn in de rand (vak.scroll_rand).",
+     "explanation": "Draws the cheat sheet in its panel, wrapped to the panel width, with the part for this question highlighted and the rest dimmed; registers scroll state and scroll controls when it does not fit.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vak.py::lijst", "lines": [269]},
+      {"target": "leeravontuur/terminal/vak.py::scroll_rand", "lines": [272]},
+      {"target": "leeravontuur/terminal/vak.py::teken", "lines": [267]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kop_op_spiekbrief",
+       "lines": [254],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.kop_op_spiekbrief"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.spiekbrief", "lines": [256], "candidates": [], "candidates_count": 22}
+     ],
+     "external_calls": ["enumerate", "len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [199]}
+     ]
+    },
+    {
+     "name": "teken_maatje",
+     "qualname": "BetaOefenaar.teken_maatje",
+     "kind": "method",
+     "lines": [274, 285],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tip", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gezicht", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ballon", "kind": "positional", "default": null, "annotation": null},
+      {"name": "spring", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De rechterkolom: het maatje, van boven tot onder.",
+     "explanation": "Draws the buddy panel: the pixel avatar (or a text face) with the expression for the situation and the speech balloon.",
+     "calls": [
+      {"target": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [279]},
+      {"target": "leeravontuur/terminal/avatar.py::teken", "lines": [280]},
+      {"target": "leeravontuur/terminal/beta.py::regels", "lines": [284]},
+      {"target": "leeravontuur/terminal/vak.py::teken", "lines": [277]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [282, 285],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.app.avatar_config",
+       "lines": [280],
+       "candidates": ["leeravontuur/terminal/app.py::App.avatar_config"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [201]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "aan",
+   "qualname": "aan",
+   "kind": "function",
+   "lines": [27, 28],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Returns True when the environment variable LEERAVONTUUR_BETA is '1'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["os.environ.get"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::oefenaar_klasse", "lines": [33]}
+   ]
+  },
+  {
+   "name": "oefenaar_klasse",
+   "qualname": "oefenaar_klasse",
+   "kind": "function",
+   "lines": [31, 33],
+   "params": [
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De Oefenaar voor een domein: de beta voor Cijferen als ze aan staat, anders de gewone.",
+   "explanation": "Returns BetaOefenaar for domains in DOMEINEN (Cijferen) when the beta is on, otherwise the normal Oefenaar.",
+   "calls": [
+    {"target": "leeravontuur/terminal/beta.py::aan", "lines": [33]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [381]},
+    {"caller": "leeravontuur/terminal/curriculum/modi.py::_oefenaar", "lines": [21]},
+    {
+     "caller": "tests/test_beta.py::TestKeuze.test_alleen_cijferen_en_alleen_als_ze_aan_staat",
+     "lines": [37, 39, 42]
+    }
+   ]
+  },
+  {
+   "name": "ruim",
+   "qualname": "ruim",
+   "kind": "function",
+   "lines": [36, 38],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De vraag met meer lucht rond + − × : = (ze moet opvallen; groter kan niet in een terminal).",
+   "explanation": "Adds spaces around + − × : = in the question text so that it stands out.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["re.sub"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [194]}
+   ]
+  },
+  {
+   "name": "regels",
+   "qualname": "regels",
+   "kind": "function",
+   "lines": [41, 42],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "breed", "kind": "positional", "default": null, "annotation": null},
+    {"name": "inspring", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Wraps text to a width with an optional hanging indent; always returns at least one (empty) line.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["textwrap.wrap"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [172]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_maatje", "lines": [284]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_tip", "lines": [216, 220, 224, 227]},
+    {"caller": "leeravontuur/terminal/beta.py::hint_regels", "lines": [52]}
+   ]
+  },
+  {
+   "name": "hint_regels",
+   "qualname": "hint_regels",
+   "kind": "function",
+   "lines": [45, 52],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "breed", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een hint met \" · \" ertussen: een nieuwe regel tussen de stukken, niet midden in een stuk.",
+   "explanation": "Wraps a hint that uses ' · ' separators so that the line breaks fall between parts, not inside them.",
+   "calls": [
+    {"target": "leeravontuur/terminal/beta.py::regels", "lines": [52]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [173]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,432 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/eenheden.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 143,
+ "source_sha256": "449e25792ae28bd6ef2c511876fcf80a445c828bbf8c7cc9f0f835c0ec92455d",
+ "purpose": "The Maten (unit conversion) screen: an Oefenaar subclass that adds choosing units yourself, level choice and a result that also counts table mistakes.",
+ "details": "MatenOefenaar reuses everything of Oefenaar (series, free practice, result, repeat bin) and only adds what Maten does differently: oefen() picks the unit set ('zelf' lets the child tick units, 'alles' mixes everything for the school year, otherwise one category from kern/wiskunde/eenheden), asks the level, remembers the exercise for 'Verder waar je was' (app.onthoud_oefening) and plays the form 'vrij', 'reeks' or 'tabel'; hervat() replays the stored choice. The questions are made lazily one at a time (een_voor_een) by E.Maten. A result row counts as a mistake when the answer was wrong or the unit table was wrong (is_fout), and the mistake lines explain both. herhalen() and spiekbrief() are module-level entry points used by the curriculum registry.",
+ "module_docstring": "Eenheden omzetten (Maten): de Oefenaar met de eenhedentabel (terminal/tabel.py).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/curriculum/modi.py"],
+ "module_calls": [
+  {
+   "scope": "<class MatenOefenaar>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["ord"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "MatenOefenaar",
+   "qualname": "MatenOefenaar",
+   "lines": [17, 134],
+   "bases": ["Oefenaar"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The Oefenaar for unit conversion. Created by the curriculum for the Maten topic; its INVOER objects are in terminal/tabel.py.",
+   "attributes": [
+    {
+     "name": "FG_UITLEG",
+     "line": 18,
+     "scope": "class",
+     "value_preview": "'Met F probeer je dezelfde vragen opnieuw, met G gelijkaard…"
+    },
+    {
+     "name": "rapport_toetsen",
+     "line": 19,
+     "scope": "class",
+     "value_preview": "{ord('m'): 'menu', ord('M'): 'menu'}"
+    }
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [388]},
+    {"caller": "leeravontuur/terminal/curriculum/modi.py::_eenheden", "lines": [31]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::herhalen", "lines": [139]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::spiekbrief", "lines": [143]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "MatenOefenaar.__init__",
+     "kind": "method",
+     "lines": [21, 22],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creates the Oefenaar with no topics and the domain label 'Meten'; the breadcrumb already includes the topic name.",
+     "calls": [
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.__init__", "lines": [22]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [388]},
+      {"caller": "leeravontuur/terminal/curriculum/modi.py::_eenheden", "lines": [31]},
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::herhalen", "lines": [139]},
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::spiekbrief", "lines": [143]}
+     ]
+    },
+    {
+     "name": "oefen",
+     "qualname": "MatenOefenaar.oefen",
+     "kind": "method",
+     "lines": [26, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+      {"name": "maat", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Eén eenheden-oefening: vorm 'vrij', 'reeks' of 'tabel'; maat = een soort (E.SOORTEN), 'alles' of 'zelf'. Eerst (bij 'zelf') de eenheden aanduiden, dan het niveau. False als het kind onderweg terugging.",
+     "explanation": "One conversion exercise of form 'vrij', 'reeks' or 'tabel' for a unit kind, 'alles' or 'zelf'. For 'zelf' first lets the child tick the units; then asks the level, stores the choice as the last exercise and plays it. Returns False when the child went back.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.keuze", "lines": [43]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.kies_niveau", "lines": [38]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.kies_zelf", "lines": [30]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.speel_vorm", "lines": [43]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.onthoud_oefening",
+       "lines": [41],
+       "candidates": ["leeravontuur/terminal/app.py::App.onthoud_oefening"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hervat",
+     "qualname": "MatenOefenaar.hervat",
+     "kind": "method",
+     "lines": [46, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "'Verder waar je was': dezelfde oefening als de vorige keer.",
+     "explanation": "'Verder waar je was': replays the stored exercise (same form, units, level and label).",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.keuze", "lines": [48]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.speel_vorm", "lines": [48]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "speel_vorm",
+     "qualname": "MatenOefenaar.speel_vorm",
+     "kind": "method",
+     "lines": [50, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gekozen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "jaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts the right Oefenaar method for the form: free practice, a table series (mode 'tabel') or a normal series, with a Maten topic object for the chosen units.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::Maten.__init__", "lines": [52, 54, 56]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.reeks", "lines": [54, 56]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.vrij_oefenen", "lines": [52]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.hervat", "lines": [48]},
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.oefen", "lines": [43]}
+     ]
+    },
+    {
+     "name": "keuze",
+     "qualname": "MatenOefenaar.keuze",
+     "kind": "method",
+     "lines": [58, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gekozen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "niveau", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Turns the units and level into (units, school year, label); 'alles' becomes all units known in that year.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerjaren.py::leerjaar_voor_niveau", "lines": [59]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheden_voor", "lines": [61]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.hervat", "lines": [48]},
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.oefen", "lines": [43]}
+     ]
+    },
+    {
+     "name": "kies_niveau",
+     "qualname": "MatenOefenaar.kies_niveau",
+     "kind": "method",
+     "lines": [64, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asks the level with the school year named for each level (overrides Oefenaar.kies_niveau: all levels are always possible).",
+     "calls": [
+      {"target": "leeravontuur/kern/leerjaren.py::leerjaar_voor_niveau", "lines": [68]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [70],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.oefen", "lines": [38]}
+     ]
+    },
+    {
+     "name": "kies_zelf",
+     "qualname": "MatenOefenaar.kies_zelf",
+     "kind": "method",
+     "lines": [73, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A screen with a column of units per kind where the child ticks at least two units of the same kind (arrows, Space/x, Tab, clicks, Enter, Esc). Returns the ticked units in table order, or None on Esc.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [81],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [82],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [83, 86, 89, 91],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [79],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [92], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [90],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["any", "enumerate", "isinstance", "len", "list", "max", "min", "ord", "set", "sum", "zip"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.oefen", "lines": [30]}
+     ]
+    },
+    {
+     "name": "is_fout",
+     "qualname": "MatenOefenaar.is_fout",
+     "kind": "staticmethod",
+     "lines": [118, 119],
+     "params": [
+      {"name": "r", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "A result counts as wrong when the answer was wrong or the unit table (digits or comma) was wrong.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "fout_regels",
+     "qualname": "MatenOefenaar.fout_regels",
+     "kind": "staticmethod",
+     "lines": [122, 134],
+     "params": [
+      {"name": "i", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Result lines for one mistake: the conversion, what the child wrote and the right answer (or a note that the answer was right but the table had errors), the diagnosis, the rule and the table explanation.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [124, 128]},
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [129]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [129]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [123]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [132]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [133]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "herhalen",
+   "qualname": "herhalen",
+   "kind": "function",
+   "lines": [137, 139],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+    {"name": "items", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vragen uit de herhaalbak (met nieuwe getallen), op het eigen leerjaar van het kind; altijd als gewone vraag.",
+   "explanation": "Plays repeat-bin items for the conversion skill with new numbers at the child's own school year, as normal questions (not the table).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Maten.__init__", "lines": [139]},
+    {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.__init__", "lines": [139]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "MatenOefenaar(app, kr).herhalen",
+     "lines": [139],
+     "candidates": ["leeravontuur/terminal/app.py::App.herhalen", "leeravontuur/terminal/oefenaar.py::Oefenaar.herhalen"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.herhaalvragen", "lines": [424]}
+   ]
+  },
+  {
+   "name": "spiekbrief",
+   "qualname": "spiekbrief",
+   "kind": "function",
+   "lines": [142, 143],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shows the Maten cheat sheet.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Maten.__init__", "lines": [143]},
+    {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.__init__", "lines": [143]}
+   ],
+   "unresolved_calls": [
+    {"expr": "MatenOefenaar(app, kr).spiekbrief", "lines": [143], "candidates": [], "candidates_count": 22}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/modi.py::_spiek_eenheden", "lines": [44]}
+   ]
+  }
+ ]
+}
