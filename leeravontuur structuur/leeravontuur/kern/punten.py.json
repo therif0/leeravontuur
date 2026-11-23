@@ -6,7 +6,7 @@
  "lines": 62,
  "source_sha256": "3dc1b8af96618e65222808f7ca20186a106c45252a17a1da03f5aed25376dea2",
  "purpose": "The rules for earning points (and bonuses) for an answer.",
- "details": "Points depend on the level relative to the child's own year (5, 10, 15 or 20), halve for 'fouten opnieuw' and for a correct answer after a second chance, are zero for a question already answered correctly before, and carry small bonuses (full table, perfect clad) and costs per hint. Word problems pay double with their own tip cost and bonuses. Streak and series bonuses are added in Sessie, not here. Every point change is logged by Opslag.",
+ "details": "Points depend on the level relative to the child's own year (5, 10, 15 or 20), halve for 'fouten opnieuw' and for a correct answer after a second chance, are zero for a question already answered correctly before, and carry small bonuses (full unit table, correct scratch pad (klad)) and costs per hint. Word problems pay double with their own tip cost and bonuses. Streak and series bonuses are added in Sessie, not here. Every point change is logged by Opslag.",
  "module_docstring": "Punten verdienen (en later uitgeven in de winkel). Elke wijziging staat in het puntenlogboek.",
  "imports": [
   {

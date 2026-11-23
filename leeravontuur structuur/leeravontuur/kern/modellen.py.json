@@ -1,0 +1,1133 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/modellen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 384,
+ "source_sha256": "a1eabed6e922a4184251601867a9390f1926f74413cfc24e14b15496b19a132e",
+ "purpose": "Plain-data descriptions of the visual models and word-problem structures that the terminal draws (number line, grid, long division, fraction bars, clock, ...).",
+ "details": "No drawing happens here (golden rule 1): each dataclass only holds what is needed to draw and check a visual, plus small helper methods for the geometry (for example Figuur.omtrek, Rooster.plaats, Staartdeling.beeld). terminal/modellen.py, terminal/rooster.py, terminal/balk.py and others turn them into characters. The second half holds the data structures of word problems (Stuk, Gegeven, Rekenstap, Oplossing, Verhaal, Speur, Keuze) shared by kern/verhaal.py, kern/klad.py and kern/wiskunde/vraagstukken.py.",
+ "module_docstring": "Visuele modellen als gewone data. De terminal (of later een GUI) tekent ze.",
+ "imports": [
+  {"module": "math", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field", "replace"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 9, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "leeravontuur/kern/klad.py",
+  "leeravontuur/kern/verhaal.py",
+  "leeravontuur/kern/wiskunde/breuken.py",
+  "leeravontuur/kern/wiskunde/cijferen.py",
+  "leeravontuur/kern/wiskunde/getallen.py",
+  "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+  "leeravontuur/kern/wiskunde/klok.py",
+  "leeravontuur/kern/wiskunde/meetkunde.py",
+  "leeravontuur/kern/wiskunde/procenten.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/balk.py",
+  "leeravontuur/terminal/modellen.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "tests/test_breuken.py",
+  "tests/test_cijferen.py",
+  "tests/test_getallen.py",
+  "tests/test_klok.py",
+  "tests/test_meetkunde.py",
+  "tests/test_procenten.py",
+  "tests/test_schermen.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "<class Getallenlijn>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Rooster>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Breukbalk>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Honderdveld>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Figuur>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Kaart>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Oplossing>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Verhaal>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PLAATSEN",
+   "line": 49,
+   "value_type": "Dict",
+   "value_preview": "{7: ('TM', 'tienmiljoenen'), 6: ('M', 'miljoenen'), 5: ('HD', 'honder…",
+   "explanation": "Place-value names by power of ten, from tens of millions down to thousandths: (short, long)."
+  },
+  {
+   "name": "KOLOMLETTERS",
+   "line": 260,
+   "value_type": "Constant",
+   "value_preview": "'ABCDEFGHIJ'",
+   "explanation": "Column letters A-J of a treasure map."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Getallenlijn",
+   "qualname": "Getallenlijn",
+   "lines": [13, 41],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A number line from-to with tick step, optional arrow to read off, markers, unit and thermometer fill; can zoom in.",
+   "attributes": [
+    {"name": "van", "line": 14, "scope": "class", "value_preview": null},
+    {"name": "tot", "line": 15, "scope": "class", "value_preview": null},
+    {"name": "stap", "line": 16, "scope": "class", "value_preview": null},
+    {"name": "label_elke", "line": 17, "scope": "class", "value_preview": "1"},
+    {"name": "pijl", "line": 18, "scope": "class", "value_preview": "None"},
+    {"name": "markeringen", "line": 19, "scope": "class", "value_preview": "field(default_factory=dict)"},
+    {"name": "eenheid", "line": 20, "scope": "class", "value_preview": "''"},
+    {"name": "vulling", "line": 21, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/modellen.py::lijn_rond", "lines": [45]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/getallen.py::GetallenlijnOnderwerp.maak_met",
+     "lines": [289, 314, 322]
+    }
+   ],
+   "methods": [
+    {
+     "name": "streepjes",
+     "qualname": "Getallenlijn.streepjes",
+     "kind": "method",
+     "lines": [23, 28],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All tick values from the start to the end in steps of `stap`.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Getallenlijn.dichtst", "lines": [41]}
+     ]
+    },
+    {
+     "name": "inzoomen",
+     "qualname": "Getallenlijn.inzoomen",
+     "kind": "method",
+     "lines": [30, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rond", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het stuk [rond, rond + stap] wordt de nieuwe lijn, met stappen 10 keer kleiner.",
+     "explanation": "A new line made of the piece from `rond` to `rond + stap`, with steps ten times smaller, no arrow and no markers.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["dataclasses.replace"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kan_inzoomen",
+     "qualname": "Getallenlijn.kan_inzoomen",
+     "kind": "method",
+     "lines": [36, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "minste_stap", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "True when a ten times smaller step is still at least the given minimum step.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "dichtst",
+     "qualname": "Getallenlijn.dichtst",
+     "kind": "method",
+     "lines": [39, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarde", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het streepje dat het dichtst bij waarde ligt.",
+     "explanation": "The tick value closest to a given value.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Getallenlijn.streepjes", "lines": [41]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["abs", "min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Rooster",
+   "qualname": "Rooster",
+   "lines": [55, 117],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Cijferen onder elkaar (+, −, ×). Elk cijfer in een vakje; een komma staat tussen twee vakjes.",
+   "explanation": "Column arithmetic on a grid (+, -, x): the numbers, width, comma handling, the rows to fill in and what each should contain.",
+   "attributes": [
+    {"name": "teken", "line": 62, "scope": "class", "value_preview": null},
+    {"name": "gegeven", "line": 63, "scope": "class", "value_preview": null},
+    {"name": "breedte", "line": 64, "scope": "class", "value_preview": null},
+    {"name": "rechts", "line": 65, "scope": "class", "value_preview": "0"},
+    {
+     "name": "invul",
+     "line": 66,
+     "scope": "class",
+     "value_preview": "field(default_factory=lambda: ['uitkomst'])"
+    },
+    {"name": "verwacht", "line": 67, "scope": "class", "value_preview": "field(default_factory=list)"},
+    {"name": "komma_zelf", "line": 68, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [211]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [120]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.maak_met", "lines": [305]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_aftrekken", "lines": [98]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_vermenigvuldigen", "lines": [104]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_maal_met_komma", "lines": [207]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_namen", "lines": [175, 178]},
+    {"caller": "tests/test_cijferen.py::TestRooster.test_lees", "lines": [125, 130]},
+    {"caller": "tests/test_cijferen.py::TestSchermen.test_komma_zelf_zetten", "lines": [308]},
+    {"caller": "tests/test_cijferen.py::maal_vraag", "lines": [254]},
+    {"caller": "tests/test_cijferen.py::optel_vraag", "lines": [248]}
+   ],
+   "methods": [
+    {
+     "name": "macht",
+     "qualname": "Rooster.macht",
+     "kind": "method",
+     "lines": [70, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De plaats van een kolom als macht van 10 (0 = eenheden, −1 = tienden …).",
+     "explanation": "The place value of a column as a power of ten (0 units, -1 tenths, ...).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Rooster.plaats_naam", "lines": [81]}
+     ]
+    },
+    {
+     "name": "plaatswaarden_kloppen",
+     "qualname": "Rooster.plaatswaarden_kloppen",
+     "kind": "method",
+     "lines": [74, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hebben de kolommen een vaste plaatswaarde? Niet bij × met een kommagetal: daar staan de getallen rechts uitgelijnd, niet op de komma (#18).",
+     "explanation": "Whether columns have a fixed place value; not for multiplication with a decimal number, where numbers are right-aligned.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["any"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Rooster.plaats_naam", "lines": [81]}
+     ]
+    },
+    {
+     "name": "plaats_naam",
+     "qualname": "Rooster.plaats_naam",
+     "kind": "method",
+     "lines": [79, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(kort, lang) voor de plaatswaarde van een kolom, bv. (\"T\", \"tientallen\"), of None (#18).",
+     "explanation": "(short, long) place-value name of a column such as ('T', 'tientallen'), or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Rooster.macht", "lines": [81]},
+      {"target": "leeravontuur/kern/modellen.py::Rooster.plaatswaarden_kloppen", "lines": [81]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "plaats",
+     "qualname": "Rooster.plaats",
+     "kind": "method",
+     "lines": [83, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "({kolom: cijfer}, kolom waarna de komma staat of None) voor een getal in dit rooster.",
+     "explanation": "For a number text, the dict column -> digit placing it in the grid (aligned on the comma, or right-aligned when the child places the comma) and the column after which the comma sits.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vaste_komma",
+     "qualname": "Rooster.vaste_komma",
+     "kind": "method",
+     "lines": [96, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The column after which the fixed comma of the result sits, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Rooster.lees", "lines": [109]}
+     ]
+    },
+    {
+     "name": "lees",
+     "qualname": "Rooster.lees",
+     "kind": "method",
+     "lines": [99, 117],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "cellen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "komma", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Leest een ingevulde rij {kolom: cijfer}. Geeft (tekst, None) of (None, melding).",
+     "explanation": "Reads a filled row {column: digit} into number text; returns (text, None) or (None, message) for an empty row, a gap between digits, or a missing units digit.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Rooster.vaste_komma", "lines": [109]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Stap",
+   "qualname": "Stap",
+   "lines": [121, 128],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Eén stap van een staartdeling: deel, maal, min of neer.",
+   "explanation": "One step of a long division: divide, multiply, subtract or bring down, with its question, answer, hint and position.",
+   "attributes": [
+    {"name": "soort", "line": 123, "scope": "class", "value_preview": null},
+    {"name": "vraag", "line": 124, "scope": "class", "value_preview": null},
+    {"name": "antwoord", "line": 125, "scope": "class", "value_preview": null},
+    {"name": "tip", "line": 126, "scope": "class", "value_preview": null},
+    {"name": "plaats", "line": 127, "scope": "class", "value_preview": null},
+    {"name": "komma_ervoor", "line": 128, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::staart_stappen", "lines": [409, 412, 414, 420]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Staartdeling",
+   "qualname": "Staartdeling",
+   "lines": [132, 181],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A long division as data: dividend text, divisor, steps and remainder, with the logic to draw it after a number of steps.",
+   "attributes": [
+    {"name": "deeltal", "line": 133, "scope": "class", "value_preview": null},
+    {"name": "deler", "line": 134, "scope": "class", "value_preview": null},
+    {"name": "stappen", "line": 135, "scope": "class", "value_preview": null},
+    {"name": "rest", "line": 136, "scope": "class", "value_preview": "0"},
+    {"name": "MARGE", "line": 145, "scope": "class", "value_preview": "2"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.maak_met", "lines": [476]},
+    {"caller": "tests/test_cijferen.py::staart_vraag", "lines": [241]}
+   ],
+   "methods": [
+    {
+     "name": "cijfers",
+     "qualname": "Staartdeling.cijfers",
+     "kind": "method",
+     "lines": [138, 139],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The digits of the dividend without the comma.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Staartdeling.beeld", "lines": [154, 155]}
+     ]
+    },
+    {
+     "name": "komma_index",
+     "qualname": "Staartdeling.komma_index",
+     "kind": "method",
+     "lines": [141, 143],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Aantal cijfers voor de komma.",
+     "explanation": "How many digits come before the comma.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Staartdeling.beeld", "lines": [153]}
+     ]
+    },
+    {
+     "name": "kolom",
+     "qualname": "Staartdeling.kolom",
+     "kind": "method",
+     "lines": [147, 149],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "i", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tekenkolom van cijfer i van het deeltal.",
+     "explanation": "The character column of digit i of the dividend (margin plus two per digit).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Staartdeling.beeld", "lines": [154, 156, 173]},
+      {"caller": "leeravontuur/kern/modellen.py::Staartdeling.beeld.rechts_op", "lines": [161, 163]}
+     ]
+    },
+    {
+     "name": "beeld",
+     "qualname": "Staartdeling.beeld",
+     "kind": "method",
+     "lines": [151, 181],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gedaan", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na `gedaan` stappen: (regels links als tekst, quotiënt als tekst).",
+     "explanation": "After a number of steps done, the lines of the long division on the left as text plus the quotient so far; handles the 'deel' (divide), 'maal' (multiply), 'min' (subtract, with a line) and 'neer' (bring down) steps.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling.beeld.rechts_op", "lines": [170, 174, 177, 179]},
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling.cijfers", "lines": [154, 155]},
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling.kolom", "lines": [154, 156, 173]},
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling.komma_index", "lines": [153]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len", "max", "min", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rechts_op",
+     "qualname": "Staartdeling.beeld.rechts_op",
+     "kind": "nested",
+     "lines": [159, 164],
+     "params": [
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "voor", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Places a number right-aligned at digit position p of a line, optionally with a minus sign in front.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling.kolom", "lines": [161, 163]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len", "reversed", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Staartdeling.beeld", "lines": [170, 174, 177, 179]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Breukbalk",
+   "qualname": "Breukbalk",
+   "lines": [185, 205],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een blok verdeeld in `noemer` gelijke stukken; `gearceerd` = de nummers van de gearceerde stukken.",
+   "explanation": "A block divided into equal pieces with a set of shaded pieces.",
+   "attributes": [
+    {"name": "noemer", "line": 187, "scope": "class", "value_preview": null},
+    {"name": "gearceerd", "line": 188, "scope": "class", "value_preview": "field(default_factory=set)"},
+    {"name": "label", "line": 189, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/modellen.py::Breukbalk.vereenvoudig", "lines": [205]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [206]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Herkennen.maak_met", "lines": [143, 148]},
+    {"caller": "leeravontuur/terminal/balk.py::BalkInvoer.toets", "lines": [85]},
+    {"caller": "tests/test_breuken.py::arceer_vraag", "lines": [152]},
+    {"caller": "tests/test_breuken.py::toon_vraag", "lines": [158]}
+   ],
+   "methods": [
+    {
+     "name": "van",
+     "qualname": "Breukbalk.van",
+     "kind": "classmethod",
+     "lines": [192, 193],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null},
+      {"name": "teller", "kind": "positional", "default": null, "annotation": null},
+      {"name": "noemer", "kind": "positional", "default": null, "annotation": null},
+      {"name": "label", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "",
+     "explanation": "A bar with the first `teller` of `noemer` pieces shaded.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "cls", "lines": [193], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["range", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [188]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [290]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [76]},
+      {"caller": "tests/test_breuken.py::TestModel.test_vereenvoudig", "lines": [139, 141]}
+     ]
+    },
+    {
+     "name": "teller",
+     "qualname": "Breukbalk.teller",
+     "kind": "property",
+     "lines": [196, 197],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Number of shaded pieces.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vereenvoudig",
+     "qualname": "Breukbalk.vereenvoudig",
+     "kind": "method",
+     "lines": [199, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Voeg telkens f stukken samen (f = kleinste deler van teller en noemer). None als het niet kan.",
+     "explanation": "Merges pieces in groups of the smallest common factor of numerator and denominator into a simpler bar, or None if already simplest.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [205]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["math.gcd", "next", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Breukbalken",
+   "qualname": "Breukbalken",
+   "lines": [209, 211],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Balken onder elkaar, even breed (vergelijken, gelijknamig maken).",
+   "explanation": "Several fraction bars of equal width under each other (comparing, common denominators).",
+   "attributes": [
+    {"name": "balken", "line": 211, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [189]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [290]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [76]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Groepjes",
+   "qualname": "Groepjes",
+   "lines": [215, 219],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een breuk van een getal: `totaal` bolletjes in `groepen` groepjes; de eerste `gekleurd` groepjes gekleurd.",
+   "explanation": "A fraction of a number as dots in groups, the first groups coloured.",
+   "attributes": [
+    {"name": "totaal", "line": 217, "scope": "class", "value_preview": null},
+    {"name": "groepen", "line": 218, "scope": "class", "value_preview": null},
+    {"name": "gekleurd", "line": 219, "scope": "class", "value_preview": "0"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.maak_met", "lines": [467]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Honderdveld",
+   "qualname": "Honderdveld",
+   "lines": [223, 225],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "10 × 10 vakjes; `gekleurd` = de nummers 0–99 (rij × 10 + kolom).",
+   "explanation": "A 10 x 10 field with a set of coloured squares (numbers 0-99).",
+   "attributes": [
+    {"name": "gekleurd", "line": 225, "scope": "class", "value_preview": "field(default_factory=set)"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Veld.maak_met", "lines": [120, 125, 127]},
+    {"caller": "tests/test_procenten.py::kleur_vraag", "lines": [112]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Procentstrook",
+   "qualname": "Procentstrook",
+   "lines": [229, 234],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een strook met 0 % … 100 % bovenaan en 0 … totaal onderaan; `procent` wordt aangeduid.",
+   "explanation": "A strip with 0-100 percent above and 0-total below; a percentage is pointed out.",
+   "attributes": [
+    {"name": "totaal", "line": 231, "scope": "class", "value_preview": null},
+    {"name": "procent", "line": 232, "scope": "class", "value_preview": null},
+    {"name": "eenheid", "line": 233, "scope": "class", "value_preview": "''"},
+    {"name": "toon_deel", "line": 234, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.maak_met", "lines": [307]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.maak_met", "lines": [237, 239]},
+    {"caller": "tests/test_procenten.py::TestSchermen.test_procent_van_met_strook", "lines": [147]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Figuur",
+   "qualname": "Figuur",
+   "lines": [238, 257],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een figuur op een rooster van vakjes van 1 cm². `vakjes` = {(rij, kolom)} helemaal gekleurd, `halve` = {(rij, kolom)} half gekleurd (de schuine kant van een driehoek, linksonder gekleurd).",
+   "explanation": "A figure on a 1 cm2 square grid with full and half squares; computes area, perimeter and inner edges.",
+   "attributes": [
+    {"name": "rijen", "line": 241, "scope": "class", "value_preview": null},
+    {"name": "kolommen", "line": 242, "scope": "class", "value_preview": null},
+    {"name": "vakjes", "line": 243, "scope": "class", "value_preview": "field(default_factory=set)"},
+    {"name": "halve", "line": 244, "scope": "class", "value_preview": "field(default_factory=set)"},
+    {"name": "rand", "line": 245, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Rooster.maak_met", "lines": [90]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::maak_figuur", "lines": [41, 59]},
+    {"caller": "tests/test_meetkunde.py::TestDiagnose.test_rooster", "lines": [115]},
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_figuur", "lines": [24, 28]},
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_rand_ligt_op_de_omtrek", "lines": [58]},
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_rooster_vakjes_zijn_vierkant", "lines": [44]},
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_figuur_op_het_scherm", "lines": [199, 201]}
+   ],
+   "methods": [
+    {
+     "name": "oppervlakte",
+     "qualname": "Figuur.oppervlakte",
+     "kind": "method",
+     "lines": [247, 248],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Area in cm2: full squares plus half of the half squares.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["decimal.Decimal", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "omtrek",
+     "qualname": "Figuur.omtrek",
+     "kind": "method",
+     "lines": [250, 253],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het aantal randjes van 1 cm tussen een gekleurd en een wit vakje (alleen voor figuren zonder halve).",
+     "explanation": "Perimeter: number of unit edges between a coloured and a white square (only for figures without half squares).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["sum"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/modellen.py::Figuur.binnenranden", "lines": [257]}
+     ]
+    },
+    {
+     "name": "binnenranden",
+     "qualname": "Figuur.binnenranden",
+     "kind": "method",
+     "lines": [255, 257],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De randjes tussen twee gekleurde vakjes (die tellen niet mee bij de omtrek).",
+     "explanation": "Number of edges between two coloured squares (these do not count for the perimeter).",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur.omtrek", "lines": [257]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Kaart",
+   "qualname": "Kaart",
+   "lines": [264, 283],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een schatkaart: een rooster met kolommen A, B, C … en rijen 1, 2, 3 … (rij 1 onderaan), of een assenstelsel van −n tot n (`assen`). `punten` = {(x, y): teken of (teken, rol)}; x en y zijn kolom- en rijnummers (vanaf 1) of coördinaten.",
+   "explanation": "A treasure map grid (columns A-J, rows 1-10) or an axes system, with points to show.",
+   "attributes": [
+    {"name": "kolommen", "line": 268, "scope": "class", "value_preview": "10"},
+    {"name": "rijen", "line": 269, "scope": "class", "value_preview": "10"},
+    {"name": "assen", "line": 270, "scope": "class", "value_preview": "0"},
+    {"name": "punten", "line": 271, "scope": "class", "value_preview": "field(default_factory=dict)"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.maak_kaart", "lines": [410, 411]},
+    {"caller": "tests/test_meetkunde.py::TestDiagnose.test_coordinaten_en_schaal", "lines": [148, 151]},
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_kaart", "lines": [32, 37]},
+    {"caller": "tests/test_meetkunde.py::kruis_vraag", "lines": [166]}
+   ],
+   "methods": [
+    {
+     "name": "xs",
+     "qualname": "Kaart.xs",
+     "kind": "method",
+     "lines": [273, 274],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The x coordinates: -n to n for an axes system, else 1 to the number of columns.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ys",
+     "qualname": "Kaart.ys",
+     "kind": "method",
+     "lines": [276, 277],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The y coordinates, like xs.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "naam",
+     "qualname": "Kaart.naam",
+     "kind": "method",
+     "lines": [279, 283],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "C4 op een schatkaart, (3, −2) in een assenstelsel.",
+     "explanation": "The name of a point: 'C4' on a treasure map, '(3, -2)' on an axes system.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::fmt_geheel", "lines": [282]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Hoek",
+   "qualname": "Hoek",
+   "lines": [291, 293],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een hoek van `graden` (0–180): het ene been naar rechts, het andere draait tegen de klok in.",
+   "explanation": "An angle of 0-180 degrees to name or measure.",
+   "attributes": [
+    {"name": "graden", "line": 293, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Hoeken.maak_met", "lines": [325]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Stuk",
+   "qualname": "Stuk",
+   "lines": [299, 303],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een stukje van een zin in een vraagstuk: tekst, een aanduidbaar gegeven of een sleutelwoord.",
+   "explanation": "A piece of a word-problem sentence: text, optionally the id of a markable datum, and a key-word flag.",
+   "attributes": [
+    {"name": "tekst", "line": 301, "scope": "class", "value_preview": null},
+    {"name": "gegeven", "line": 302, "scope": "class", "value_preview": "None"},
+    {"name": "sleutel", "line": 303, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::hoofdletter", "lines": [97]},
+    {"caller": "leeravontuur/kern/verhaal.py::vul", "lines": [54, 58, 64, 65, 68, 71, 75, 77]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Gegeven",
+   "qualname": "Gegeven",
+   "lines": [307, 313],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A datum in a word problem: id, value, text as written in the story, what it stands for, unit, and whether it is needed.",
+   "attributes": [
+    {"name": "id", "line": 308, "scope": "class", "value_preview": null},
+    {"name": "waarde", "line": 309, "scope": "class", "value_preview": null},
+    {"name": "tekst", "line": 310, "scope": "class", "value_preview": null},
+    {"name": "naam", "line": 311, "scope": "class", "value_preview": null},
+    {"name": "eenheid", "line": 312, "scope": "class", "value_preview": "''"},
+    {"name": "nodig", "line": 313, "scope": "class", "value_preview": "True"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg", "lines": [137]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [154]},
+    {"caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_meervoud_en_hoofdletters", "lines": [87]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Rekenstap",
+   "qualname": "Rekenstap",
+   "lines": [317, 327],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Eén stap van de oplossing. De operanden zijn ids van gegevens of eerdere stappen, of vaste getallen.",
+   "explanation": "One step of the solution of a word problem: operation, operands (ids or constants), result id and value, name, a hint without numbers, an explanation with numbers and the line as written in the klad.",
+   "attributes": [
+    {"name": "op", "line": 319, "scope": "class", "value_preview": null},
+    {"name": "operanden", "line": 320, "scope": "class", "value_preview": null},
+    {"name": "id", "line": 321, "scope": "class", "value_preview": null},
+    {"name": "uitkomst", "line": 322, "scope": "class", "value_preview": null},
+    {"name": "naam", "line": 323, "scope": "class", "value_preview": null},
+    {"name": "hint", "line": 324, "scope": "class", "value_preview": null},
+    {"name": "waarom", "line": 325, "scope": "class", "value_preview": null},
+    {"name": "reken", "line": 326, "scope": "class", "value_preview": "''"},
+    {"name": "eenheid", "line": 327, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::stap", "lines": [495]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [152]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Oplossing",
+   "qualname": "Oplossing",
+   "lines": [331, 335],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Hoe een oefening opgelost kan worden, in klad-regels: de stappen (Rekenstap, met `reken` = de regel zoals het kind ze typt) en de bekende foute paden (code, tekst, uitkomst, waarden, handtekeningen). Zie kern/klad.py.",
+   "explanation": "How an exercise can be solved as scratch-pad lines: the steps plus the known wrong paths.",
+   "attributes": [
+    {"name": "stappen", "line": 334, "scope": "class", "value_preview": null},
+    {"name": "paden", "line": 335, "scope": "class", "value_preview": "field(default_factory=list)"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::oplossing_van", "lines": [502]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [510]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Verhaal",
+   "qualname": "Verhaal",
+   "lines": [339, 350],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een vraagstuk als data: zinnen (lijsten van Stukken; de laatste is de vraag), gegevens en de oplossing.",
+   "explanation": "A word problem as data: sentences, data, solution steps, what is asked, answer options, the answer sentence around the box, unit, plausibility range, wrong paths and the answer kind (number, clock time, duration).",
+   "attributes": [
+    {"name": "zinnen", "line": 341, "scope": "class", "value_preview": null},
+    {"name": "gegevens", "line": 342, "scope": "class", "value_preview": null},
+    {"name": "stappen", "line": 343, "scope": "class", "value_preview": null},
+    {"name": "gevraagd", "line": 344, "scope": "class", "value_preview": null},
+    {"name": "opties", "line": 345, "scope": "class", "value_preview": null},
+    {"name": "antwoordzin", "line": 346, "scope": "class", "value_preview": null},
+    {"name": "eenheid", "line": 347, "scope": "class", "value_preview": "''"},
+    {"name": "controle", "line": 348, "scope": "class", "value_preview": "None"},
+    {"name": "paden", "line": 349, "scope": "class", "value_preview": "field(default_factory=list)"},
+    {"name": "soort", "line": 350, "scope": "class", "value_preview": "'getal'"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [992]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Speur",
+   "qualname": "Speur",
+   "lines": [354, 362],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "De Speurneus: het klad van een ander kind bij een vraagstuk, met één fout (of geen).",
+   "explanation": "The 'Speurneus' exercise: another child's scratch pad for a word problem, with one wrong line (or none), three possible reasons and the explanation.",
+   "attributes": [
+    {"name": "verhaal", "line": 356, "scope": "class", "value_preview": null},
+    {"name": "wie", "line": 357, "scope": "class", "value_preview": null},
+    {"name": "regels", "line": 358, "scope": "class", "value_preview": null},
+    {"name": "fout", "line": 359, "scope": "class", "value_preview": null},
+    {"name": "redenen", "line": 360, "scope": "class", "value_preview": null},
+    {"name": "reden", "line": 361, "scope": "class", "value_preview": null},
+    {"name": "uitleg", "line": 362, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.maak_met", "lines": [1228]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Keuze",
+   "qualname": "Keuze",
+   "lines": [366, 372],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een vraag bij een vraagstuk met 2 of 3 keuzes (schatten, kan dat kloppen?).",
+   "explanation": "A multiple-choice question about a word problem (estimating, can this be right).",
+   "attributes": [
+    {"name": "verhaal", "line": 368, "scope": "class", "value_preview": null},
+    {"name": "vraag", "line": 369, "scope": "class", "value_preview": null},
+    {"name": "opties", "line": 370, "scope": "class", "value_preview": null},
+    {"name": "juist", "line": 371, "scope": "class", "value_preview": null},
+    {"name": "uitleg", "line": 372, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten.maak_met", "lines": [1363]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Wijzerklok",
+   "qualname": "Wijzerklok",
+   "lines": [376, 384],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een wijzerklok die `minuten` (na middernacht) aanwijst. De terminal tekent ze rond, met 2 wijzers.",
+   "explanation": "A clock showing a time (minutes after midnight), with or without hands.",
+   "attributes": [
+    {"name": "minuten", "line": 378, "scope": "class", "value_preview": null},
+    {"name": "wijzers", "line": 379, "scope": "class", "value_preview": "True"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [156, 165, 173, 181, 192]},
+    {"caller": "leeravontuur/terminal/balk.py::KlokInvoer.teken", "lines": [256]},
+    {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [113]},
+    {"caller": "tests/test_klok.py::TestTekenen.test_wijzers_op_de_juiste_plek", "lines": [98, 99]},
+    {"caller": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [461]}
+   ],
+   "methods": [
+    {
+     "name": "hoeken",
+     "qualname": "Wijzerklok.hoeken",
+     "kind": "method",
+     "lines": [381, 384],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(hoek uurwijzer, hoek minutenwijzer) in graden, met de klok mee vanaf 12.",
+     "explanation": "(hour hand angle, minute hand angle) in degrees clockwise from 12, for the stored minutes after midnight (modulo 12 hours).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "lijn_rond",
+   "qualname": "lijn_rond",
+   "kind": "function",
+   "lines": [44, 45],
+   "params": [
+    {"name": "van", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tot", "kind": "positional", "default": null, "annotation": null},
+    {"name": "stap", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kw", "kind": "kwarg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a Getallenlijn from plain numbers (converted to Decimal) and extra keyword options.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Getallenlijn", "lines": [45]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_getallen.py::TestDiagnose.test_getallenlijn", "lines": [130]},
+    {"caller": "tests/test_getallen.py::TestModel.test_inzoomen", "lines": [138]},
+    {"caller": "tests/test_getallen.py::TestModel.test_posities_passen_in_80", "lines": [148]},
+    {"caller": "tests/test_getallen.py::aanduid_vraag", "lines": [155]}
+   ]
+  },
+  {
+   "name": "fmt_geheel",
+   "qualname": "fmt_geheel",
+   "kind": "function",
+   "lines": [286, 287],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "An integer as text with the minus sign U+2212 for negatives.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/modellen.py::Kaart.naam", "lines": [282]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.uitleg", "lines": [434, 435]}
+   ]
+  }
+ ]
+}

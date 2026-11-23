@@ -1,0 +1,1764 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/opslag.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 648,
+ "source_sha256": "4b12abdf028f4c7ff4fc8600941bdc14be4cbc877647e67de4c6280e9d5ce944",
+ "purpose": "The database layer (SQLite): children, settings, sessions, answers, points, avatar, shop, repeat bin, parent secrets, backups and migrations.",
+ "details": "Everything that is stored goes through the Opslag class (golden rule 4). Answers are only ever added, never changed (a database trigger aborts any UPDATE on them), every record has a UUID, and the schema grows only by appending a script to MIGRATIES (currently 5 versions; a copy of the database is made before any migration). Reading uses _lees/_een (a failure gives an empty or default result and sets `probleem`), writing uses _schrijf (a failure rolls back and sets `probleem`), so the child never sees a crash or lost work. A daily backup goes to the 'reserve' folder (7 kept) and is refreshed on closing; a corrupt file is set aside and the newest good backup restored; if even opening fails the program runs on an in-memory database and warns that progress is not saved.",
+ "module_docstring": "De databank (SQLite): kinderen, instellingen per kind, sessies en antwoorden.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "shutil", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "sqlite3", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "uuid", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["asdict", "dataclass", "replace"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 17, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["instellingen"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 21,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.paden",
+   "names": ["data_map"],
+   "alias": null,
+   "line": 22,
+   "resolves_to": ["leeravontuur/kern/paden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/__main__.py",
+  "tests/test_avatar.py",
+  "tests/test_herhaling.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_opslag.py",
+  "tests/test_rapporten.py",
+  "tests/test_reeks.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_winkel.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 24,
+   "value_type": "Constant",
+   "value_preview": "'leeravontuur.db'",
+   "explanation": "Database file name."
+  },
+  {
+   "name": "RESERVE",
+   "line": 25,
+   "value_type": "Constant",
+   "value_preview": "'reserve'",
+   "explanation": "Name of the backup folder."
+  },
+  {
+   "name": "DAGKOPIEEN",
+   "line": 26,
+   "value_type": "Constant",
+   "value_preview": "7",
+   "explanation": "Number of daily backups kept."
+  },
+  {
+   "name": "MIGRATIEKOPIEEN",
+   "line": 27,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "Number of pre-migration copies kept."
+  },
+  {
+   "name": "MIGRATIES",
+   "line": 29,
+   "value_type": "List",
+   "value_preview": "[\"\\n CREATE TABLE algemeen (\\n sleutel TEXT PRIMARY KEY,\\n waarde TEX…",
+   "explanation": "The SQL scripts that build the schema, version 1 to 5 (appended to, never edited)."
+  },
+  {
+   "name": "_IN_KINDEREN",
+   "line": 145,
+   "value_type": "Tuple",
+   "value_preview": "('naam', 'leerjaar')",
+   "explanation": "Settings fields stored in the children table instead of the settings JSON."
+  }
+ ],
+ "registries": [
+  {
+   "name": "MIGRATIES",
+   "line": 29,
+   "description": "Ordered list of SQL scripts; _migreer runs those after the stored schema version. v1 children, settings, sessions, answers (with the append-only trigger); v2 child PIN and expected answer; v3 repeat bin; v4 points log and avatar; v5 shop ownership and saved outfits."
+  }
+ ],
+ "classes": [
+  {
+   "name": "OpslagFout",
+   "qualname": "OpslagFout",
+   "lines": [148, 149],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Error for a database that cannot be used (for example from a newer program version, or an unknown child).",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag._migreer", "lines": [309]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.instellingen_van", "lines": [396]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Kind",
+   "qualname": "Kind",
+   "lines": [153, 156],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "Frozen dataclass with a child's id, name and school year.",
+   "attributes": [
+    {"name": "id", "line": 154, "scope": "class", "value_preview": null},
+    {"name": "naam", "line": 155, "scope": "class", "value_preview": null},
+    {"name": "leerjaar", "line": 156, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.kind", "lines": [377]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.kinderen", "lines": [373]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [381]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Opslag",
+   "qualname": "Opslag",
+   "lines": [201, 648],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The single gateway to the SQLite database; see the file description for the safety rules it follows.",
+   "attributes": [
+    {"name": "pad", "line": 203, "scope": "instance", "value_preview": null},
+    {"name": "probleem", "line": 204, "scope": "instance", "value_preview": null},
+    {"name": "con", "line": 205, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_avatar.py::TestPunten.test_sessie_en_op_rij", "lines": [82]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.setUp", "lines": [22]},
+    {"caller": "tests/test_opslag.py::TestAntwoorden.setUp", "lines": [59]},
+    {"caller": "tests/test_opslag.py::TestKinderen.setUp", "lines": [34]},
+    {"caller": "tests/test_opslag.py::TestSchema.test_migraties", "lines": [22, 26]},
+    {"caller": "tests/test_rapporten.py::TestIndeling.setUp", "lines": [204]},
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_status_zonder_snelrekenen_geen_extra_regel",
+     "lines": [302]
+    },
+    {"caller": "tests/test_rapporten.py::TestLogboek.setUp", "lines": [126]},
+    {"caller": "tests/test_rapporten.py::TestRapport.setUp", "lines": [46]},
+    {"caller": "tests/test_reeks.py::Basis.setUp", "lines": [28]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_bewaard_en_gecontroleerd", "lines": [202]},
+    {"caller": "tests/test_stabiliteit.py::TestDatabank.test_kopie_voor_migratie", "lines": [150]},
+    {"caller": "tests/test_winkel.py::TestKopen.setUp", "lines": [54]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Opslag.__init__",
+     "kind": "method",
+     "lines": [202, 212],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "pad", "kind": "positional", "default": "':memory:'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Opens the SQLite file (or memory), turns on foreign keys, row access by name, and migrates the schema; closes the connection again when that fails.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._migreer", "lines": [209]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".close", ".execute", "sqlite3.connect", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_avatar.py::TestPunten.test_sessie_en_op_rij", "lines": [82]},
+      {"caller": "tests/test_herhaling.py::TestHerhaalbak.setUp", "lines": [22]},
+      {"caller": "tests/test_opslag.py::TestAntwoorden.setUp", "lines": [59]},
+      {"caller": "tests/test_opslag.py::TestKinderen.setUp", "lines": [34]},
+      {"caller": "tests/test_opslag.py::TestSchema.test_migraties", "lines": [22, 26]},
+      {"caller": "tests/test_rapporten.py::TestIndeling.setUp", "lines": [204]},
+      {
+       "caller": "tests/test_rapporten.py::TestIndeling.test_status_zonder_snelrekenen_geen_extra_regel",
+       "lines": [302]
+      },
+      {"caller": "tests/test_rapporten.py::TestLogboek.setUp", "lines": [126]},
+      {"caller": "tests/test_rapporten.py::TestRapport.setUp", "lines": [46]},
+      {"caller": "tests/test_reeks.py::Basis.setUp", "lines": [28]},
+      {"caller": "tests/test_reeks.py::TestWieKiest.test_bewaard_en_gecontroleerd", "lines": [202]},
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_kopie_voor_migratie", "lines": [150]},
+      {"caller": "tests/test_winkel.py::TestKopen.setUp", "lines": [54]}
+     ]
+    },
+    {
+     "name": "open",
+     "qualname": "Opslag.open",
+     "kind": "classmethod",
+     "lines": [215, 236],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null},
+      {"name": "pad", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "Opent de databank in de datamap en maakt (één keer per dag) een reservekopie.",
+     "explanation": "Opens the database in the data folder, creating the folder; restores from backup when the file is corrupt; falls back to memory with a warning when opening is impossible; makes today's backup and imports the legacy settings JSON.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::pad", "lines": [235]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._herstel", "lines": [229]},
+      {"target": "leeravontuur/kern/opslag.py::_beschadigd", "lines": [227]},
+      {"target": "leeravontuur/kern/paden.py::data_map", "lines": [220]}
+     ],
+     "unresolved_calls": [
+      {"expr": "cls", "lines": [224, 231], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "opslag.controleer",
+       "lines": [225],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.controleer",
+        "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controleer"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "opslag.dagkopie",
+       "lines": [234],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.dagkopie"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "opslag.zet_om_uit_json",
+       "lines": [235],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_om_uit_json"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".mkdir", "pathlib.Path"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [178]},
+      {"caller": "leeravontuur/__main__.py::main", "lines": [161]},
+      {"caller": "leeravontuur/__main__.py::wachtwoord_vergeten", "lines": [69]},
+      {"caller": "tests/test_menu_architecture.py::TestModiStarten.setUp", "lines": [137]},
+      {"caller": "tests/test_opslag.py::TestOpenen.test_onbruikbaar_bestand_gaat_opzij", "lines": [163]},
+      {"caller": "tests/test_opslag.py::TestOpenen.test_overzetten_uit_fase_1", "lines": [132, 141]},
+      {"caller": "tests/test_opslag.py::TestOpenen.test_terugval_naar_geheugen", "lines": [153]},
+      {"caller": "tests/test_schermen.py::Basis.opslag", "lines": [100]},
+      {
+       "caller": "tests/test_stabiliteit.py::TestDatabank.test_beschadigd_bestand_krijgt_de_reservekopie",
+       "lines": [132, 136]
+      },
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_beschadigde_json", "lines": [174]},
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_dagkopie_en_opruimen", "lines": [125]},
+      {
+       "caller": "tests/test_stabiliteit.py::TestDatabank.test_vergrendelde_databank_crasht_niet",
+       "lines": [156]
+      }
+     ]
+    },
+    {
+     "name": "controleer",
+     "qualname": "Opslag.controleer",
+     "kind": "method",
+     "lines": [238, 243],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Geeft een sqlite3.DatabaseError als het bestand beschadigd is.",
+     "explanation": "Runs quick_check and raises a DatabaseError (after closing) if the database is damaged.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".close", ".execute", ".fetchone", "sqlite3.DatabaseError"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "reserve_map",
+     "qualname": "Opslag.reserve_map",
+     "kind": "method",
+     "lines": [247, 248],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The 'reserve' folder next to the database.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["pathlib.Path"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag._kopie", "lines": [255]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag._migreer", "lines": [312]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.dagkopie", "lines": [271, 273]}
+     ]
+    },
+    {
+     "name": "_kopie",
+     "qualname": "Opslag._kopie",
+     "kind": "method",
+     "lines": [250, 265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een veilige kopie (sqlite-backup, ook terwijl de databank open is). Mag nooit crashen.",
+     "explanation": "Makes a safe copy through SQLite's backup API (also while open) with the given file name; returns the path or None; never raises.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.reserve_map", "lines": [255]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".backup", ".close", ".mkdir", "sqlite3.connect", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag._migreer", "lines": [311]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.dagkopie", "lines": [272]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.sluit", "lines": [355]}
+     ]
+    },
+    {
+     "name": "dagkopie",
+     "qualname": "Opslag.dagkopie",
+     "kind": "method",
+     "lines": [267, 273],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Eén reservekopie per dag; de oudste verdwijnen (er blijven er DAGKOPIEEN).",
+     "explanation": "Makes today's backup if missing and prunes old daily backups to the newest 7.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [271, 272]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._kopie", "lines": [272]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.reserve_map", "lines": [271, 273]},
+      {"target": "leeravontuur/kern/opslag.py::_ruim_op", "lines": [273]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".exists"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_herstel",
+     "qualname": "Opslag._herstel",
+     "kind": "classmethod",
+     "lines": [276, 293],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null},
+      {"name": "pad", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "Het bestand is beschadigd: zet het opzij en zet de nieuwste goede reservekopie terug.",
+     "explanation": "For a corrupt file: moves it aside with a timestamp, restores the newest good backup (or starts fresh when none is good) and sets a message in `probleem`.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::nu", "lines": [278, 286]},
+      {"target": "leeravontuur/kern/opslag.py::_goed", "lines": [283]}
+     ],
+     "unresolved_calls": [
+      {"expr": "cls", "lines": [285, 290], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".fromtimestamp", ".glob", ".stat", ".strftime", ".with_name", "shutil.copy2", "sorted"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [229]}
+     ]
+    },
+    {
+     "name": "versie",
+     "qualname": "Opslag.versie",
+     "kind": "property",
+     "lines": [298, 299],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The current schema version number from the database.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".execute", ".fetchone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_migreer",
+     "qualname": "Opslag._migreer",
+     "kind": "method",
+     "lines": [301, 321],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Brings the schema up to date: creates the version table, refuses a database from a newer program, copies the database first when migrating an existing one, and runs each missing migration script in a transaction with rollback on error.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._kopie", "lines": [311]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.reserve_map", "lines": [312]},
+      {"target": "leeravontuur/kern/opslag.py::OpslagFout", "lines": [309]},
+      {"target": "leeravontuur/kern/opslag.py::_ruim_op", "lines": [312]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".commit", ".execute", ".executescript", ".fetchone", "len", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [209]}
+     ]
+    },
+    {
+     "name": "_schrijf",
+     "qualname": "Opslag._schrijf",
+     "kind": "method",
+     "lines": [323, 335],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sql", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarden", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een schrijfopdracht die het programma nooit laat crashen.",
+     "explanation": "Executes a write statement and commits; on an integrity error rolls back and re-raises, on other SQLite errors rolls back, sets `probleem` and returns False.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".commit", ".execute", ".rollback"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord", "lines": [443]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_avatar", "lines": [538]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen", "lines": [409, 411]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_outfit", "lines": [576]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaal_weg", "lines": [594]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaal_zet", "lines": [586]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.lever", "lines": [562]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [383, 385]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_bij", "lines": [521]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.sluit_sessie", "lines": [438]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.start_sessie", "lines": [433]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.verwijder_kind", "lines": [642, 644]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.verwijder_outfit", "lines": [580]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_algemeen", "lines": [366]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_bezit", "lines": [554]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_ouder_pin", "lines": [629]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord", "lines": [619]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_pincode", "lines": [638]}
+     ]
+    },
+    {
+     "name": "_lees",
+     "qualname": "Opslag._lees",
+     "kind": "method",
+     "lines": [337, 344],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sql", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarden", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De rijen van een leesopdracht. Lukt lezen niet (bv. de databank is vergrendeld of beschadigd), dan een lege lijst en een melding: het programma mag daardoor nooit crashen.",
+     "explanation": "Executes a read and returns all rows; on an SQLite error sets `probleem` and returns an empty list.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".execute", ".fetchall"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [347]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.antwoorden", "lines": [462, 465]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bezit", "lines": [545]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.gezien_sleutels", "lines": [492]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaalbak", "lines": [600, 603]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.kinderen", "lines": [372]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.laatste_antwoorden", "lines": [471]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.outfits", "lines": [572]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_log", "lines": [529]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.recente_antwoorden", "lines": [498]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.recente_antwoorden_van_sessies", "lines": [504]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.sessie_overzicht", "lines": [483]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.sessies", "lines": [647]}
+     ]
+    },
+    {
+     "name": "_een",
+     "qualname": "Opslag._een",
+     "kind": "method",
+     "lines": [346, 348],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sql", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarden", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "standaard", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The first row of a read, or the default when there is none.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [347]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.al_juist", "lines": [511]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.algemeen", "lines": [362]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.antwoord_met_sleutel", "lines": [477]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.avatar", "lines": [534]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.instellingen_van", "lines": [397]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.kind", "lines": [376]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.pincode", "lines": [634]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_saldo", "lines": [526]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.sinds", "lines": [567]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.telling", "lines": [455]}
+     ]
+    },
+    {
+     "name": "sluit",
+     "qualname": "Opslag.sluit",
+     "kind": "method",
+     "lines": [350, 357],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Sluit de databank en ververst de reservekopie van vandaag (zo is een teruggezette kopie zo recent mogelijk: van de laatste keer dat het programma gewoon afgesloten werd).",
+     "explanation": "Closes the database and (if nothing went wrong) refreshes today's backup first.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [355]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._kopie", "lines": [355]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".close"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "algemeen",
+     "qualname": "Opslag.algemeen",
+     "kind": "method",
+     "lines": [361, 363],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "standaard", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a general key/value setting (last child, parent password and PIN hashes, ...).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [362]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.ouder_pin", "lines": [625]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord", "lines": [615]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.verwijder_kind", "lines": [643]}
+     ]
+    },
+    {
+     "name": "zet_algemeen",
+     "qualname": "Opslag.zet_algemeen",
+     "kind": "method",
+     "lines": [365, 367],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarde", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Writes or updates a general key/value setting.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [366]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_om_uit_json", "lines": [422]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_ouder_pin", "lines": [631]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord", "lines": [621]}
+     ]
+    },
+    {
+     "name": "kinderen",
+     "qualname": "Opslag.kinderen",
+     "kind": "method",
+     "lines": [371, 373],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All children (id, name, year) sorted by name.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Kind", "lines": [373]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [372]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_om_uit_json", "lines": [418]}
+     ]
+    },
+    {
+     "name": "kind",
+     "qualname": "Opslag.kind",
+     "kind": "method",
+     "lines": [375, 377],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "One child by id, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Kind", "lines": [377]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [376]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.instellingen_van", "lines": [394]}
+     ]
+    },
+    {
+     "name": "nieuw_kind",
+     "qualname": "Opslag.nieuw_kind",
+     "kind": "method",
+     "lines": [379, 387],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "inst", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creates a child with validated settings (name and year in the children table, the rest as JSON in the settings table) and returns it.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [380]},
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [382]},
+      {"target": "leeravontuur/kern/opslag.py::Kind", "lines": [381]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._data", "lines": [386]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [383, 385]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [381]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "replace(inst or Instellingen(), naam=naam, leerjaar=leerjaa…",
+       "lines": [380],
+       "candidates": ["leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["dataclasses.replace"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_om_uit_json", "lines": [421]}
+     ]
+    },
+    {
+     "name": "_data",
+     "qualname": "Opslag._data",
+     "kind": "staticmethod",
+     "lines": [390, 391],
+     "params": [
+      {"name": "inst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Serialises settings to JSON without the fields that live in the children table (name, year).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["dataclasses.asdict", "json.dumps"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen", "lines": [413]},
+      {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [386]}
+     ]
+    },
+    {
+     "name": "instellingen_van",
+     "qualname": "Opslag.instellingen_van",
+     "kind": "method",
+     "lines": [393, 404],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A child's settings: JSON data plus name and year from the children table, validated; raises OpslagFout for an unknown child.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [402]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [397]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.kind", "lines": [394]},
+      {"target": "leeravontuur/kern/opslag.py::OpslagFout", "lines": [396]},
+      {"target": "leeravontuur/kern/opslag.py::_json", "lines": [398]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "inst.gecontroleerd",
+       "lines": [404],
+       "candidates": ["leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar_instellingen",
+     "qualname": "Opslag.bewaar_instellingen",
+     "kind": "method",
+     "lines": [406, 413],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "inst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores validated settings (name and year in the children table, the rest as JSON).",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [408]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._data", "lines": [413]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [409, 411]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "replace(inst).gecontroleerd",
+       "lines": [407],
+       "candidates": ["leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["dataclasses.replace"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_om_uit_json",
+     "qualname": "Opslag.zet_om_uit_json",
+     "kind": "method",
+     "lines": [415, 427],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "pad", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Fase 1 bewaarde instellingen in een JSON-bestand: maak daar één kind van (eenmalig).",
+     "explanation": "Once: when the legacy instellingen.json exists and there are no children, turns it into the first child, makes it the last chosen child and renames the file to .oud.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::laad_json", "lines": [420]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.kinderen", "lines": [418]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [421]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.zet_algemeen", "lines": [422]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".exists", ".with_name", "pathlib.Path"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "start_sessie",
+     "qualname": "Opslag.start_sessie",
+     "kind": "method",
+     "lines": [431, 435],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Inserts a new session row and returns its id.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [434]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [433]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [432]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sluit_sessie",
+     "qualname": "Opslag.sluit_sessie",
+     "kind": "method",
+     "lines": [437, 438],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sessie_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets the end time of a session that is still open.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [438]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [438]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar_antwoord",
+     "qualname": "Opslag.bewaar_antwoord",
+     "kind": "method",
+     "lines": [440, 449],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sessie_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gegeven", "kind": "positional", "default": null, "annotation": null},
+      {"name": "juist", "kind": "positional", "default": null, "annotation": null},
+      {"name": "diagnose", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "tijd_ms", "kind": "positional", "default": "0", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "extra", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "verwacht", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Inserts one answer (never updates): time, day, skill, year, mode, key, question, given answer, correct, diagnosis, duration, hint use, extra JSON and the expected answer text.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [447]},
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [447]},
+      {"target": "leeravontuur/kern/klok.py::nu", "lines": [442]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [443]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [447]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["bool", "int", "json.dumps", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "telling",
+     "qualname": "Opslag.telling",
+     "kind": "method",
+     "lines": [451, 457],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "van", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tot", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(aantal, juist) voor een kind tussen twee dagen (JJJJ-MM-DD of date, beide inbegrepen).",
+     "explanation": "(number of answers, number correct) of a child between two days inclusive.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [455]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "antwoorden",
+     "qualname": "Opslag.antwoorden",
+     "kind": "method",
+     "lines": [459, 467],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "van", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "tot", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Alle antwoorden van een kind, eventueel tussen twee dagen (beide inbegrepen), oudste eerst.",
+     "explanation": "All answers of a child, optionally between two days, oldest first, as dicts.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [462, 465]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "laatste_antwoorden",
+     "qualname": "Opslag.laatste_antwoorden",
+     "kind": "method",
+     "lines": [469, 473],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aantal", "kind": "positional", "default": "50", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De laatste antwoorden van een kind, nieuwste eerst (het logboek voor de ouder, #24).",
+     "explanation": "The last N answers of a child, newest first (the parent's log).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [471]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "antwoord_met_sleutel",
+     "qualname": "Opslag.antwoord_met_sleutel",
+     "kind": "method",
+     "lines": [475, 479],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tot", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het laatste antwoord op deze vraag tot en met dit tijdstip (bv. bij een punt in het logboek), of None.",
+     "explanation": "The latest answer to a question key up to a time, or None (links a points entry to its question).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [477]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sessie_overzicht",
+     "qualname": "Opslag.sessie_overzicht",
+     "kind": "method",
+     "lines": [481, 488],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Afgesloten sessies van één soort: [{start, aantal, juist, tijd_ms}], oudste eerst.",
+     "explanation": "Closed sessions of one mode and skill with number of answers, correct and total time, oldest first.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [483]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "gezien_sleutels",
+     "qualname": "Opslag.gezien_sleutels",
+     "kind": "method",
+     "lines": [490, 494],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sinds", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Vraagsleutels die dit kind sinds die dag al kreeg (om herhaling te vermijden).",
+     "explanation": "The set of question keys a child answered for a skill since a day (used to avoid repeats).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [492]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "recente_antwoorden",
+     "qualname": "Opslag.recente_antwoorden",
+     "kind": "method",
+     "lines": [496, 500],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aantal", "kind": "positional", "default": "200", "annotation": null},
+      {"name": "zonder_modi", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The newest answers for a skill (newest first), optionally excluding some modes.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [498]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "recente_antwoorden_van_sessies",
+     "qualname": "Opslag.recente_antwoorden_van_sessies",
+     "kind": "method",
+     "lines": [502, 507],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sessie_vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aantal", "kind": "positional", "default": "200", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De nieuwste antwoorden uit sessies met deze vaardigheid (bv. snelrekenen.tafels), wat de vragen ook waren.",
+     "explanation": "The newest answers from sessions of a given session-skill (for example speed practice), whatever skill each question had.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [504]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "al_juist",
+     "qualname": "Opslag.al_juist",
+     "kind": "method",
+     "lines": [509, 513],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Had dit kind deze exacte vraag ooit al juist? (dan levert ze geen punten meer op)",
+     "explanation": "True when the child ever answered this exact question key correctly (then it earns no points).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [511]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "punten_bij",
+     "qualname": "Opslag.punten_bij",
+     "kind": "method",
+     "lines": [517, 523],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "punten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "reden", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adds an entry to the points log (positive or negative) with a reason and optional question key; ignores zero.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [523]},
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [523]},
+      {"target": "leeravontuur/kern/klok.py::nu", "lines": [520]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [521]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [523]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "punten_saldo",
+     "qualname": "Opslag.punten_saldo",
+     "kind": "method",
+     "lines": [525, 526],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The child's points balance (sum of the log).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [526]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "punten_log",
+     "qualname": "Opslag.punten_log",
+     "kind": "method",
+     "lines": [528, 531],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aantal", "kind": "positional", "default": "20", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The last N points entries, newest first.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [529]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "avatar",
+     "qualname": "Opslag.avatar",
+     "kind": "method",
+     "lines": [533, 535],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The child's stored avatar config, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [534]},
+      {"target": "leeravontuur/kern/opslag.py::_json", "lines": [535]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar_avatar",
+     "qualname": "Opslag.bewaar_avatar",
+     "kind": "method",
+     "lines": [537, 540],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "config", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores or updates the child's avatar config.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [540]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [538]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["json.dumps"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bezit",
+     "qualname": "Opslag.bezit",
+     "kind": "method",
+     "lines": [544, 551],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Everything the child bought (layer, key, price, delivered, delivery condition) in purchase order.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [545]},
+      {"target": "leeravontuur/kern/opslag.py::_json", "lines": [549]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_bezit",
+     "qualname": "Opslag.zet_bezit",
+     "kind": "method",
+     "lines": [553, 559],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "laag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "prijs", "kind": "positional", "default": null, "annotation": null},
+      {"name": "geleverd", "kind": "positional", "default": null, "annotation": null},
+      {"name": "levering", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "challenge_juist", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records a purchase (or updates the delivered flag of an existing one).",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [557]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [554]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["bool", "int", "json.dumps"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lever",
+     "qualname": "Opslag.lever",
+     "kind": "method",
+     "lines": [561, 563],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "laag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Marks a purchased item as delivered.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [562]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sinds",
+     "qualname": "Opslag.sinds",
+     "kind": "method",
+     "lines": [565, 569],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tijdstip", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(juiste antwoorden, totale antwoordtijd in ms) sinds een tijdstip.",
+     "explanation": "(correct answers, total answer time in ms) since a timestamp, used for package progress.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [567]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "outfits",
+     "qualname": "Opslag.outfits",
+     "kind": "method",
+     "lines": [571, 573],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The child's saved avatar combinations.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [572]},
+      {"target": "leeravontuur/kern/opslag.py::_json", "lines": [573]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar_outfit",
+     "qualname": "Opslag.bewaar_outfit",
+     "kind": "method",
+     "lines": [575, 577],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+      {"name": "config", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Saves an avatar combination under a name.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [577]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [576]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [577]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["json.dumps"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verwijder_outfit",
+     "qualname": "Opslag.verwijder_outfit",
+     "kind": "method",
+     "lines": [579, 580],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "outfit_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Deletes a saved combination.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [580]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "herhaal_zet",
+     "qualname": "Opslag.herhaal_zet",
+     "kind": "method",
+     "lines": [584, 591],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bak", "kind": "positional", "default": null, "annotation": null},
+      {"name": "volgende", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Inserts or updates a repeat-bin item (one per child, skill and topic) with its data, bin and due day.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [585]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [586]},
+      {"target": "leeravontuur/kern/opslag.py::_nieuw_id", "lines": [590]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["json.dumps", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "herhaal_weg",
+     "qualname": "Opslag.herhaal_weg",
+     "kind": "method",
+     "lines": [593, 595],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Removes a repeat-bin item.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [594]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "herhaalbak",
+     "qualname": "Opslag.herhaalbak",
+     "kind": "method",
+     "lines": [597, 610],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tot_dag", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Items in de herhaalbak (alleen die tot en met tot_dag aan de beurt zijn, als die gegeven is).",
+     "explanation": "The repeat-bin items of a child, optionally only those due up to a day, with their data decoded.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [600, 603]},
+      {"target": "leeravontuur/kern/opslag.py::_json", "lines": [608]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ouder_wachtwoord",
+     "qualname": "Opslag.ouder_wachtwoord",
+     "kind": "method",
+     "lines": [614, 615],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The parent password hash, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.algemeen", "lines": [615]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_ouder_wachtwoord",
+     "qualname": "Opslag.zet_ouder_wachtwoord",
+     "kind": "method",
+     "lines": [617, 621],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opgeslagen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores or (with None) deletes the parent password hash.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [619]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.zet_algemeen", "lines": [621]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ouder_pin",
+     "qualname": "Opslag.ouder_pin",
+     "kind": "method",
+     "lines": [623, 625],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De ouderpin (4 cijfers, gehasht): opent het slot op Stoppen (kern/stopslot.py).",
+     "explanation": "The parent PIN hash that opens the lock on quitting, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.algemeen", "lines": [625]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_ouder_pin",
+     "qualname": "Opslag.zet_ouder_pin",
+     "kind": "method",
+     "lines": [627, 631],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opgeslagen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores or (with None) deletes the parent PIN hash.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [629]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.zet_algemeen", "lines": [631]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "pincode",
+     "qualname": "Opslag.pincode",
+     "kind": "method",
+     "lines": [633, 635],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A child's PIN hash, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._een", "lines": [634]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zet_pincode",
+     "qualname": "Opslag.zet_pincode",
+     "kind": "method",
+     "lines": [637, 638],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opgeslagen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores a child's PIN hash.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::iso", "lines": [638]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [638]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verwijder_kind",
+     "qualname": "Opslag.verwijder_kind",
+     "kind": "method",
+     "lines": [640, 644],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Wist een kind met al zijn gegevens (instellingen, sessies, antwoorden).",
+     "explanation": "Deletes a child with all their data (cascade) and clears the 'last child' pointer if it was this child.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._schrijf", "lines": [642, 644]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.algemeen", "lines": [643]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sessies",
+     "qualname": "Opslag.sessies",
+     "kind": "method",
+     "lines": [646, 648],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All sessions of a child, oldest first.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag._lees", "lines": [647]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_beschadigd",
+   "qualname": "_beschadigd",
+   "kind": "function",
+   "lines": [159, 164],
+   "params": [
+    {"name": "fout", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is dit een beschadigd bestand (en niet bv. een vergrendelde databank)?",
+   "explanation": "True when an exception means a corrupt database file (not a locked one).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [227]}
+   ]
+  },
+  {
+   "name": "_goed",
+   "qualname": "_goed",
+   "kind": "function",
+   "lines": [167, 176],
+   "params": [
+    {"name": "pad", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is dit databankbestand leesbaar en heel?",
+   "explanation": "True when a database file passes SQLite's quick_check.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".close", ".execute", ".fetchone", "sqlite3.connect", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag._herstel", "lines": [283]}
+   ]
+  },
+  {
+   "name": "_ruim_op",
+   "qualname": "_ruim_op",
+   "kind": "function",
+   "lines": [179, 186],
+   "params": [
+    {"name": "map_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "patroon", "kind": "positional", "default": null, "annotation": null},
+    {"name": "bewaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Houd alleen de nieuwste `bewaar` bestanden die op het patroon passen.",
+   "explanation": "Deletes the oldest files matching a pattern so only the newest N remain; ignores OS errors.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".glob", ".stat", ".unlink", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag._migreer", "lines": [312]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.dagkopie", "lines": [273]}
+   ]
+  },
+  {
+   "name": "_json",
+   "qualname": "_json",
+   "kind": "function",
+   "lines": [189, 194],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "standaard", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "JSON uit de databank lezen; is het beschadigd, dan de standaardwaarde (geen crash).",
+   "explanation": "Parses JSON text from the database, returning the default for damaged or missing text instead of raising.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.avatar", "lines": [535]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bezit", "lines": [549]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaalbak", "lines": [608]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.instellingen_van", "lines": [398]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.outfits", "lines": [573]}
+   ]
+  },
+  {
+   "name": "_nieuw_id",
+   "qualname": "_nieuw_id",
+   "kind": "function",
+   "lines": [197, 198],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A new UUID string for a record.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str", "uuid.uuid4"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord", "lines": [447]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_outfit", "lines": [577]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaal_zet", "lines": [590]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [381]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_bij", "lines": [523]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.start_sessie", "lines": [432]}
+   ]
+  }
+ ]
+}

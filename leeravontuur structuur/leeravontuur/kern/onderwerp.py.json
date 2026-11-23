@@ -1,0 +1,917 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/onderwerp.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 223,
+ "source_sha256": "9b7f6373057c6a31f95534d1022d11e5a916caf6074dc89f63c5d215fda2c86d",
+ "purpose": "The shared model of an exercise topic: Vraag (a question) and Onderwerp (the base class every topic extends).",
+ "details": "A topic belongs to one skill and knows how to make a question from its leerlijn, check it, recognise thinking errors (diagnose), explain, give hints, give a worked solution in scratch-pad lines (oplossing) and make a similar question for the repeat bin. The terminal (terminal/oefenaar.py) only uses these methods, so a new topic is a subclass plus a leerlijn JSON plus an import in catalogus.py. Creating an instance registers the skill, its thinking errors and itself in ONDERWERPEN. Several methods are meant to be overridden (maak_met, uitleg, diagnose, oplossing, kolom_hulp, kies_onderwerp, onderwerp_van_sleutel).",
+ "module_docstring": "Het gemeenschappelijke model voor een oefenonderwerp (vraag → antwoord).",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["foutlog", "leerlijnen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/foutlog.py", "leeravontuur/kern/leerlijnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["GetypteBreuk", "fmt", "fmt_breuk", "lees_breuk", "lees_getal"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.vaardigheden",
+   "names": ["DENKFOUTEN", "Vaardigheid", "registreer"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/vaardigheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/reeks.py",
+  "leeravontuur/kern/taal/werkwoorden.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/kern/wiskunde/breuken.py",
+  "leeravontuur/kern/wiskunde/cijferen.py",
+  "leeravontuur/kern/wiskunde/eenheden.py",
+  "leeravontuur/kern/wiskunde/getallen.py",
+  "leeravontuur/kern/wiskunde/grootheden.py",
+  "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+  "leeravontuur/kern/wiskunde/klok.py",
+  "leeravontuur/kern/wiskunde/meetkunde.py",
+  "leeravontuur/kern/wiskunde/procenten.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "tests/test_beta.py",
+  "tests/test_breuken.py",
+  "tests/test_cijferen.py",
+  "tests/test_getallen.py",
+  "tests/test_grootheden.py",
+  "tests/test_handleiding.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_meetkunde.py",
+  "tests/test_procenten.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_werkwijze.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "<class Vraag>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "ONDERWERPEN",
+   "line": 18,
+   "value_type": "Dict",
+   "value_preview": "{}",
+   "explanation": "Registry skill id -> Onderwerp instance."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ONDERWERPEN",
+   "line": 18,
+   "description": "Dict skill id -> Onderwerp, filled when each topic class is instantiated at import time (via kern/catalogus.py). The terminal, reports, repetition and mixed practice find topics here instead of importing them, so calls to a topic's methods through it cannot be followed statically."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Vraag",
+   "qualname": "Vraag",
+   "lines": [30, 57],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "Dataclass of one question: skill id, unique key, text, answer, unit, data for explanation and repetition, school year, input kind, an optional visual model and optional texts for the correct answer.",
+   "attributes": [
+    {"name": "vaardigheid", "line": 31, "scope": "class", "value_preview": null},
+    {"name": "sleutel", "line": 32, "scope": "class", "value_preview": null},
+    {"name": "tekst", "line": 33, "scope": "class", "value_preview": null},
+    {"name": "antwoord", "line": 34, "scope": "class", "value_preview": null},
+    {"name": "eenheid", "line": 35, "scope": "class", "value_preview": "''"},
+    {"name": "data", "line": 36, "scope": "class", "value_preview": "field(default_factory=dict)"},
+    {"name": "leerjaar", "line": 37, "scope": "class", "value_preview": "'5'"},
+    {"name": "invoer", "line": 38, "scope": "class", "value_preview": "'getal'"},
+    {"name": "model", "line": 43, "scope": "class", "value_preview": "None"},
+    {"name": "verwacht_tekst", "line": 44, "scope": "class", "value_preview": "''"},
+    {"name": "model_na", "line": 45, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [834]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_met", "lines": [503]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.maak_met", "lines": [466, 485]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [192, 194, 197, 204]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Herkennen.maak_met", "lines": [144, 147]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.maak_met", "lines": [584, 585]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met", "lines": [373]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [288]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [214]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.maak_met", "lines": [480]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [123]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.maak_met", "lines": [308]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::als_vraag", "lines": [461]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.maak_met", "lines": [123]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.maak_met",
+     "lines": [194, 199, 204, 208, 210]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/getallen.py::GetallenlijnOnderwerp.maak_met",
+     "lines": [294, 302, 316, 324]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.maak_met", "lines": [62, 65, 71]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.maak_met", "lines": [259, 261, 269, 277]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.maak_met",
+     "lines": [349, 351, 358, 362, 365]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.maak_met",
+     "lines": [116, 118, 125, 127, 135, 138]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.maak_met", "lines": [391]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10.maak_met", "lines": [298, 300]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.maak_met", "lines": [190]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.maak_met", "lines": [470]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.maak_met", "lines": [60, 63]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [155, 160, 164, 172, 178, 190]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.maak_met", "lines": [423, 425]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met", "lines": [200]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Hoeken.maak_met", "lines": [324, 326, 332, 337]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Rooster.maak_met", "lines": [86, 89]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.maak_met", "lines": [481, 485, 488]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.maak_met", "lines": [305, 314, 323]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Omzetten.maak_met", "lines": [174, 177, 180, 181]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.maak_met", "lines": [235, 238]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Veld.maak_met", "lines": [119, 124, 126]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schatten.maak_met", "lines": [1364]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.maak_met", "lines": [1229]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Speurneus.uitleg", "lines": [1313]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.maak_met", "lines": [1096]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_tellers_en_noemers", "lines": [104]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_vergelijken_en_van", "lines": [126, 128, 130, 133]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_waarde_telt_bij_herkennen", "lines": [119, 122]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_getypte_breuk_niet_vereenvoudigd", "lines": [201]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_vergelijken", "lines": [215]},
+    {"caller": "tests/test_breuken.py::arceer_vraag", "lines": [151]},
+    {"caller": "tests/test_breuken.py::toon_vraag", "lines": [157]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_aftrekken", "lines": [95]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_onthouden_vergeten", "lines": [89, 91]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_vermenigvuldigen", "lines": [103, 108]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.test_maal_met_komma", "lines": [206]},
+    {"caller": "tests/test_cijferen.py::TestSchermen.test_komma_zelf_zetten", "lines": [307]},
+    {"caller": "tests/test_cijferen.py::maal_vraag", "lines": [253]},
+    {"caller": "tests/test_cijferen.py::optel_vraag", "lines": [247]},
+    {"caller": "tests/test_cijferen.py::staart_vraag", "lines": [241]},
+    {"caller": "tests/test_getallen.py::TestDiagnose.test_afronden", "lines": [113]},
+    {"caller": "tests/test_getallen.py::TestDiagnose.test_deelbaarheid_uitleg", "lines": [119]},
+    {"caller": "tests/test_getallen.py::TestDiagnose.test_getallenlijn", "lines": [130]},
+    {"caller": "tests/test_getallen.py::TestSchermen.test_ja_nee", "lines": [195]},
+    {"caller": "tests/test_getallen.py::aanduid_vraag", "lines": [154]},
+    {"caller": "tests/test_grootheden.py::TestDiagnose.test_geld_en_snelheid", "lines": [103, 105, 107, 111]},
+    {"caller": "tests/test_grootheden.py::TestDiagnose.test_tijd", "lines": [87, 89, 91, 95, 99]},
+    {"caller": "tests/test_grootheden.py::gemengd", "lines": [116]},
+    {"caller": "tests/test_hoofdrekenen.py::TestDiagnose.test_maaldeel10_en_dubbel", "lines": [93, 96]},
+    {"caller": "tests/test_hoofdrekenen.py::TestDiagnose.test_plusmin", "lines": [84]},
+    {"caller": "tests/test_hoofdrekenen.py::TestDiagnose.test_tafels", "lines": [73, 79]},
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_herhalen_tafel", "lines": [183]},
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_reeks_tafels", "lines": [108]},
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_snelrekenen_20_sommen", "lines": [127]},
+    {
+     "caller": "tests/test_hoofdrekenen.py::TestSchermen.test_snelrekenen_60_seconden_met_klok",
+     "lines": [138]
+    },
+    {"caller": "tests/test_hoofdrekenen.py::TestSchermen.test_snelrekenen_esc_vraagt_eerst", "lines": [149]},
+    {
+     "caller": "tests/test_hoofdrekenen.py::TestSchermen.test_snelrekenen_kruimel_vraagt_eerst_en_toont_de_uitslag",
+     "lines": [160]
+    },
+    {
+     "caller": "tests/test_meetkunde.py::TestDiagnose.test_coordinaten_en_schaal",
+     "lines": [148, 151, 154, 158]
+    },
+    {"caller": "tests/test_meetkunde.py::TestDiagnose.test_formules", "lines": [125, 128, 130, 133]},
+    {"caller": "tests/test_meetkunde.py::TestDiagnose.test_hoeken", "lines": [138, 144]},
+    {"caller": "tests/test_meetkunde.py::TestDiagnose.test_rooster", "lines": [116, 120]},
+    {"caller": "tests/test_meetkunde.py::TestSchermen.test_figuur_op_het_scherm", "lines": [200]},
+    {"caller": "tests/test_meetkunde.py::kruis_vraag", "lines": [165]},
+    {"caller": "tests/test_procenten.py::TestDiagnose.test_korting_en_btw", "lines": [87, 90, 93]},
+    {"caller": "tests/test_procenten.py::TestDiagnose.test_procent_van", "lines": [80]},
+    {"caller": "tests/test_procenten.py::TestDiagnose.test_veld_en_omzetten", "lines": [97, 102, 104]},
+    {"caller": "tests/test_procenten.py::TestSchermen.test_procent_van_met_strook", "lines": [145]},
+    {"caller": "tests/test_procenten.py::kleur_vraag", "lines": [111]},
+    {"caller": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [591]},
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_ja_nee_zonder_tweede_kans", "lines": [890]},
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_splitsen_eerst_het_klad", "lines": [903]}
+   ],
+   "methods": [
+    {
+     "name": "verwacht",
+     "qualname": "Vraag.verwacht",
+     "kind": "property",
+     "lines": [48, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The correct answer as text: verwacht_tekst if set, else the string, fraction or decimal formatted the Flemish way plus the unit.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [56]},
+      {"target": "leeravontuur/kern/getal.py::fmt_breuk", "lines": [54]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Onderwerp",
+   "qualname": "Onderwerp",
+   "lines": [60, 223],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Basis: een subklasse vult id, naam, omschrijving en maak_met() in (en liefst uitleg en diagnose).",
+   "explanation": "Base class of all exercise topics; subclasses fill id, name, description and maak_met, and optionally explanation, diagnosis, solution and hints.",
+   "attributes": [
+    {"name": "id", "line": 63, "scope": "class", "value_preview": "''"},
+    {"name": "naam", "line": 64, "scope": "class", "value_preview": "''"},
+    {"name": "omschrijving", "line": 65, "scope": "class", "value_preview": "''"},
+    {"name": "denkfouten", "line": 66, "scope": "class", "value_preview": "{}"},
+    {"name": "klad", "line": 67, "scope": "class", "value_preview": "None"},
+    {"name": "lang", "line": 68, "scope": "class", "value_preview": "False"},
+    {"name": "vast", "line": 153, "scope": "class", "value_preview": "()"},
+    {"name": "spiek_kop", "line": 158, "scope": "class", "value_preview": "None"},
+    {"name": "vaardigheid", "line": 71, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::<module>", "lines": [998, 999, 1000, 1001, 1002]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::<module>", "lines": [531]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::<module>", "lines": [620, 621, 622, 623, 624, 625]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::<module>", "lines": [507, 508, 509, 510]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::<module>", "lines": [405, 406, 407, 408]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::<module>", "lines": [445, 446, 447]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::<module>", "lines": [615, 616, 617, 618, 619]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::<module>", "lines": [323]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::<module>", "lines": [580, 581, 582, 583, 584]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::<module>", "lines": [386, 387, 388, 389]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [1145, 1322, 1434]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Onderwerp.__init__",
+     "kind": "method",
+     "lines": [70, 73],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Registers the skill, adds the topic's thinking errors to DENKFOUTEN and puts the topic in ONDERWERPEN.",
+     "calls": [
+      {"target": "leeravontuur/kern/vaardigheden.py::Vaardigheid", "lines": [71]},
+      {"target": "leeravontuur/kern/vaardigheden.py::registreer", "lines": [71]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["leeravontuur.kern.vaardigheden.DENKFOUTEN.update"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::<module>", "lines": [998, 999, 1000, 1001, 1002]},
+      {"caller": "leeravontuur/kern/taal/zinsontleding.py::<module>", "lines": [531]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::<module>", "lines": [620, 621, 622, 623, 624, 625]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::<module>", "lines": [507, 508, 509, 510]},
+      {"caller": "leeravontuur/kern/wiskunde/getallen.py::<module>", "lines": [405, 406, 407, 408]},
+      {"caller": "leeravontuur/kern/wiskunde/grootheden.py::<module>", "lines": [445, 446, 447]},
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::<module>", "lines": [615, 616, 617, 618, 619]},
+      {"caller": "leeravontuur/kern/wiskunde/klok.py::<module>", "lines": [323]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::<module>", "lines": [580, 581, 582, 583, 584]},
+      {"caller": "leeravontuur/kern/wiskunde/procenten.py::<module>", "lines": [386, 387, 388, 389]},
+      {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::<module>", "lines": [1145, 1322, 1434]}
+     ]
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Onderwerp.maak_met",
+     "kind": "method",
+     "lines": [76, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Maak een vraag met de parameters p van de leerlijn. data = vaste kenmerken (herhaling).",
+     "explanation": "Abstract: makes one question from the leerlijn parameters (and optional saved data for repetition); subclasses must implement it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak", "lines": [187]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Onderwerp.uitleg",
+     "kind": "method",
+     "lines": [80, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Explanation lines after a question; default only states the right answer.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.tip", "lines": [84]}
+     ]
+    },
+    {
+     "name": "tip",
+     "qualname": "Onderwerp.tip",
+     "kind": "method",
+     "lines": [83, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "One hint line; default is the first explanation line when there are several, else a generic encouragement.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.uitleg", "lines": [84]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.kolom_hulp", "lines": [144]},
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.tips", "lines": [119]}
+     ]
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Onderwerp.diagnose",
+     "kind": "method",
+     "lines": [87, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a thinking error from the typed number; default none.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Onderwerp.oplossing",
+     "kind": "method",
+     "lines": [90, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De oplossing in klad-regels (kern.modellen.Oplossing, met kern.klad.stap en fout_pad), of None. Elk onderwerp met klad geeft er een: ze is de uitwerking na het nakijken (\"Zo kan het:\") en de maat voor het klad van het kind.",
+     "explanation": "The worked solution as scratch-pad steps (an Oplossing from kern/modellen), or None; every topic with a klad provides one.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.oplossing_of_niets", "lines": [100]}
+     ]
+    },
+    {
+     "name": "oplossing_of_niets",
+     "qualname": "Onderwerp.oplossing_of_niets",
+     "kind": "method",
+     "lines": [96, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "oplossing(v), maar nooit een fout: lukt het niet, dan staat het in het foutenlogboek en is er geen uitwerking (de oefening gaat gewoon verder).",
+     "explanation": "oplossing() that never raises: on an error it writes to the error log and returns None so the child sees nothing.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [102]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.oplossing", "lines": [100]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.tips", "lines": [122]}
+     ]
+    },
+    {
+     "name": "klad_voor",
+     "qualname": "Onderwerp.klad_voor",
+     "kind": "method",
+     "lines": [105, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Klad bij deze vraag: None, \"ja\" of \"verplicht\" (een vraag kan het overschrijven met data[\"klad\"]).",
+     "explanation": "Whether this question uses the scratch pad: None, 'ja' or 'verplicht' (a question can override the topic's setting through data['klad']).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.tips", "lines": [122]}
+     ]
+    },
+    {
+     "name": "klad_klaar",
+     "qualname": "Onderwerp.klad_klaar",
+     "kind": "method",
+     "lines": [110, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bij klad \"verplicht\": staat er genoeg in het klad (KladRegel's) om het antwoord na te kijken? Geeft (ok, wat er nog moet).",
+     "explanation": "For a required klad: is there enough in it to check the answer? Returns (ok, what is missing); default always ok.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tips",
+     "qualname": "Onderwerp.tips",
+     "kind": "method",
+     "lines": [115, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De getrapte tips: ? geeft telkens de volgende. Eerst de aanpak, dan het begin van het klad; de terminal voegt er hulp bij de eerste foute klad-regel aan toe. Nooit het antwoord.",
+     "explanation": "The stepped hints (F1): first the approach, then 'Begin je klad zo: ...' from the first solution step; never the answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor", "lines": [122]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.oplossing_of_niets", "lines": [122]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.tip", "lines": [119]},
+      {"target": "leeravontuur/kern/onderwerp.py::begin_van", "lines": [124]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nakijken",
+     "qualname": "Onderwerp.nakijken",
+     "kind": "method",
+     "lines": [129, 136],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Is het (gelezen) antwoord juist? Een GetypteBreuk telt op zijn waarde, tenzij de vraag de eenvoudigste vorm eist (data[\"vereenvoudigd\"]).",
+     "explanation": "Is the read answer correct? A typed fraction counts by its value unless the question demands simplest form (data['vereenvoudigd']); otherwise plain equality.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken", "lines": [212]}
+     ]
+    },
+    {
+     "name": "diagnose_rijen",
+     "qualname": "Onderwerp.diagnose_rijen",
+     "kind": "method",
+     "lines": [138, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rijen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bij een rooster: diagnose uit alle ingevulde rijen (tekst of None per rij). None = gebruik diagnose().",
+     "explanation": "For grid questions: diagnosis from all filled rows; default None (fall back to diagnose).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kolom_hulp",
+     "qualname": "Onderwerp.kolom_hulp",
+     "kind": "method",
+     "lines": [142, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bij een rooster: hulp voor één vakje (rij = index in model.invul, −1 = onthouden-rij).",
+     "explanation": "For grid questions: hint for one cell; default the topic tip.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.tip", "lines": [144]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp",
+     "qualname": "Onderwerp.onderwerp",
+     "kind": "method",
+     "lines": [146, 148],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Groepje voor herhaling en gewichten (bv. 'tafel 7').",
+     "explanation": "The group used for repetition and weights (for example 'tafel 7'): data['onderwerp'] or the part of the key after the colon.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data", "lines": [151]}
+     ]
+    },
+    {
+     "name": "herhaal_data",
+     "qualname": "Onderwerp.herhaal_data",
+     "kind": "method",
+     "lines": [150, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The data stored in the repeat bin: the group plus the data fields listed in `vast`.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.onderwerp", "lines": [151]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Onderwerp.spiekbrief",
+     "kind": "method",
+     "lines": [155, 156],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's cheat sheet lines; default none.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kop_op_spiekbrief",
+     "qualname": "Onderwerp.kop_op_spiekbrief",
+     "kind": "method",
+     "lines": [160, 162],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kopje van de spiekbrief bij deze vraag (de spiekbrief opent daar), of None (bovenaan).",
+     "explanation": "The heading of the cheat sheet where it should open for this question (spiek_kop), or None for the top.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "parameters",
+     "qualname": "Onderwerp.parameters",
+     "kind": "method",
+     "lines": [165, 166],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The leerlijn parameters of this topic for a year (None if not offered).",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [166]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden", "lines": [169]},
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak", "lines": [184]}
+     ]
+    },
+    {
+     "name": "aangeboden",
+     "qualname": "Onderwerp.aangeboden",
+     "kind": "method",
+     "lines": [168, 169],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "True when the topic is offered in that year.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.parameters", "lines": [169]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.jaar_voor", "lines": [174, 178]}
+     ]
+    },
+    {
+     "name": "jaar_voor",
+     "qualname": "Onderwerp.jaar_voor",
+     "kind": "method",
+     "lines": [171, 180],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het leerjaar om een vraag te maken: dit leerjaar, of (als het onderwerp daar nog niet bestaat) het eerste hogere leerjaar waar het wel bestaat, anders het dichtste lagere.",
+     "explanation": "The year to actually make a question in: the given year, else the first higher year where the topic exists, else the nearest lower one.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden", "lines": [174, 178]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["leeravontuur.kern.leerjaren.LEERJAREN.index"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak", "lines": [183]}
+     ]
+    },
+    {
+     "name": "maak",
+     "qualname": "Onderwerp.maak",
+     "kind": "method",
+     "lines": [182, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "rng", "kind": "positional", "default": "random", "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a question for a year, retrying up to 400 times to avoid keys in `vermijd`, optionally weighted towards harder sub-topics or based on saved repetition data; returns the last try if all collide.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.jaar_voor", "lines": [183]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.kies_onderwerp", "lines": [187]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.maak_met", "lines": [187]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.parameters", "lines": [184]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling", "lines": [202, 205]}
+     ]
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Onderwerp.kies_onderwerp",
+     "kind": "method",
+     "lines": [194, 196],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Met gewichten {onderwerp: gewicht}: kies een moeilijk onderwerp vaker. None = vrij.",
+     "explanation": "Chooses a sub-topic using weights; default None (free choice); subclasses override.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak", "lines": [187]}
+     ]
+    },
+    {
+     "name": "maak_herhaling",
+     "qualname": "Onderwerp.maak_herhaling",
+     "kind": "method",
+     "lines": [198, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een gelijkaardige vraag. Mag nooit crashen: past de bewaarde data niet (meer), bv. uit een oudere versie, dan komt er een gewone vraag van dit onderwerp (en een melding in het foutenlogboek).",
+     "explanation": "A similar question for the repeat bin; never crashes: with unusable saved data it logs and makes an ordinary question.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [204]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.maak", "lines": [202, 205]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Onderwerp.lees",
+     "kind": "method",
+     "lines": [207, 208],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed answer as a number.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [208]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.lees_vraag", "lines": [220]}
+     ]
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Onderwerp.lees_vraag",
+     "kind": "method",
+     "lines": [210, 220],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Leest het antwoord voor deze vraag (getal, of ja/nee).",
+     "explanation": "Reads the typed answer according to the question's input kind: yes/no words, a comparison sign, a fraction, or a number.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [219]},
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.lees", "lines": [220]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Onderwerp.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [222, 223],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The sub-topic group of a stored question key (used to weight practice); default None, overridden by topics with their own keys.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "begin_van",
+   "qualname": "begin_van",
+   "kind": "function",
+   "lines": [21, 26],
+   "params": [
+    {"name": "reken", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het begin van een klad-regel, zonder de uitkomst: '91 : 7 = 70 : 7 + 21 : 7 = …' of '24 : 4 = …'.",
+   "explanation": "The start of a worked scratch-pad line without its result, like '24 : 4 = …', used to hint at how to begin the klad.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.tips", "lines": [124]}
+   ]
+  }
+ ]
+}
