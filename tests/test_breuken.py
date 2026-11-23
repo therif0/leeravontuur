@@ -170,9 +170,8 @@ STOP = [ESC] * 7
 class TestSchermen(Basis):
     def test_arceren_met_toetsen_en_klik(self):
         o = self.opslag(("Test", "5"))
-        a, b = M.stuk_grenzen(5, 8)[2]
         with mock.patch.object(B.HERKENNEN, "maak", side_effect=[arceer_vraag(), arceer_vraag()]):
-            scherm, app = self.speel([*naar(1), " ", RECHTS, " ", ("klik", 9, a + 2), OK, *STOP], opslag=o)
+            scherm, app = self.speel([*naar(1), " ", RECHTS, " ", ("klik_op", ("stuk", 2)), OK, *STOP], opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "3/5")
         self.assertTrue(rij["juist"])

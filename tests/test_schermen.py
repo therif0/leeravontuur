@@ -11,7 +11,6 @@ from leeravontuur.terminal import curriculum as CU
 from leeravontuur.terminal.app import App
 from leeravontuur.terminal.nepscherm import NepKlokvenster, NepScherm, ToetsenOp
 from leeravontuur.terminal.scherm import Scherm
-from leeravontuur.terminal.schermen.eenheden import TABEL_X, TABEL_Y
 
 ESC = "\x1b"
 OK = "\n"
@@ -21,8 +20,6 @@ F1 = curses.KEY_F1  # de hulp-toets (tip, hulp, spiekbrief); ? typt gewoon een v
 HOOFDMENU = ["▶ Verder", "Herhalen", *[v.label for v in CU.VAKKEN], *[label for label, _ in CU.BINNENKORT],
              "Leerstof", "Mijn avatar", "Winkel", "Zeg het ons", "Stoppen"]
 # de rijen op het scherm (met de kopjes VAKKEN, JIJ, FEEDBACK en de lege regels ertussen)
-HOOFDMENU_RIJEN = [5, 6, *range(9, 9 + len(CU.VAKKEN) + len(CU.BINNENKORT) + 1)]
-HOOFDMENU_RIJEN += [HOOFDMENU_RIJEN[-1] + 3, HOOFDMENU_RIJEN[-1] + 4, HOOFDMENU_RIJEN[-1] + 7, HOOFDMENU_RIJEN[-1] + 9]
 
 
 def hm(keuze):
@@ -30,9 +27,9 @@ def hm(keuze):
     return str((HOOFDMENU.index(keuze) + 1) % 10)
 
 
-def hm_rij(keuze):
-    """De schermrij van een keuze in het hoofdmenu (voor een muisklik)."""
-    return HOOFDMENU_RIJEN[HOOFDMENU.index(keuze)]
+def hm_klik(keuze):
+    """Een muisklik op een keuze in het hoofdmenu (op de zone van die keuze, niet op een vaste rij)."""
+    return ("klik_op", ("kies", HOOFDMENU.index(keuze)))
 
 
 def menu_onderwerp(o):
@@ -235,7 +232,7 @@ class TestReeks(Basis):
         self.assertNotIn("Wil je stoppen", scherm.beelden[-1])  # Nee: de tabel staat er weer
         # en ook de broodkruimel (#33 opnieuw), vrij en in de tabel
         for stappen in ([*naar("wiskunde.meten.massa"), "5"], [*naar("wiskunde.meten.lengte", "h"), "4"]):
-            scherm, app = self.speel([*stappen, ("klik", 0, 17), OK], opslag=o)
+            scherm, app = self.speel([*stappen, ("klik_op", ("kruimel", 1)), OK], opslag=o)
             self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze vraag?"))
             self.assertNotIn("Welk onderwerp?", na_het_kader(scherm))
 
@@ -251,11 +248,8 @@ class TestReeks(Basis):
 
 class TestMuis(Basis):
     def test_tabel_klikken_en_komma(self):
-        rij = TABEL_Y + 3
-        cel_m = TABEL_X + 1 + 3 * 6          # 4de kolom: m
-        rand_m = cel_m + 5                   # de rand rechts van m = komma achter m
-        toetsen = [*naar("wiskunde.meten.lengte", "h"),
-                   ("klik", rij, cel_m + 2), "4", ("klik", rij, rand_m),
+        toetsen = [*naar("wiskunde.meten.lengte", "h"),  # het vakje van m (4de kolom), dan de rand erachter = komma
+                   ("klik_op", ("cel", 3)), "4", ("klik_op", ("komma", 3)),
                    ESC, ESC, ESC, ESC, ESC]
         scherm, _ = self.speel(toetsen)
         self.assertTrue(self.ergens(scherm, "Aflezen met de komma achter m: 4 m"))
@@ -263,9 +257,7 @@ class TestMuis(Basis):
     def test_schermkleuren_met_de_muis(self):
         """Hoofdmenu › Mijn avatar (klik) › klik op de regel [L] schermkleuren › klik op het 2de thema."""
         o = self.opslag(("Test", "5"))
-        scherm, _ = self.speel([OK, OK, ("klik", hm_rij("Mijn avatar"), 10)], opslag=o)
-        y, x = plek(scherm, "[L] schermkleuren:")
-        toetsen = [OK, OK, ("klik", hm_rij("Mijn avatar"), 10), ("klik", y, x + 3), ("klik", 7, 10), ESC, ESC]
+        toetsen = [OK, OK, hm_klik("Mijn avatar"), ("klik_op", ord("l")), ("klik_op", ("kies", 1)), ESC, ESC]
         scherm, app = self.speel(toetsen, opslag=o)
         self.assertEqual(app.inst.thema, "rood-groen")
         self.assertEqual(o.instellingen_van(app.kind.id).thema, "rood-groen")
@@ -280,9 +272,7 @@ class TestMuis(Basis):
         self.assertTrue(self.ergens(scherm, "Welke kleuren wil je op het scherm?"))
 
     def test_knop_in_voetbalk(self):
-        scherm, _ = self.speel([OK, OK, hm("Wiskunde")])
-        y, x = scherm.zoek("[Esc]")
-        scherm2, _ = self.speel([OK, OK, hm("Wiskunde"), ("klik", y, x + 1)])
+        scherm2, _ = self.speel([OK, OK, hm("Wiskunde"), ("klik_op", ESC)])
         # na de klik op [Esc] staan we terug in het hoofdmenu
         self.assertIn("Wat wil je doen?", scherm2.beelden[-1])
 
@@ -362,7 +352,7 @@ class TestMuis(Basis):
         self.assertTrue(self.ergens(scherm, "Leeravontuur › Winkel"))
 
     def test_broodkruimel_terug_naar_hoofdmenu(self):
-        scherm, _ = self.speel([OK, OK, hm("Wiskunde"), "1", ("klik", 0, 2)])
+        scherm, _ = self.speel([OK, OK, hm("Wiskunde"), "1", ("klik_op", ("kruimel", 0))])
         self.assertIn("Wat wil je doen?", scherm.beelden[-1])
 
     def test_scrollwiel_in_spiekbrief(self):
@@ -446,11 +436,8 @@ class TestSpeurneusEnSchatten(Basis):
         patch.start()
         self.addCleanup(patch.stop)
         o = self.opslag(("Test", "5"))
-        scherm, _ = self.speel([*naar("wiskunde.vraagstukken.schatten_controleren")], opslag=o)
-        beeld = next(b for b in reversed(scherm.beelden) if "a) " in b).split("\n")
-        y = next(i for i, regel in enumerate(beeld) if "a) " in regel)
-        scherm, app = self.speel([*naar("wiskunde.vraagstukken.schatten_controleren"), ("klik", y, 8), ESC, ESC, ESC, ESC, ESC],
-                                 opslag=o)
+        scherm, app = self.speel([*naar("wiskunde.vraagstukken.schatten_controleren"), ("klik_op", ("optie", 0)),
+                                  ESC, ESC, ESC, ESC, ESC], opslag=o)
         rij = o.antwoorden(app.kind.id)[-1]
         self.assertEqual(rij["vaardigheid"], "wiskunde.vraagstukken.schatten")
         self.assertTrue(rij["gegeven"].startswith("a)"))
@@ -703,12 +690,10 @@ class TestWerkwijze(Basis):
         self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
 
     def test_esc_klik_op_ja(self):
-        scherm, _ = self.speel([*self.plusmin(), ESC])
-        y, x = plek(scherm, "[ Ja, stoppen ]")
-        scherm, _ = self.speel([*self.plusmin(), ESC, ("klik", y, x + 2)])
+        scherm, _ = self.speel([*self.plusmin(), ESC, ("klik_op", ("bevestig", True))])
         self.assertIn("Hoofdrekenen: wat wil je oefenen?", na_het_kader(scherm))
 
-    KRUIMEL_WISKUNDE = ("klik", 0, 17)  # " Leeravontuur › Wiskunde › …": "Wiskunde" begint in kolom 16
+    KRUIMEL_WISKUNDE = ("klik_op", ("kruimel", 1))  # " Leeravontuur › Wiskunde › …"
 
     def test_kruimel_vraagt_eerst_en_nee_houdt_alles(self):
         """#33 (opnieuw): een klik op de broodkruimel midden in een vraag vraagt ook eerst "Wil je stoppen?"."""
@@ -895,10 +880,7 @@ class TestWerkwijze(Basis):
 
     def test_klik_op_het_klad(self):
         toetsen = self.plusmin()
-        scherm, _ = self.speel(toetsen)
-        beeld = next(b for b in scherm.beelden if "Klad (Tab)" in b).split("\n")
-        y = next(i for i, r in enumerate(beeld) if "Klad (Tab)" in r)
-        scherm, _ = self.speel([*toetsen, ("klik", y, beeld[y].index("Klad") + 1), *"1 + 1 = 2", OK])
+        scherm, _ = self.speel([*toetsen, ("klik_op", ("focus", "klad")), *"1 + 1 = 2", OK])
         self.assertTrue(self.ergens(scherm, "✔ Deze regel klopt."))
 
     def test_ja_nee_zonder_tweede_kans(self):
@@ -964,7 +946,8 @@ INVOER_OBJECTEN = {"rooster", "staart", "vraagstuk", "speur", "keuze", "balk", "
 class TestTypen(Basis):
     def test_broodkruimel_bij_een_nieuw_kind(self):
         """Een klik op "Wie ben jij?" terwijl je je naam typt: terug naar de keuze, nooit een fout."""
-        scherm, app = self.speel([OK, ("klik", 0, 16), ("klik", 0, 2), *"Zoë", OK, OK, ESC], opslag=self.opslag())
+        scherm, app = self.speel([OK, ("klik_op", ("kruimel", 1)), ("klik_op", ("kruimel", 0)), *"Zoë", OK, OK, ESC],
+                                 opslag=self.opslag())
         self.assertTrue(self.ergens(scherm, "Hallo! Hoe heet je?"))
         self.assertEqual(app.kind.naam, "Zoë")
 
@@ -1065,7 +1048,7 @@ class TestMenuToetsen(unittest.TestCase):
     def test_enter_cijfer_en_klik_zijn_enter(self):
         self.assertEqual(self.menu(["\n"])[0], (0, "Enter"))
         self.assertEqual(self.menu(["3"])[0], (2, "Enter"))
-        self.assertEqual(self.menu([("klik", 7, 10)])[0], (1, "Enter"))
+        self.assertEqual(self.menu([("klik_op", ("kies", 1))])[0], (1, "Enter"))
 
     def test_voetregel_volgt_de_markering_en_is_klikbaar(self):
         _, win = self.menu(["j"])

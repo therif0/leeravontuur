@@ -521,8 +521,8 @@ class TestHetScherm(Basis):
         self.assertTrue(self.antwoord(app)["juist"])  # de vorm zelf was juist
 
     def test_de_keuze_met_pijlen_enter_en_de_muis(self):
-        # stap 1 met ↓↑ en Enter; stap 3 met een klik op "ja" (rij 12)
-        toetsen = [curses.KEY_DOWN, curses.KEY_UP, OK, *"fiets", OK, ("klik", 12, 10), *"fietste", OK, ESC, ESC]
+        # stap 1 met ↓↑ en Enter; stap 3 met een klik op "ja" (de eerste keuze)
+        toetsen = [curses.KEY_DOWN, curses.KEY_UP, OK, *"fiets", OK, ("klik_op", ("optie", 0)), *"fietste", OK, ESC, ESC]
         scherm, _ = self.speel_zin(FIETS, toetsen)
         self.assertTrue(self.ergens(scherm, "Meteen juist!"))
 
@@ -600,8 +600,8 @@ class TestHetScherm(Basis):
                          ("fietste", True, "Daarna fietst Noor in het park. → verleden tijd"))
 
     def test_zet_in_de_verleden_tijd_met_de_muis_en_tab(self):
-        # de woorden op rij 10: Daarna x=7, fietst x=14
-        scherm, _ = self.speel_zin(NU, [("klik", 10, 15), "1", *"fietste", OK, ESC, ESC])
+        # een klik op het woord "fietst" (het 2de: Daarna, fietst …)
+        scherm, _ = self.speel_zin(NU, [("klik_op", ("woord", 1)), "1", *"fietste", OK, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Meteen juist!"))
         scherm, _ = self.speel_zin(NU, [TAB, *"fietste", OK, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Typ de persoonsvorm in de verleden tijd."))

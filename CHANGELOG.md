@@ -2,6 +2,14 @@
 
 In gewone taal: wat er bij elke versie veranderde voor het kind en de ouder.
 
+## 0.28.0 — De bouwstenen voor de nieuwe schermen (je ziet niets anders)
+- **Voor het kind verandert er niets** (nagekeken: elk onderwerp toont dezelfde schermen als vroeger).
+- Onder de motorkap: de vakken, de indeling van het scherm (van 80×24 tot 120×40, op een groter scherm in het midden)
+  en elk soort vraag kan nu in een vak staan. Zo kunnen de volgende versies onderwerp per onderwerp de nieuwe schermen
+  krijgen.
+- **Bèta (`LEERAVONTUUR_BETA=1`, Wiskunde › Cijferen):** op een groot scherm (bv. de tty) staan de vakken nu in het
+  midden in plaats van over de hele breedte; de spiekbrief scrollt ook met een klik op PgUp of PgDn in de rand.
+
 ## 0.27.0 — Opruimen voor de nieuwe schermen (je ziet niets anders)
 - **Voor het kind verandert er niets.** Maten (eenheden omzetten, ook de tabel-oefening) gebruikt nu hetzelfde
   oefenscherm als alle andere onderwerpen. Dat is nodig voor de nieuwe schermen met vakken (de verbouwing

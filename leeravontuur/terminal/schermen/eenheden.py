@@ -12,7 +12,6 @@ from ...kern.getal import fmt, lees_getal
 from ...kern.wiskunde import eenheden as E
 from ..oefenaar import Oefenaar
 from ..scherm import ENTER, ESC
-from ..tabel import TABEL_X, TABEL_Y  # noqa: F401 (de tests klikken in de tabel)
 
 
 class MatenOefenaar(Oefenaar):

@@ -32,16 +32,16 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
       **Keuze van Claude, nog te bevestigen** (vraag 11).
 
 **Wat in de beta een noodoplossing is en straks weg moet**
-- [ ] `beta.InVak` (verschuiven en afknippen) en `beta.VERSCHUIF`: de objecten tekenen nog op vaste kolommen
+- [x] `beta.InVak` (verschuiven en afknippen) en `beta.VERSCHUIF`: de objecten tekenen nog op vaste kolommen
       (`X0 = 12`, `X0 = 8`). Straks krijgt elk object een rechthoek (y, x, h, w) en tekent het daarbinnen.
-- [ ] `beta.Meter` (een nepscherm om te meten hoe breed een object tekent): straks zegt elk object zelf
+- [x] `beta.Meter` (een nepscherm om te meten hoe breed een object tekent): straks zegt elk object zelf
       `breedte()`/`hoogte()`.
-- [ ] `beta.KORTER` en het wegfilteren van "deel → maal …" in `InVak.put`: tekst die in een rand hoort, moet het
+- [x] `beta.KORTER` en het wegfilteren van "deel → maal …" in `InVak.put`: tekst die in een rand hoort, moet het
       object als gegeven teruggeven, niet als getekende tekst.
 - [ ] `BetaOefenaar` overschrijft een stuk van `Oefenaar._stel_vraag`: straks is er één Oefenaar (gouden regel 3).
-- [ ] De rollen `b_vraag`, `b_band`, `b_cursor` (in alle 5 thema's van `thema.py`): straks gewone rollen
+- [x] De rollen `b_vraag`, `b_band`, `b_cursor` (in alle 5 thema's van `thema.py`): straks gewone rollen
       (bv. `vraag`, `band`), ook in de schermkleuren die het kind in de winkel koopt (vraag 19).
-- [ ] De vaste getallen bovenaan `beta.py` (`RECHTS`, `MAATJE_H`, `TIP_H`, `KLAD_MIN/MAX`, `SPIEK_MIN`,
+- [x] De vaste getallen bovenaan `beta.py` (`RECHTS`, `MAATJE_H`, `TIP_H`, `KLAD_MIN/MAX`, `SPIEK_MIN`,
       `GROOT_H`): straks in één **indeling** (welk vak waar, volgens de grootte van het scherm).
 
 ---
@@ -49,8 +49,8 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
 ## B. Gedeelde bouwstenen (`terminal/`)
 | ☐ | Bestand | Wat er nu is | Wat er moet veranderen | Stand |
 |---|---|---|---|---|
-| [ ] | `vak.py` | rand, titel, toets onder | ASCII-rand (`+-|`, via `tekens.py`), een vak met focus (andere rand), scrollen als bouwsteen (nu alleen in de spiekbrief van de beta) | ◐ |
-| [ ] | *nieuw:* indeling | (in `beta.py`, per scherm) | één module: vakken volgens h × w (80×24 → groter), ook met klokvenster | ◐ |
+| [x] | `vak.py` | rand, titel, toets onder | ASCII-rand (`+-|`, via `tekens.py`), een vak met focus (andere rand), scrollen als bouwsteen (nu alleen in de spiekbrief van de beta) | ✔ fase 2 (0.28.0) |
+| [x] | *nieuw:* indeling | (in `beta.py`, per scherm) | één module: vakken volgens h × w (80×24 → groter), ook met klokvenster | ✔ fase 2: `terminal/indeling.py` |
 | [ ] | `scherm.py` `nieuw`/`voet` | titelbalk + voetbalk | blijft; toetsen die in een rand staan niet dubbel onderaan | ✔ (beta) |
 | [ ] | `scherm.py` `menu` | lijst op vaste rijen, uitleg tot een kolom | menu in vakken + kaartje (scherm 4 van het voorstel) | ◐ |
 | [ ] | `scherm.py` `afvink` | afvinklijst (Gemengd, ouder) | in een vak? | ◐ (vraag 17) |
@@ -65,7 +65,7 @@ Elke regel is afvinkbaar (`[ ]` → `[x]` als het gebouwd én in tmux bekeken is
 | [ ] | `digitaal.py` | digitaal klokje (33 breed, of compact) | past niet naast een klad van 34 in 80 breed | ◐ (vraag 2) |
 | [ ] | `avatar.py` | pixel-avatar 16×8, groot in de winkel | blijft; in een vak | ◐ |
 | [ ] | `tekens.py` | ronde hoeken ╭╮╰╯ + ASCII | alle nieuwe randtekens; testen op Windows (conhost/Terminal) en macOS Terminal | ✘ (nagaan) |
-| [ ] | `thema.py` | 5 thema's, `b_`-rollen | gewone rollen; rand-rol per thema (`dim`) nakijken in elk thema | ◐ |
+| [x] | `thema.py` | 5 thema's, `b_`-rollen | gewone rollen; rand-rol per thema (`dim`) nakijken in elk thema | ◐ |
 | [ ] | `klikzones.py` | zones per scherm | elk vak met een toets in de rand krijgt een zone (al zo in `vak.teken`) | ✔ |
 
 ---
@@ -178,8 +178,8 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 - [ ] F2 = de klok in de terminal: dan moet de klok (21 breed) in een vak passen. ◐ (vraag 2)
 
 ## I. De kern (wat de vakken nodig hebben; gouden regels 1 en 2)
-- [ ] Het vak **Reeks**: al in de kern/opslag (resultaten, punten, op rij). ✔ (beta tekent het)
-- [ ] **Vandaag** ("14 van 17 juist"), **Herhaalbak** (`opslag.herhaalbak`), **fris houden**, **laatst geoefend**,
+- [x] Het vak **Reeks**: al in de kern/opslag (resultaten, punten, op rij). ✔ (beta tekent het)
+- [x] **Vandaag** ("14 van 17 juist"), **Herhaalbak** (`opslag.herhaalbak`), **fris houden**, **laatst geoefend**,
       **percentage juist**: bestaan, maar niet als "regels met rollen" voor een vak. ◐ (één functie in de kern die
       de regels geeft)
 - [ ] **Moeilijk voor jou** (denkfouten per onderwerp tellen, uit de foutlog/diagnose): nieuw in de kern. ◐
@@ -195,9 +195,9 @@ randtekst (bv. "deel → maal → min → neer", typrichting) als gegeven terug.
 - [ ] De grootte van het venster in het logboek bij het starten (vraag 1). ◐ (aanbevolen)
 
 ## J. Tests
-- [ ] `tests/test_beta.py`: elk rooster en elke staartdeling past in het vak. → uitbreiden naar **elk object en elk
+- [x] `tests/test_beta.py`: elk rooster en elke staartdeling past in het vak. → uitbreiden naar **elk object en elk
       model in elk leerjaar past in zijn vak, op 80×24 en op een groter scherm, ook in ASCII**.
-- [ ] Tests met klikken op vaste coördinaten (breken zodra iets verschuift): `test_schermen` (7), `test_ouder` (9),
+- [x] Tests met klikken op vaste coördinaten (breken zodra iets verschuift): `test_schermen` (7), `test_ouder` (9),
       `test_procenten` (2), `test_gemengd` (2), `test_taal_scherm` (2), `test_taal_werkwoorden` (2),
       `test_hoofdrekenen`, `test_getallen`, `test_stopslot`, `test_cijferen`, `test_menu_architecture`,
       `test_breuken` (elk 1). Beter: klikken op de zone van een actie, niet op (y, x).

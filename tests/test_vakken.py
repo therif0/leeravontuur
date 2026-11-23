@@ -4,10 +4,9 @@ zijn vak, op elke grootte (80×24, 120×40 en 240×67: de tty van de zoon)."""
 import random
 import unittest
 
-from leeravontuur.kern import catalogus  # noqa: F401 (alle onderwerpen)
+from leeravontuur.kern import catalogus  # laadt alle onderwerpen
 from leeravontuur.kern import overzicht as OZ
 from leeravontuur.kern.leerjaren import LEERJAREN
-from leeravontuur.kern.onderwerp import ONDERWERPEN
 from leeravontuur.kern.wiskunde import eenheden as E
 from leeravontuur.terminal import indeling as I
 from leeravontuur.terminal import modellen as M
@@ -20,7 +19,7 @@ ZADEN = range(6)
 def vragen():
     """Een paar vragen van elk onderwerp in elk leerjaar (en Maten: gewoon en in de tabel)."""
     uit = []
-    for o in ONDERWERPEN.values():
+    for o in catalogus.ONDERWERPEN.values():
         for jaar in LEERJAREN:
             if o.aangeboden(jaar):
                 uit += [(o, o.maak(jaar, rng=random.Random(z))) for z in ZADEN]

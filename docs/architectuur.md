@@ -215,6 +215,28 @@ waaraan je werkt. Uit CLAUDE.md gehaald op 16/11/2026, woord voor woord, zodat C
     (`teken_bron`, de gevonden pv in de rol `z_pv`) en eronder de zin van toen met het vak.
 
 
+## Schermen met vakken (schermen 1.0, in opbouw: werk/schermen.md)
+- Nog achter de schakelaar `LEERAVONTUUR_BETA=1` (`terminal/beta.py`, nu alleen Wiskunde › Cijferen); zonder is alles
+  zoals vroeger. Het plan en de fasen: `werk/schermen.md`, de inventaris: `werk/schermen-inventaris.md`.
+- `terminal/vak.py`: een vak met een rand en een titel in de rand (zoals btop), een toets in de onderrand (klikbaar),
+  een rand in de rol `rand_focus` voor het vak waar het kind typt, en scrollen (`lijst`, `scroll_rand`, `scroll_stap`:
+  PgUp, PgDn, het wiel, een klik in de rand). In ASCII-modus worden de randen + - | (`tekens.py`).
+- `terminal/indeling.py`: welk vak waar staat. Van 80×24 groeien de vakken mee tot 120×40; daarboven (bv. de tty,
+  240×67) blijft het blok zo groot en staat het in het midden. Bovenaan de reeks (een vak vanaf 30 rijen), links Vraag,
+  Tip en Spiekbrief (`verdeel`), het klad als kolom (alleen waar er een klad is), rechts het maatje; met het
+  klokvenster open blijft de kolom van het maatje leeg. Geen enkel scherm telt zelf kolommen.
+- Elk invoer-object krijgt een rechthoek (`terminal/invoer.Plaats`): `x0` (de linkerkant; zonder `plaats` de vaste
+  kolom van vroeger), `plaats(x, breed)` (in een vak: de stijl van de vakken, tekst voor de rand niet in het vak),
+  `breedte()` (gemeten op wat het tekent), `hoogte(nagekeken)` en `randtekst()` (bv. "typrichting ←"). Een object dat
+  breder is dan het vak Vraag, krijgt de volle breedte (zonder maatje). Een model (`modellen.teken_model`) krijgt een
+  `breedte`.
+- De rollen van de vakken: `vraag` (oranje op de band), `band`, `invulcursor` (donkergeel), `rand`, `rand_focus`, in
+  elk thema (ook de schermkleuren van de winkel).
+- Wat er in Reeks en de kaartjes staat, komt uit de kern als regels met rollen (`kern/overzicht.py`: de reeks,
+  vandaag, de herhaalbak, laatst geoefend, fris houden).
+- Tests: `tests/test_vakken.py` (de indeling; elk invoer-object en elk model past op 80×24, 100×30, 120×40 en 240×67).
+  Klikken in een test gaat via de zone van een actie: `("klik_op", actie)` in `NepScherm`, niet via (y, x).
+
 ## Menu's (Vak › Domein › Onderwerp)
 - Alle oefenmenu's komen uit één leerplan: `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`, volgorde =
   volgorde in het menu; `wiskunde.py`, `taal.py`, later `frans.py`). Een `Onderwerp` heeft `modi` (reeks, vrij,

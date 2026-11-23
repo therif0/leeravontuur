@@ -294,10 +294,9 @@ class TestSchermen(Basis):
 
     def test_vermenigvuldigen_met_rijen_en_klik(self):
         o = self.opslag(("Test", "5"))
-        x0 = (RoosterInvoer.x0 + 3)
         # rij 1 = 115, Tab, rij 2 = 920, Tab, uitkomst 1035 (de laatste via een klik op het vakje rechts)
         with mock.patch.object(C.VERMENIGVULDIGEN, "maak", side_effect=[maal_vraag(), maal_vraag()]):
-            scherm, app = self.speel([*naar(3), *"511", TAB, *"029", ("klik", 15, x0 + 6), *"5301", OK, *STOP],
+            scherm, app = self.speel([*naar(3), *"511", TAB, *"029", ("klik_op", ("cel", 2, 3)), *"5301", OK, *STOP],
                                      opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "1035")

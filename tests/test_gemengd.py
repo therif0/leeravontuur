@@ -143,14 +143,14 @@ class TestDeOuderKiest(Basis):
     def test_in_het_ouderdeel(self):
         o = self.met_oefeningen()
         kind = o.kinderen()[0]
-        # Kinderen › Lotte › Gemengd oefenen (rij 10) › Vast › A (alles uit) › Meten (5de regel) aan › kiezen
-        scherm, _ = self.speel([OK, "3", *WW, OK, "3", "1", ("klik", 10, 10), "2", "a", *["j"] * 4, " ", OK,
+        # Kinderen › Lotte › Gemengd oefenen (de 7de keuze) › Vast › A (alles uit) › Meten (5de regel) aan › kiezen
+        scherm, _ = self.speel([OK, "3", *WW, OK, "3", "1", ("klik_op", ("kies", 6)), "2", "a", *["j"] * 4, " ", OK,
                                 ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual(o.instellingen_van(kind.id).gemengd_ouder, {"stand": reeks.VAST, "themas": [METEN]})
         self.assertTrue(self.ergens(scherm, "Elke keer oefent Lotte: Meten."))
         self.assertTrue(self.ergens(scherm, "vast: Meten"))
         # terug naar: het kind kiest
-        self.speel([OK, "3", *WW, OK, "3", "1", ("klik", 10, 10), "1", ESC, ESC, ESC, ESC], opslag=o)
+        self.speel([OK, "3", *WW, OK, "3", "1", ("klik_op", ("kies", 6)), "1", ESC, ESC, ESC, ESC], opslag=o)
         self.assertEqual(reeks.ouder_keuze(o.instellingen_van(kind.id))[0], reeks.KIND)
 
 

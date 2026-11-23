@@ -159,7 +159,7 @@ class TestSchermen(Basis):
         o = self.opslag(("Test", "5"))
         vast = Vraag(H.TAFELS.id, f"{H.TAFELS.id}:t2:2x3", "2 × 3 =", Decimal(6), data={})
         with mock.patch.object(SR, "vraag", return_value=(H.TAFELS, vast)):
-            scherm, app = self.speel([*naar(H.TAFELS, "z", niveau=None), "6", OK, ("klik", 0, 17),
+            scherm, app = self.speel([*naar(H.TAFELS, "z", niveau=None), "6", OK, ("klik_op", ("kruimel", 1)),
                                       curses.KEY_LEFT, OK, OK], opslag=o)
         self.assertTrue(self.ergens(scherm, "Wil je stoppen met deze ronde?"))
         uitslag = next(i for i, b in enumerate(scherm.beelden) if "Juist: 1 van 1" in b)

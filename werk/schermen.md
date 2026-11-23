@@ -225,7 +225,7 @@ niet netjes op te lossen is, en bij elke **schets** (★).
    - Eenheden in de Oefenaar: de tabel wordt een invoer-object; `schermen/eenheden.py` verdwijnt grotendeels.
    - De klad-kolom uit de Cijferen-beta halen.
    - Bewijs: dezelfde schermen en dezelfde bewaarde antwoorden als vóór de stap.
-2. **Bouwstenen:**
+2. ✔ **Bouwstenen** (0.28.0, branch `schermen-2-bouwstenen`):
    - `vak.py` (focus, scrollen, ASCII); één **indeling** (welk vak waar, van 80×24 tot 120×40, daarboven in het
      midden; klokvenster).
    - Elk invoer-object krijgt een rechthoek en zegt zijn breedte, hoogte en randtekst: `InVak`, `Meter`,
