@@ -27,6 +27,9 @@ in de huidige periode = in de rij; al de rest = hier geparkeerd.
       Woordsoorten; later T6 de tekstoefening (het taaldossier). Zie [taal.md](taal.md).
 
 ## Geparkeerd: vragen voor later
+- [ ] Opruimen voor pyflakes (een kleine aparte branch): ongebruikte imports, twee f-strings zonder {…}, een
+      lusvariabele `random` in een test; de imports van `kern/catalogus.py` met een uitleg laten staan. Daarna kan
+      pyflakes in de CI (de vader 23/11: akkoord).
 - [ ] Machten in het klad (`2² = 4`, `10³ = 1000`): pas als het kind machten leert (de vader, 22/11).
 - [ ] Dagtaak: ook in schoolweken, in een lichtere vorm (bv. 15 minuten), om de gewoonte te bouwen? Of alleen in de
       vakanties?
