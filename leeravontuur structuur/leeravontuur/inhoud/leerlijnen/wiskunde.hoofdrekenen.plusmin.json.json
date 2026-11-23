@@ -1,0 +1,45 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.plusmin.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 37,
+ "source_sha256": "b3dc579ef04eb175dd84cb2dcf05d508d241854edbe4e0696d6a874999982e87",
+ "purpose": "Learning line for mental addition and subtraction (years 3-m1).",
+ "details": "Numbers grow from 100 to 10000; decimals and negatives later. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"max": "string", "decimalen": "string", "negatief": "string"},
+  "leerlijn": {
+   "$keys": ["3", "4", "5", "6", "m1"],
+   "$count": 5,
+   "$values": {"max": "number", "decimalen": "number", "negatief": "boolean"}
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.max", "explanation": "Upper limit for the numbers in the questions."},
+  {"key": "parameters.decimalen", "explanation": "Largest number of digits after the decimal comma."},
+  {"key": "parameters.negatief", "explanation": "Whether negative numbers occur."}
+ ]
+}

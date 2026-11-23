@@ -1,0 +1,81 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vt_sterk.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 83,
+ "source_sha256": "924f7cf85ac7579e64363cfd013bfb80e5dcc02be565cd940ad51835154aba79",
+ "purpose": "Learning line for the past tense of strong verbs (liep, gaf, schreef) in years 4-6.",
+ "details": "All stem kinds from the start; persons and sentence patterns grow; step-by-step off in year 6. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 1, "$items": "string"},
+  "parameters": {
+   "$keys": ["niveaus", "stammen", "personen", "patronen", "stap_voor_stap"],
+   "$count": 5,
+   "$values": "string"
+  },
+  "leerlijn": {
+   "4": {
+    "niveaus": {"$list": 1, "$items": "number"},
+    "stammen": {"$list": 4, "$items": "string"},
+    "personen": {"$list": 2, "$items": "string"},
+    "patronen": {"$list": 1, "$items": "string"},
+    "stap_voor_stap": "boolean"
+   },
+   "5": {
+    "niveaus": {"$list": 2, "$items": "number"},
+    "stammen": {"$list": 4, "$items": "string"},
+    "personen": {"$list": 4, "$items": "string"},
+    "patronen": {"$list": 2, "$items": "string"},
+    "stap_voor_stap": "boolean"
+   },
+   "6": {
+    "niveaus": {"$list": 3, "$items": "number"},
+    "stammen": {"$list": 4, "$items": "string"},
+    "personen": {"$list": 4, "$items": "string"},
+    "patronen": {"$list": 3, "$items": "string"},
+    "stap_voor_stap": "boolean"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/taal/werkwoorden.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.niveaus",
+   "explanation": "The difficulty levels (1, 2, 3) of the verbs that occur in that year."
+  },
+  {
+   "key": "parameters.stammen",
+   "explanation": "The kinds of stem ending that occur (gewoon, d, t, vz = voiced/unvoiced)."
+  },
+  {
+   "key": "parameters.personen",
+   "explanation": "The persons (ik, jij, jij_inv = jij after the verb, hij, mv) that occur."
+  },
+  {"key": "parameters.patronen", "explanation": "The sentence patterns (gewoon, inversie, vraag)."},
+  {
+   "key": "parameters.stap_voor_stap",
+   "explanation": "Whether the step-by-step scheme is the default (false = typing the form directly)."
+  }
+ ]
+}

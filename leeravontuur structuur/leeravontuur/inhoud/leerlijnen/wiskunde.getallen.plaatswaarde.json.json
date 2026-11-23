@@ -1,0 +1,44 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.getallen.plaatswaarde.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 31,
+ "source_sha256": "dc4a3cc32df983819a7df6cd5b3f1d1e108c4ff09e2cea01cd7ce97d56865686",
+ "purpose": "Learning line for place value of whole and decimal numbers (years 3-m1).",
+ "details": "Digits and decimals grow. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"max_cijfers": "string", "decimalen": "string"},
+  "leerlijn": {
+   "$keys": ["3", "4", "5", "6", "m1"],
+   "$count": 5,
+   "$values": {"max_cijfers": "number", "decimalen": "number"}
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/getallen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.max_cijfers", "explanation": "Largest number of digits."},
+  {"key": "parameters.decimalen", "explanation": "Largest number of digits after the decimal comma."}
+ ]
+}

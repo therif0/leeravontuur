@@ -1,0 +1,46 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/avatar/winkel.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 72,
+ "source_sha256": "c8aa26f26addb00c4489d07103867375109bd24629421fa5b0d5fa680e6abea0",
+ "purpose": "Shop data: which avatar parts are free and what the others cost in points.",
+ "details": "Loaded by kern/winkel.py (BESTAND). 'gratis' lists the parts every child has from the start (square shape, blue, plain eyes, round ears and no ears); 'prijzen' maps layer -> part id -> price in points. The catalogue in kern/winkel.catalogus is built from this file plus the part names in onderdelen.json. Part ids must match onderdelen.json.",
+ "keys": ["uitleg", "gratis", "prijzen"],
+ "shape": {
+  "uitleg": "string",
+  "gratis": {
+   "vorm": {"$list": 1, "$items": "string"},
+   "kleur": {"$list": 1, "$items": "string"},
+   "ogen": {"$list": 1, "$items": "string"},
+   "oren": {"$list": 2, "$items": "string"}
+  },
+  "prijzen": {
+   "vorm": {"rond": "number", "ovaal": "number", "trapezium": "number"},
+   "kleur": {
+    "$keys": ["groen", "rood", "oranje", "paars", "roze", "geel", "cyaan", "grijs"],
+    "$count": 8,
+    "$values": "number"
+   },
+   "ogen": {"$keys": ["rond", "slaperig", "knipoog", "ster", "hart"], "$count": 5, "$values": "number"},
+   "oren": {"groot": "number", "punt": "number"},
+   "haar": {"kuif": "number", "piekjes": "number", "blond": "number"},
+   "hoed": {"$keys": ["pet", "muts", "feest", "katten", "kroon", "koksmuts"], "$count": 6, "$values": "number"},
+   "accessoire": {
+    "$keys": ["strik", "bril", "snor", "zonnebril", "rekenbril", "stropdas", "zakhorloge", "potlood", "…"],
+    "$count": 11,
+    "$values": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/winkel.py"],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "Short note: prices in points, 'gratis' = every child has them at once."},
+  {"key": "gratis", "explanation": "Per layer the free part ids."},
+  {
+   "key": "prijzen",
+   "explanation": "Per layer (vorm, kleur, ogen, oren, haar, hoed, accessoire) the price of each part."
+  }
+ ]
+}

@@ -1,0 +1,61 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.hoeken.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 63,
+ "source_sha256": "63691a8944cf35d95411b329e2e5ff53a8c27dcd6db09345856b5188cc7f4269",
+ "purpose": "Learning line for kinds of angle and angles in a triangle (years 4-m1).",
+ "details": "From drawings and degrees to triangle angles and adjacent angles. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "hoeken": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "hoeken": {"$list": 3, "$items": "string"}
+   },
+   "5": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "hoeken": {"$list": 4, "$items": "string"}
+   },
+   "6": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "hoeken": {"$list": 5, "$items": "string"}
+   },
+   "m1": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "hoeken": {"$list": 5, "$items": "string"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/meetkunde.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.hoeken", "explanation": "The kinds of angle that occur."}
+ ]
+}

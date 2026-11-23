@@ -1,0 +1,48 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.optellen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 37,
+ "source_sha256": "9e4e693d32b039258e735c4c76148b7d8e8ad641d6c68a21b85634b0f405e015",
+ "purpose": "Learning line for column addition (years 3-m1).",
+ "details": "Digits, decimals and number of terms (two, later three) grow. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"cijfers": "string", "decimalen": "string", "termen": "string"},
+  "leerlijn": {
+   "$keys": ["3", "4", "5", "6", "m1"],
+   "$count": 5,
+   "$values": {"cijfers": "number", "decimalen": "number", "termen": "number"}
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/cijferen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.cijfers",
+   "explanation": "Largest number of digits of the numbers in a column sum (for unit conversion: a [min, max] pair of digits)."
+  },
+  {"key": "parameters.decimalen", "explanation": "Largest number of digits after the decimal comma."},
+  {"key": "parameters.termen", "explanation": "How many numbers are added under each other."}
+ ]
+}

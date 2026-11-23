@@ -1,0 +1,66 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.maaldeel10.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 50,
+ "source_sha256": "c31e7fb36c6b187e07e6d02f6d3289cddbed6fdf9f0b1ec886b26ef4163673b9",
+ "purpose": "Learning line for × and : by 10, 100, 1000 (years 4-m1).",
+ "details": "Powers of ten grow to 1000 and 0,1/0,01; decimals and size grow. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"machten": "string", "decimalen": "string", "max": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "machten": {"$list": 2, "$items": "number"},
+    "decimalen": "number",
+    "max": "number"
+   },
+   "5": {
+    "machten": {"$list": 3, "$items": "number"},
+    "decimalen": "number",
+    "max": "number"
+   },
+   "6": {
+    "machten": {"$list": 3, "$items": "number"},
+    "decimalen": "number",
+    "max": "number"
+   },
+   "m1": {
+    "machten": {"$list": 5, "$items": "number"},
+    "decimalen": "number",
+    "max": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.machten",
+   "explanation": "The powers of ten used for × and : (10, 100, 1000 and, later, 0,1 and 0,01)."
+  },
+  {"key": "parameters.decimalen", "explanation": "Largest number of digits after the decimal comma."},
+  {"key": "parameters.max", "explanation": "Upper limit for the numbers in the questions."}
+ ]
+}

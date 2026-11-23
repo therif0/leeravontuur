@@ -1,0 +1,79 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.klok.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 23,
+ "source_sha256": "51f5b6b031239f4f09788bacef22769654d6f957dc67aeb108de9d7e9cb67218",
+ "purpose": "Learning line for the clock: reading, setting, words, 24 hours, later and earlier (years 3-m1).",
+ "details": "Five-minute steps in year 3 and single minutes later; 24-hour questions from year 4; durations and crossing midnight grow. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"$keys": ["soorten", "stap", "max_duur", "middernacht"], "$count": 4, "$values": "string"},
+  "leerlijn": {
+   "3": {
+    "soorten": {"$list": 5, "$items": "string"},
+    "stap": "number",
+    "max_duur": "number",
+    "middernacht": "boolean"
+   },
+   "4": {
+    "soorten": {"$list": 7, "$items": "string"},
+    "stap": "number",
+    "max_duur": "number",
+    "middernacht": "boolean"
+   },
+   "5": {
+    "soorten": {"$list": 7, "$items": "string"},
+    "stap": "number",
+    "max_duur": "number",
+    "middernacht": "boolean"
+   },
+   "6": {
+    "soorten": {"$list": 7, "$items": "string"},
+    "stap": "number",
+    "max_duur": "number",
+    "middernacht": "boolean"
+   },
+   "m1": {
+    "soorten": {"$list": 6, "$items": "string"},
+    "stap": "number",
+    "max_duur": "number",
+    "middernacht": "boolean"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/klok.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {
+   "key": "parameters.stap",
+   "explanation": "Step in minutes of the times that are read from the clock (5 = five-minute steps, 1 = every minute)."
+  },
+  {"key": "parameters.max_duur", "explanation": "Largest duration in minutes."},
+  {"key": "parameters.middernacht", "explanation": "Whether durations may cross midnight."}
+ ]
+}

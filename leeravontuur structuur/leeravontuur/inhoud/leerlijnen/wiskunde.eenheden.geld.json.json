@@ -1,0 +1,64 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.geld.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 55,
+ "source_sha256": "82d008a2657c5e01ca406a81212cd491ece77fd6532da87e2164659a7d66cc07",
+ "purpose": "Learning line for money: euro and cent, paying and change (years 3-m1).",
+ "details": "Always euro↔cent and change; 'samen' (paying together) from year 4; amounts grow to 9999 cent. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "max_cent": "string"},
+  "leerlijn": {
+   "3": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "max_cent": "number"
+   },
+   "4": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "max_cent": "number"
+   },
+   "5": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "max_cent": "number"
+   },
+   "6": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "max_cent": "number"
+   },
+   "m1": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "max_cent": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/grootheden.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.max_cent", "explanation": "Largest amount in cents."}
+ ]
+}

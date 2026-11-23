@@ -1,0 +1,263 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/avatar/onderdelen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 558,
+ "source_sha256": "1a5bc3ad9dcdedc14791637b4409146314fc54e5bb9059fb687f412f49e72304",
+ "purpose": "The avatar parts as pixel art: palette, body colours, body shapes with anchors, eyes, ears, nose, expressions, hair, hats and accessories.",
+ "details": "Loaded by kern/avatar.py (BESTAND) and drawn by terminal/avatar.py. Every part is a small grid of letters; each letter is a colour of the 'palet' ('.' = transparent, K body colour, D darker, L lighter). Eyes, ears, mouth and glasses are placed on the anchors of the chosen body shape. Names inside are stored ids (kept in the child's saved avatar and purchases): never rename them. Prices live in winkel.json.",
+ "keys": [
+  "uitleg",
+  "palet",
+  "kleuren",
+  "vormen",
+  "ogen",
+  "oren",
+  "neus",
+  "uitdrukkingen",
+  "haar",
+  "hoed",
+  "accessoire"
+ ],
+ "shape": {
+  "uitleg": "string",
+  "palet": {"$keys": ["O", "W", "B", "R", "Y", "P", "G", "S", "…"], "$count": 14, "$values": "string"},
+  "kleuren": {
+   "$keys": ["blauw", "groen", "rood", "oranje", "paars", "roze", "geel", "cyaan", "…"],
+   "$count": 9,
+   "$values": {"naam": "string", "rgb": "string"}
+  },
+  "vormen": {
+   "$keys": ["vierkant", "rond", "ovaal", "trapezium"],
+   "$count": 4,
+   "$values": {
+    "naam": "string",
+    "ankers": {
+     "ogen": {"$list": 3, "$items": "number"},
+     "neus": {"$list": 2, "$items": "number"},
+     "mond": {"$list": 2, "$items": "number"},
+     "oren": {"$list": 3, "$items": "number"},
+     "top": "number"
+    },
+    "pixels": {"$list": 16, "$items": "string"}
+   }
+  },
+  "ogen": {
+   "gewoon": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "rond": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "slaperig": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "ster": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "hart": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "knipoog": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"},
+    "rechts": {"$list": 3, "$items": "string"}
+   }
+  },
+  "oren": {
+   "rond": {
+    "naam": "string",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "groot": {
+    "naam": "string",
+    "pixels": {"$list": 5, "$items": "string"}
+   },
+   "punt": {
+    "naam": "string",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "geen": {
+    "naam": "string",
+    "pixels": {"$list": 0}
+   }
+  },
+  "neus": {"$list": 1, "$items": "string"},
+  "uitdrukkingen": {
+   "normaal": {
+    "mond": {"$list": 1, "$items": "string"}
+   },
+   "blij": {
+    "mond": {"$list": 2, "$items": "string"}
+   },
+   "trots": {
+    "mond": {"$list": 2, "$items": "string"},
+    "ogen": {"$list": 3, "$items": "string"}
+   },
+   "verrast": {
+    "mond": {"$list": 3, "$items": "string"}
+   },
+   "denken": {
+    "mond": {"$list": 1, "$items": "string"}
+   },
+   "oeps": {
+    "mond": {"$list": 2, "$items": "string"},
+    "ogen": {"$list": 3, "$items": "string"}
+   },
+   "aanmoedigend": {
+    "mond": {"$list": 2, "$items": "string"}
+   },
+   "geconcentreerd": {
+    "mond": {"$list": 1, "$items": "string"}
+   }
+  },
+  "haar": {
+   "kuif": {
+    "naam": "string",
+    "kleur": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "piekjes": {
+    "naam": "string",
+    "kleur": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "blond": {
+    "naam": "string",
+    "kleur": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   }
+  },
+  "hoed": {
+   "pet": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "kroon": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "feest": {
+    "naam": "string",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "muts": {
+    "naam": "string",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "katten": {
+    "naam": "string",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "koksmuts": {
+    "naam": "string",
+    "pixels": {"$list": 4, "$items": "string"}
+   }
+  },
+  "accessoire": {
+   "bril": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "zonnebril": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "snor": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 2, "$items": "string"}
+   },
+   "strik": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "x": "number",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "rekenbril": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 4, "$items": "string"}
+   },
+   "stropdas": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 3, "$items": "string"}
+   },
+   "zakhorloge": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 5, "$items": "string"}
+   },
+   "potlood": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 5, "$items": "string"}
+   },
+   "kladblok": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 6, "$items": "string"}
+   },
+   "vergrootglas": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 7, "$items": "string"}
+   },
+   "wekker": {
+    "naam": "string",
+    "anker": "string",
+    "dy": "number",
+    "dx": "number",
+    "pixels": {"$list": 7, "$items": "string"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/avatar.py"],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "Explains the pixel format (16×16, letters, anchors)."},
+  {"key": "palet", "explanation": "Letter -> hex colour for the pixel art."},
+  {"key": "kleuren", "explanation": "Body colours: id -> display name and rgb."},
+  {
+   "key": "vormen",
+   "explanation": "Body shapes (vierkant, rond, ovaal, trapezium): name, anchor positions for eyes, nose, mouth, ears and top, and the 16 pixel rows."
+  },
+  {"key": "ogen", "explanation": "Eye styles: id -> name and pixel rows (knipoog has a right-eye variant)."},
+  {"key": "oren", "explanation": "Ear styles (rond, groot, punt, geen)."},
+  {"key": "neus", "explanation": "The nose pattern (a small grid)."},
+  {
+   "key": "uitdrukkingen",
+   "explanation": "The facial expressions the buddy shows: normaal, blij, trots, verrast, denken, oeps, aanmoedigend, geconcentreerd."
+  },
+  {"key": "haar", "explanation": "Hair styles (kuif, piekjes, blond)."},
+  {"key": "hoed", "explanation": "Hats."},
+  {"key": "accessoire", "explanation": "Accessories (bow tie, glasses, moustache, pocket watch, ...)."}
+ ]
+}

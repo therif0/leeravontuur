@@ -1,0 +1,57 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.kommagetal.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 51,
+ "source_sha256": "8d0b53714a177b9539aef822f5b4b19d8b785d9a9debd14c2666330101978706",
+ "purpose": "Learning line for converting between fractions and decimals (years 4-6).",
+ "details": "Fraction to decimal from year 4, decimal to fraction from year 5; more denominators later. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "noemers": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "soorten": {"$list": 1, "$items": "string"},
+    "noemers": {"$list": 2, "$items": "number"}
+   },
+   "5": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 5, "$items": "number"}
+   },
+   "6": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 9, "$items": "number"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/breuken.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.noemers", "explanation": "The denominators that may be used in that year (list)."}
+ ]
+}
