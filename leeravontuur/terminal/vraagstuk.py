@@ -14,6 +14,7 @@ import textwrap
 from ..kern import verhaal as V
 from ..kern.wiskunde import vraagstukken as VS
 from ..kern.wiskunde.grootheden import klok_cijfers
+from .invoer import Plaats
 from .kladblad import LEEG_ENTER, Kladblad
 from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
 
@@ -29,7 +30,19 @@ MAX_KLAD = 8
 NAAST_MAATJE, MAATJE_ONDER = 58, 9   # tot rij 9 staat rechts het maatje: daar is een regel hoogstens 58 breed
 
 
-class VraagstukInvoer:
+class VraagstukInvoer(Plaats):
+    x0 = X                      # de linkerkant (het verhaal, de namen van de stappen)
+
+    @property
+    def x_stap(self):
+        """Waar de inhoud van een stap begint."""
+        return self.x0 + KOP - X
+
+    @property
+    def rechter(self):
+        """De rechterkant: in een vak die van het vak, anders kolom 78 (zoals vroeger)."""
+        return self.x0 + self.breed if self.in_vak else 78
+
     eigen_tekst = True
     eigen_tip = True
     geen_tweede_kans = True  # een eigen tweede kans per stap
@@ -101,13 +114,13 @@ class VraagstukInvoer:
 
     def teken_verhaal(self, s, y, bezig):
         breed = VS.BREEDTE + 4
-        s.put(y, X, "┌ Het verhaal " + "─" * (breed - 15) + "┐", "dim")
+        s.put(y, self.x0, "┌ Het verhaal " + "─" * (breed - 15) + "┐", "dim")
         nodig = {k for k, g in self.m.gegevens.items() if g.nodig}
         for i, regel in enumerate(self.lijnen):
             yy = y + 1 + i
-            s.put(yy, X, "│", "dim")
-            s.put(yy, X + breed - 1, "│", "dim")
-            x = X + 2
+            s.put(yy, self.x0, "│", "dim")
+            s.put(yy, self.x0 + breed - 1, "│", "dim")
+            x = self.x0 + 2
             for woord in regel:
                 for tekst, gid, sleutel in woord:
                     rol = ""
@@ -127,21 +140,21 @@ class VraagstukInvoer:
                     s.put(yy, x, tekst, rol)
                     x += len(tekst)
                 x += 1
-        s.put(y + len(self.lijnen) + 1, X, "└" + "─" * (breed - 2) + "┘", "dim")
+        s.put(y + len(self.lijnen) + 1, self.x0, "└" + "─" * (breed - 2) + "┘", "dim")
 
     def kop(self, s, y, fase):
         plan = VS.STAPPENPLAN[fase]
         actief = fase == self.fase
         tekst = f"{'▸' if actief else ' '}{plan['nr']} {plan['naam']}"
-        s.put(y, X, tekst, "accent" if actief else "bold")
-        s.zones.voeg(y, X, 1, KOP - X - 1, ("fase", fase))
+        s.put(y, self.x0, tekst, "accent" if actief else "bold")
+        s.zones.voeg(y, self.x0, 1, KOP - X - 1, ("fase", fase))
 
     def teken_stappen(self, s, r):
         m = self.m
         # 1 Lees: gegeven en gevraagd
         self.kop(s, r, LEES)
-        s.put(r, KOP, "Gegeven:", "dim")
-        x = KOP + 9
+        s.put(r, self.x_stap, "Gegeven:", "dim")
+        x = self.x_stap + 9
         if not self.aangeduid:
             s.put(r, x, "duid aan wat nodig is (←→ en spatie, klik)", "dim")
         for gid in self.aangeduid:
@@ -153,30 +166,30 @@ class VraagstukInvoer:
             s.put(r, x, stuk, "goed" if g.nodig else "dim")
             s.zones.voeg(r, x, 1, len(stuk), ("gegeven", gid))
             x += len(stuk) + 3
-        s.put(r + 1, KOP, "Gevraagd:", "dim")
+        s.put(r + 1, self.x_stap, "Gevraagd:", "dim")
         if self.gevraagd is None:
             kies = self.fase == LEES and self.onder
             tekst = m.opties[self.optie]
-            s.put(r + 1, KOP + 10, "◂", "accent" if kies else "dim")
-            s.put(r + 1, KOP + 12, tekst, "cursor" if kies else "")
-            s.put(r + 1, KOP + 13 + len(tekst), f"▸ ({self.optie + 1}/{len(m.opties)})", "accent" if kies else "dim")
-            s.zones.voeg(r + 1, KOP + 10, 1, 1, ("optie", -1))
-            s.zones.voeg(r + 1, KOP + 12, 1, len(tekst), ("kies",))
-            s.zones.voeg(r + 1, KOP + 13 + len(tekst), 1, 1, ("optie", 1))
+            s.put(r + 1, self.x_stap + 10, "◂", "accent" if kies else "dim")
+            s.put(r + 1, self.x_stap + 12, tekst, "cursor" if kies else "")
+            s.put(r + 1, self.x_stap + 13 + len(tekst), f"▸ ({self.optie + 1}/{len(m.opties)})", "accent" if kies else "dim")
+            s.zones.voeg(r + 1, self.x_stap + 10, 1, 1, ("optie", -1))
+            s.zones.voeg(r + 1, self.x_stap + 12, 1, len(tekst), ("kies",))
+            s.zones.voeg(r + 1, self.x_stap + 13 + len(tekst), 1, 1, ("optie", 1))
         else:
             ok = m.opties[self.gevraagd] == m.gevraagd
-            s.put(r + 1, KOP + 10, m.opties[self.gevraagd], "goed" if ok else "fout")
-            s.put(r + 1, KOP + 11 + len(m.opties[self.gevraagd]),
+            s.put(r + 1, self.x_stap + 10, m.opties[self.gevraagd], "goed" if ok else "fout")
+            s.put(r + 1, self.x_stap + 11 + len(m.opties[self.gevraagd]),
                   "✔" if ok else "✘ lees de vraag nog eens (←→ = opnieuw kiezen)", "goed" if ok else "fout")
         # 2 Plan
         self.kop(s, r + 2, PLAN)
         if self.plan:
             tekst = "  ".join(("eerst " if i == 0 else "dan ") + op for i, op in enumerate(self.plan))
-            s.put(r + 2, KOP, tekst[:30] if self.fase == PLAN else tekst, "bold")
+            s.put(r + 2, self.x_stap, tekst[:30] if self.fase == PLAN else tekst, "bold")
         elif self.fase == PLAN:
-            s.put(r + 2, KOP, "welke bewerking eerst?", "dim")
+            s.put(r + 2, self.x_stap, "welke bewerking eerst?", "dim")
         else:
-            s.put(r + 2, KOP, "(mag je overslaan)", "dim")
+            s.put(r + 2, self.x_stap, "(mag je overslaan)", "dim")
         x = 46
         if self.fase == PLAN:
             for op in ("+", "−", "×", ":", "omzetten", "⌫"):
@@ -186,15 +199,15 @@ class VraagstukInvoer:
         # 3 Reken: het klad
         self.kop(s, r + 3, REKEN)
         kh = self.klad_h()
-        plek = self.kb.teken(s, r + 3, KOP, 54, kh, self.fase == REKEN, ("fase", REKEN))
+        plek = self.kb.teken(s, r + 3, self.x_stap, 54, kh, self.fase == REKEN, ("fase", REKEN))
         if plek:
             self.cursor_pos = plek
         # 4 Controle: de antwoordzin
         yc = r + 3 + kh
         self.kop(s, yc, CONTROLE)
         voor, na = self.m.antwoordzin
-        s.put(yc, KOP, voor, "")
-        vak = KOP + len(voor)
+        s.put(yc, self.x_stap, voor, "")
+        vak = self.x_stap + len(voor)
         tekst = self.antw
         if self.antw and getattr(self.m, "soort", "getal") == "klok" and (c := klok_cijfers(self.antw)):
             tekst = f"{c[:2]}:{c[2:]}".strip()  # een tijdstip zoals op een digitaal klokje: 16:1_ (#21)
@@ -204,38 +217,47 @@ class VraagstukInvoer:
             self.cursor_pos = (yc, vak + 1 + len(tekst))
         # de tip
         if self.tiptekst:
-            for i, stuk in enumerate(textwrap.wrap(self.tiptekst, 76)[:2]):
-                s.put(yc + 1 + i, X, stuk, "accent")
+            for i, stuk in enumerate(textwrap.wrap(self.tiptekst, self.breed if self.in_vak else 76)[:2]):
+                s.put(yc + 1 + i, self.x0, stuk, "accent")
 
     def teken_uitwerking(self, s, r, uitslag):
         m = self.m
         nodig = [g for g in m.gegevens.values() if g.nodig]
         overbodig = [g for g in m.gegevens.values() if not g.nodig]
-        s.put(r, X, "Gegeven:", "bold")
+        s.put(r, self.x0, "Gegeven:", "bold")
         tekst = "  ·  ".join(f"{g.tekst} ({g.naam})" for g in nodig)
         if len(tekst) > 66:
             tekst = "  ·  ".join(g.tekst for g in nodig)
-        s.put(r, KOP, tekst[:66], "")
-        if overbodig:
-            s.put(r, KOP + min(len(tekst), 66) + 3, f"niet nodig: {overbodig[0].tekst}"[:78 - KOP - len(tekst) - 3],
-                  "dim")
-        s.put(r + 1, X, "Gevraagd:", "bold")
-        s.put(r + 1, KOP, m.gevraagd, "")
-        s.put(r + 2, X, "Oplossing:", "bold")
+        if self.in_vak:  # in een vak: alleen wat binnen de rand past
+            ruimte = self.rechter - self.x_stap
+            s.put(r, self.x_stap, tekst[:ruimte], "")
+            rest = ruimte - len(tekst) - 3
+            if overbodig and rest > 0:
+                s.put(r, self.x_stap + len(tekst) + 3, f"niet nodig: {overbodig[0].tekst}"[:rest], "dim")
+        else:
+            s.put(r, self.x_stap, tekst[:66], "")
+            if overbodig:
+                s.put(r, self.x_stap + min(len(tekst), 66) + 3,
+                      f"niet nodig: {overbodig[0].tekst}"[:78 - KOP - len(tekst) - 3], "dim")
+        s.put(r + 1, self.x0, "Gevraagd:", "bold")
+        s.put(r + 1, self.x_stap, m.gevraagd, "")
+        s.put(r + 2, self.x0, "Oplossing:", "bold")
         for i, st in enumerate(m.stappen):
-            s.put(r + 2 + i, KOP, st.reken, "")
-            s.put(r + 2 + i, KOP + len(st.reken) + 3, f"← {st.naam}"[:78 - KOP - len(st.reken) - 3], "dim")
+            s.put(r + 2 + i, self.x_stap, st.reken, "")
+            rest = (self.rechter - self.x_stap if self.in_vak else 78 - KOP) - len(st.reken) - 3
+            if rest > 0 or not self.in_vak:
+                s.put(r + 2 + i, self.x_stap + len(st.reken) + 3, f"← {st.naam}"[:rest], "dim")
         ya = r + 2 + len(m.stappen)
-        s.put(ya, X, "Antwoord:", "bold")
-        s.put(ya, KOP, VS.antwoordzin(m, self.v.antwoord), "goed" if uitslag else "")
+        s.put(ya, self.x0, "Antwoord:", "bold")
+        s.put(ya, self.x_stap, VS.antwoordzin(m, self.v.antwoord), "goed" if uitslag else "")
         for i, regel in enumerate(self.controle_regels()):
-            s.put(ya + 1 + i, KOP, regel, "dim")
+            s.put(ya + 1 + i, self.x_stap, regel, "dim")
 
     def controle_regels(self):
         """'Kan dat? …' onder het antwoord, over hoogstens 2 regels."""
         if not self.m.controle:
             return []
-        return textwrap.wrap(f"Kan dat? {self.m.controle[2]}", 78 - KOP)[:2]
+        return textwrap.wrap(f"Kan dat? {self.m.controle[2]}", self.rechter - self.x_stap)[:2]
 
     def hint_tekst(self):
         if self.fase == LEES:
@@ -523,25 +545,26 @@ INVOER = {"vraagstuk": VraagstukInvoer}
 
 # ---- de Speurneus en de keuzevragen (schatten, kan dat kloppen?) ------------------------------------------
 
-def teken_kader(s, y, lijnen, sleutels=False, titel="Het verhaal"):
+def teken_kader(s, y, lijnen, sleutels=False, titel="Het verhaal", x0=X):
     """Het verhaal in een kader (zonder aanduiden). Geeft de hoogte."""
     breed = VS.BREEDTE + 4
-    s.put(y, X, f"┌ {titel} " + "─" * (breed - 4 - len(titel)) + "┐", "dim")
+    s.put(y, x0, f"┌ {titel} " + "─" * (breed - 4 - len(titel)) + "┐", "dim")
     for i, regel in enumerate(lijnen):
         yy = y + 1 + i
-        s.put(yy, X, "│", "dim")
-        s.put(yy, X + breed - 1, "│", "dim")
-        x = X + 2
+        s.put(yy, x0, "│", "dim")
+        s.put(yy, x0 + breed - 1, "│", "dim")
+        x = x0 + 2
         for woord in regel:
             for tekst, gid, sleutel in woord:
                 s.put(yy, x, tekst, "bold" if gid else "accent" if sleutel and sleutels else "")
                 x += len(tekst)
             x += 1
-    s.put(y + len(lijnen) + 1, X, "└" + "─" * (breed - 2) + "┘", "dim")
+    s.put(y + len(lijnen) + 1, x0, "└" + "─" * (breed - 2) + "┘", "dim")
     return len(lijnen) + 2
 
 
-class _MetTip:
+class _MetTip(Plaats):
+    x0 = X
     """Een invoer-object dat zelf de tip toont (onderaan) en bewaart of er een tip gebruikt werd."""
     eigen_tekst = True
     eigen_tip = True
@@ -560,7 +583,7 @@ class _MetTip:
 
     def teken_tip(self, s, y):
         if self.tip_aan:
-            s.put(y, X, ("Tip: " + self.o.tip(self.v))[:76], "accent")
+            s.put(y, self.x0, ("Tip: " + self.o.tip(self.v))[:76], "accent")
 
     def bewaar(self):
         self.extra = {"tips": 1} if self.tip_aan else None
@@ -590,8 +613,8 @@ class SpeurInvoer(_MetTip):
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
-        r = y + teken_kader(s, y, self.lijnen)
-        s.put(r, X, f"{self.m.wie} loste het zo op. Zit er een fout in?", "bold")
+        r = y + teken_kader(s, y, self.lijnen, x0=self.x0)
+        s.put(r, self.x0, f"{self.m.wie} loste het zo op. Zit er een fout in?", "bold")
         for i, tekst in enumerate(self.m.regels, 1):
             yy = r + i
             gekozen = self.regel == i or (self.regel is None and bezig and self.sel == i)
@@ -602,18 +625,18 @@ class SpeurInvoer(_MetTip):
                     teken, rol = "✘", "fout"
                 elif self.regel == i:
                     teken, rol = "?", "accent"
-            s.put(yy, X + 2, f"{i}. {teken} {tekst}"[:NAAST_MAATJE if yy <= MAATJE_ONDER else 76], rol)
+            s.put(yy, self.x0 + 2, f"{i}. {teken} {tekst}"[:NAAST_MAATJE if yy <= MAATJE_ONDER else 76], rol)
             if bezig and self.regel is None:
-                s.zones.voeg(yy, X, 1, 76, ("regel", i))
+                s.zones.voeg(yy, self.x0, 1, 76, ("regel", i))
         yy = r + self.n + 1
         if bezig and self.regel is None:
-            s.put(yy, X + 2, "0.   Alles is juist!", "cursor" if self.sel == 0 else "goed")
-            s.zones.voeg(yy, X, 1, 30, ("regel", 0))
+            s.put(yy, self.x0 + 2, "0.   Alles is juist!", "cursor" if self.sel == 0 else "goed")
+            s.zones.voeg(yy, self.x0, 1, 30, ("regel", 0))
         elif bezig:
-            s.put(yy, X, f"Wat ging er mis in regel {self.regel}?", "bold")
+            s.put(yy, self.x0, f"Wat ging er mis in regel {self.regel}?", "bold")
             for j, reden in enumerate(self.m.redenen):
-                s.put(yy + 1 + j, X + 2, f"{'abc'[j]}) {reden}"[:76], "cursor" if self.reden == j else "")
-                s.zones.voeg(yy + 1 + j, X, 1, 76, ("reden", j))
+                s.put(yy + 1 + j, self.x0 + 2, f"{'abc'[j]}) {reden}"[:76], "cursor" if self.reden == j else "")
+                s.zones.voeg(yy + 1 + j, self.x0, 1, 76, ("reden", j))
             yy += 3
         if bezig:
             self.teken_tip(s, yy + 1)
@@ -699,9 +722,9 @@ class KeuzeInvoer(_MetTip):
 
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
-        r = y + teken_kader(s, y, self.lijnen)
+        r = y + teken_kader(s, y, self.lijnen, x0=self.x0)
         for i, regel in enumerate(self.vraag):
-            s.put(r + i, X, regel, "bold")
+            s.put(r + i, self.x0, regel, "bold")
         r += len(self.vraag) + 1
         for j, optie in enumerate(self.m.opties):
             teken, rol = " ", "cursor" if bezig and self.sel == j else ""
@@ -710,9 +733,9 @@ class KeuzeInvoer(_MetTip):
                     teken, rol = "✔", "goed"
                 elif j == self.gekozen:
                     teken, rol = "✘", "fout"
-            s.put(r + j, X + 2, f"{teken} {'abc'[j]}) {optie}", rol)
+            s.put(r + j, self.x0 + 2, f"{teken} {'abc'[j]}) {optie}", rol)
             if bezig:
-                s.zones.voeg(r + j, X, 1, 60, ("optie", j))
+                s.zones.voeg(r + j, self.x0, 1, 60, ("optie", j))
         if bezig:
             self.teken_tip(s, r + len(self.m.opties))
 

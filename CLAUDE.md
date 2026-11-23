@@ -52,7 +52,8 @@ dubbelklik-bestand per systeem: `leeravontuur-win.bat`, `leeravontuur-mac.comman
 
 ## Testen
 - `python3 -m unittest discover -s tests` (of `python3 leeravontuur.py --test`). Draait ook in CI op 3 systemen.
-- Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik", y, x), ("wiel", ±1)).
+- Schermen testen zonder terminal met `terminal/nepscherm.py` (toetsen, ("klik_op", actie), ("wiel", ±1)); een klik
+  via de zone van een actie, niet via ("klik", y, x), zodat een test juist blijft als een vak verschuift.
 - Een echte terminaltest: tmux 80×24. Muisklikken sturen in tmux met SGR-codes:
   `tmux send-keys -t <sessie> -l $'\e[<0;X;YM'` (X en Y vanaf 1), en daarna de loslaat-code `$'\e[<0;X;Ym'` (anders
   denkt ncurses dat de knop nog ingedrukt is en telt de volgende klik niet). Start het programma in tmux met

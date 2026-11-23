@@ -13,13 +13,14 @@ from dataclasses import replace
 from ..kern.modellen import Breukbalk, Wijzerklok
 from ..kern.wiskunde.grootheden import klok_tekst
 from . import modellen as M
+from .invoer import Plaats
 from .scherm import ENTER, ESC, HULP
 
 NOEMER_MAX = 20
 
 
-class BalkInvoer:
-    X0 = 8
+class BalkInvoer(Plaats):
+    x0 = 8
 
     def __init__(self, v, o):
         self.v, self.o = v, o
@@ -45,15 +46,15 @@ class BalkInvoer:
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
         y += 1  # onder het maatje
-        rechts = M.teken_balk(s, y, self.noemer, self.gearceerd, self.X0,
+        rechts = M.teken_balk(s, y, self.noemer, self.gearceerd, self.x0,
                               actie=(lambda i: ("stuk", i)) if bezig else None)
         teller = len(self.gearceerd)
         rol = "bold" if bezig else ("goed" if uitslag else "fout")
         s.put(y, rechts + 3, f"{teller}/{self.noemer}", rol)
         if bezig:
-            a, b = M.stuk_grenzen(self.noemer, self.X0)[self.cursor]
+            a, b = M.stuk_grenzen(self.noemer, self.x0)[self.cursor]
             s.put(y + 2, (a + b) // 2, "▲", "accent")
-            s.put(y + 3, self.X0, f"{self.noemer} stukken" + ("" if self.vast else "  (↑↓ om te veranderen)"), "dim")
+            s.put(y + 3, self.x0, f"{self.noemer} stukken" + ("" if self.vast else "  (↑↓ om te veranderen)"), "dim")
 
     def toets(self, k):
         if isinstance(k, tuple):
@@ -101,9 +102,9 @@ class BalkInvoer:
         return []
 
 
-class VeldInvoer:
+class VeldInvoer(Plaats):
     """Het honderdveld: vakjes kleuren met de pijltjes en spatie, een hele rij met r, of met de muis."""
-    X0 = 10
+    x0 = 8  # de linkerkant: ▶ voor elke rij; het veld zelf staat 2 verder
 
     def __init__(self, v, o):
         self.v, self.o = v, o
@@ -112,7 +113,7 @@ class VeldInvoer:
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
         self.hint = "Pijltjes + spatie (of klik) = vakje · r (of klik op ▶) = hele rij"
-        self.naast = (13, self.X0 + 23)  # (rij, kolom) van de feedback: rechts van het veld
+        self.naast = (13, self.x0 + 25)  # (rij, kolom) van de feedback: rechts van het veld
 
     def hoogte(self, nagekeken=False):
         return 10
@@ -124,11 +125,11 @@ class VeldInvoer:
     def teken(self, s, y, uitslag=None, hulp=False):
         bezig = uitslag is None
         y += 1  # onder het maatje
-        M.teken_veld(s, y, self.gekleurd, self.X0, self.cursor if bezig else None,
+        M.teken_veld(s, y, self.gekleurd, self.x0 + 2, self.cursor if bezig else None,
                      (lambda i: ("vak", i)) if bezig else None, (lambda r: ("rij", r)) if bezig else None)
         n = len(self.gekleurd)
-        s.put(y, self.X0 + 23, f"{n} van de 100", "bold" if bezig else ("goed" if uitslag else "fout"))
-        s.put(y + 1, self.X0 + 23, f"= {n} %", "bold" if bezig else ("goed" if uitslag else "fout"))
+        s.put(y, self.x0 + 25, f"{n} van de 100", "bold" if bezig else ("goed" if uitslag else "fout"))
+        s.put(y + 1, self.x0 + 25, f"= {n} %", "bold" if bezig else ("goed" if uitslag else "fout"))
 
     def toets(self, k):
         if isinstance(k, tuple):
@@ -165,9 +166,9 @@ class VeldInvoer:
         return []
 
 
-class CoordInvoer:
+class CoordInvoer(Plaats):
     """De schatkaart of het assenstelsel: zet een kruisje met de pijltjes en Enter, of met een klik."""
-    X0 = 8
+    x0 = 8
 
     def __init__(self, v, o):
         self.v, self.o = v, o
@@ -178,7 +179,7 @@ class CoordInvoer:
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
         self.hint = "Pijltjes = kruisje verplaatsen · Enter (of klik) = hier!"
-        self.naast = (10, self.X0 + 3 + 3 * len(xs) + 4)
+        self.naast = (10, self.x0 + 3 + 3 * len(xs) + 4)
 
     def hoogte(self, nagekeken=False):
         return len(self.kaart.ys()) + 1
@@ -193,10 +194,10 @@ class CoordInvoer:
             if not uitslag:
                 punten[(self.v.data["x"], self.v.data["y"])] = ("●", "goed")
             punten[self.gekozen] = ("✔", "goed") if uitslag else ("✘", "fout")
-        M.teken_kaart(s, y + 1, replace(self.kaart, punten=punten), self.X0, self.cursor if bezig else None,
+        M.teken_kaart(s, y + 1, replace(self.kaart, punten=punten), self.x0, self.cursor if bezig else None,
                       (lambda x, yy: ("punt", x, yy)) if bezig else None)
         if bezig:
-            s.put(y + 1, self.naast[1], "Jij: " + self.kaart.naam(*self.cursor), "bold")
+            s.put(y + 1, self.x0 + 3 + 3 * len(self.kaart.xs()) + 4, "Jij: " + self.kaart.naam(*self.cursor), "bold")
 
     def toets(self, k):
         if isinstance(k, tuple):
@@ -230,10 +231,10 @@ HINT = "←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wi
 HINT_VENSTER = "Sleep de lange wijzer, of ←→ ↑↓ + −. Enter = klaar"
 
 
-class KlokInvoer:
+class KlokInvoer(Plaats):
     """De wijzers van een klok zetten: ←→ per minuut, ↑↓ per 5 minuten, + en − per uur, of klik waar de lange
     wijzer moet staan. De uurwijzer draait mee, zoals op een echte klok."""
-    X0 = 8
+    x0 = 8
 
     def __init__(self, v, o):
         self.v, self.o = v, o
@@ -241,7 +242,7 @@ class KlokInvoer:
         self.melding, self.melding_rol = "", "fout"
         self.fouten, self.diagnose, self.cursor_pos = 0, None, None
         self.hint = HINT
-        self.naast = (10, self.X0 + 25 + 4)
+        self.naast = (10, self.x0 + 25 + 4)
         self.h = 13
 
     def hoogte(self, nagekeken=False):
@@ -252,11 +253,11 @@ class KlokInvoer:
                 ("Esc", "stoppen", ESC)]
 
     def teken(self, s, y, uitslag=None, hulp=False):
-        h, _ = M.teken_klok(s, y + 1, Wijzerklok(self.t), self.X0,
+        h, _ = M.teken_klok(s, y + 1, Wijzerklok(self.t), self.x0,
                             (lambda dx, dy: ("wijzer", dx, dy)) if uitslag is None else None, uitslag=uitslag,
                             juist=self.v.antwoord if uitslag is False else None, tekst=self.v.tekst)
         venster = h < 13  # de klok staat in het klokvenster: de feedback komt dan gewoon eronder
-        self.h, self.naast = (h + 1, None) if venster else (13, (10, self.X0 + 25 + 4))
+        self.h, self.naast = (h + 1, None) if venster else (13, (10, self.x0 + 25 + 4))
         self.hint = HINT_VENSTER if venster else HINT
 
     def toets(self, k):

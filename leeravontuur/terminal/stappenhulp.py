@@ -2,8 +2,11 @@
 de laatste tip en de schakelaars die de Oefenaar volgens de `Hulp` zet. Zo maakt een nieuw object (Woordsoorten …)
 geen derde kopie."""
 
+from .invoer import Plaats
 
-class StappenHulp:
+
+class StappenHulp(Plaats):
+    x0 = 4                    # de linkerkant: de opdracht; de zin staat 3 verder
     eigen_tekst = True        # het object tekent zelf de vraag
     eigen_tip = True          # F1 gaat naar het object
     geen_tweede_kans = True   # het object kijkt zelf stap voor stap na (met een eigen tweede kans)

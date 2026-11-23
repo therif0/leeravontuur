@@ -177,9 +177,9 @@ STOP = [ESC] * 7
 class TestSchermen(Basis):
     def test_kruisje_met_een_klik(self):
         o = self.opslag(("Test", "5"))
-        y, x = TM.kaart_plaats(Kaart(8, 8), 3, 2, 9)  # C2: kolom en rij omgewisseld
-        with mock.patch.object(MK.COORDINATEN, "maak", side_effect=[kruis_vraag(), kruis_vraag()]):
-            scherm, app = self.speel([*naar(4), ("klik", y, x), ("klik", y, x), *STOP], opslag=o)
+        with mock.patch.object(MK.COORDINATEN, "maak", side_effect=[kruis_vraag(), kruis_vraag()]):  # C2
+            scherm, app = self.speel([*naar(4), ("klik_op", ("punt", 3, 2)), ("klik_op", ("punt", 3, 2)), *STOP],
+                                     opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "C2")
         self.assertFalse(rij["juist"])

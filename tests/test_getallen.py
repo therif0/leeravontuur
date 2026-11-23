@@ -175,9 +175,8 @@ class TestSchermen(Basis):
 
     def test_klikken_en_niet_ingezoomd(self):
         o = self.opslag(("Test", "5"))
-        xs, _ = M.posities(lijn_rond(20, 30, 1))
         with mock.patch.object(G.GETALLENLIJN, "maak", side_effect=[aanduid_vraag(), aanduid_vraag()]):
-            scherm, app = self.speel([*NAAR_LIJN, ("klik", 10, xs[4]), OK, OK, ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
+            scherm, app = self.speel([*NAAR_LIJN, ("klik_op", ("lijn", 4)), OK, OK, ESC, ESC, ESC, ESC, ESC, ESC], opslag=o)
         rijen = o.antwoorden(app.kind.id)
         self.assertEqual(rijen[0]["gegeven"], "24")
         self.assertFalse(rijen[0]["juist"])

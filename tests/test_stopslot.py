@@ -125,8 +125,8 @@ class TestOuderOpentHetSlot(SlotBasis):
     def test_met_ouder_slot_af_dan_een_gewone_start(self):
         o = self.met_slot(("Lotte", "5"))
         lotte = next(k for k in o.kinderen() if k.naam == "Lotte")
-        # --ouder: het wachtwoord → Kinderen (3) › Lotte (1) › Stoppen op slot (rij 9) = uit
-        scherm = NepScherm([OK, *WW, OK, "3", "1", ("klik", 9, 10), ESC, ESC, ESC, ESC])
+        # --ouder: het wachtwoord → Kinderen (3) › Lotte (1) › Stoppen op slot (de 6de keuze) = uit
+        scherm = NepScherm([OK, *WW, OK, "3", "1", ("klik_op", ("kies", 5)), ESC, ESC, ESC, ESC])
         try:
             App(scherm, o, kleuren=False).start(ouder=True)
         except (ToetsenOp, SystemExit):

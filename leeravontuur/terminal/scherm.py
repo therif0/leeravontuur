@@ -111,6 +111,8 @@ class Scherm:
         self.inst = inst
         self.kleuren = kleuren
         self.zones = Klikzones()
+        if getattr(win, "nep", False):  # tests: klikken op de zone van een actie (NepScherm, ("klik_op", actie))
+            win.zones = self.zones
         self.kruimel = []
         self.status = ""       # rechts in de titelbalk
         self.status_kort = ""  # als er weinig plaats is

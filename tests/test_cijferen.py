@@ -46,7 +46,7 @@ class TestGeneratoren(unittest.TestCase):
     def controleer_rooster(self, o, v):
         r = v.model
         self.assertEqual(lees_getal(r.verwacht[-1]), v.antwoord)
-        self.assertLessEqual(RoosterInvoer.X0 + 2 * r.breedte + 30, 80, v.tekst)  # + ruimte voor "uitkomst"
+        self.assertLessEqual((RoosterInvoer.x0 + 3) + 2 * r.breedte + 30, 80, v.tekst)  # + ruimte voor "uitkomst"
         for tekst in r.gegeven + ([] if r.komma_zelf else [r.verwacht[-1]]):
             cellen, _ = r.plaats(tekst)
             self.assertTrue(all(0 <= c < r.breedte for c in cellen), (v.tekst, tekst))
@@ -294,10 +294,9 @@ class TestSchermen(Basis):
 
     def test_vermenigvuldigen_met_rijen_en_klik(self):
         o = self.opslag(("Test", "5"))
-        x0 = RoosterInvoer.X0
         # rij 1 = 115, Tab, rij 2 = 920, Tab, uitkomst 1035 (de laatste via een klik op het vakje rechts)
         with mock.patch.object(C.VERMENIGVULDIGEN, "maak", side_effect=[maal_vraag(), maal_vraag()]):
-            scherm, app = self.speel([*naar(3), *"511", TAB, *"029", ("klik", 15, x0 + 6), *"5301", OK, *STOP],
+            scherm, app = self.speel([*naar(3), *"511", TAB, *"029", ("klik_op", ("cel", 2, 3)), *"5301", OK, *STOP],
                                      opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
         self.assertEqual(rij["gegeven"], "1035")

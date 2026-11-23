@@ -1,7 +1,9 @@
 """Een nagemaakt curses-venster om schermen te testen zonder echte terminal (ook in CI op Windows/macOS).
 
 Toetsen geef je op als tekens ("a", "\\n"), curses-codes (curses.KEY_DOWN) of muisacties:
-("klik", y, x) en ("wiel", 1) of ("wiel", -1). ("wacht",) doet alsof er even niets getypt wordt.
+("klik", y, x), ("klik_op", actie) en ("wiel", 1) of ("wiel", -1). ("wacht",) doet alsof er even niets getypt wordt.
+("klik_op", actie) klikt op de zone met die actie (de laatst getekende), zoals het kind erop klikt: zo blijft een
+test juist als een vak verschuift. Is er geen zone met die actie, dan faalt de test (GeenZone).
 ("grootte", h, w) maakt het venster h × w (zoals een gebruiker die het venster versleept).
 
 Tekent een scherm heel vaak zonder op een toets te wachten, dan hangt het: dat geeft een fout (HangtFout).
@@ -14,6 +16,10 @@ from .venster import Klokvenster
 
 class ToetsenOp(Exception):
     """Alle opgegeven toetsen zijn gebruikt."""
+
+
+class GeenZone(AssertionError):
+    """("klik_op", actie): er staat geen klikzone met die actie op het scherm."""
 
 
 class HangtFout(Exception):
@@ -33,6 +39,7 @@ class NepScherm:
         self.beelden = []  # tekst van elk getoond scherm (bij elke refresh)
         self._muis = (0, 0, 0, 0, 0)
         self._zonder_toets = 0
+        self.zones = None  # de klikzones van het Scherm (dat zet het zelf)
 
     # --- wat curses ook heeft ---
     def getmaxyx(self):
@@ -78,6 +85,8 @@ class NepScherm:
                 self.h, self.w = k[1], k[2]
                 self.erase()
                 return curses.KEY_RESIZE
+            if k[0] == "klik_op":
+                k = ("klik", *self.plek_van(k[1]))
             if k[0] == "klik":
                 self._muis = (0, k[2], k[1], 0, curses.BUTTON1_PRESSED)
             elif k[0] == "wiel":
@@ -91,6 +100,13 @@ class NepScherm:
         return self._muis
 
     # --- hulp voor tests ---
+    def plek_van(self, actie):
+        """(y, x) van de laatst getekende zone met deze actie."""
+        for zy, zx, _, _, a in reversed(self.zones.zones if self.zones else []):
+            if a == actie:
+                return zy, zx
+        raise GeenZone(f"geen klikzone met de actie {actie!r} op het scherm")
+
     def tekst(self):
         return "\n".join("".join(r).rstrip() for r in self.raster)
 

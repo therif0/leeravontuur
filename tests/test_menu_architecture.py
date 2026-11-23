@@ -267,9 +267,7 @@ class TestNavigatie(TestModiStarten):
 
     def test_voetregel_klikbaar_in_het_echte_menu(self):
         """Een klik op "[V] vrij" in de voetregel doet hetzelfde als de toets V."""
-        self.speel(self.naar_hoofdrekenen())
-        y, x = self.scherm.zoek("[V] vrij")
-        beelden = self.speel([*self.naar_hoofdrekenen(), ("klik", y, x + 1)])
+        beelden = self.speel([*self.naar_hoofdrekenen(), ("klik_op", ord("v"))])
         self.assertIn("Hoe moeilijk?", beelden[-1])
         self.assertEqual(self.app.s.kruimel[-1], "Vrij oefenen")
 
@@ -292,11 +290,10 @@ class TestNavigatie(TestModiStarten):
             i = d.onderwerpen.index(o)
             naar = [OK, OK, str(HOOFDMENU.index("Wiskunde") + 1), str(CU.VAKKEN[0].domeinen.index(d) + 1),
                     *[curses.KEY_DOWN] * i, toets, *([OK] if "reeks" in o.modi else [])]
-            kop = self.speel(naar)[-1].splitlines()[0]
-            for woord, verwacht in [("Leeravontuur", "Wat wil je doen?"), ("Wiskunde", "Welk onderwerp?"),
-                                    (d.label, "wat wil je oefenen?")]:
+            for i, (woord, verwacht) in enumerate([("Leeravontuur", "Wat wil je doen?"), ("Wiskunde", "Welk onderwerp?"),
+                                                    (d.label, "wat wil je oefenen?")]):
                 with self.subTest(oid, niveau=woord):
-                    beelden = self.speel([*naar, ("klik", 0, kop.index(woord) + 1), curses.KEY_LEFT, OK])
+                    beelden = self.speel([*naar, ("klik_op", ("kruimel", i)), curses.KEY_LEFT, OK])
                     self.assertTrue(any("Wil je stoppen met deze" in b for b in beelden))
                     self.assertIn(verwacht, beelden[-1])
 

@@ -125,7 +125,7 @@ class TestSchermen(Basis):
     def test_honderdveld_kleuren(self):
         o = self.opslag(("Test", "5"))
         # 3 volle rijen (r), dan 3 vakjes met spatie en 2 met een klik → 35
-        toetsen = ["r", NEER, "r", NEER, "r", NEER, " ", RECHTS, " ", RECHTS, " ", ("klik", 12, 16), ("klik", 12, 18)]
+        toetsen = ["r", NEER, "r", NEER, "r", NEER, " ", RECHTS, " ", RECHTS, " ", ("klik_op", ("vak", 33)), ("klik_op", ("vak", 34))]
         with mock.patch.object(P.VELD, "maak", side_effect=[kleur_vraag(), kleur_vraag()]):
             scherm, app = self.speel([*naar(1), *toetsen, OK, *STOP], opslag=o)
         rij = o.antwoorden(app.kind.id)[0]
@@ -135,7 +135,7 @@ class TestSchermen(Basis):
 
     def test_rij_met_klik_en_weer_leeg(self):
         o = self.opslag(("Test", "5"))
-        toetsen = [("klik", 9, 8), ("klik", 10, 8), ("klik", 10, 8)]  # rij 1 vol, rij 2 vol en weer leeg
+        toetsen = [("klik_op", ("rij", 0)), ("klik_op", ("rij", 1)), ("klik_op", ("rij", 1))]  # rij 1 vol, rij 2 vol en weer leeg
         with mock.patch.object(P.VELD, "maak", side_effect=[kleur_vraag(), kleur_vraag()]):
             scherm, app = self.speel([*naar(1), *toetsen, OK, OK, *STOP], opslag=o)
         self.assertEqual(o.antwoorden(app.kind.id)[0]["gegeven"], "10 %")

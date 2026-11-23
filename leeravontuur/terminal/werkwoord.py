@@ -18,7 +18,7 @@ from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
 from .stappenhulp import StappenHulp
 
 TAB = 9
-X, RIJ = 7, 6          # waar de zin staat (RIJ rijen onder de opdracht: onder het maatje)
+RIJ = 6                # de zin: RIJ rijen onder de opdracht (onder het maatje), op kolom x0 + 3
 OPDRACHT_BREED = 56    # tot rij 9 staat rechts het maatje
 MAX_WOORD = 16         # zoveel letters kan je typen
 
@@ -67,44 +67,44 @@ class WerkwoordInvoer(StappenHulp):
     def teken(self, s, y, uitslag=None, hulp=False):
         self.cursor_pos = None
         if uitslag is not None:  # nagekeken: de zin met de juiste vorm
-            s.put(y + RIJ - 2, 4, "De zin in de verleden tijd:" if self.zin.omzetten else "De zin met de juiste vorm:",
+            s.put(y + RIJ - 2, self.x0, "De zin in de verleden tijd:" if self.zin.omzetten else "De zin met de juiste vorm:",
                   "bold")
             self.teken_zin(s, y + RIJ, self.zin.antwoord, "goed")
             return
         stap = self.nu
         kop = stap.vraag if len(self.stappen) == 1 else f"Stap {self.stap + 1} van {len(self.stappen)}: {stap.vraag}"
-        s.put(y, 4, kop, "bold")
+        s.put(y, self.x0, kop, "bold")
         if stap.sub:
-            s.put(y + 1, 4, stap.sub, "dim")
+            s.put(y + 1, self.x0, stap.sub, "dim")
         rij = y + RIJ + 2
         if self.zin.omzetten:  # de zin van nu (met de pv aangeduid), en eronder de zin van toen met het vak
             self.teken_bron(s, y + RIJ)
             if stap.naam == "vorm":
-                s.put(rij, 4, "Verleden tijd:", "dim")
+                s.put(rij, self.x0, "Verleden tijd:", "dim")
                 self.teken_zin(s, rij + 1, self.buf, "veld")
         else:
             self.teken_zin(s, y + RIJ, self.buf if stap.naam == "vorm" else None, "veld")
         if stap.soort == "keuze":
             for i, tekst in enumerate(stap.opties):
                 regel = f" {i + 1}  {tekst} "
-                s.put(rij + i, X, regel, "cursor" if i == self.keuze else "")
-                s.zones.voeg(rij + i, X, 1, len(regel), ("optie", i))
+                s.put(rij + i, self.x0 + 3, regel, "cursor" if i == self.keuze else "")
+                s.zones.voeg(rij + i, self.x0 + 3, 1, len(regel), ("optie", i))
         elif stap.soort == "typ" and stap.naam != "vorm":  # een woord typen (de stam)
-            s.put(rij, X, stap.voor, "bold")
-            x = X + len(stap.voor) + 1
+            s.put(rij, self.x0 + 3, stap.voor, "bold")
+            x = self.x0 + 3 + len(stap.voor) + 1
             s.tekstvak(rij, x, self.buf, MAX_WOORD, "veld")
             self.cursor_pos = (rij, x + 1 + len(self.buf))
         if any(st.kofschip for st in self.alle) and not self.direct:
             self.teken_kofschip(s, y + RIJ + 5)
         self.teken_gevonden(s, y + RIJ + 6)
         for i, regel in enumerate(textwrap.wrap(self.tiptekst, 72)[:2]):
-            s.put(y + RIJ + 7 + i, 4, regel, "accent")
+            s.put(y + RIJ + 7 + i, self.x0, regel, "accent")
         self.hint = {"keuze": "↑↓ of het cijfer, Enter = kies", "woord": "←→ woord, Enter = dit is de persoonsvorm"
                      }.get(stap.soort, "Typ het woord, Enter = klaar")
 
     def teken_zin(self, s, y, vak, rol):
         """De zin (rij y): vak = None (het gat ___), of de tekst in het vak (bij het typen en na het nakijken)."""
-        zin, x = self.zin, X
+        zin, x = self.zin, self.x0 + 3
         if zin.voor:
             s.put(y, x, zin.voor)
             x += len(zin.voor) + 1
@@ -128,7 +128,7 @@ class WerkwoordInvoer(StappenHulp):
     def teken_bron(self, s, y):
         """De zin in de tegenwoordige tijd, woord per woord: de cursor bij het zoeken van de pv; is de pv gevonden,
         dan staat ze in de kleur van de pv (zoals bij Zinsdelen)."""
-        zoeken, x = self.nu.soort == "woord", X
+        zoeken, x = self.nu.soort == "woord", self.x0 + 3
         for i, woord in enumerate(self.woorden):
             pv = i == self.zin.pv_plek and "pv" in self.gedaan
             s.put(y, x, woord, "cursor" if zoeken and i == self.keuze else "z_pv" if pv else "")
@@ -139,7 +139,7 @@ class WerkwoordInvoer(StappenHulp):
     def teken_kofschip(self, s, y):
         """'t kofschip, letter per letter; de letter van dit werkwoord licht op zodra die stap klaar is."""
         licht = next((st.kofschip for st in self.alle if st.kofschip and st.naam in self.gedaan), "")
-        x = X
+        x = self.x0 + 3
         for stuk in ("'t", "k", "o", "f", "s", "c", "h", "i", "p"):
             aan = bool(licht) and stuk.strip("'") in licht and stuk not in ("o", "i")
             s.put(y, x, stuk, "cursor" if aan else "dim")
@@ -148,7 +148,7 @@ class WerkwoordInvoer(StappenHulp):
     def teken_gevonden(self, s, y):
         stukken = [self.gedaan[st.naam] for st in self.alle if st.naam in self.gedaan and self.gedaan[st.naam]]
         if stukken and not self.direct:
-            s.put(y, 4, ("✔ " + " · ".join(stukken))[:74], "goed")
+            s.put(y, self.x0, ("✔ " + " · ".join(stukken))[:74], "goed")
 
     # ---- toetsen ------------------------------------------------------------------------------------
     def toets(self, k):

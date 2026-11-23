@@ -94,8 +94,9 @@ class TestStapVoorStap(Basis):
         self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
 
     def test_met_de_muis(self):
-        # De juf leest een boek: de woorden op rij 10 (De x=7, juf 11, leest 16, een 23, boek 28)
-        scherm, _ = self.speel_zin(JUF, [("klik", 10, 17), OK, ("klik", 10, 7), ("klik", 10, 11), OK, ESC, ESC])
+        # De juf leest een boek: een klik op het woord (De 0, juf 1, leest 2, een 3, boek 4)
+        scherm, _ = self.speel_zin(JUF, [("klik_op", ("woord", 2)), OK, ("klik_op", ("woord", 0)),
+                                         ("klik_op", ("woord", 1)), OK, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "✔ pv: leest."))
         self.assertTrue(self.ergens(scherm, "✔ o: de juf."))  # een klik op het woord ernaast = de groep groter
 
@@ -183,8 +184,9 @@ class TestTweePersoonsvormen(Basis):
         self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
 
     def test_met_de_muis(self):
-        # de woorden op rij 10: Grootvader x=7, vertelt 19, dat 28, de 33, kist 37, onder 43, de 50, grond 54, ligt 61
-        klikken = [("klik", 10, 20), ("klik", 10, 62), OK, ("klik", 10, 8), OK, ("klik", 10, 33), ("klik", 10, 38), OK]
+        # de woorden: Grootvader 0, vertelt 1, dat 2, de 3, kist 4, onder 5, de 6, grond 7, ligt 8
+        w = [("klik_op", ("woord", i)) for i in range(9)]
+        klikken = [w[1], w[8], OK, w[0], OK, w[3], w[4], OK]
         scherm, _ = self.speel_zin(GROOT, [*klikken, ESC, ESC])
         self.assertTrue(self.ergens(scherm, "Elk zinsdeel juist, meteen!"))
 

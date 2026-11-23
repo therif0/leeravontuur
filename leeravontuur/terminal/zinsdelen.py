@@ -19,7 +19,7 @@ from .scherm import BACKSPACE, ENTER, ESC, HULP, teken_van
 from .stappenhulp import StappenHulp
 
 TAB = 9
-X, RIJ = 7, 6          # waar de zin begint (rij onder het verhaal: RIJ na de opdracht), 2 spaties tussen de woorden
+RIJ = 6                # de zin: RIJ rijen onder de opdracht, op kolom x0 + 3 (2 spaties tussen de woorden)
 OPDRACHT_BREED = 56    # tot rij 9 staat rechts het maatje
 VERDELEN = "verdelen"
 LETTERS = {"p": "pv", "o": "o", "g": "wwg", "n": "nwg", "l": "lv", "m": "mv", "b": "bwb"}
@@ -110,10 +110,10 @@ class ZinsdelenInvoer(StappenHulp):
             self.teken_zin(s, y + RIJ, self.kleuren_nu(), bezig=True)
             self.teken_voortgang(s, y + RIJ + 4)
             for i, regel in enumerate(textwrap.wrap(self.tiptekst, 72)[:2]):
-                s.put(y + RIJ + 6 + i, 4, regel, "accent")
+                s.put(y + RIJ + 6 + i, self.x0, regel, "accent")
             self.hint = self.hint_tekst()
         else:  # nagekeken: de juiste ontleding, in kleur
-            s.put(y + RIJ - 2, 4, "Zo ontleed je deze zin:", "bold")  # onder het maatje (dat staat tot rij 9)
+            s.put(y + RIJ - 2, self.x0, "Zo ontleed je deze zin:", "bold")  # onder het maatje (dat staat tot rij 9)
             juist = {}
             for label in self.stappen:
                 if label != VERDELEN:
@@ -124,14 +124,14 @@ class ZinsdelenInvoer(StappenHulp):
     def teken_opdracht(self, s, y):
         if self.vrij:
             namen = " · ".join(f"{l.upper()} {LETTERS[l]}" for l in LETTERS if LETTERS[l] in self.gevraagd)
-            s.put(y, 4, "Kleur alle persoonsvormen en hun onderwerp." if self.zin.samengesteld else
+            s.put(y, self.x0, "Kleur alle persoonsvormen en hun onderwerp." if self.zin.samengesteld else
                   "Kleur de zinsdelen.", "bold")
             for i, regel in enumerate(textwrap.wrap(namen, OPDRACHT_BREED)[:2]):
-                s.put(y + 1 + i, 4, regel, "dim")
+                s.put(y + 1 + i, self.x0, regel, "dim")
         else:
-            s.put(y, 4, f"Stap {self.stap + 1} van {len(self.stappen)}: {self.vraag()}", "bold")
+            s.put(y, self.x0, f"Stap {self.stap + 1} van {len(self.stappen)}: {self.vraag()}", "bold")
             if self.label in KAN_GEEN:
-                s.put(y + 1, 4, "Duid het aan, of druk N (er is er geen).", "dim")
+                s.put(y + 1, self.x0, "Duid het aan, of druk N (er is er geen).", "dim")
 
     def kleuren_nu(self):
         """positie -> label van wat er nu gekleurd staat (nagekeken stappen, of wat het kind vrij kleurde)."""
@@ -150,7 +150,7 @@ class ZinsdelenInvoer(StappenHulp):
         """De woorden (rij y), gemarkeerd als met een markeerstift in de kleur van het zinsdeel, met de afkorting
         eronder (y+2). Waar het kind staat (de groep die het kiest), staat een streep onder de woorden (y+1): zo lijkt
         de cursor niet op de gele pv."""
-        x, plekken = X, []
+        x, plekken = self.x0 + 3, []
         groep = set(self.groep()) if bezig and self.label != VERDELEN else set()
         for i, w in enumerate(self.zin.woorden):
             if w.leesteken and i:
@@ -191,7 +191,7 @@ class ZinsdelenInvoer(StappenHulp):
     def teken_voortgang(self, s, y):
         if self.vrij or self.label == VERDELEN:
             return
-        x = 4
+        x = self.x0
         for label in self.stappen:
             if label == VERDELEN:
                 continue
@@ -201,7 +201,7 @@ class ZinsdelenInvoer(StappenHulp):
                 stuk, r = f"{Z.soort(label)} {tekst}", rol(label)
             else:
                 stuk, r = f"{Z.soort(label)} …", "dim"
-            if x + len(stuk) > 78:
+            if x + len(stuk) > self.x0 + 74:
                 break
             s.put(y, x, stuk, r)
             x += len(stuk) + 4
