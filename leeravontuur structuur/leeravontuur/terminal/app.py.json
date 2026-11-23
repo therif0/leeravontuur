@@ -1,0 +1,1372 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/app.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 452,
+ "source_sha256": "a263db3958b8d36fe44c5b77c05887fabffdc2be5d15543c479599eb82070258",
+ "purpose": "The terminal app: the start screen, the main menu, the active child with their settings, the safety net for errors, and the Herhalen menus.",
+ "details": "App.start decides the first screen: with the lock on Stoppen (stopslot) it goes straight to that child; otherwise title screen, 'Wie ben jij?' (kinderen.kies_kind), main menu, and back to the title screen on Stoppen; Esc on the title screen exits the program. The main menu (hoofdmenu) is built from the curriculum plus fixed items in groups (Verder, Herhalen; VAKKEN with Leerstof; JIJ with avatar and shop; FEEDBACK; Stoppen). Any exception in a screen is caught by App.oeps (logged to fouten.log, the child is reassured and returns to the menu; three errors within a minute exit; LEERAVONTUUR_DEBUG=1 re-raises). Settings: the active child's settings, with start arguments overriding them for the session without being stored (voorrang). The clock window (terminal/venster.py) is started or stopped by zet_klokvenster. 'Verder' continues the last exercise stored per child, and first offers to repeat when the last one was finished and repeat questions are due.",
+ "module_docstring": "De terminal-app: startscherm en hoofdmenu (de vakken komen uit het leerplan: terminal/curriculum).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "json", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "signal", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "contextlib",
+   "names": ["contextmanager"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "dataclasses",
+   "names": ["replace"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur",
+   "names": ["LICENTIE", "MAKER", "MOTTO", "VERSIE"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["feedback", "foutlog", "herhaling", "klok", "leerjaren", "stopslot"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/stopslot.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC", "Scherm", "TerugNaar", "Vergrendeld"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.eenheden",
+   "names": ["OMZETTEN"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["navigatie"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/navigatie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.beta",
+   "names": ["oefenaar_klasse"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/terminal/beta.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 21,
+   "resolves_to": ["leeravontuur/terminal/schermen/__init__.py", "leeravontuur/terminal/schermen/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.kinderen",
+   "names": ["kies_kind"],
+   "alias": null,
+   "line": 22,
+   "resolves_to": ["leeravontuur/terminal/schermen/kinderen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.venster",
+   "names": ["Klokvenster"],
+   "alias": null,
+   "line": 23,
+   "resolves_to": ["leeravontuur/terminal/venster.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 128,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 312,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 319,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.winkel",
+   "names": ["AvatarSchermen"],
+   "alias": null,
+   "line": 326,
+   "resolves_to": ["leeravontuur/terminal/schermen/winkel.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.winkel",
+   "names": ["AvatarSchermen"],
+   "alias": null,
+   "line": 330,
+   "resolves_to": ["leeravontuur/terminal/schermen/winkel.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.gemengd",
+   "names": ["TITEL", "Gemengd"],
+   "alias": null,
+   "line": 407,
+   "resolves_to": ["leeravontuur/terminal/schermen/gemengd.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 419,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.ouder",
+   "names": ["Ouderdeel"],
+   "alias": null,
+   "line": 163,
+   "resolves_to": ["leeravontuur/terminal/schermen/ouder.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 375,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.reeks",
+   "names": ["GEMENGD_AANTAL"],
+   "alias": null,
+   "line": 383,
+   "resolves_to": ["leeravontuur/kern/reeks.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["winkel"],
+   "alias": null,
+   "line": 222,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/winkel.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/__main__.py",
+  "tests/test_gemengd.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_ouder.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_stopslot.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["getattr", "hasattr"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "HOOFD",
+   "line": 25,
+   "value_type": "Constant",
+   "value_preview": "'Leeravontuur'",
+   "explanation": "The root breadcrumb text 'Leeravontuur'."
+  },
+  {
+   "name": "ONDERBREKERS",
+   "line": 29,
+   "value_type": "ListComp",
+   "value_preview": "[getattr(signal, naam) for naam in ('SIGINT', 'SIGQUIT', 'SIGTSTP') i…",
+   "explanation": "The signals that interrupt the program (Ctrl-C, Ctrl-\\, Ctrl-Z where they exist)."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "App",
+   "qualname": "App",
+   "lines": [52, 452],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The application object: active child, settings, screen, storage and the main flows.",
+   "attributes": [
+    {"name": "opslag", "line": 55, "scope": "instance", "value_preview": null},
+    {"name": "voorrang", "line": 56, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 57, "scope": "instance", "value_preview": null},
+    {"name": "basis", "line": 59, "scope": "instance", "value_preview": null},
+    {"name": "inst", "line": 60, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 61, "scope": "instance", "value_preview": null},
+    {"name": "_fouten", "line": 279, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/__main__.py::main.draai", "lines": [169]},
+    {"caller": "tests/test_gemengd.py::TestGerichteAap.test_aapjes_in_gemengd_oefenen", "lines": [199]},
+    {"caller": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [150]},
+    {"caller": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [184]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [289]},
+    {"caller": "tests/test_ouder.py::TestToegang.test_meteen_ouderdeel_met_argument", "lines": [73]},
+    {"caller": "tests/test_schermen.py::Basis.speel", "lines": [112]},
+    {"caller": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [281]},
+    {"caller": "tests/test_stabiliteit.py::TestAapjes.test_aapjes", "lines": [245]},
+    {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [197]},
+    {
+     "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+     "lines": [131]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "App.__init__",
+     "kind": "method",
+     "lines": [53, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "win", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "voorrang", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "kleuren", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "voorrang = instellingen uit de argumenten bij het starten (bv. {\"thema\": \"contrast\"}).",
+     "explanation": "Creates the app on a window and the storage; loads the last child's settings (or defaults), applies the start-argument overrides, makes the Scherm and sets up the clock window.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [59]},
+      {"target": "leeravontuur/terminal/app.py::App.zet_klokvenster", "lines": [62]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [61]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "opslag.algemeen",
+       "lines": [58],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "opslag.instellingen_van",
+       "lines": [59],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "opslag.kind",
+       "lines": [58],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kind",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kind"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["dataclasses.replace", "dict"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/__main__.py::main.draai", "lines": [169]},
+      {"caller": "tests/test_gemengd.py::TestGerichteAap.test_aapjes_in_gemengd_oefenen", "lines": [199]},
+      {"caller": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [150]},
+      {"caller": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [184]},
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [289]},
+      {"caller": "tests/test_ouder.py::TestToegang.test_meteen_ouderdeel_met_argument", "lines": [73]},
+      {"caller": "tests/test_schermen.py::Basis.speel", "lines": [112]},
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [281]},
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.test_aapjes", "lines": [245]},
+      {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [197]},
+      {
+       "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+       "lines": [131]
+      }
+     ]
+    },
+    {
+     "name": "activeer",
+     "qualname": "App.activeer",
+     "kind": "method",
+     "lines": [66, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kind", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a child the active one: loads their settings (with overrides), applies theme and mouse, sets the clock window, remembers them as the last child and updates the status.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.ververs_status", "lines": [74]},
+      {"target": "leeravontuur/terminal/app.py::App.zet_klokvenster", "lines": [72]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.instellingen_van",
+       "lines": [68],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.opslag.zet_algemeen",
+       "lines": [73],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.pas_toe",
+       "lines": [71],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.pas_toe"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["dataclasses.replace"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.herlaad_kind", "lines": [102]},
+      {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [218]},
+      {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [169]}
+     ]
+    },
+    {
+     "name": "zet_klokvenster",
+     "qualname": "App.zet_klokvenster",
+     "kind": "method",
+     "lines": [76, 91],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aan", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het klokvenster (terminal/venster.py) volgens de instelling: aan, of uit (en het proces stoppen). Niet met LEERAVONTUUR_KLOKVENSTER=0 (bv. de schermafdrukken); bij de tests (NepScherm) zet de test het zelf.",
+     "explanation": "Starts or stops the clock window according to the setting and LEERAVONTUUR_KLOKVENSTER (not in tests unless told); restores its dragged position from storage.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [88]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.algemeen",
+       "lines": [85],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.opslag.zet_algemeen",
+       "lines": [88],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.klokvenster.stop",
+       "lines": [90],
+       "candidates": [
+        "docs/tools/schermafdrukken.py::Draai.stop",
+        "leeravontuur/terminal/nepscherm.py::NepKlokvenster.stop",
+        "leeravontuur/terminal/venster.py::Klokvenster.stop"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["getattr", "json.dumps", "json.loads", "os.environ.get"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.__init__", "lines": [62]},
+      {"caller": "leeravontuur/terminal/app.py::App.activeer", "lines": [72]}
+     ]
+    },
+    {
+     "name": "herlaad_kind",
+     "qualname": "App.herlaad_kind",
+     "kind": "method",
+     "lines": [93, 102],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na wijzigingen in het ouderdeel: het actieve kind opnieuw laden (of loslaten als het gewist is).",
+     "explanation": "After parent changes: reloads the active child, or lets go of them if deleted.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.activeer", "lines": [102]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.kind",
+       "lines": [97],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kind",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kind"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vandaag",
+     "qualname": "App.vandaag",
+     "kind": "method",
+     "lines": [104, 106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(aantal, juist) van vandaag voor het actieve kind.",
+     "explanation": "(answers, correct) of today for the active child.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [106]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.telling",
+       "lines": [106],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.telling"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.ververs_status", "lines": [109]}
+     ]
+    },
+    {
+     "name": "ververs_status",
+     "qualname": "App.ververs_status",
+     "kind": "method",
+     "lines": [108, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Updates the status text in the title bar ('Vandaag: 14/17 juist').",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.vandaag", "lines": [109]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.activeer", "lines": [74]}
+     ]
+    },
+    {
+     "name": "bewaar",
+     "qualname": "App.bewaar",
+     "kind": "method",
+     "lines": [113, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bewaart de instellingen van het kind. Wat enkel via een startargument geldt, wordt niet bewaard.",
+     "explanation": "Stores the child's settings, except values that only came from a start argument and were not changed since.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.bewaar_instellingen",
+       "lines": [123],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.opslag.kind",
+       "lines": [125],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kind",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kind"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["dataclasses.replace", "getattr", "list", "setattr"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "avatar_config",
+     "qualname": "App.avatar_config",
+     "kind": "method",
+     "lines": [127, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The active child's valid avatar config.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [129]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.avatar",
+       "lines": [129],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.teken_avatar_menu", "lines": [322]}
+     ]
+    },
+    {
+     "name": "onthoud_oefening",
+     "qualname": "App.onthoud_oefening",
+     "kind": "method",
+     "lines": [131, 133],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Voor 'Verder waar je was'.",
+     "explanation": "Stores the last exercise (for 'Verder') as JSON per child.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.zet_algemeen",
+       "lines": [133],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["json.dumps"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.oefening_af", "lines": [140]}
+     ]
+    },
+    {
+     "name": "oefening_af",
+     "qualname": "App.oefening_af",
+     "kind": "method",
+     "lines": [135, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "af", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vorige oefening (voor Verder) is af (een reeks tot het resultaat) of nog bezig/vrij oefenen.",
+     "explanation": "Marks the last exercise as finished (a series that reached the result) or not.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.laatste_oefening", "lines": [137]},
+      {"target": "leeravontuur/terminal/app.py::App.onthoud_oefening", "lines": [140]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["bool", "isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "laatste_oefening",
+     "qualname": "App.laatste_oefening",
+     "kind": "method",
+     "lines": [142, 146],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The stored last exercise, or None when missing or damaged.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.algemeen",
+       "lines": [144],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["json.loads"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [369]},
+      {"caller": "leeravontuur/terminal/app.py::App.oefening_af", "lines": [137]},
+      {"caller": "leeravontuur/terminal/app.py::App.voorstel", "lines": [344]}
+     ]
+    },
+    {
+     "name": "sessie",
+     "qualname": "App.sessie",
+     "kind": "method",
+     "lines": [148, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "punten", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A new Sessie for the active child with this app's status callback and own year.",
+     "calls": [
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [149]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "start",
+     "qualname": "App.start",
+     "kind": "method",
+     "lines": [154, 172],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ouder", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The main flow: lock-on start at the locked child, or title screen; shows a storage problem message; with ouder=True opens the parent area; otherwise loops title screen > choose child > main menu.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [170]},
+      {"target": "leeravontuur/kern/stopslot.py::vergrendeld_kind", "lines": [156]},
+      {"target": "leeravontuur/terminal/app.py::App.activeer", "lines": [169]},
+      {"target": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [171]},
+      {"target": "leeravontuur/terminal/app.py::App.startscherm", "lines": [158, 172]},
+      {"target": "leeravontuur/terminal/app.py::zonder_onderbreken", "lines": [170]},
+      {"target": "leeravontuur/terminal/schermen/kinderen.py::kies_kind", "lines": [167]},
+      {"target": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.__init__", "lines": [164]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Ouderdeel(self).open",
+       "lines": [164],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.open",
+        "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [160],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "startscherm",
+     "qualname": "App.startscherm",
+     "kind": "method",
+     "lines": [174, 210],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the title screen (name, tagline, version, licence) and waits for a key; Esc exits the program.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [179],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.maat",
+       "lines": [181],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [180],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [197, 199, 200, 201, 202, 203],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [177],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [205], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [204],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len", "max"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [158, 172]}
+     ]
+    },
+    {
+     "name": "hoofdmenu",
+     "qualname": "App.hoofdmenu",
+     "kind": "method",
+     "lines": [212, 258],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The main menu loop: delivers arrived shop packages, lists the groups of items, runs the chosen item and catches errors with oeps; on Stoppen or Esc returns (after the PIN when the lock is on).",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [227]},
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [249]},
+      {"target": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [223]},
+      {"target": "leeravontuur/terminal/app.py::App.activeer", "lines": [218]},
+      {"target": "leeravontuur/terminal/app.py::App.avatar_links", "lines": [247]},
+      {"target": "leeravontuur/terminal/app.py::App.oeps", "lines": [258]},
+      {"target": "leeravontuur/terminal/app.py::App.slotscherm", "lines": [249]},
+      {"target": "leeravontuur/terminal/app.py::App.voorstel", "lines": [229]},
+      {"target": "leeravontuur/terminal/navigatie.py::spiekbrieven", "lines": [236]},
+      {"target": "leeravontuur/terminal/navigatie.py::vak", "lines": [232]},
+      {"target": "leeravontuur/terminal/schermen/kinderen.py::kies_kind", "lines": [215]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [244],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "leeravontuur.MOTTO.lower", "len"],
+     "dynamic": [
+      {"kind": "subscript-call", "line": 229, "expr": "self.voorstel()[1]"},
+      {"kind": "subscript-call", "line": 252, "expr": "keuzes[k][2]"}
+     ],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [171]}
+     ]
+    },
+    {
+     "name": "slotscherm",
+     "qualname": "App.slotscherm",
+     "kind": "method",
+     "lines": [260, 271],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Stoppen staat op slot: True als de ouder de ouderpin typt (Esc of 3 keer fout = False).",
+     "explanation": "Asks the parent PIN (up to 3 tries) to quit; True when correct, False for Esc or 3 failures.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [268]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.invoer",
+       "lines": [264],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [249]}
+     ]
+    },
+    {
+     "name": "oeps",
+     "qualname": "App.oeps",
+     "kind": "method",
+     "lines": [273, 293],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "fout", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een onverwachte fout: bewaren in fouten.log, het kind geruststellen en terug naar het menu. Drie fouten binnen een minuut: dan toch stoppen (geen eindeloze lus).",
+     "explanation": "The safety net: logs the error, tells the child it was not their fault and returns to the menu; re-raises with LEERAVONTUUR_DEBUG or after 3 errors within a minute.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::pad", "lines": [289]},
+      {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [280]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.cursor",
+       "lines": [284],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [285],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["getattr", "len", "os.environ.get", "time.monotonic"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [258]}
+     ]
+    },
+    {
+     "name": "zeg_het_ons",
+     "qualname": "App.zeg_het_ons",
+     "kind": "method",
+     "lines": [295, 306],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een opmerking van het kind (of de ouder) bewaren in feedback.txt.",
+     "explanation": "Asks for a remark and stores it in feedback.txt, then confirms.",
+     "calls": [
+      {"target": "leeravontuur/kern/feedback.py::bewaar", "lines": [303]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.invoer",
+       "lines": [298],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [306],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "avatar_links",
+     "qualname": "App.avatar_links",
+     "kind": "method",
+     "lines": [308, 313],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De kolom waar de avatar in het hoofdmenu begint (de uitleg stopt ervoor), of None zonder avatar.",
+     "explanation": "The column where the avatar starts in the main menu (the explanation text stops before it), or None without avatar.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.maat",
+       "lines": [313],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [247]}
+     ]
+    },
+    {
+     "name": "teken_avatar_menu",
+     "qualname": "App.teken_avatar_menu",
+     "kind": "method",
+     "lines": [315, 323],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Rechts in het hoofdmenu: de avatar en de punten.",
+     "explanation": "Draws the avatar and the points balance at the right of the main menu.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.avatar_config", "lines": [322]},
+      {"target": "leeravontuur/terminal/avatar.py::teken", "lines": [322]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.punten_saldo",
+       "lines": [323],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.maat",
+       "lines": [320],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "self.s.put",
+       "lines": [323],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "mijn_avatar",
+     "qualname": "App.mijn_avatar",
+     "kind": "method",
+     "lines": [325, 327],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Opens the avatar hub (kast and screen colours).",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.__init__", "lines": [327]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "AvatarSchermen(self).hub",
+       "lines": [327],
+       "candidates": ["leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "winkel",
+     "qualname": "App.winkel",
+     "kind": "method",
+     "lines": [329, 331],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Opens the shop directly.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.__init__", "lines": [331]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "AvatarSchermen(self).winkel",
+       "lines": [331],
+       "candidates": [
+        "leeravontuur/terminal/app.py::App.winkel",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.winkel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "voorstel",
+     "qualname": "App.voorstel",
+     "kind": "method",
+     "lines": [333, 346],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(uitleg, actie) voor 'Verder': de vorige oefening. Was die af en staan er herhaalvragen klaar, dan vraagt Verder eerst of het kind wil herhalen (Verder gekozen). Geen vorige oefening: herhalen, anders kiezen.",
+     "explanation": "(explanation, action) for 'Verder': the last exercise, first offering to repeat when it was finished and questions are due; with no last exercise, the repeat questions or choosing a subject.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [336]},
+      {"target": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [338]},
+      {"target": "leeravontuur/terminal/app.py::App.herhalen_of_verder", "lines": [345]},
+      {"target": "leeravontuur/terminal/app.py::App.kiezen", "lines": [342]},
+      {"target": "leeravontuur/terminal/app.py::App.laatste_oefening", "lines": [344]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [229]}
+     ]
+    },
+    {
+     "name": "herhalen_of_verder",
+     "qualname": "App.herhalen_of_verder",
+     "kind": "method",
+     "lines": [348, 355],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "verder", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vorige oefening is af: eerst herhalen voorstellen, maar Verder staat gekozen (0.23).",
+     "explanation": "A box 'Je vorige oefening is af' offering to repeat first, with continuing preselected.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.herhaalvragen", "lines": [353]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.bevestig",
+       "lines": [350],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.bevestig"],
+       "candidates_count": 1
+      },
+      {"expr": "verder", "lines": [355], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.voorstel", "lines": [345]}
+     ]
+    },
+    {
+     "name": "kiezen",
+     "qualname": "App.kiezen",
+     "kind": "method",
+     "lines": [357, 359],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Geen vorige oefening: het eerste vak openen.",
+     "explanation": "No last exercise: opens the first subject.",
+     "calls": [
+      {"target": "leeravontuur/terminal/navigatie.py::vak", "lines": [359]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.voorstel", "lines": [342]}
+     ]
+    },
+    {
+     "name": "kruimel_van",
+     "qualname": "App.kruimel_van",
+     "kind": "method",
+     "lines": [361, 365],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opslag_id", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hoofdmenu › Vak › Domein › Onderwerp van een bewaarde id (via het leerplan), en het domein.",
+     "explanation": "The breadcrumb Main menu > Subject > Domain > Topic of a stored id, and the domain.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::domein_van", "lines": [364]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::vak_van", "lines": [365]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::van_opslag", "lines": [363]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App._vorige_voorstel", "lines": [379, 387]}
+     ]
+    },
+    {
+     "name": "_vorige_voorstel",
+     "qualname": "App._vorige_voorstel",
+     "kind": "method",
+     "lines": [367, 389],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vorige oefening (ook een die nog door een oudere versie bewaard is: het leerplan vindt ze via opslag).",
+     "explanation": "Rebuilds the last exercise to continue (a topic of the Oefenaar, mixed practice, or unit conversion), or None.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.kruimel_van", "lines": [379, 387]},
+      {"target": "leeravontuur/terminal/app.py::App.laatste_oefening", "lines": [369]},
+      {"target": "leeravontuur/terminal/beta.py::oefenaar_klasse", "lines": [381]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.__init__", "lines": [388]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "EH.MatenOefenaar(self, kr).hervat",
+       "lines": [388],
+       "candidates": ["leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.hervat"],
+       "candidates_count": 1
+      },
+      {"expr": "oefenaar_klasse(d.label)", "lines": [381], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "oefenaar_klasse(d.label)(self, kr, [o], d.label).start",
+       "lines": [381],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["isinstance", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.voorstel", "lines": [338]}
+     ]
+    },
+    {
+     "name": "herhalen",
+     "qualname": "App.herhalen",
+     "kind": "method",
+     "lines": [391, 404],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Herhalen (0.24): de herhaalvragen, of Gemengd oefenen (zodat het kind niets vergeet).",
+     "explanation": "The Herhalen menu: my repeat questions, or mixed practice.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [395]},
+      {"target": "leeravontuur/terminal/app.py::App.gemengd", "lines": [404]},
+      {"target": "leeravontuur/terminal/app.py::App.herhaalvragen", "lines": [402]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [396],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "gemengd",
+     "qualname": "App.gemengd",
+     "kind": "method",
+     "lines": [406, 408],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Opens the mixed-practice screen.",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.__init__", "lines": [408]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Gemengd(self, [HOOFD, 'Herhalen', TITEL]).open",
+       "lines": [408],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.open",
+        "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.herhalen", "lines": [404]}
+     ]
+    },
+    {
+     "name": "herhaalvragen",
+     "qualname": "App.herhaalvragen",
+     "kind": "method",
+     "lines": [410, 452],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plays the repeat questions due today (unit conversion first, then others in the Oefenaar) and shows what became mastered, comes back later or tomorrow.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [412]},
+      {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.__init__", "lines": [427]},
+      {"target": "leeravontuur/terminal/schermen/eenheden.py::herhalen", "lines": [424]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Oefenaar(self, kr, [], 'Herhalen').herhalen",
+       "lines": [427],
+       "candidates": ["leeravontuur/terminal/app.py::App.herhalen", "leeravontuur/terminal/oefenaar.py::Oefenaar.herhalen"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.opslag.herhaalbak",
+       "lines": [432],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.lezer",
+       "lines": [414, 452],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len", "sum", "zip"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.herhalen", "lines": [402]},
+      {"caller": "leeravontuur/terminal/app.py::App.herhalen_of_verder", "lines": [353]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "zonder_onderbreken",
+   "qualname": "zonder_onderbreken",
+   "kind": "function",
+   "lines": [33, 49],
+   "params": [
+    {"name": "aan", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["contextmanager"],
+   "docstring": "Zolang aan: de toetsen die het programma onderbreken doen niets. Daarna weer zoals ervoor.",
+   "explanation": "Context manager: while on, Ctrl-C, Ctrl-\\ and Ctrl-Z do nothing (used while a child with the lock on Stoppen is active); restores the old handlers afterwards.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["signal.signal"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [170]},
+    {"caller": "tests/test_stopslot.py::TestCtrlC.test_ook_na_een_fout_teruggezet", "lines": [171]}
+   ]
+  }
+ ]
+}
