@@ -1,0 +1,152 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/digitaal.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 75,
+ "source_sha256": "465c3bc97a3056327d5bd7c09e404fbbb3c4ac2f93f58d9369179402b7995f53",
+ "purpose": "A digital clock display with big 7-segment digits in which a clock time is typed (#21).",
+ "details": "What shows comes from kern/wiskunde/grootheden.klok_cijfers (4 characters, '_' = not typed yet, ' ' = no digit). A full version has a frame and 5-row digits; a compact version (3 rows, no frame) is used when a tall model leaves little room. In ASCII mode the blocks are replaced via tekens.py.",
+ "module_docstring": "Een digitaal klokje met grote cijfers (7 segmenten) om een tijdstip op te typen (#21).",
+ "imports": [],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "SEGMENTEN",
+   "line": 8,
+   "value_type": "Dict",
+   "value_preview": "{'0': 'abcdef', '1': 'bc', '2': 'abged', '3': 'abgcd', '4': 'fgbc', '…",
+   "explanation": "Which segments (a to g) light up for each digit, space and underscore."
+  },
+  {
+   "name": "CIJFER_H",
+   "line": 10,
+   "value_type": "Tuple",
+   "value_preview": "(5, 4)",
+   "explanation": "Height of a digit."
+  },
+  {
+   "name": "CIJFER_B",
+   "line": 10,
+   "value_type": "Tuple",
+   "value_preview": "(5, 4)",
+   "explanation": "Width of a digit."
+  },
+  {
+   "name": "HOOGTE",
+   "line": 11,
+   "value_type": "BinOp",
+   "value_preview": "CIJFER_H + 2",
+   "explanation": "Height with the frame."
+  },
+  {
+   "name": "BREEDTE",
+   "line": 12,
+   "value_type": "BinOp",
+   "value_preview": "4 * CIJFER_B + 1 + 4 * 2 + 4 + 4",
+   "explanation": "Width with the frame (33)."
+  },
+  {
+   "name": "COMPACT_H",
+   "line": 39,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "Height of the compact version."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "cijfer_beeld",
+   "qualname": "cijfer_beeld",
+   "kind": "function",
+   "lines": [15, 26],
+   "params": [
+    {"name": "c", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een cijfer als 5 regels van 4 tekens ('_' = alle segmenten, maar leeg/grijs).",
+   "explanation": "A digit as 5 lines of 4 characters from its lit segments ('_' draws all segments, empty and grey).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/digitaal.py::compact_beeld", "lines": [31]},
+    {"caller": "leeravontuur/terminal/digitaal.py::teken", "lines": [62]}
+   ]
+  },
+  {
+   "name": "compact_beeld",
+   "qualname": "compact_beeld",
+   "kind": "function",
+   "lines": [29, 36],
+   "params": [
+    {"name": "c", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hetzelfde cijfer in 3 regels: telkens twee regels samen met halve blokjes (▀ ▄ █).",
+   "explanation": "The same digit in 3 lines, two rows combined with half blocks.",
+   "calls": [
+    {"target": "leeravontuur/terminal/digitaal.py::cijfer_beeld", "lines": [31]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/digitaal.py::teken", "lines": [48]}
+   ]
+  },
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [42, 75],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cijfers", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rol", "kind": "positional", "default": "'bold'", "annotation": null},
+    {"name": "kader", "kind": "positional", "default": "'dim'", "annotation": null},
+    {"name": "actie", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "compact", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Tekent het klokje met linksboven (y, x). cijfers = 4 tekens of None (onleesbaar: leeg klokje). rol = de kleur van de cijfers (bold tijdens het typen, goed/fout na het nakijken). compact = 3 regels hoog zonder kader (COMPACT_H), anders HOOG…",
+   "explanation": "Draws the clock with its top-left at (y, x): frame or compact, the digits in a role (bold while typing, good or wrong after checking), the colon, and optionally a click zone.",
+   "calls": [
+    {"target": "leeravontuur/terminal/digitaal.py::cijfer_beeld", "lines": [62]},
+    {"target": "leeravontuur/terminal/digitaal.py::compact_beeld", "lines": [48]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [52, 55, 60, 61, 65, 66, 69, 72],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "s.zones.voeg",
+     "lines": [58, 75],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": ["enumerate", "range", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [325]}
+   ]
+  }
+ ]
+}

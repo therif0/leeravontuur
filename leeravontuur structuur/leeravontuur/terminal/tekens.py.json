@@ -1,0 +1,102 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/tekens.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 42,
+ "source_sha256": "faaaa873dd3422fc7feb1a34616af08c09e5f4da9276ca59764d2a02bde76459",
+ "purpose": "Fallback to plain ASCII for terminals without UTF-8, replacing every special character by exactly one plain character so the layout stays in place.",
+ "details": "The table maps box-drawing, symbols, arrows, accented letters and similar to one ASCII character each; any other non-ASCII letter becomes its plain letter, anything else '?'. A test checks that every special character used in the code and content is in the table (CLAUDE.md: new characters must be added here).",
+ "module_docstring": "Terugval naar gewone ASCII-tekens voor terminals zonder UTF-8.",
+ "imports": [
+  {"module": "locale", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "unicodedata", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["leeravontuur/terminal/scherm.py", "tests/test_architectuur.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "_ASCII",
+   "line": 10,
+   "value_type": "Dict",
+   "value_preview": "{'─': '-', '│': '|', '┌': '+', '┐': '+', '└': '+', '┘': '+', '├': '+'…",
+   "explanation": "The one-to-one replacements of special characters."
+  },
+  {
+   "name": "TABEL",
+   "line": 21,
+   "value_type": "Call",
+   "value_preview": "str.maketrans(_ASCII)",
+   "explanation": "The translation table made from _ASCII."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_gewoon",
+   "qualname": "_gewoon",
+   "kind": "function",
+   "lines": [24, 29],
+   "params": [
+    {"name": "ch", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een letter met een accent wordt de letter zelf (é → e); iets anders onbekends wordt '?'.",
+   "explanation": "One character to plain ASCII: a letter with an accent becomes the plain letter, anything unknown '?'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "ord", "unicodedata.category", "unicodedata.normalize"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/tekens.py::naar_ascii", "lines": [36]}
+   ]
+  },
+  {
+   "name": "naar_ascii",
+   "qualname": "naar_ascii",
+   "kind": "function",
+   "lines": [32, 36],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A text to ASCII using the table and the plain-letter fallback.",
+   "calls": [
+    {"target": "leeravontuur/terminal/tekens.py::_gewoon", "lines": [36]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [160]},
+    {
+     "caller": "tests/test_architectuur.py::TestThemas.test_elk_speciaal_teken_heeft_een_ascii_vervanging",
+     "lines": [65]
+    }
+   ]
+  },
+  {
+   "name": "ascii_nodig",
+   "qualname": "ascii_nodig",
+   "kind": "function",
+   "lines": [39, 42],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "True als de terminal waarschijnlijk geen UTF-8 kan tonen.",
+   "explanation": "True when the terminal's encoding does not look like UTF-8.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["getattr", "locale.getpreferredencoding"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.pas_toe", "lines": [133]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,581 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/nepscherm.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 145,
+ "source_sha256": "2b509eb118629fe61a0b13115f4620d69812dc59d659270d733c2976d0730aaa",
+ "purpose": "A fake curses window to test screens without a real terminal (also in CI on Windows and macOS), plus a fake clock window.",
+ "details": "Keys are given as characters, curses codes or mouse actions: ('klik', y, x), ('klik_op', action) (click the zone with that action, so a test stays right when a panel moves; GeenZone if none), ('wiel', 1/-1), ('wacht',) and ('grootte', h, w) to resize. The screen text is recorded at every refresh; drawing very often without waiting for a key raises HangtFout (an endless loop). NepKlokvenster is a clock window without a process that records what it was sent and hands out prepared messages.",
+ "module_docstring": "Een nagemaakt curses-venster om schermen te testen zonder echte terminal (ook in CI op Windows/macOS).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal.venster",
+   "names": ["Klokvenster"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/venster.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "tests/test_cijferen.py",
+  "tests/test_gemengd.py",
+  "tests/test_klok.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_ouder.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_stopslot.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_werkwoorden.py",
+  "tests/test_vraagstukken.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "MAX_ZONDER_TOETS",
+   "line": 29,
+   "value_type": "Constant",
+   "value_preview": "200",
+   "explanation": "How many refreshes without a key count as hanging."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "ToetsenOp",
+   "qualname": "ToetsenOp",
+   "lines": [17, 18],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "Alle opgegeven toetsen zijn gebruikt.",
+   "explanation": "All given keys were used.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.get_wch", "lines": [79]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "GeenZone",
+   "qualname": "GeenZone",
+   "lines": [21, 22],
+   "bases": ["AssertionError"],
+   "decorators": [],
+   "docstring": "(\"klik_op\", actie): er staat geen klikzone met die actie op het scherm.",
+   "explanation": "A click on an action that has no click zone on screen.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.plek_van", "lines": [108]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "HangtFout",
+   "qualname": "HangtFout",
+   "lines": [25, 26],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "Het scherm wordt steeds opnieuw getekend zonder dat het op een toets wacht (een eindeloze lus).",
+   "explanation": "A screen redraws endlessly without waiting for a key.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.refresh", "lines": [71]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "NepScherm",
+   "qualname": "NepScherm",
+   "lines": [32, 119],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The fake window.",
+   "attributes": [
+    {"name": "nep", "line": 33, "scope": "class", "value_preview": "True"},
+    {"name": "toetsen", "line": 37, "scope": "instance", "value_preview": null},
+    {"name": "raster", "line": 38, "scope": "instance", "value_preview": null},
+    {"name": "beelden", "line": 39, "scope": "instance", "value_preview": null},
+    {"name": "_muis", "line": 40, "scope": "instance", "value_preview": null},
+    {"name": "_zonder_toets", "line": 41, "scope": "instance", "value_preview": null},
+    {"name": "zones", "line": 42, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.teken", "lines": [155]},
+    {"caller": "tests/test_gemengd.py::TestGerichteAap.test_aapjes_in_gemengd_oefenen", "lines": [197]},
+    {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [109]},
+    {"caller": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [149]},
+    {"caller": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [182]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [287]},
+    {"caller": "tests/test_ouder.py::TestToegang.test_meteen_ouderdeel_met_argument", "lines": [72]},
+    {"caller": "tests/test_schermen.py::Basis.speel", "lines": [111]},
+    {"caller": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1031]},
+    {"caller": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [979]},
+    {"caller": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [279]},
+    {"caller": "tests/test_stabiliteit.py::TestAapjes.test_aapjes", "lines": [243]},
+    {"caller": "tests/test_stabiliteit.py::TestToetsen.test_teken_met_toetscode_wordt_teken", "lines": [113]},
+    {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [194]},
+    {
+     "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+     "lines": [129]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "lines": [407, 411]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "NepScherm.__init__",
+     "kind": "method",
+     "lines": [35, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "hoogte", "kind": "positional", "default": "24", "annotation": null},
+      {"name": "breedte", "kind": "positional", "default": "80", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts with the keys, a raster of the given size and empty records.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.teken", "lines": [155]},
+      {"caller": "tests/test_gemengd.py::TestGerichteAap.test_aapjes_in_gemengd_oefenen", "lines": [197]},
+      {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [109]},
+      {"caller": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [149]},
+      {"caller": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [182]},
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [287]},
+      {"caller": "tests/test_ouder.py::TestToegang.test_meteen_ouderdeel_met_argument", "lines": [72]},
+      {"caller": "tests/test_schermen.py::Basis.speel", "lines": [111]},
+      {"caller": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1031]},
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [979]},
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [279]},
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.test_aapjes", "lines": [243]},
+      {
+       "caller": "tests/test_stabiliteit.py::TestToetsen.test_teken_met_toetscode_wordt_teken",
+       "lines": [113]
+      },
+      {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [194]},
+      {
+       "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+       "lines": [129]
+      },
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+       "lines": [407, 411]
+      }
+     ]
+    },
+    {
+     "name": "getmaxyx",
+     "qualname": "NepScherm.getmaxyx",
+     "kind": "method",
+     "lines": [45, 46],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The size (height, width).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "keypad",
+     "qualname": "NepScherm.keypad",
+     "kind": "method",
+     "lines": [48, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aan", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignored.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "timeout",
+     "qualname": "NepScherm.timeout",
+     "kind": "method",
+     "lines": [51, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ms", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignored.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "erase",
+     "qualname": "NepScherm.erase",
+     "kind": "method",
+     "lines": [54, 55],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clears the raster.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.get_wch", "lines": [86]}
+     ]
+    },
+    {
+     "name": "addstr",
+     "qualname": "NepScherm.addstr",
+     "kind": "method",
+     "lines": [57, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "attr", "kind": "positional", "default": "0", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Writes text into the raster; raises curses.error when outside the screen, like curses.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["curses.error", "enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "move",
+     "qualname": "NepScherm.move",
+     "kind": "method",
+     "lines": [65, 66],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignored.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "refresh",
+     "qualname": "NepScherm.refresh",
+     "kind": "method",
+     "lines": [68, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records the screen text as a picture when it changed; raises HangtFout after 200 refreshes without a key.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::HangtFout", "lines": [71]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.tekst", "lines": [72]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "get_wch",
+     "qualname": "NepScherm.get_wch",
+     "kind": "method",
+     "lines": [76, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Gives the next prepared key; turns clicks, wheel and resize into the matching curses events; raises ToetsenOp when keys run out.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.erase", "lines": [86]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.plek_van", "lines": [89]},
+      {"target": "leeravontuur/terminal/nepscherm.py::ToetsenOp", "lines": [79]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["curses.error", "getattr", "isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "getmouse",
+     "qualname": "NepScherm.getmouse",
+     "kind": "method",
+     "lines": [99, 100],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The prepared mouse event.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "plek_van",
+     "qualname": "NepScherm.plek_van",
+     "kind": "method",
+     "lines": [103, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actie", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(y, x) van de laatst getekende zone met deze actie.",
+     "explanation": "(y, x) of the last drawn click zone with an action; GeenZone if none.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::GeenZone", "lines": [108]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["reversed"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.get_wch", "lines": [89]}
+     ]
+    },
+    {
+     "name": "tekst",
+     "qualname": "NepScherm.tekst",
+     "kind": "method",
+     "lines": [110, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The raster as text.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/nepscherm.py::NepScherm.refresh", "lines": [72]}
+     ]
+    },
+    {
+     "name": "zoek",
+     "qualname": "NepScherm.zoek",
+     "kind": "method",
+     "lines": [113, 119],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "woord", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(y, x) van de eerste plek waar dit woord op het scherm staat, of None.",
+     "explanation": "(y, x) of the first place a word is on screen, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "NepKlokvenster",
+   "qualname": "NepKlokvenster",
+   "lines": [122, 145],
+   "bases": ["Klokvenster"],
+   "decorators": [],
+   "docstring": "Een klokvenster zonder proces, voor schermtests: bewaart wat het venster kreeg, en geeft `berichten` (bv. {\"klik\": [0, -50]} of {\"toets\": \"Enter\"}) door zodra het venster te zien is, zoals een echt kind.",
+   "explanation": "The fake clock window.",
+   "attributes": [
+    {"name": "wacht", "line": 128, "scope": "instance", "value_preview": null},
+    {"name": "gekregen", "line": 129, "scope": "instance", "value_preview": null},
+    {"name": "proc", "line": 132, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {
+     "caller": "tests/test_schermen.py::TestKlokvenster.test_f2_klok_in_de_terminal_en_terug",
+     "lines": [547, 554]
+    },
+    {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [511]},
+    {
+     "caller": "tests/test_schermen.py::TestKlokvenster.test_tekst_blijft_links_van_het_venster",
+     "lines": [560]
+    },
+    {
+     "caller": "tests/test_schermen.py::TestKlokvenster.test_venster_gesloten_dan_klok_in_de_terminal",
+     "lines": [539]
+    },
+    {"caller": "tests/test_schermen.py::TestKlokvenster.test_versleepte_plek_onthouden", "lines": [570]},
+    {
+     "caller": "tests/test_schermen.py::TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+     "lines": [527]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "NepKlokvenster.__init__",
+     "kind": "method",
+     "lines": [126, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "berichten", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A clock window with prepared messages and a record of what it received.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.__init__", "lines": [127]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list", "super"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_f2_klok_in_de_terminal_en_terug",
+       "lines": [547, 554]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [511]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_tekst_blijft_links_van_het_venster",
+       "lines": [560]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_venster_gesloten_dan_klok_in_de_terminal",
+       "lines": [539]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_versleepte_plek_onthouden", "lines": [570]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+       "lines": [527]
+      }
+     ]
+    },
+    {
+     "name": "_start",
+     "qualname": "NepKlokvenster._start",
+     "kind": "method",
+     "lines": [131, 133],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Pretends to start a process.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_stuur",
+     "qualname": "NepKlokvenster._stuur",
+     "kind": "method",
+     "lines": [135, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bericht", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records a message instead of sending it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "stop",
+     "qualname": "NepKlokvenster.stop",
+     "kind": "method",
+     "lines": [139, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Pretends to stop.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "volgende",
+     "qualname": "NepKlokvenster.volgende",
+     "kind": "method",
+     "lines": [142, 145],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "When visible, hands out the next prepared message as if the child did it.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.volgende", "lines": [145]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.uit.put",
+       "lines": [144],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".empty", "super"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

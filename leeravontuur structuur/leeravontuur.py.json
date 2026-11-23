@@ -1,0 +1,39 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur.py",
+ "kind": "python",
+ "layer": "root",
+ "lines": 26,
+ "source_sha256": "15c994dfc63fef4668a9d56d2778b63278683cc3d9bb67ddfd013e7780bc8fc9",
+ "purpose": "The starter script: checks Python 3.10+ and curses, then runs leeravontuur/__main__.main.",
+ "details": "If Python is too old or curses is missing (Windows needs windows-curses from requirements.txt) it prints a short instruction instead of a traceback. The double-click files leeravontuur-win.bat, -mac.command and -linux.sh call this script.",
+ "module_docstring": "Leeravontuur starten: python3 leeravontuur.py (hulp: python3 leeravontuur.py --help)",
+ "imports": [
+  {"module": "sys", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.__main__",
+   "names": ["main"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": ["leeravontuur/__main__.py"],
+   "internal": true
+  },
+  {"module": "curses", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/__main__.py::main", "lines": [26]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["print", "sys.exit", "sys.version.split"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

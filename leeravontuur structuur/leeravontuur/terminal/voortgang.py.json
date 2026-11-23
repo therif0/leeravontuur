@@ -1,0 +1,51 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/voortgang.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 15,
+ "source_sha256": "bcec9dcb5d0ee6916cde2523b742f40aaabf1a578e19731a093ea4f4c1895fae",
+ "purpose": "The progress line at the top of a series: 'Vraag 3 van 20', a dot per question, and the points.",
+ "details": "Used by every practice screen so the line looks the same; with more than 10 questions the dots sit closer together so it always fits.",
+ "module_docstring": "De voortgang bovenaan een reeks (\"Vraag 3 van 20 ● ● ◉ ○ … Punten: 2\"), voor elk oefenscherm dezelfde.",
+ "imports": [],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [4, 15],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+    {"name": "totaal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "resultaten", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een bolletje per vraag (bij meer dan 10 vragen dichter bij elkaar, zodat het altijd past).",
+   "explanation": "Draws the question number, one dot per question (correct, wrong, current or still to come), the points and a caption line.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [6, 13, 14, 15],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["len", "min", "range", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.voortgang", "lines": [131]}
+   ]
+  }
+ ]
+}

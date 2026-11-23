@@ -1,0 +1,23 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/__init__.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 0,
+ "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+ "purpose": "Empty package marker for the screen modules of the terminal layer.",
+ "details": "The file has no content. The package holds the larger screens outside the main practice screen: unit conversion (eenheden), mixed practice (gemengd), the children list (kinderen), the parent area (ouder), speed practice (snelrekenen) and the shop (winkel).",
+ "module_docstring": "",
+ "imports": [],
+ "imported_by": [
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/curriculum/modi.py",
+  "tests/test_gemengd.py",
+  "tests/test_ouder.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

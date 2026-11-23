@@ -1,0 +1,211 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/vak.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 72,
+ "source_sha256": "f690076903b4148ee9e2f2d36802086fbd137e207780f347ab819f56646d7eea",
+ "purpose": "A bordered panel with a title in the border, like btop: the building block of the new screens (werk/schermen.md).",
+ "details": "Display only; what is inside a panel the screen draws itself within the border. teken draws the border (the panel the child types in gets the focus role), the title top left, a text top right and a key in the bottom border (clickable, same action as the key); lijst draws coloured lines from a top line, cut to the width; scroll_rand adds clickable PgUp/PgDn marks when not everything fits; scroll_stap turns PgUp, PgDn or the wheel into a new top line. In ASCII mode the border characters become + - |.",
+ "module_docstring": "Een vak met een rand en een titel in de rand, zoals btop: de bouwsteen van de schermen 1.0 (werk/schermen.md).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["leeravontuur/terminal/beta.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "SCROLL_TEKST",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "'PgUp PgDn'",
+   "explanation": "The text of the scroll mark."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "label",
+   "qualname": "label",
+   "kind": "function",
+   "lines": [16, 21],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rol", "kind": "positional", "default": "'bold'", "annotation": null},
+    {"name": "rand", "kind": "positional", "default": "'rand'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "┤ tekst ├ in een rand; geeft de breedte.",
+   "explanation": "Draws '┤ text ├' in a border; returns its width.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [18, 19, 20],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/vak.py::scroll_rand", "lines": [59]},
+    {"caller": "leeravontuur/terminal/vak.py::teken", "lines": [35, 37, 40]}
+   ]
+  },
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [24, 42],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "titel", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "rechts", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "onder", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "actie", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "focus", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "rand", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De rand van (y, x) tot (y + h - 1, x + w - 1). titel = links in de bovenrand, rechts = rechts in de bovenrand (valt weg als het niet past), onder = een toets rechts in de onderrand, klikbaar met actie (dezelfde als de toets).",
+   "explanation": "Draws a panel border from (y, x) with height h and width w, a title, a right-hand caption (dropped if no room) and a clickable key in the bottom border; the focus panel uses the focus border role.",
+   "calls": [
+    {"target": "leeravontuur/terminal/vak.py::label", "lines": [35, 37, 40]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [30, 32, 33, 34],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "s.zones.voeg",
+     "lines": [42],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": ["len", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [190]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_maatje", "lines": [277]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_reeks", "lines": [241]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_spiek", "lines": [267]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_tip", "lines": [211, 223]}
+   ]
+  },
+  {
+   "name": "lijst",
+   "qualname": "lijst",
+   "kind": "function",
+   "lines": [45, 51],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "regels", "kind": "positional", "default": null, "annotation": null},
+    {"name": "top", "kind": "positional", "default": "0", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Regels (tekst, rol) in een vlak van h rijen en w kolommen, vanaf regel top (begrensd zodat het vlak vol staat). Geeft (top, meer_boven, meer_onder).",
+   "explanation": "Draws lines (text, role) in an area from a top line, clamped so the area is full; returns (top, more above, more below).",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [50],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["enumerate", "len", "max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_spiek", "lines": [269]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_tip", "lines": [220, 230]}
+   ]
+  },
+  {
+   "name": "scroll_rand",
+   "qualname": "scroll_rand",
+   "kind": "function",
+   "lines": [54, 61],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "boven", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onder", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rand", "kind": "positional", "default": "'rand'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "▲ ▼ PgUp PgDn rechts in de onderrand van een vak (y, x, h, w); PgUp en PgDn zijn klikbaar (dezelfde actie als de toets). Alleen tekenen als er iets te scrollen is.",
+   "explanation": "Draws the scroll marks and registers click zones for PgUp and PgDn in the bottom border.",
+   "calls": [
+    {"target": "leeravontuur/terminal/vak.py::label", "lines": [59]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "s.zones.voeg",
+     "lines": [60, 61],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_spiek", "lines": [272]}
+   ]
+  },
+  {
+   "name": "scroll_stap",
+   "qualname": "scroll_stap",
+   "kind": "function",
+   "lines": [64, 72],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null},
+    {"name": "top", "kind": "positional", "default": null, "annotation": null},
+    {"name": "plaats", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De nieuwe top na een toets (PgUp, PgDn) of het scrollwiel ((\"scroll\", 1) of (\"scroll\", -1)), of None als het geen scrolltoets is.",
+   "explanation": "The new top line after PgUp, PgDn or the wheel, or None when the key does not scroll.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar._stel_vraag", "lines": [95]}
+   ]
+  }
+ ]
+}

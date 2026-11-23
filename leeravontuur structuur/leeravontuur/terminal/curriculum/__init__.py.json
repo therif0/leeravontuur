@@ -1,0 +1,474 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/curriculum/__init__.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 111,
+ "source_sha256": "818b20983d457eecd025644fe41a658b4a5a62c4412b54be75a5b63f35b27c73",
+ "purpose": "The curriculum as a menu: Subject > Domain > Topic, with the practice forms (modes) per topic. All menus, cheat sheets and the report grouping come from here.",
+ "details": "No other menu file contains the names of subjects, domains or topics. Ids are menu ids (fixed); `opslag` points to the stored skill ids (kern skills and snelrekenen.<kind>) that never change. A mode or a cheat sheet is a function f(app, breadcrumb) that starts an existing screen. The dataclasses Spiekbrief, Onderwerp, Domein and Vak describe the tree; VAKKEN (Wiskunde, Taal) is imported lazily from wiskunde.py and taal.py at the bottom of the module. Helper functions search the tree and produce the data the core needs (the report grouping `indeling` and the themes of mixed practice `gemengd_themas`). BINNENKORT (subjects shown grey in the main menu) is currently always empty because Taal is a real subject now.",
+ "module_docstring": "Het leerplan als menu: Vak → Domein → Onderwerp, met per onderwerp de oefenvormen (modi).",
+ "imports": [
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "typing", "names": ["Callable"], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal.curriculum.taal",
+   "names": ["TAAL"],
+   "alias": null,
+   "line": 53,
+   "resolves_to": ["leeravontuur/terminal/curriculum/taal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.curriculum.wiskunde",
+   "names": ["GROEPEN", "WISKUNDE"],
+   "alias": null,
+   "line": 54,
+   "resolves_to": ["leeravontuur/terminal/curriculum/wiskunde.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/curriculum/taal.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "leeravontuur/terminal/navigatie.py",
+  "leeravontuur/terminal/schermen/gemengd.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_beta.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_rapporten.py",
+  "tests/test_reeks.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_taal_scherm.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::_vakken", "lines": [58]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass", "tuple"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Vak>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "MODI",
+   "line": 12,
+   "value_type": "Dict",
+   "value_preview": "{'reeks': 'reeks', 'vrij': 'vrij', '60s': '60 s', '20sommen': '20 som…",
+   "explanation": "Mode id to the button text in the footer."
+  },
+  {
+   "name": "TOETS",
+   "line": 14,
+   "value_type": "Dict",
+   "value_preview": "{'vrij': 'v', '60s': 't', '20sommen': 'z', 'tabel': 'h'}",
+   "explanation": "The key of each mode on the highlighted topic."
+  },
+  {
+   "name": "SPIEK_TOETS",
+   "line": 15,
+   "value_type": "Constant",
+   "value_preview": "'s'",
+   "explanation": "The key that opens the cheat sheet."
+  },
+  {
+   "name": "ENTER",
+   "line": 16,
+   "value_type": "Tuple",
+   "value_preview": "('reeks', '60s', '20sommen')",
+   "explanation": "Which mode Enter starts (the first the topic has)."
+  },
+  {
+   "name": "MAX_PER_MENU",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "10",
+   "explanation": "Most items per menu (digit keys 1-9 and 0)."
+  },
+  {
+   "name": "VAKKEN",
+   "line": 58,
+   "value_type": "Call",
+   "value_preview": "_vakken()",
+   "explanation": "The subjects in main-menu order."
+  },
+  {
+   "name": "GROEPEN",
+   "line": 58,
+   "value_type": "Call",
+   "value_preview": "_vakken()",
+   "explanation": "Stored id to one name in reports (the seven units are 'Maten')."
+  },
+  {
+   "name": "BINNENKORT",
+   "line": 60,
+   "value_type": "Call",
+   "value_preview": "tuple((v for v in (('Taal', 'binnenkort'),) if v[0] not in {x.label f…",
+   "explanation": "Subjects shown grey in the main menu until built (empty now that Taal exists)."
+  }
+ ],
+ "registries": [
+  {
+   "name": "VAKKEN",
+   "line": 58,
+   "description": "The tree of subjects, domains and topics built from wiskunde.py and taal.py; the menus, the cheat-sheet menus, the reports (indeling) and mixed practice (gemengd_themas) read it, and each mode is a function stored in it that the navigation calls."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Spiekbrief",
+   "qualname": "Spiekbrief",
+   "lines": [21, 23],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A cheat sheet: title and a function that shows it.",
+   "attributes": [
+    {"name": "titel", "line": 22, "scope": "class", "value_preview": null},
+    {"name": "toon", "line": 23, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::oefenaar", "lines": [18]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [29]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [25]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Onderwerp",
+   "qualname": "Onderwerp",
+   "lines": [27, 33],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A menu topic: id, label, modes, cheat sheet, stored ids and a grey explanation.",
+   "attributes": [
+    {"name": "id", "line": 28, "scope": "class", "value_preview": null},
+    {"name": "label", "line": 29, "scope": "class", "value_preview": null},
+    {"name": "modi", "line": 30, "scope": "class", "value_preview": null},
+    {"name": "spiek", "line": 31, "scope": "class", "value_preview": null},
+    {"name": "opslag", "line": 32, "scope": "class", "value_preview": null},
+    {"name": "uitleg", "line": 33, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::oefenaar", "lines": [18]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [68]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::maat", "lines": [36]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [25]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Domein",
+   "qualname": "Domein",
+   "lines": [37, 41],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A domain: id, label, its topics and an explanation.",
+   "attributes": [
+    {"name": "id", "line": 38, "scope": "class", "value_preview": null},
+    {"name": "label", "line": 39, "scope": "class", "value_preview": null},
+    {"name": "onderwerpen", "line": 40, "scope": "class", "value_preview": null},
+    {"name": "uitleg", "line": 41, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::<module>", "lines": [23, 26, 38, 39, 40, 41]},
+    {
+     "caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>",
+     "lines": [53, 59, 73, 79, 97, 108, 115, 120]
+    }
+   ],
+   "methods": []
+  },
+  {
+   "name": "Vak",
+   "qualname": "Vak",
+   "lines": [45, 49],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A subject: id, label, its domains and an explanation.",
+   "attributes": [
+    {"name": "id", "line": 46, "scope": "class", "value_preview": null},
+    {"name": "label", "line": 47, "scope": "class", "value_preview": null},
+    {"name": "domeinen", "line": 48, "scope": "class", "value_preview": "field(default_factory=tuple)"},
+    {"name": "uitleg", "line": 49, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::<module>", "lines": [22]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [52]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "_vakken",
+   "qualname": "_vakken",
+   "kind": "function",
+   "lines": [52, 55],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Imports the Wiskunde and Taal subjects and the group names (done lazily to avoid import cycles).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dict"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/__init__.py::<module>", "lines": [58]}
+   ]
+  },
+  {
+   "name": "domeinen",
+   "qualname": "domeinen",
+   "kind": "function",
+   "lines": [64, 65],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "All domains of all subjects in order.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/__init__.py::domein_van", "lines": [78]},
+    {"caller": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [69]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestNavigatie.test_geen_namen_in_de_menumodules",
+     "lines": [302]
+    },
+    {
+     "caller": "tests/test_menu_architecture.py::TestNavigatie.test_terug_op_hetzelfde_onderwerp",
+     "lines": [214]
+    }
+   ]
+  },
+  {
+   "name": "onderwerpen",
+   "qualname": "onderwerpen",
+   "kind": "function",
+   "lines": [68, 69],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "All topics of all domains in order.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::domeinen", "lines": [69]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/__init__.py::van_opslag", "lines": [87]},
+    {"caller": "leeravontuur/terminal/curriculum/__init__.py::zoek", "lines": [74]},
+    {"caller": "tests/test_menu_architecture.py::TestModiStarten.test_elke_modus", "lines": [160]},
+    {"caller": "tests/test_menu_architecture.py::TestModiStarten.test_elke_spiekbrief", "lines": [172]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestNavigatie.test_geen_namen_in_de_menumodules",
+     "lines": [302]
+    },
+    {"caller": "tests/test_menu_architecture.py::TestRegistry.test_altijd_iets_te_starten", "lines": [109]},
+    {"caller": "tests/test_menu_architecture.py::TestRegistry.test_elk_onderwerp_heeft_modi", "lines": [62]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestRegistry.test_elke_vaardigheid_staat_in_het_menu",
+     "lines": [96]
+    },
+    {"caller": "tests/test_menu_architecture.py::TestRegistry.test_ids_uniek_en_goed_gevormd", "lines": [51]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestRegistry.test_niets_bewaard_zonder_onderwerp",
+     "lines": [91]
+    },
+    {"caller": "tests/test_menu_architecture.py::TestRegistry.test_spiekbrieven", "lines": [70]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestRegistry.test_zelfde_titel_zelfde_spiekbrief",
+     "lines": [81]
+    },
+    {"caller": "tests/test_stabiliteit.py::TestAapjes.test_gerichte_aapjes_in_elke_oefening", "lines": [263]}
+   ]
+  },
+  {
+   "name": "zoek",
+   "qualname": "zoek",
+   "kind": "function",
+   "lines": [72, 74],
+   "params": [
+    {"name": "id_", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het onderwerp met dit menu-id, of None.",
+   "explanation": "The topic with a menu id, or None.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [74]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["next"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_menu_architecture.py::TestNavigatie.test_broodkruimel_uit_elke_soort_oefening",
+     "lines": [288]
+    },
+    {"caller": "tests/test_schermen.py::menu_onderwerp", "lines": [37]},
+    {
+     "caller": "tests/test_taal_scherm.py::TestStapVoorStap.test_s_in_het_menu_opent_de_spiekbrief",
+     "lines": [84]
+    }
+   ]
+  },
+  {
+   "name": "domein_van",
+   "qualname": "domein_van",
+   "kind": "function",
+   "lines": [77, 78],
+   "params": [
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The domain a topic belongs to.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::domeinen", "lines": [78]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.kruimel_van", "lines": [364]},
+    {
+     "caller": "tests/test_menu_architecture.py::TestNavigatie.test_broodkruimel_uit_elke_soort_oefening",
+     "lines": [289]
+    },
+    {"caller": "tests/test_schermen.py::naar", "lines": [44]}
+   ]
+  },
+  {
+   "name": "vak_van",
+   "qualname": "vak_van",
+   "kind": "function",
+   "lines": [81, 82],
+   "params": [
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The subject a domain belongs to.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.kruimel_van", "lines": [365]},
+    {"caller": "tests/test_schermen.py::naar", "lines": [45]}
+   ]
+  },
+  {
+   "name": "van_opslag",
+   "qualname": "van_opslag",
+   "kind": "function",
+   "lines": [85, 87],
+   "params": [
+    {"name": "opslag_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De onderwerpen die bij een bewaarde id horen (de zeven maten delen er één).",
+   "explanation": "The topics that belong to a stored id (the seven unit kinds share one).",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [87]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.kruimel_van", "lines": [363]},
+    {"caller": "tests/test_schermen.py::menu_onderwerp", "lines": [37]}
+   ]
+  },
+  {
+   "name": "indeling",
+   "qualname": "indeling",
+   "kind": "function",
+   "lines": [90, 99],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Voor de rapporten (gewone data, de kern kent het menu niet): {bewaarde id: (vak, domein, onderwerp)}, in de volgorde van het leerplan. Snelrekenen.<soort> hoort bij zijn onderwerp (Tafels, Optellen en aftrekken, Gemengd).",
+   "explanation": "For reports: {stored id: (subject, domain, topic name)} in curriculum order; speed practice belongs to its topic.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["leeravontuur.terminal.curriculum.wiskunde.GROEPEN.get"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer", "lines": [309]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer_alles", "lines": [642]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.toon_rapport", "lines": [299]},
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_export_zelfde_kolommen_plus_vak_en_domein",
+     "lines": [325]
+    },
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_per_onderwerp_past_in_de_lezer",
+     "lines": [261, 265]
+    },
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_snelrekenen_apart_onder_zijn_onderwerp",
+     "lines": [241, 252]
+    },
+    {"caller": "tests/test_rapporten.py::TestIndeling.test_status_past_in_de_lezer", "lines": [318]},
+    {"caller": "tests/test_rapporten.py::TestIndeling.test_status_snelrekenen_apart", "lines": [279]},
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_status_zonder_snelrekenen_geen_extra_regel",
+     "lines": [308]
+    },
+    {"caller": "tests/test_rapporten.py::TestIndeling.test_zelfde_cijfers", "lines": [229]}
+   ]
+  },
+  {
+   "name": "gemengd_themas",
+   "qualname": "gemengd_themas",
+   "kind": "function",
+   "lines": [102, 111],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De thema's van Gemengd oefenen (kern/reeks.py): elk domein met onderwerpen die een reeks hebben, per vak. [(vak, domein, (bewaarde ids, ...))]. Een nieuw vak (Taal) komt er vanzelf bij.",
+   "explanation": "The themes of mixed practice: every domain with topics that have a series mode, as (subject, domain, stored ids); new subjects join automatically.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::labels", "lines": [32]},
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::themas", "lines": [19]}
+   ]
+  }
+ ]
+}

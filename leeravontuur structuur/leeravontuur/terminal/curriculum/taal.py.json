@@ -1,0 +1,121 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/curriculum/taal.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 42,
+ "source_sha256": "2898f886949e22547d9c346c0f09887932bd4bef3c550c66de9e4ed672faff20",
+ "purpose": "The Taal part of the curriculum: domains and topics in menu order (plan: docs/taal.md).",
+ "details": "A domain without topics is shown grey in the menu ('komt binnenkort'): Woordsoorten, Spelling, Woordenschat and Begrijpend lezen. Zinsontleding has one topic (Zinsdelen) and Werkwoordspelling five (present tense, weak past, strong past, past participle, turn into past tense). Each topic has the modes 'reeks' and 'vrij' and a cheat sheet that also shows in Leerstof.",
+ "module_docstring": "Taal: de domeinen en onderwerpen in de volgorde van het menu (het plan: docs/taal.md).",
+ "imports": [
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["werkwoorden"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/werkwoorden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinsontleding"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinsontleding.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.curriculum",
+   "names": ["Domein", "Onderwerp", "Spiekbrief", "Vak"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.curriculum",
+   "names": ["modi"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/curriculum/__init__.py", "leeravontuur/terminal/curriculum/modi.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/curriculum/__init__.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Domein", "lines": [23, 26, 38, 39, 40, 41]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Vak", "lines": [22]},
+    {"target": "leeravontuur/terminal/curriculum/taal.py::oefenaar", "lines": [24, 27, 29, 31, 33, 35]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "ZINSONTLEDING",
+   "line": 11,
+   "value_type": "Constant",
+   "value_preview": "'Zinsontleding'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "WERKWOORDSPELLING",
+   "line": 12,
+   "value_type": "Constant",
+   "value_preview": "'Werkwoordspelling'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "TAAL",
+   "line": 22,
+   "value_type": "Call",
+   "value_preview": "Vak('taal', 'Taal', (Domein('taal.zinsontleding', ZINSONTLEDING, (oef…",
+   "explanation": "The Taal subject: all its domains and topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "TAAL",
+   "line": 22,
+   "description": "The subject Taal as data (Vak > Domein > Onderwerp); terminal/curriculum/__init__.py collects it into VAKKEN and the menus are built from that."
+  }
+ ],
+ "classes": [],
+ "functions": [
+  {
+   "name": "oefenaar",
+   "qualname": "oefenaar",
+   "kind": "function",
+   "lines": [15, 19],
+   "params": [
+    {"name": "id_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kern", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "spiek", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een onderwerp van de Oefenaar (reeks en vrij oefenen), met zijn spiekbrief (ook in Leerstof).",
+   "explanation": "Builds the curriculum Onderwerp for an Oefenaar topic with its modes (series, free), its cheat sheet and the stored skill id.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Onderwerp", "lines": [18]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Spiekbrief", "lines": [18]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::oefenaar", "lines": [17]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::spiek_oefenaar", "lines": [18]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::<module>", "lines": [24, 27, 29, 31, 33, 35]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,88 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/maatje.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 30,
+ "source_sha256": "14132741a9e905d4dfd431782c129cef007afed581b5a59f12c30b041e4288ff",
+ "purpose": "Draws the practice buddy (the child's avatar with a face and a short text) at the top right of an exercise screen.",
+ "details": "Three layouts by space: a wide screen (100+ columns) shows the pixel avatar with the text under it; a roomy 80-wide layout shows the pixel avatar at the right with the text to its left; otherwise a text face with the text. 'hoog' lifts the avatar one row (a little jump after a correct answer). Nothing is drawn when the child turned the avatar off.",
+ "module_docstring": "Het oefenmaatje: de avatar van het kind naast de oefening, met een gezicht en een kort tekstje.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "leeravontuur/terminal/schermen/snelrekenen.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [7, 30],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gezicht", "kind": "positional", "default": "'normaal'", "annotation": null},
+    {"name": "ballon", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "ruim", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "hoog", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Rechtsboven op het scherm.",
+   "explanation": "Draws the buddy with an expression and a balloon text in the layout that fits the screen size.",
+   "calls": [
+    {"target": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [18, 23]},
+    {"target": "leeravontuur/terminal/avatar.py::teken", "lines": [20, 25]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.avatar_config",
+     "lines": [17],
+     "candidates": ["leeravontuur/terminal/app.py::App.avatar_config"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "s.maat",
+     "lines": [16],
+     "candidates": [
+      "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+      "leeravontuur/terminal/scherm.py::Scherm.maat",
+      "leeravontuur/venster/klokvenster.py::Venster.maat"
+     ],
+     "candidates_count": 3
+    },
+    {
+     "expr": "s.put",
+     "lines": [22, 27, 30],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["len", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [340]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag_scherm", "lines": [171]},
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel", "lines": [80]}
+   ]
+  }
+ ]
+}

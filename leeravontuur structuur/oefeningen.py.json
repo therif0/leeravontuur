@@ -1,0 +1,29 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "oefeningen.py",
+ "kind": "python",
+ "layer": "root",
+ "lines": 8,
+ "source_sha256": "b88a38bad029d6861b558d2d9ac4559296b4d1a4712875e525c4603be0aba923",
+ "purpose": "The old name of the starter: runs leeravontuur.py.",
+ "details": "Kept so old shortcuts and habits (python3 oefeningen.py) keep working; it executes leeravontuur.py with runpy as __main__.",
+ "module_docstring": "De oude naam van de starter: start nu leeravontuur.py. Dit bestand blijft voorlopig bestaan, zodat oude snelkoppelingen en gewoontes (python3 oefeningen.py) blijven werken.",
+ "imports": [
+  {"module": "runpy", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 6, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "runpy.run_path", "str"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

@@ -1,0 +1,334 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/invoer.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 78,
+ "source_sha256": "7e23e037722248dabd93bc21a2c2512d2097ee3e9e933d1493afddf547f7dd2e",
+ "purpose": "What every input object (grid, fraction bar, sentence parts, word problem ...) can do: get a rectangle and say how big it is.",
+ "details": "Building blocks of the panel screens (werk/schermen.md). x0 is the left side of what it draws (without plaats(), the old fixed column, so ordinary screens do not change); plaats(x, width) puts it in a panel; breedte() measures the width needed by drawing on a measuring surface (_Meetvlak) during the question and after checking, then restores the object's state; hoogte() and randtekst() are supplied by each object. Plaats is the base class of most input objects.",
+ "module_docstring": "Wat elk invoer-object kan (rooster, staartdeling, breukbalk, zinsdelen, vraagstuk …): een rechthoek krijgen en zeggen hoe groot het is (de bouwstenen van de schermen 1.0, werk/schermen.md).",
+ "imports": [],
+ "imported_by": [
+  "leeravontuur/terminal/balk.py",
+  "leeravontuur/terminal/rooster.py",
+  "leeravontuur/terminal/stappenhulp.py",
+  "leeravontuur/terminal/tabel.py",
+  "leeravontuur/terminal/vraagstuk.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "_Meetvlak",
+   "qualname": "_Meetvlak",
+   "lines": [15, 46],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Een scherm dat niets tekent, alleen onthoudt hoe ver naar rechts er getekend werd.",
+   "explanation": "A fake screen used only to measure how big a drawing is.",
+   "attributes": [
+    {"name": "zones", "line": 20, "scope": "instance", "value_preview": null},
+    {"name": "rechts", "line": 24, "scope": "instance", "value_preview": null},
+    {"name": "onder", "line": 25, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/invoer.py::Plaats.meet", "lines": [70]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "_Meetvlak.__init__",
+     "kind": "method",
+     "lines": [18, 20],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A surface that draws nothing but remembers how far right and down was drawn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/invoer.py::Plaats.meet", "lines": [70]}
+     ]
+    },
+    {
+     "name": "put",
+     "qualname": "_Meetvlak.put",
+     "kind": "method",
+     "lines": [22, 25],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records the extent of a text without drawing it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tekstvak",
+     "qualname": "_Meetvlak.tekstvak",
+     "kind": "method",
+     "lines": [27, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breedte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actie", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records the extent of a text box.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "voeg",
+     "qualname": "_Meetvlak.voeg",
+     "kind": "method",
+     "lines": [31, 32],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignores click zones.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "cursor",
+     "qualname": "_Meetvlak.cursor",
+     "kind": "method",
+     "lines": [34, 35],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignores the cursor.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewerk",
+     "qualname": "_Meetvlak.bewerk",
+     "kind": "method",
+     "lines": [37, 38],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "buf", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "a", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the text unchanged (no editing).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maat",
+     "qualname": "_Meetvlak.maat",
+     "kind": "method",
+     "lines": [40, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A large fixed screen size so nothing is cut off while measuring.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__getattr__",
+     "qualname": "_Meetvlak.__getattr__",
+     "kind": "method",
+     "lines": [43, 46],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Passes anything else (such as whether pixels are possible) to the real screen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["AttributeError", "getattr"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Plaats",
+   "qualname": "Plaats",
+   "lines": [49, 78],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class that gives an input object a panel position and a measured size.",
+   "attributes": [
+    {"name": "in_vak", "line": 50, "scope": "class", "value_preview": "False"},
+    {"name": "breed", "line": 51, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "plaats",
+     "qualname": "Plaats.plaats",
+     "kind": "method",
+     "lines": [53, 54],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breed", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the object in a panel: left column x, at most `breed` columns, in-panel style on.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/tabel.py::_Maat.plaats", "lines": [50]}
+     ]
+    },
+    {
+     "name": "randtekst",
+     "qualname": "Plaats.randtekst",
+     "kind": "method",
+     "lines": [56, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Text for the bottom border of the panel (for example 'typrichting'); empty by default.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_voor_maat",
+     "qualname": "Plaats.teken_voor_maat",
+     "kind": "method",
+     "lines": [59, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tekenen om te meten (een object met een andere manier van tekenen geeft dit zelf).",
+     "explanation": "Draws once on a measuring surface (an object may override this).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.teken", "lines": [61], "candidates": [], "candidates_count": 16}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/invoer.py::Plaats.meet", "lines": [74]}
+     ]
+    },
+    {
+     "name": "breedte",
+     "qualname": "Plaats.breedte",
+     "kind": "method",
+     "lines": [63, 66],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Zoveel kolommen vanaf x0, tijdens de vraag en na het nakijken. s = het echte scherm (voor wat een object aan het scherm vraagt, bv. of pixels kunnen); er wordt niets op getekend.",
+     "explanation": "How many columns from x0 the object needs, measured on what it draws.",
+     "calls": [
+      {"target": "leeravontuur/terminal/invoer.py::Plaats.meet", "lines": [66]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "meet",
+     "qualname": "Plaats.meet",
+     "kind": "method",
+     "lines": [68, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "staten", "kind": "positional", "default": "(None, False)", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tekent op een meetvlak (tijdens de vraag en na het nakijken) en zet daarna alles terug zoals het was.",
+     "explanation": "Draws on a measuring surface in the given states (during the question and after checking) and restores the object's saved state afterwards.",
+     "calls": [
+      {"target": "leeravontuur/terminal/invoer.py::Plaats.teken_voor_maat", "lines": [74]},
+      {"target": "leeravontuur/terminal/invoer.py::_Meetvlak.__init__", "lines": [70]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["dict"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/invoer.py::Plaats.breedte", "lines": [66]},
+      {"caller": "leeravontuur/terminal/tabel.py::_Maat.hoogte", "lines": [58]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

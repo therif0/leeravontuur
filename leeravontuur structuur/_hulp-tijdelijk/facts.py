@@ -15,7 +15,8 @@ SCHEMA = "leeravontuur-structuur/1"
 
 
 def tracked():
-    return subprocess.check_output(["git", "-C", str(REPO), "ls-files"], text=True).splitlines()
+    out = subprocess.check_output(["git", "-C", str(REPO), "ls-files"], text=True).splitlines()
+    return [p for p in out if not p.startswith("leeravontuur structuur/")]  # the map itself is not explained
 
 
 def explained(paths):

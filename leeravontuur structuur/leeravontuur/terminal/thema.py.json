@@ -1,0 +1,328 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/thema.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 220,
+ "source_sha256": "b1276c25581d00b9cd24b9a153b2c5b12930ccf81b96dd1c42d182cdd8e0386a",
+ "purpose": "The colour themes: screens ask for a ROLE (good, wrong, accent ...), never a colour; this file maps roles to curses attributes per theme, and builds avatar pixel colour pairs.",
+ "details": "Themes: standard, two colour-blind themes (Okabe-Ito colours: red-green and blue-yellow), high contrast and no colour (only bold, underline, reverse, also for terminals without colours). Right and wrong always also have a symbol on screen. Roles include the sentence-part colours (z_pv ... z_bwb, like highlighter pens, with the abbreviation always shown too) and the panel-screen roles (vraag, band, invulcursor, rand, rand_focus). Colours are written by name (8 colours) or (number for 256 colours, name for 8). maak() builds {role: attribute}; pixel() and rol_pixel() create colour pairs for half-block pixels lazily from pair number 32. No colour code elsewhere in the program (a test guards it).",
+ "module_docstring": "Kleurenthema's. Schermen vragen een ROL (\"goed\", \"fout\", \"accent\" …), nooit een kleur.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "leeravontuur/terminal/avatar.py",
+  "leeravontuur/terminal/modellen.py",
+  "leeravontuur/terminal/scherm.py",
+  "tests/test_architectuur.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "ZINSDEEL_ROLLEN",
+   "line": 13,
+   "value_type": "Tuple",
+   "value_preview": "('z_pv', 'z_o', 'z_wwg', 'z_nwg', 'z_lv', 'z_mv', 'z_bwb')",
+   "explanation": "Roles of the sentence parts (Taal)."
+  },
+  {
+   "name": "VAK_ROLLEN",
+   "line": 16,
+   "value_type": "Tuple",
+   "value_preview": "('vraag', 'band', 'invulcursor', 'rand', 'rand_focus')",
+   "explanation": "Roles of the panel screens."
+  },
+  {
+   "name": "ROLLEN",
+   "line": 17,
+   "value_type": "Tuple",
+   "value_preview": "('titel', 'voet', 'knop', 'bold', 'dim', 'goed', 'fout', 'accent', 'a…",
+   "explanation": "All roles."
+  },
+  {
+   "name": "_ZWART",
+   "line": 21,
+   "value_type": "Tuple",
+   "value_preview": "('zwart', 'wit')",
+   "explanation": ""
+  },
+  {"name": "_WIT", "line": 21, "value_type": "Tuple", "value_preview": "('zwart', 'wit')", "explanation": ""},
+  {
+   "name": "PALETTEN",
+   "line": 23,
+   "value_type": "Dict",
+   "value_preview": "{'standaard': {'titel': ('zwart', 'cyaan', False), 'voet': ('zwart', …",
+   "explanation": "Per theme: role to (foreground, background, bold)."
+  },
+  {
+   "name": "_ACHT",
+   "line": 96,
+   "value_type": "Dict",
+   "value_preview": "{'zwart': 'COLOR_BLACK', 'rood': 'COLOR_RED', 'groen': 'COLOR_GREEN',…",
+   "explanation": "Colour name to curses constant."
+  },
+  {
+   "name": "_EERSTE",
+   "line": 136,
+   "value_type": "Constant",
+   "value_preview": "32",
+   "explanation": "First colour pair number used for pixels."
+  },
+  {
+   "name": "_paren",
+   "line": 137,
+   "value_type": "Dict",
+   "value_preview": "{}",
+   "explanation": "Cache of pixel colour pairs."
+  },
+  {
+   "name": "_ACHT_RGB",
+   "line": 138,
+   "value_type": "Dict",
+   "value_preview": "{'COLOR_BLACK': (0, 0, 0), 'COLOR_RED': (205, 49, 49), 'COLOR_GREEN':…",
+   "explanation": "Approximate RGB of the 8 basic colours."
+  },
+  {
+   "name": "PIXELROLLEN",
+   "line": 176,
+   "value_type": "Dict",
+   "value_preview": "{'vulling': 'accent2', 'rand': 'accent', 'lijn': ((240, 'wit'),)}",
+   "explanation": "Pixel roles that follow a theme colour (fill, border) or have their own colour (line)."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_mono",
+   "qualname": "_mono",
+   "kind": "function",
+   "lines": [82, 93],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The no-colour attributes per role (bold, underline, reverse, dim).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/thema.py::maak", "lines": [111]}
+   ]
+  },
+  {
+   "name": "_kleur",
+   "qualname": "_kleur",
+   "kind": "function",
+   "lines": [100, 106],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null},
+    {"name": "veel", "kind": "positional", "default": null, "annotation": null},
+    {"name": "standaard_achter", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A colour spec to a curses colour number (256-colour number or the 8-colour name; -1 = terminal background).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["getattr", "isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/thema.py::_pixelkleur", "lines": [184]},
+    {"caller": "leeravontuur/terminal/thema.py::maak", "lines": [126]}
+   ]
+  },
+  {
+   "name": "maak",
+   "qualname": "maak",
+   "kind": "function",
+   "lines": [109, 130],
+   "params": [
+    {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kleuren", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Geeft {rol: curses-attribuut}. Zonder (mogelijke) kleuren: het mono-thema.",
+   "explanation": "Builds {role: curses attribute} for a theme; falls back to the mono theme when there are no colours or the theme is 'geen-kleur'.",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::_kleur", "lines": [126]},
+    {"target": "leeravontuur/terminal/thema.py::_mono", "lines": [111]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [
+    "curses.color_pair",
+    "curses.has_colors",
+    "curses.init_pair",
+    "curses.start_color",
+    "curses.use_default_colors",
+    "dict",
+    "enumerate"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.pas_toe", "lines": [134]},
+    {"caller": "tests/test_architectuur.py::TestThemas.test_zonder_kleur_alle_rollen", "lines": [49]}
+   ]
+  },
+  {
+   "name": "_rgb",
+   "qualname": "_rgb",
+   "kind": "function",
+   "lines": [143, 144],
+   "params": [
+    {"name": "hexkleur", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A '#rrggbb' to (r, g, b).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/thema.py::_naar_256", "lines": [148]},
+    {"caller": "leeravontuur/terminal/thema.py::_naar_8", "lines": [162]}
+   ]
+  },
+  {
+   "name": "_naar_256",
+   "qualname": "_naar_256",
+   "kind": "function",
+   "lines": [147, 158],
+   "params": [
+    {"name": "hexkleur", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The nearest 256-colour number (colour cube or grey ramp) for a hex colour.",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::_rgb", "lines": [148]}
+   ],
+   "unresolved_calls": [
+    {"expr": "stap", "lines": [150], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["max", "min", "round", "sum", "zip"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_naar_8",
+   "qualname": "_naar_8",
+   "kind": "function",
+   "lines": [161, 164],
+   "params": [
+    {"name": "hexkleur", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The nearest of the 8 basic colours.",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::_rgb", "lines": [162]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["getattr", "min", "sum", "zip"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "pixels_mogelijk",
+   "qualname": "pixels_mogelijk",
+   "kind": "function",
+   "lines": [167, 172],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Kunnen we gekleurde pixels tekenen? (anders gebruikt de avatar een tekstgezichtje)",
+   "explanation": "Whether the terminal has enough colour pairs to draw pixels.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["curses.has_colors"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [14]},
+    {"caller": "leeravontuur/terminal/modellen.py::kan_pixels_rooster", "lines": [241]}
+   ]
+  },
+  {
+   "name": "_pixelkleur",
+   "qualname": "_pixelkleur",
+   "kind": "function",
+   "lines": [179, 184],
+   "params": [
+    {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+    {"name": "thema_naam", "kind": "positional", "default": null, "annotation": null},
+    {"name": "veel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The colour of a pixel role (fill, border, line) in a theme.",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::_kleur", "lines": [184]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/thema.py::rol_pixel", "lines": [198]}
+   ]
+  },
+  {
+   "name": "rol_pixel",
+   "qualname": "rol_pixel",
+   "kind": "function",
+   "lines": [187, 202],
+   "params": [
+    {"name": "boven", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onder", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "thema_naam", "kind": "positional", "default": "'standaard'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Curses-attribuut voor een halfblok met de kleuren van twee pixelrollen (\"vulling\", \"rand\", \"lijn\" of None) in dit thema. 0 als het niet kan (bv. de kleurparen zijn op).",
+   "explanation": "The attribute for a half block coloured by two pixel roles in this theme (0 when pairs run out).",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::_pixelkleur", "lines": [198]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["curses.color_pair", "curses.init_pair", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/modellen.py::kan_pixels_rooster", "lines": [242]},
+    {"caller": "leeravontuur/terminal/modellen.py::teken_figuur", "lines": [258, 260, 262, 265]},
+    {"caller": "leeravontuur/terminal/modellen.py::teken_pixels", "lines": [431, 433, 435]}
+   ]
+  },
+  {
+   "name": "pixel",
+   "qualname": "pixel",
+   "kind": "function",
+   "lines": [205, 220],
+   "params": [
+    {"name": "voor", "kind": "positional", "default": null, "annotation": null},
+    {"name": "achter", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Curses-attribuut voor een halfblok met deze voorgrond- en achtergrondkleur ('#rrggbb' of None).",
+   "explanation": "The attribute for a half block with a foreground and background hex colour (0 when pairs run out).",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "omzet", "lines": [216], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["curses.color_pair", "curses.init_pair", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/avatar.py::teken", "lines": [27, 29, 31]},
+    {"caller": "leeravontuur/terminal/avatar.py::teken_groot", "lines": [44]}
+   ]
+  }
+ ]
+}

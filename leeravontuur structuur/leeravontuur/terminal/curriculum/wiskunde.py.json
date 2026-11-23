@@ -1,0 +1,397 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/curriculum/wiskunde.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 126,
+ "source_sha256": "7313eb0d0c0e46ec6d8f48caf9af7a371c4f753e4a289d93d0a48e85e564f332",
+ "purpose": "The Wiskunde part of the curriculum: domains and topics in menu order.",
+ "details": "Eight domains: Getallen, Hoofdrekenen (with speed practice on some topics and a 'Gemengd' speed entry), Cijferen, Breuken en procenten (fractions and percentages), Meten (the five unit kinds plus 'Maten gemengd' and 'Maten zelf kiezen' and the area and formulas topics), Tijd geld en snelheid, Meetkunde and Vraagstukken. Topics of the Oefenaar are built by oefenaar(); unit kinds by eenheid() and maat(), which start the unit-conversion screen. The seven unit kinds share one stored skill id (GROEPEN, 'Maten').",
+ "module_docstring": "Wiskunde: de domeinen en onderwerpen in de volgorde van het menu.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["snelrekenen"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/snelrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["breuken"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/breuken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["cijferen"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/cijferen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["getallen"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/getallen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["grootheden"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["klok"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["meetkunde"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/meetkunde.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["procenten"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/procenten.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.curriculum",
+   "names": ["Domein", "Onderwerp", "Spiekbrief", "Vak"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.curriculum",
+   "names": ["modi"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/curriculum/__init__.py", "leeravontuur/terminal/curriculum/modi.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/curriculum/__init__.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [70]},
+    {
+     "target": "leeravontuur/terminal/curriculum/__init__.py::Domein",
+     "lines": [53, 59, 73, 79, 97, 108, 115, 120]
+    },
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Onderwerp", "lines": [68]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Spiekbrief", "lines": [29]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Vak", "lines": [52]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::snel", "lines": [69]},
+    {"target": "leeravontuur/terminal/curriculum/wiskunde.py::eenheid", "lines": [98, 99, 100, 101, 102]},
+    {"target": "leeravontuur/terminal/curriculum/wiskunde.py::maat", "lines": [103, 104]},
+    {
+     "target": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar",
+     "lines": [
+      54,
+      55,
+      56,
+      57,
+      60,
+      62,
+      64,
+      65,
+      67,
+      74,
+      75,
+      76,
+      77,
+      80,
+      81,
+      82,
+      84,
+      86,
+      88,
+      90,
+      91,
+      93,
+      95,
+      105,
+      106,
+      109,
+      110,
+      111,
+      112,
+      116,
+      117,
+      118,
+      121,
+      122,
+      123
+     ]
+    }
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "EENHEDEN_SPIEK",
+   "line": 29,
+   "value_type": "Call",
+   "value_preview": "Spiekbrief('Eenheden omzetten', M.spiek_eenheden)",
+   "explanation": "The shared units cheat sheet."
+  },
+  {
+   "name": "GROEPEN",
+   "line": 30,
+   "value_type": "Dict",
+   "value_preview": "{E.OMZETTEN.id: 'Maten'}",
+   "explanation": "The stored skill id of unit conversion mapped to the name 'Maten'."
+  },
+  {
+   "name": "VANAF",
+   "line": 31,
+   "value_type": "Dict",
+   "value_preview": "{E.OPPERVLAKTE: ' (5de lj)', E.VOLUME: ' (6de lj)'}",
+   "explanation": "Year marks shown behind area and volume."
+  },
+  {
+   "name": "GETALLEN",
+   "line": 43,
+   "value_type": "Constant",
+   "value_preview": "'Getallen'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "HOOFDREKENEN",
+   "line": 44,
+   "value_type": "Constant",
+   "value_preview": "'Hoofdrekenen'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "CIJFEREN",
+   "line": 45,
+   "value_type": "Constant",
+   "value_preview": "'Cijferen'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "BREUKEN_PROCENTEN",
+   "line": 46,
+   "value_type": "Constant",
+   "value_preview": "'Breuken en procenten'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "METEN",
+   "line": 47,
+   "value_type": "Constant",
+   "value_preview": "'Meten'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "TIJD_GELD_SNELHEID",
+   "line": 48,
+   "value_type": "Constant",
+   "value_preview": "'Tijd, geld en snelheid'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "MEETKUNDE",
+   "line": 49,
+   "value_type": "Constant",
+   "value_preview": "'Meetkunde'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "VRAAGSTUKKEN",
+   "line": 50,
+   "value_type": "Constant",
+   "value_preview": "'Vraagstukken'",
+   "explanation": "Domain name."
+  },
+  {
+   "name": "WISKUNDE",
+   "line": 52,
+   "value_type": "Call",
+   "value_preview": "Vak('wiskunde', 'Wiskunde', (Domein('wiskunde.getallen', GETALLEN, (o…",
+   "explanation": "The Wiskunde subject: all domains and topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "WISKUNDE",
+   "line": 52,
+   "description": "The subject Wiskunde as data; collected by terminal/curriculum/__init__.py into VAKKEN."
+  }
+ ],
+ "classes": [],
+ "functions": [
+  {
+   "name": "oefenaar",
+   "qualname": "oefenaar",
+   "kind": "function",
+   "lines": [18, 26],
+   "params": [
+    {"name": "id_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kern", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "spiek", "kind": "positional", "default": null, "annotation": null},
+    {"name": "snel", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een onderwerp van de Oefenaar (reeks en vrij), met eventueel ook snelrekenen (60 s en 20 sommen).",
+   "explanation": "Builds a curriculum topic for an Oefenaar topic with series and free modes, its cheat sheet, its stored id and optionally the two speed-practice modes (60 s and 20 sums, adding the speed skill id).",
+   "calls": [
+    {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [24]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Onderwerp", "lines": [25]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Spiekbrief", "lines": [25]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::oefenaar", "lines": [20]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::snel", "lines": [23]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::spiek_oefenaar", "lines": [25]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>",
+     "lines": [
+      54,
+      55,
+      56,
+      57,
+      60,
+      62,
+      64,
+      65,
+      67,
+      74,
+      75,
+      76,
+      77,
+      80,
+      81,
+      82,
+      84,
+      86,
+      88,
+      90,
+      91,
+      93,
+      95,
+      105,
+      106,
+      109,
+      110,
+      111,
+      112,
+      116,
+      117,
+      118,
+      121,
+      122,
+      123
+     ]
+    }
+   ]
+  },
+  {
+   "name": "maat",
+   "qualname": "maat",
+   "kind": "function",
+   "lines": [34, 36],
+   "params": [
+    {"name": "id_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "maat_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "uitleg", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a unit topic with series, free and table modes through the unit-conversion screen.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::Onderwerp", "lines": [36]},
+    {"target": "leeravontuur/terminal/curriculum/modi.py::eenheden", "lines": [35]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [103, 104]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::eenheid", "lines": [40]}
+   ]
+  },
+  {
+   "name": "eenheid",
+   "qualname": "eenheid",
+   "kind": "function",
+   "lines": [39, 40],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "id_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a unit topic for a kind with its unit names as the grey explanation (and '(5de lj)' or '(6de lj)' where relevant).",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/wiskunde.py::maat", "lines": [40]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [98, 99, 100, 101, 102]}
+   ]
+  }
+ ]
+}

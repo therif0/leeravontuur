@@ -1,0 +1,175 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/stappenhulp.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 48,
+ "source_sha256": "18d024edd15d4e91d8f3c48abb9e38c82c6fdcc3fac0088ce6ad42a4025a7998",
+ "purpose": "What input objects with their own steps (Zinsdelen, Werkwoordspelling) share: hints per step, the cheat sheet after the last hint, and the switches the Oefenaar sets from the Hulp object.",
+ "details": "Added in the 'opruimen' cleanup so a new object (Woordsoorten later) does not make a third copy. StappenHulp extends Plaats (invoer.py) and sets the flags the Oefenaar reads: eigen_tekst (draws the question itself), eigen_tip (F1 goes to the object), geen_tweede_kans (it checks step by step with its own second chance) and vraag_is_zin (the report shows the sentence as the question). Subclasses call begin_hulp in their constructor and geef_tip when F1 is pressed.",
+ "module_docstring": "Wat een invoer-object met eigen stappen deelt (Zinsdelen, Werkwoordspelling): de tips per stap, de spiekbrief na de laatste tip en de schakelaars die de Oefenaar volgens de `Hulp` zet. Zo maakt een nieuw object (Woordsoorten …) geen derde …",
+ "imports": [
+  {
+   "module": "leeravontuur.terminal.invoer",
+   "names": ["Plaats"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": ["leeravontuur/terminal/invoer.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/werkwoord.py", "leeravontuur/terminal/zinsdelen.py", "tests/test_invoer_objecten.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "StappenHulp",
+   "qualname": "StappenHulp",
+   "lines": [8, 48],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Mixin/base class of step-by-step input objects: hints, cheat sheet access and the help switches.",
+   "attributes": [
+    {"name": "x0", "line": 9, "scope": "class", "value_preview": "4"},
+    {"name": "eigen_tekst", "line": 10, "scope": "class", "value_preview": "True"},
+    {"name": "eigen_tip", "line": 11, "scope": "class", "value_preview": "True"},
+    {"name": "geen_tweede_kans", "line": 12, "scope": "class", "value_preview": "True"},
+    {"name": "vraag_is_zin", "line": 13, "scope": "class", "value_preview": "True"},
+    {"name": "tweede_kans", "line": 17, "scope": "instance", "value_preview": null},
+    {"name": "spiekbrief_aan", "line": 18, "scope": "instance", "value_preview": null},
+    {"name": "aantal_tips", "line": 19, "scope": "instance", "value_preview": null},
+    {"name": "tips", "line": 28, "scope": "instance", "value_preview": null},
+    {"name": "tiptekst", "line": 29, "scope": "instance", "value_preview": null},
+    {"name": "tip_nr", "line": 30, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {
+     "caller": "tests/test_invoer_objecten.py::TestInvoerObjecten.test_stappenhulp_tips_en_spiekbrief",
+     "lines": [24]
+    }
+   ],
+   "methods": [
+    {
+     "name": "begin_hulp",
+     "qualname": "StappenHulp.begin_hulp",
+     "kind": "method",
+     "lines": [15, 19],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts hint state: no hints given, tip number 0, second chance and cheat sheet on, two hints per step by default.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.__init__", "lines": [38]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.__init__", "lines": [55]}
+     ]
+    },
+    {
+     "name": "geef_tip",
+     "qualname": "StappenHulp.geef_tip",
+     "kind": "method",
+     "lines": [21, 32],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tips", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kop", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De volgende tip van deze stap; `kop` = waar de spiekbrief daarna opent.",
+     "explanation": "Shows the next hint of the step (counting it as used), records the cheat-sheet heading to open after the last hint, and appends 'Nog eens F1: je spiekbrief.' to the last hint; after all hints says there are no more.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.volgende_tip", "lines": [265]},
+      {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende_tip", "lines": [419]}
+     ]
+    },
+    {
+     "name": "tips_op",
+     "qualname": "StappenHulp.tips_op",
+     "kind": "property",
+     "lines": [35, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Alle tips van deze stap gegeven: de Oefenaar opent dan bij F1 de spiekbrief (de vaste werkwijze, #20).",
+     "explanation": "True when all hints of the current step were given (then the Oefenaar opens the cheat sheet on F1).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief_bekeken",
+     "qualname": "StappenHulp.spiekbrief_bekeken",
+     "kind": "method",
+     "lines": [39, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na de spiekbrief begint het weer bij tip 1 (de vaste werkwijze).",
+     "explanation": "After the cheat sheet: counts it as a hint used and starts again at hint 1.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hulp",
+     "qualname": "StappenHulp.hulp",
+     "kind": "method",
+     "lines": [44, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The current hint text for the Oefenaar to show.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "StappenHulp.rijen",
+     "kind": "method",
+     "lines": [47, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No extra rows.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

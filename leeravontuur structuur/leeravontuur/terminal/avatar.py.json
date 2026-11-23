@@ -1,0 +1,178 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/avatar.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 49,
+ "source_sha256": "e22b49ac1f320de6de7a16e09bfdcc71a4decbc145f7d523be6412a396f6b606",
+ "purpose": "Draws the avatar in the terminal: two pixels per character with half blocks (16 wide, 8 high), or large (32 x 16), or a text face.",
+ "details": "The pixels come from kern/avatar.teken; colours go through thema.pixel. Without colour, in ASCII mode, with the high-contrast or no-colour theme, or when the terminal cannot show enough colours, a text face such as [^_^] is drawn instead (kan_pixels decides).",
+ "module_docstring": "De avatar tekenen in de terminal: 2 pixels per teken met ▀ (16 breed, 8 hoog), of groot (32 x 16).",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["thema"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/thema.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/beta.py",
+  "leeravontuur/terminal/maatje.py",
+  "leeravontuur/terminal/schermen/winkel.py",
+  "tests/test_schermen.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "BREEDTE",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(A.GROOTTE, A.GROOTTE // 2)",
+   "explanation": "Width of the pixel avatar in columns."
+  },
+  {
+   "name": "HOOGTE",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(A.GROOTTE, A.GROOTTE // 2)",
+   "explanation": "Height of the pixel avatar in text rows."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "kan_pixels",
+   "qualname": "kan_pixels",
+   "kind": "function",
+   "lines": [12, 14],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Whether the pixel avatar can be drawn: colours on, not ASCII, not the no-colour or high-contrast themes, and the terminal supports pixel colours.",
+   "calls": [
+    {"target": "leeravontuur/terminal/thema.py::pixels_mogelijk", "lines": [14]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/avatar.py::breedte", "lines": [49]},
+    {"caller": "leeravontuur/terminal/avatar.py::teken", "lines": [19]},
+    {"caller": "leeravontuur/terminal/avatar.py::teken_groot", "lines": [37]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_maatje", "lines": [279]},
+    {"caller": "leeravontuur/terminal/maatje.py::teken", "lines": [18, 23]}
+   ]
+  },
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [17, 32],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "config", "kind": "positional", "default": null, "annotation": null},
+    {"name": "uitdrukking", "kind": "positional", "default": "'normaal'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Tekent de avatar met de linkerbovenhoek op (y, x). Geeft de hoogte in regels terug.",
+   "explanation": "Draws the avatar with its top-left at (y, x) using half blocks (two pixel rows per text row) or the text face; returns the height in rows.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::teken", "lines": [22]},
+    {"target": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [19]},
+    {"target": "leeravontuur/terminal/thema.py::pixel", "lines": [27, 29, 31]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "scherm.put",
+     "lines": [20, 27, 29, 31],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.teken_avatar_menu", "lines": [322]},
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_maatje", "lines": [280]},
+    {"caller": "leeravontuur/terminal/maatje.py::teken", "lines": [20, 25]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [152]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.vraag", "lines": [182]}
+   ]
+  },
+  {
+   "name": "teken_groot",
+   "qualname": "teken_groot",
+   "kind": "function",
+   "lines": [35, 45],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "config", "kind": "positional", "default": null, "annotation": null},
+    {"name": "uitdrukking", "kind": "positional", "default": "'normaal'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Dubbel zo groot (32 breed, 16 hoog): elke pixel = 2 tekens █.",
+   "explanation": "Draws the avatar double size (each pixel two full blocks) or the text face; returns the height.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::teken", "lines": [40]},
+    {"target": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [37]},
+    {"target": "leeravontuur/terminal/thema.py::pixel", "lines": [44]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "scherm.put",
+     "lines": [38, 44],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["enumerate"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [50]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [291]}
+   ]
+  },
+  {
+   "name": "breedte",
+   "qualname": "breedte",
+   "kind": "function",
+   "lines": [48, 49],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The width the avatar takes: 16 columns, or the text face length.",
+   "calls": [
+    {"target": "leeravontuur/terminal/avatar.py::kan_pixels", "lines": [49]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

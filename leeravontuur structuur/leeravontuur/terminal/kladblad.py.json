@@ -1,0 +1,273 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/kladblad.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 116,
+ "source_sha256": "23f1a25f42a9b27344649a3ed4e103141ddb636d6742ac717790ba732170181c",
+ "purpose": "The scratch pad as a screen component, the same everywhere (word problems and every calculation exercise of the Oefenaar).",
+ "details": "The child types calculation lines as on paper; Enter checks a line at once with kern/klad.lees_regel (tick = right, cross = calculation error, dot = nothing to check) and a message that does not give the answer away. Backspace on an empty line takes the previous line back; clicking a line does too. After checking, teken_kader shows 'Jouw klad' with numbers and marks (using the analysis status).",
+ "module_docstring": "Het kladblad: overal hetzelfde (in een vraagstuk en in elke rekenoefening van de Oefenaar).",
+ "imports": [
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["lees_regel"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "leeravontuur/terminal/vraagstuk.py", "tests/test_klad.py"],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["set"], "dynamic": []}
+ ],
+ "constants": [
+  {
+   "name": "KLAD_TEKENS",
+   "line": 11,
+   "value_type": "BinOp",
+   "value_preview": "set('0123456789,.+-−*xX×:/()=%€? ') | set('abcdefghijklmnopqrstuvwxyz…",
+   "explanation": "The characters allowed in the klad."
+  },
+  {
+   "name": "LEEG",
+   "line": 12,
+   "value_type": "Constant",
+   "value_preview": "'typ hier je rekenregels: 3 x 4 = 12'",
+   "explanation": "The hint shown in an empty klad."
+  },
+  {
+   "name": "LEEG_ENTER",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "'leeg'",
+   "explanation": "The signal for Enter on an empty line."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Kladblad",
+   "qualname": "Kladblad",
+   "lines": [16, 116],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The state and drawing of one scratch pad.",
+   "attributes": [
+    {"name": "regels", "line": 18, "scope": "instance", "value_preview": null},
+    {"name": "buf", "line": 19, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [226]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.__init__", "lines": [62]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Kladblad.__init__",
+     "kind": "method",
+     "lines": [17, 20],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts empty: the lines (text and read line), the line being typed and the message.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [226]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.__init__", "lines": [62]}
+     ]
+    },
+    {
+     "name": "gelezen",
+     "qualname": "Kladblad.gelezen",
+     "kind": "property",
+     "lines": [23, 24],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The read lines (KladRegel objects).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teksten",
+     "qualname": "Kladblad.teksten",
+     "kind": "property",
+     "lines": [27, 28],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The typed texts.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "Kladblad.teken",
+     "kind": "method",
+     "lines": [30, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hoogte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actief", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leeg_actie", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tekent het klad: de laatste regels, en (actief) de regel waarin het kind typt. Geeft de cursorplek of None. hoogte = aantal rijen (met de typregel); elke regel is klikbaar ((\"klad\", nr)), net als de lege regel (leeg_actie).",
+     "explanation": "Draws the last lines with their marks and, when active, the typing line; every line is a click zone; returns the cursor position or None.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [37, 39, 43, 46],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [40, 48],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "Kladblad.toets",
+     "kind": "method",
+     "lines": [51, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ch", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breed", "kind": "positional", "default": "54", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een toets in het klad. Geeft LEEG_ENTER bij Enter op een lege regel, anders None.",
+     "explanation": "Handles a key: Backspace edits, Enter checks the line (or returns LEEG_ENTER on an empty line, a signal to move on), other allowed characters are typed; sets the message by the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [62]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/kladblad.py::Kladblad.rond_af", "lines": [111]}
+     ]
+    },
+    {
+     "name": "teken_kader",
+     "qualname": "Kladblad.teken_kader",
+     "kind": "method",
+     "lines": [80, 105],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": null, "annotation": null},
+      {"name": "status", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na het nakijken: de laatste n regels in een kader \"Jouw klad\" (#22), elk met zijn nummer en ✔ / ✘ / ! / ·. status = per regel uit kern/klad.analyseer ('goed', 'ok', 'reken', 'denk' of None); zonder status telt alleen of de som klopt. Neemt…",
+     "explanation": "After checking, draws a frame 'Jouw klad' with the last n lines, each with its number and a mark: right, calculation error, thinking error or nothing to check.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [84, 100, 101, 102, 103, 104, 105],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "len", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rond_af",
+     "qualname": "Kladblad.rond_af",
+     "kind": "method",
+     "lines": [107, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kind gaat weg uit het klad (Tab, een klik): een getypte regel zonder Enter niet laten verdwijnen, maar nakijken zoals bij Enter (#22).",
+     "explanation": "When the child leaves the klad, a typed line without Enter is checked as if Enter was pressed.",
+     "calls": [
+      {"target": "leeravontuur/terminal/kladblad.py::Kladblad.toets", "lines": [111]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "haal_terug",
+     "qualname": "Kladblad.haal_terug",
+     "kind": "method",
+     "lines": [113, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een klik op een regel: terug in de typregel (als die leeg is).",
+     "explanation": "A click on a line brings it back into the typing line if that is empty.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

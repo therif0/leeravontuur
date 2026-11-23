@@ -1,0 +1,18 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/venster/__init__.py",
+ "kind": "python",
+ "layer": "venster",
+ "lines": 1,
+ "source_sha256": "25ef97930392d15facae41e09ae50f918144a312ed8f307f6e0ca85ff2c43790",
+ "purpose": "Package marker for separate-process windows (tkinter), now only the clock window.",
+ "details": "Its docstring: windows outside the terminal run in their own process and the terminal talks to them through JSON lines (terminal/venster.py).",
+ "module_docstring": "Vensters buiten de terminal (tkinter), elk in een eigen proces. De terminal praat ermee via JSON-regels.",
+ "imports": [],
+ "imported_by": ["tests/test_klokvenster.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

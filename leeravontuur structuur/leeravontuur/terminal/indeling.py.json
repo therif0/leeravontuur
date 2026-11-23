@@ -1,0 +1,331 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/indeling.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 94,
+ "source_sha256": "48e553b125bcbd294bad8957a71d55dd6de79eaa1fecfe6e5bac0824fead73f1",
+ "purpose": "The layout of the panel screens: which panel goes where, by screen size (werk/schermen.md).",
+ "details": "One place for all sizes so no screen counts columns itself: from 80x24 the panels grow to 120x40; on a bigger screen (such as a tty of 240x67) the block stays that size and sits in the middle. The series bar is on top (a panel from 30 rows, else one line), Question, Tip and cheat sheet on the left, the klad beside them where a klad exists, the buddy on the right; with the clock window open the buddy's column stays empty. Rows 0 (breadcrumb) and h-1 (key bar) belong to the whole screen.",
+ "module_docstring": "De indeling van de schermen met vakken (werk/schermen.md): welk vak waar staat, volgens de grootte van het scherm.",
+ "imports": [
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/beta.py", "tests/test_vakken.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "MIN_B",
+   "line": 14,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Smallest width (80)."
+  },
+  {
+   "name": "MIN_H",
+   "line": 14,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Smallest height (24)."
+  },
+  {
+   "name": "GRENS_B",
+   "line": 15,
+   "value_type": "Tuple",
+   "value_preview": "(120, 40)",
+   "explanation": "Largest block width (120)."
+  },
+  {
+   "name": "GRENS_H",
+   "line": 15,
+   "value_type": "Tuple",
+   "value_preview": "(120, 40)",
+   "explanation": "Largest block height (40)."
+  },
+  {
+   "name": "GROOT_H",
+   "line": 16,
+   "value_type": "Constant",
+   "value_preview": "30",
+   "explanation": "From this many rows the series gets a panel."
+  },
+  {
+   "name": "MAATJE_B",
+   "line": 17,
+   "value_type": "Tuple",
+   "value_preview": "(20, 11)",
+   "explanation": "Width of the buddy column."
+  },
+  {
+   "name": "MAATJE_H",
+   "line": 17,
+   "value_type": "Tuple",
+   "value_preview": "(20, 11)",
+   "explanation": "Height of the buddy panel."
+  },
+  {
+   "name": "KLAD_MIN",
+   "line": 18,
+   "value_type": "Tuple",
+   "value_preview": "(24, 34)",
+   "explanation": "Columns needed for a klad column."
+  },
+  {
+   "name": "KLAD_MAX",
+   "line": 18,
+   "value_type": "Tuple",
+   "value_preview": "(24, 34)",
+   "explanation": "Widest klad column."
+  },
+  {
+   "name": "TIP_H",
+   "line": 19,
+   "value_type": "Tuple",
+   "value_preview": "(6, 14)",
+   "explanation": "Tallest Tip panel during a question."
+  },
+  {
+   "name": "UITLEG_H",
+   "line": 19,
+   "value_type": "Tuple",
+   "value_preview": "(6, 14)",
+   "explanation": "Tallest explanation panel after checking."
+  },
+  {
+   "name": "SPIEK_MIN",
+   "line": 20,
+   "value_type": "Constant",
+   "value_preview": "4",
+   "explanation": "Rows needed for the cheat-sheet panel."
+  },
+  {
+   "name": "BINNEN_X",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "Inner left margin of a panel."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Rechthoek",
+   "qualname": "Rechthoek",
+   "lines": [25, 42],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A frozen rectangle (y, x, height, width) with helpers.",
+   "attributes": [
+    {"name": "y", "line": 26, "scope": "class", "value_preview": null},
+    {"name": "x", "line": 27, "scope": "class", "value_preview": null},
+    {"name": "h", "line": 28, "scope": "class", "value_preview": null},
+    {"name": "w", "line": 29, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/indeling.py::Rechthoek.binnen", "lines": [34]},
+    {"caller": "leeravontuur/terminal/indeling.py::blok", "lines": [58]},
+    {"caller": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [68, 75, 77, 78]},
+    {"caller": "leeravontuur/terminal/indeling.py::verdeel", "lines": [84, 91, 93]},
+    {
+     "caller": "tests/test_vakken.py::TestIndeling.test_groeit_tot_120_bij_40_en_staat_dan_in_het_midden",
+     "lines": [85, 86]
+    }
+   ],
+   "methods": [
+    {
+     "name": "binnen",
+     "qualname": "Rechthoek.binnen",
+     "kind": "property",
+     "lines": [32, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Waar de tekst in het vak komt: binnen de rand, met twee spaties links en rechts.",
+     "explanation": "Where text goes inside a panel: inside the border with two spaces each side.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::Rechthoek", "lines": [34]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onder",
+     "qualname": "Rechthoek.onder",
+     "kind": "property",
+     "lines": [37, 38],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The row below the rectangle.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rechts",
+     "qualname": "Rechthoek.rechts",
+     "kind": "property",
+     "lines": [41, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The column right of the rectangle.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Oefenscherm",
+   "qualname": "Oefenscherm",
+   "lines": [46, 52],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "The set of rectangles of one practice screen.",
+   "attributes": [
+    {"name": "blok", "line": 47, "scope": "class", "value_preview": null},
+    {"name": "groot", "line": 48, "scope": "class", "value_preview": null},
+    {"name": "reeks", "line": 49, "scope": "class", "value_preview": null},
+    {"name": "links", "line": 50, "scope": "class", "value_preview": null},
+    {"name": "klad", "line": 51, "scope": "class", "value_preview": null},
+    {"name": "maatje", "line": 52, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [78]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "blok",
+   "qualname": "blok",
+   "kind": "function",
+   "lines": [55, 58],
+   "params": [
+    {"name": "h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het blok tussen de broodkruimel en de toetsen: hoogstens GRENS_B × GRENS_H, in het midden.",
+   "explanation": "The block between breadcrumb and key bar: at most 120 x 40, centred.",
+   "calls": [
+    {"target": "leeravontuur/terminal/indeling.py::Rechthoek", "lines": [58]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [65]},
+    {
+     "caller": "tests/test_vakken.py::TestIndeling.test_groeit_tot_120_bij_40_en_staat_dan_in_het_midden",
+     "lines": [85, 86, 87]
+    }
+   ]
+  },
+  {
+   "name": "oefenscherm",
+   "qualname": "oefenscherm",
+   "kind": "function",
+   "lines": [61, 78],
+   "params": [
+    {"name": "h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "maatje", "kind": "positional", "default": "True", "annotation": null},
+    {"name": "klokvenster", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "klad", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "vraag_b", "kind": "positional", "default": "36", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De vakken van een oefenscherm. maatje = het kind wil zijn avatar zien; klokvenster = het klokvenster staat open (dan blijft de kolom van het maatje leeg); klad = deze vraag heeft een klad; vraag_b = zo breed moet het vak Vraag minstens zij…",
+   "explanation": "The rectangles of a practice screen (series, left column, klad column if there is room, buddy column) for a screen size and options.",
+   "calls": [
+    {"target": "leeravontuur/terminal/indeling.py::Oefenscherm", "lines": [78]},
+    {"target": "leeravontuur/terminal/indeling.py::Rechthoek", "lines": [68, 75, 77, 78]},
+    {"target": "leeravontuur/terminal/indeling.py::blok", "lines": [65]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.indeling", "lines": [155, 158]},
+    {
+     "caller": "tests/test_vakken.py::TestIndeling.test_elk_vak_binnen_het_scherm_en_niets_overlapt",
+     "lines": [71]
+    },
+    {"caller": "tests/test_vakken.py::TestIndeling.test_klad_alleen_als_er_plaats_is", "lines": [103, 104]},
+    {
+     "caller": "tests/test_vakken.py::TestIndeling.test_klokvenster_open_geen_maatje_maar_de_kolom_blijft_vrij",
+     "lines": [98]
+    },
+    {
+     "caller": "tests/test_vakken.py::TestIndeling.test_reeks_een_vak_vanaf_30_rijen",
+     "lines": [92, 93, 94, 95]
+    },
+    {"caller": "tests/test_vakken.py::TestIndeling.test_verdeel_tip_en_spiekbrief", "lines": [109, 114]},
+    {"caller": "tests/test_vakken.py::TestPast.plaats", "lines": [121, 125]},
+    {"caller": "tests/test_vakken.py::TestPast.test_elk_model_past_in_het_vak", "lines": [181]}
+   ]
+  },
+  {
+   "name": "verdeel",
+   "qualname": "verdeel",
+   "kind": "function",
+   "lines": [81, 94],
+   "params": [
+    {"name": "links", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vraag_h", "kind": "positional", "default": null, "annotation": null},
+    {"name": "bezig", "kind": "positional", "default": "True", "annotation": null},
+    {"name": "spiek", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De kolom links: Vraag (vraag_h rijen, met de rand), daaronder Tip (of de uitleg na het nakijken) en, als er plaats is, de Spiekbrief tot onderaan. Geeft (vraag, tip, spiek of None).",
+   "explanation": "Splits the left column into Question, Tip (or the explanation after checking) and, when there is room, the cheat sheet; returns (question, tip, cheat sheet or None).",
+   "calls": [
+    {"target": "leeravontuur/terminal/indeling.py::Rechthoek", "lines": [84, 91, 93]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken", "lines": [183]},
+    {"caller": "tests/test_vakken.py::TestIndeling.test_verdeel_tip_en_spiekbrief", "lines": [110, 113, 115]}
+   ]
+  }
+ ]
+}
