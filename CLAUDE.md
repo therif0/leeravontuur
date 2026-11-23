@@ -37,7 +37,8 @@ Gouden regels:
 Lagen (kern, venster/klokvenster, terminal) · gegevens, opslag en stabiliteit · de vaste werkwijze (klad, tips,
 tweede kans, spiekbrief, stoppen) · nieuwe onderwerpen en soorten invoer · vraagstukken · punten, wachtwoorden,
 rapporten en het slot · Gemengd oefenen · Taal · Werkwoordspelling · Menu's. Taal heeft ook een eigen plan:
-`docs/taal.md`.
+`docs/taal.md`. De kaart van de hele code (elk bestand, elke functie, wie wie aanroept):
+`leeravontuur structuur/README.md`.
 
 ## Menu's
 Alle menu's komen uit het leerplan `terminal/curriculum/` (`Vak` › `Domein` › `Onderwerp`). Bewaarde ids nooit

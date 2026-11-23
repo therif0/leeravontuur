@@ -1,0 +1,163 @@
+{
+ "$schema": "http://json-schema.org/draft-07/schema#",
+ "$id": "leeravontuur-structuur/1",
+ "title": "Leeravontuur structuur: one counterpart file per source file",
+ "description": "Every counterpart file in this folder has this shape. Common keys come first; the rest depends on 'kind'. Keys are always present (empty list or empty string when not applicable), so every file of one kind has exactly the same keys in the same order.",
+ "type": "object",
+ "required": ["schema", "path", "kind", "layer", "lines", "source_sha256", "purpose", "details"],
+ "properties": {
+  "schema": {"const": "leeravontuur-structuur/1"},
+  "path": {"type": "string", "description": "Repository path of the explained file, e.g. leeravontuur/kern/klad.py. The counterpart lives at '<this folder>/<path>.json'."},
+  "kind": {"enum": ["python", "test", "json", "markdown", "script", "config"]},
+  "layer": {"enum": ["kern", "terminal", "venster", "inhoud", "tests", "docs", "werk", "ci", "package", "root"], "description": "Architecture layer from CLAUDE.md. 'package' = leeravontuur/__init__.py and __main__.py; 'root' = files in the repository root."},
+  "lines": {"type": "integer"},
+  "source_sha256": {"type": "string", "description": "SHA-256 of the explained file as it was when this map was made."},
+  "purpose": {"type": "string", "description": "One sentence: what this file is for."},
+  "details": {"type": "string", "description": "A few sentences: how it works, what it depends on, who uses it, and what to be careful about."}
+ },
+ "allOf": [
+  {
+   "if": {"properties": {"kind": {"enum": ["python", "test"]}}},
+   "then": {
+    "required": ["module_docstring", "imports", "imported_by", "module_calls", "constants", "registries", "classes", "functions"],
+    "properties": {
+     "module_docstring": {"type": "string"},
+     "imports": {"type": "array", "items": {"$ref": "#/definitions/import"}},
+     "imported_by": {"type": "array", "items": {"type": "string"}, "description": "Repository paths of the files that import this file."},
+     "module_calls": {"type": "array", "items": {"$ref": "#/definitions/moduleScope"}, "description": "Calls that run at import time (registrations, class bodies, __main__ blocks)."},
+     "constants": {"type": "array", "items": {"$ref": "#/definitions/constant"}},
+     "registries": {"type": "array", "items": {"$ref": "#/definitions/registry"}},
+     "classes": {"type": "array", "items": {"$ref": "#/definitions/class"}},
+     "functions": {"type": "array", "items": {"$ref": "#/definitions/function"}, "description": "Module-level functions and the functions nested inside them. Methods are listed under their class."}
+    }
+   }
+  },
+  {
+   "if": {"properties": {"kind": {"const": "json"}}},
+   "then": {
+    "required": ["keys", "shape", "read_by", "field_notes"],
+    "properties": {
+     "keys": {"type": "array", "items": {"type": "string"}},
+     "shape": {"description": "Structure of the data. Leaves are 'string', 'number', 'boolean', 'null'. {'$list': n, '$items': shape} = a list; {'$keys': [...], '$count': n, '$values': shape} = an object whose values all have the same shape."},
+     "read_by": {"type": "array", "items": {"type": "string"}, "description": "Python files that name this file (plus code that loads it by pattern)."},
+     "field_notes": {"type": "array", "items": {"type": "object", "required": ["key", "explanation"], "properties": {"key": {"type": "string"}, "explanation": {"type": "string"}}}}
+    }
+   }
+  },
+  {
+   "if": {"properties": {"kind": {"const": "markdown"}}},
+   "then": {
+    "required": ["summary", "headings", "links", "referenced_by", "words"],
+    "properties": {
+     "summary": {"type": "string"},
+     "headings": {"type": "array", "items": {"type": "object", "required": ["level", "text", "line"], "properties": {"level": {"type": "integer"}, "text": {"type": "string"}, "line": {"type": "integer"}}}},
+     "links": {"type": "array", "items": {"type": "object", "required": ["text", "target", "internal"], "properties": {"text": {"type": "string"}, "target": {"type": "string"}, "internal": {"type": "boolean"}}}},
+     "referenced_by": {"type": "array", "items": {"type": "string"}},
+     "words": {"type": "integer"}
+    }
+   }
+  }
+ ],
+ "definitions": {
+  "import": {
+   "type": "object",
+   "required": ["module", "names", "alias", "line", "resolves_to", "internal"],
+   "properties": {
+    "module": {"type": "string"},
+    "names": {"type": "array", "items": {"type": "string"}},
+    "alias": {"type": ["string", "null"]},
+    "line": {"type": "integer"},
+    "resolves_to": {"type": "array", "items": {"type": "string"}, "description": "Repository files this import loads (empty for the standard library and third-party modules)."},
+    "internal": {"type": "boolean"}
+   }
+  },
+  "constant": {
+   "type": "object",
+   "required": ["name", "line", "value_type", "value_preview", "explanation"],
+   "properties": {"name": {"type": "string"}, "line": {"type": "integer"}, "value_type": {"type": "string", "description": "Name of the Python AST node type of the value."}, "value_preview": {"type": "string"}, "explanation": {"type": "string"}}
+  },
+  "registry": {
+   "type": "object",
+   "required": ["name", "line", "description"],
+   "properties": {"name": {"type": "string"}, "line": {"type": "integer"}, "description": {"type": "string", "description": "A table or registry the code uses to look things up at run time (so a call through it cannot be followed statically)."}}
+  },
+  "param": {
+   "type": "object",
+   "required": ["name", "kind", "default", "annotation"],
+   "properties": {"name": {"type": "string"}, "kind": {"enum": ["positional", "vararg", "keyword-only", "kwarg"]}, "default": {"type": ["string", "null"]}, "annotation": {"type": ["string", "null"]}}
+  },
+  "call": {
+   "type": "object",
+   "required": ["target", "lines"],
+   "properties": {"target": {"type": "string", "description": "'<repository path>::<qualified name>' of a function, method or class (a class with __init__ points to its __init__)."}, "lines": {"type": "array", "items": {"type": "integer"}}}
+  },
+  "unresolvedCall": {
+   "type": "object",
+   "required": ["expr", "lines", "candidates", "candidates_count"],
+   "properties": {
+    "expr": {"type": "string", "description": "The call as written, e.g. 'obj.maak'. The receiver's type is not known statically."},
+    "lines": {"type": "array", "items": {"type": "integer"}},
+    "candidates": {"type": "array", "items": {"type": "string"}, "description": "Project methods with that name (only when there are at most 6)."},
+    "candidates_count": {"type": "integer"}
+   }
+  },
+  "dynamic": {
+   "type": "object",
+   "required": ["kind", "line", "expr"],
+   "properties": {"kind": {"enum": ["getattr", "subscript-call"]}, "line": {"type": "integer"}, "expr": {"type": "string"}}
+  },
+  "calledBy": {
+   "type": "object",
+   "required": ["caller", "lines"],
+   "properties": {"caller": {"type": "string", "description": "'<path>::<qualified name>', '<path>::<module>' or '<path>::<class X>'."}, "lines": {"type": "array", "items": {"type": "integer"}}}
+  },
+  "callBlock": {
+   "type": "object",
+   "required": ["calls", "unresolved_calls", "external_calls", "dynamic"],
+   "properties": {
+    "calls": {"type": "array", "items": {"$ref": "#/definitions/call"}},
+    "unresolved_calls": {"type": "array", "items": {"$ref": "#/definitions/unresolvedCall"}},
+    "external_calls": {"type": "array", "items": {"type": "string"}, "description": "Built-ins, standard library and third-party callables used (a leading dot = a method of an unknown object that the project does not define)."},
+    "dynamic": {"type": "array", "items": {"$ref": "#/definitions/dynamic"}}
+   }
+  },
+  "moduleScope": {
+   "allOf": [{"$ref": "#/definitions/callBlock"}],
+   "required": ["scope"],
+   "properties": {"scope": {"type": "string"}}
+  },
+  "function": {
+   "allOf": [{"$ref": "#/definitions/callBlock"}],
+   "type": "object",
+   "required": ["name", "qualname", "kind", "lines", "params", "returns", "decorators", "docstring", "explanation", "called_by"],
+   "properties": {
+    "name": {"type": "string"},
+    "qualname": {"type": "string", "description": "Class.method, or outer.inner for a function nested in another function."},
+    "kind": {"enum": ["function", "method", "property", "staticmethod", "classmethod", "nested"]},
+    "lines": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+    "params": {"type": "array", "items": {"$ref": "#/definitions/param"}},
+    "returns": {"type": ["string", "null"]},
+    "decorators": {"type": "array", "items": {"type": "string"}},
+    "docstring": {"type": "string", "description": "First paragraph of the docstring in the code (mostly Dutch), if any."},
+    "explanation": {"type": "string", "description": "What the function does, in English."},
+    "called_by": {"type": "array", "items": {"$ref": "#/definitions/calledBy"}}
+   }
+  },
+  "class": {
+   "type": "object",
+   "required": ["name", "qualname", "lines", "bases", "decorators", "docstring", "explanation", "attributes", "instantiated_by", "methods"],
+   "properties": {
+    "name": {"type": "string"},
+    "qualname": {"type": "string"},
+    "lines": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+    "bases": {"type": "array", "items": {"type": "string"}},
+    "decorators": {"type": "array", "items": {"type": "string"}},
+    "docstring": {"type": "string"},
+    "explanation": {"type": "string"},
+    "attributes": {"type": "array", "items": {"type": "object", "required": ["name", "line", "scope", "value_preview"], "properties": {"name": {"type": "string"}, "line": {"type": "integer"}, "scope": {"enum": ["class", "instance"]}, "value_preview": {"type": ["string", "null"]}}}},
+    "instantiated_by": {"type": "array", "items": {"$ref": "#/definitions/calledBy"}},
+    "methods": {"type": "array", "items": {"$ref": "#/definitions/function"}}
+   }
+  }
+ }
+}
