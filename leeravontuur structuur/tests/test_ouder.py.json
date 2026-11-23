@@ -1323,7 +1323,7 @@
      "returns": null,
      "decorators": [],
      "docstring": "",
-     "explanation": "Turning on the lock asks for a parent PIN first.",
+     "explanation": "Turns on 'Stoppen op slot' for a child with no parent PIN: the program first explains and asks for a parent PIN twice; afterwards the PIN is valid, the lock is set, the messages 'kies je eerst een ouderpin' and 'opent Leeravontuur meteen bij Test' were shown, the child list shows '5de leerjaar · op slot'.",
      "calls": [
       {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [300]},
       {"target": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [299]},

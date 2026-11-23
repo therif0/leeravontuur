@@ -1015,7 +1015,7 @@
      "returns": null,
      "decorators": [],
      "docstring": "",
-     "explanation": "Four tips; marking givens with Space; tips count.",
+     "explanation": "Presses F1 five times and checks that exactly four tips are counted and the fifth gives 'Meer tips zijn er niet'; then clicks every needed given (('gegeven', id)) and checks they are all marked; presses ↓ and → to the right 'what is asked' option and Space, and checks gevraagd_eerst is True.",
      "calls": [],
      "unresolved_calls": [
       {"expr": "self.obj.toets", "lines": [373, 378, 380, 383, 384], "candidates": [], "candidates_count": 17}

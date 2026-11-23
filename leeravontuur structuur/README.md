@@ -13,7 +13,7 @@ pull request #64, version 0.28.0).
 | `dynamic-dispatch.json` | The places where code is called through a table, a registry or `getattr`, which cannot be followed statically. |
 | `schema.json` | The standard every counterpart follows (JSON Schema, draft-07). |
 
-**What is explained (226 files):** all Python (95 program files, 37 test files), the 49 JSON data files, the 38
+**What is explained (227 files):** all Python (95 program files, 37 test files), the 49 JSON data files, the 39
 markdown files, and the scripts and configuration. **Not explained:** the 132 handbook screenshots (SVG), 1 PNG and
 `LICENSE`.
 
@@ -45,6 +45,7 @@ Module-level code that runs when the file is imported (registrations, class bodi
 - **Explanations are Claude's reading of the code.** They were written by hand after reading each file and can
   contain mistakes. The facts (line numbers, parameters, imports, calls) come from the Python syntax tree, not from
   memory; the explanations do not.
+- **Test explanations are shorter.** They were written from the test names and the code of each test and say what a test checks; they do not list every assertion.
 - **A call through a table, a registry or `getattr` is not a call edge.** Examples: `INVOER[v.invoer](v, o)`, the
   `ONDERWERPEN` catalogue, `getattr(self, "_" + soort)`. They are listed in `dynamic-dispatch.json`, and the
   explanation of the function says where they lead.

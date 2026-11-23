@@ -1140,7 +1140,7 @@
      "returns": null,
      "decorators": [],
      "docstring": "",
-     "explanation": "F1 gives a tip in free practice.",
+     "explanation": "In free practice of Maten (mass) presses F1, answers 5 and checks that 'Tip:' was shown and that the stored answer has hulp=1 and mode 'vrij'.",
      "calls": [
       {"target": "tests/test_schermen.py::Basis.ergens", "lines": [205]},
       {"target": "tests/test_schermen.py::Basis.opslag", "lines": [202]},
