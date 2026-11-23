@@ -1,0 +1,1 @@
+Tijdelijke kopie van de wegwerpscripts waarmee de kaart gemaakt wordt (voor het geval de sessie herstart). Wordt vóór de pull request weer verwijderd.
