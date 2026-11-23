@@ -1,0 +1,954 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_rapporten.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 341,
+ "source_sha256": "48a1fb6a9004ddadeb751edd6239d9eb5e005f748cd6d628beb2515782804ecc",
+ "purpose": "Tests passwords, dates and periods, reports, the log for parents (answers, points), the report by curriculum structure and export.",
+ "details": "TestWachtwoord checks kern/wachtwoord hashes; TestDatums and TestRapport check kern/rapporten with a fixed clock; TestLogboek checks the answer log, shortened question texts and the repeat bin; TestIndeling checks that the report groups by subject, domain and topic from the curriculum, shows speed arithmetic separately, keeps every line within the reader width (72 characters) and exports the same columns plus subject and domain.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "csv", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["date", "datetime", "timedelta", "timezone"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok", "rapporten", "wachtwoord"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/wachtwoord.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 125,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 178,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 189,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "collections",
+   "names": ["Counter"],
+   "alias": null,
+   "line": 258,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["vaardigheden"],
+   "alias": null,
+   "line": 314,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/vaardigheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["datetime.timedelta", "datetime.timezone", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "CET",
+   "line": 11,
+   "value_type": "Call",
+   "value_preview": "timezone(timedelta(hours=1))",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestWachtwoord",
+   "qualname": "TestWachtwoord",
+   "lines": [14, 23],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Password hashing.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_maken_en_controleren",
+     "qualname": "TestWachtwoord.test_maken_en_controleren",
+     "kind": "method",
+     "lines": [15, 23],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hash has the pbkdf2_sha256 format and verifies the right password only.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [18, 19, 22]},
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [16, 20]},
+      {"target": "leeravontuur/kern/wachtwoord.py::verouderd", "lines": [21, 23]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertNotEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDatums",
+   "qualname": "TestDatums",
+   "lines": [26, 41],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Dates and periods.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_lees_datum",
+     "qualname": "TestDatums.test_lees_datum",
+     "kind": "method",
+     "lines": [27, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Dates are read in several spellings.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::lees_datum", "lines": [29, 30, 31, 32, 33, 34]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", "datetime.date"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_periodes",
+     "qualname": "TestDatums.test_periodes",
+     "kind": "method",
+     "lines": [36, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Standard periods (this week, this month ...) from a given day.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::periodes", "lines": [37, 41]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "datetime.date"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestRapport",
+   "qualname": "TestRapport",
+   "lines": [44, 118],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Report content.",
+   "attributes": [
+    {"name": "o", "line": 46, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 47, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestRapport.setUp",
+     "kind": "method",
+     "lines": [45, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores a few answers on different days.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [51, 55]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [46]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [52],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [47],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [48],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIsNone", "datetime.datetime"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_cijfers",
+     "qualname": "TestRapport.test_cijfers",
+     "kind": "method",
+     "lines": [58, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Counts, percentage and per-day numbers for a period.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [59]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [59]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [63]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".most_common", "datetime.date"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vraagstukken",
+     "qualname": "TestRapport.test_vraagstukken",
+     "kind": "method",
+     "lines": [69, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word-problem section counts tips, first mistakes and klad quality.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [71, 79]},
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [80]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [80]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [81]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [77],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [70],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIn", "bool", "datetime.date", "datetime.datetime"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_leeg",
+     "qualname": "TestRapport.test_leeg",
+     "kind": "method",
+     "lines": [87, 90],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An empty period says 'nog niet geoefend' and still lists status lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [88]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [88]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [89, 90]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "any", "datetime.date"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kalender",
+     "qualname": "TestRapport.test_kalender",
+     "kind": "method",
+     "lines": [92, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The calendar maps days to (count, correct) and renders lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::kalender", "lines": [93]},
+      {"target": "leeravontuur/kern/rapporten.py::kalender_regels", "lines": [95]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_export",
+     "qualname": "TestRapport.test_export",
+     "kind": "method",
+     "lines": [99, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Export writes a text and a CSV file with all answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [100]},
+      {"target": "leeravontuur/kern/rapporten.py::exporteer", "lines": [102]},
+      {"target": "leeravontuur/kern/rapporten.py::exporteer_alles", "lines": [110]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [100]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIn",
+      ".assertTrue",
+      ".read_bytes",
+      ".read_text",
+      "csv.reader",
+      "datetime.date",
+      "len",
+      "list",
+      "open",
+      "pathlib.Path",
+      "tempfile.TemporaryDirectory"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_wissen",
+     "qualname": "TestRapport.test_wissen",
+     "kind": "method",
+     "lines": [113, 118],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Deleting a child removes the child and its data.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.algemeen",
+       "lines": [118],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.antwoorden",
+       "lines": [117],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.kinderen",
+       "lines": [116],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.verwijder_kind",
+       "lines": [115],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.verwijder_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.zet_algemeen",
+       "lines": [114],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestLogboek",
+   "qualname": "TestLogboek",
+   "lines": [121, 195],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "#24: het logboek voor de ouder: elk antwoord met de vraag, en een vraag terug in de herhaalbak.",
+   "explanation": "Parent log.",
+   "attributes": [
+    {"name": "o", "line": 126, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 127, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestLogboek.setUp",
+     "kind": "method",
+     "lines": [124, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores a few answers with questions.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [130, 137, 144]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [126]},
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [128]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [138, 141],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [127],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [136],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [132],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.sluit",
+       "lines": [135],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [131],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["datetime.datetime", "enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vraag_kort",
+     "qualname": "TestLogboek.test_vraag_kort",
+     "kind": "method",
+     "lines": [146, 149],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The short question form joins question and given answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::vraag_kort", "lines": [147, 148, 149]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vraag_netjes_en_te_lang",
+     "qualname": "TestLogboek.test_vraag_netjes_en_te_lang",
+     "kind": "method",
+     "lines": [151, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Tidies a question and shortens long ones.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::antwoord_tekst", "lines": [156, 160]},
+      {"target": "leeravontuur/kern/rapporten.py::vraag_netjes", "lines": [152, 153]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", "dict", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_antwoorden_nieuwste_eerst",
+     "qualname": "TestLogboek.test_antwoorden_nieuwste_eerst",
+     "kind": "method",
+     "lines": [162, 170],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The answers list is newest first.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::antwoorden_lijst", "lines": [163]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_punten_met_de_vraag",
+     "qualname": "TestLogboek.test_punten_met_de_vraag",
+     "kind": "method",
+     "lines": [172, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Points lines show the question and fit in the reader width.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::punten_regels", "lines": [173]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "all", "any", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_in_de_herhaalbak",
+     "qualname": "TestLogboek.test_in_de_herhaalbak",
+     "kind": "method",
+     "lines": [177, 195],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A parent can put a question in the bin; it is then reported as in the bin.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::antwoorden_lijst", "lines": [179, 181]},
+      {"target": "leeravontuur/kern/rapporten.py::in_herhaalbak", "lines": [180, 184]},
+      {"target": "leeravontuur/kern/rapporten.py::zet_in_herhaalbak", "lines": [183]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_herhaling", "lines": [192]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "catalogus.ONDERWERPEN[i['vaardigheid']].maak_herhaling",
+       "lines": [195],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.herhaalbak",
+       "lines": [185],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIsNotNone", ".assertTrue", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestIndeling",
+   "qualname": "TestIndeling",
+   "lines": [198, 337],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Het rapport per vak › domein › onderwerp (uit het leerplan); snelrekenen apart onder zijn onderwerp.",
+   "explanation": "Structured report.",
+   "attributes": [
+    {"name": "o", "line": 204, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 205, "scope": "instance", "value_preview": null},
+    {"name": "r", "line": 219, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestIndeling.setUp",
+     "kind": "method",
+     "lines": [203, 219],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores practice across several topics and speed rounds.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [206, 218]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [204]},
+      {"target": "leeravontuur/kern/rapporten.py::Periode", "lines": [219]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [219]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [216],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [205],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [214],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["datetime.date", "datetime.datetime", "enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "deel",
+     "qualname": "TestIndeling.deel",
+     "kind": "method",
+     "lines": [221, 226],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kop", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De regels van één deel (tot de volgende kop: een regel die niet inspringt).",
+     "explanation": "The lines of one part of the report up to the next heading.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "next", "range"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_rapporten.py::TestIndeling.test_snelrekenen_apart_onder_zijn_onderwerp",
+       "lines": [241, 252]
+      },
+      {"caller": "tests/test_rapporten.py::TestIndeling.test_status_snelrekenen_apart", "lines": [279, 287]},
+      {"caller": "tests/test_rapporten.py::TestIndeling.test_zelfde_cijfers", "lines": [234]}
+     ]
+    },
+    {
+     "name": "test_zelfde_cijfers",
+     "qualname": "TestIndeling.test_zelfde_cijfers",
+     "kind": "method",
+     "lines": [228, 238],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The structured report has the same totals as the flat one.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [229]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [229]},
+      {"target": "tests/test_rapporten.py::TestIndeling.deel", "lines": [234]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "len", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_snelrekenen_apart_onder_zijn_onderwerp",
+     "qualname": "TestIndeling.test_snelrekenen_apart_onder_zijn_onderwerp",
+     "kind": "method",
+     "lines": [240, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Speed arithmetic is listed under its topic on a separate line.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [241, 252]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [241, 252]},
+      {"target": "tests/test_rapporten.py::TestIndeling.deel", "lines": [241, 252]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", ".assertLess", ".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_per_onderwerp_past_in_de_lezer",
+     "qualname": "TestIndeling.test_per_onderwerp_past_in_de_lezer",
+     "kind": "method",
+     "lines": [256, 269],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "PER ONDERWERP: elke regel past in de lezer (72 tekens), ook met de langste namen en grote getallen.",
+     "explanation": "PER ONDERWERP lines fit in 72 characters, also with long names and big numbers.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::Rapport", "lines": [259]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [265]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [261, 265]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertLessEqual", "collections.Counter", "len", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_status_snelrekenen_apart",
+     "qualname": "TestIndeling.test_status_snelrekenen_apart",
+     "kind": "method",
+     "lines": [271, 288],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De gewone status telt alleen de gewone oefeningen; snelrekenen heeft een eigen regel onder zijn onderwerp.",
+     "explanation": "The normal status counts normal exercises only.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [279, 287]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [279]},
+      {"target": "tests/test_rapporten.py::TestIndeling.deel", "lines": [279, 287]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_status_een_snelle_ronde_verandert_de_gewone_status_niet",
+     "qualname": "TestIndeling.test_status_een_snelle_ronde_verandert_de_gewone_status_niet",
+     "kind": "method",
+     "lines": [290, 299],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hasty speed round does not change the normal status.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [291, 296]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [297]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [294],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [292],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", "datetime.datetime", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_status_zonder_snelrekenen_geen_extra_regel",
+     "qualname": "TestIndeling.test_status_zonder_snelrekenen_geen_extra_regel",
+     "kind": "method",
+     "lines": [301, 308],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No speed rounds, no extra line.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [302]},
+      {"target": "leeravontuur/kern/rapporten.py::maak_rapport", "lines": [306]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [308]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [308]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.bewaar_antwoord",
+       "lines": [305],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [303],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.start_sessie",
+       "lines": [304],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_status_past_in_de_lezer",
+     "qualname": "TestIndeling.test_status_past_in_de_lezer",
+     "kind": "method",
+     "lines": [310, 321],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "STATUS: elke regel past in de lezer (72 tekens), ook met de langste namen en veel antwoorden.",
+     "explanation": "STATUS lines fit in 72 characters.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::Rapport", "lines": [313]},
+      {"target": "leeravontuur/kern/rapporten.py::regels", "lines": [318]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [318]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", "datetime.date", "enumerate", "len", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_export_zelfde_kolommen_plus_vak_en_domein",
+     "qualname": "TestIndeling.test_export_zelfde_kolommen_plus_vak_en_domein",
+     "kind": "method",
+     "lines": [323, 337],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The CSV has the same columns plus subject and domain.",
+     "calls": [
+      {"target": "leeravontuur/kern/rapporten.py::exporteer", "lines": [325]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::indeling", "lines": [325]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIn",
+      ".read_text",
+      "csv.reader",
+      "len",
+      "list",
+      "next",
+      "open",
+      "tempfile.TemporaryDirectory"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

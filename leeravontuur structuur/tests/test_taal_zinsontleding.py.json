@@ -1,0 +1,1166 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_taal_zinsontleding.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 394,
+ "source_sha256": "7f714f707c4381d1daa9fd0c0cfd0999106bbbb6da00dff6781b3d8175839979",
+ "purpose": "Tests the sentence-parsing core (Taal T1.1): the bracket notation, the word list, the sentence machine, steps and checking, hand-written sentences and sentences with two finite verbs (no screens).",
+ "details": "Sentences are written with brackets like '[o Oma] [pv heeft] [lv een fiets]' and read by lees_haakjes. Covers kern/taal (zinsontleding as Z/ZN, the machine M, inhoud word list, nagekeken sentences N). The helpers zin, breedte and posities build sentences, compute the on-screen width and find word positions.",
+ "module_docstring": "Taal T1.1: de zin, de haakjes, de woordenlijst, de zinnenmachine en de zinsontleding (kern, zonder schermen).",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerlijnen"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerlijnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinnenmachine"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinnenmachine.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinsontleding"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinsontleding.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinnen"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal.zinnen",
+   "names": ["GEZEGDE", "WOORDSOORTEN", "ZINSDELEN", "ZinFout", "controleer", "lees_haakjes"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/taal/zinnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["nagekeken"],
+   "alias": null,
+   "line": 245,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/nagekeken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["nagekeken"],
+   "alias": null,
+   "line": 265,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/nagekeken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["nagekeken"],
+   "alias": null,
+   "line": 274,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/nagekeken.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {
+   "name": "LIJN",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "'taal.zinsontleding'",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestHaakjes",
+   "qualname": "TestHaakjes",
+   "lines": [34, 64],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Notation.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_lezen",
+     "qualname": "TestHaakjes.test_lezen",
+     "kind": "method",
+     "lines": [35, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads parts and gives the plain text and the text of one part.",
+     "calls": [
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [36]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.deel",
+       "lines": [38, 40],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.deel('mv').tekst",
+       "lines": [38],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gezegde_in_stukken",
+     "qualname": "TestHaakjes.test_gezegde_in_stukken",
+     "kind": "method",
+     "lines": [42, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A predicate in two pieces (wwg) is joined; the bracket text round-trips.",
+     "calls": [
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [43]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.deel",
+       "lines": [44],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.deel('wwg').tekst",
+       "lines": [44],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      },
+      {
+       "expr": "z.haakjes",
+       "lines": [45],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_woordsoort_meegeven",
+     "qualname": "TestHaakjes.test_woordsoort_meegeven",
+     "kind": "method",
+     "lines": [47, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A word kind can be given after a slash (zn, ww); punctuation is lt.",
+     "calls": [
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [48]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fouten_in_gewone_taal",
+     "qualname": "TestHaakjes.test_fouten_in_gewone_taal",
+     "kind": "method",
+     "lines": [51, 64],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Wrong notation gives plain-language errors (missing bracket, unknown part, ...).",
+     "calls": [
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [63]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertRaises", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWoordenlijst",
+   "qualname": "TestWoordenlijst",
+   "lines": [67, 94],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Word list.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_lijst_klopt",
+     "qualname": "TestWoordenlijst.test_de_lijst_klopt",
+     "kind": "method",
+     "lines": [68, 89],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The word list is consistent (verbs have both tenses etc.).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [88]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [69]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "len", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_meewerkend_voorwerp_begint_niet_met_een_naam",
+     "qualname": "TestWoordenlijst.test_meewerkend_voorwerp_begint_niet_met_een_naam",
+     "kind": "method",
+     "lines": [91, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "'mijn zus Noor' leest als één onderwerp: een mv begint met een lidwoord of voornaamwoord.",
+     "explanation": "An indirect object starts with an article or pronoun, not a name.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [94]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [93]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestZinnenmachine",
+   "qualname": "TestZinnenmachine",
+   "lines": [97, 158],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Sentence machine.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_zinsbouw_in_elk_leerjaar",
+     "qualname": "TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "kind": "method",
+     "lines": [98, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every sentence structure of every school year builds a valid sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [100]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [105]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [103]},
+      {"target": "tests/test_taal_zinsontleding.py::breedte", "lines": [109]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [108]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.haakjes",
+       "lines": [105, 107, 108],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "zin(z.haakjes()).haakjes",
+       "lines": [108],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", "all", "random.Random", "range", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_pv_past_bij_het_onderwerp_en_de_tijd",
+     "qualname": "TestZinnenmachine.test_de_pv_past_bij_het_onderwerp_en_de_tijd",
+     "kind": "method",
+     "lines": [112, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The verb form agrees with the subject and tense.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [113]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [116, 120]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.deel",
+       "lines": [119, 122],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.deel('pv').tekst",
+       "lines": [119, 122],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [".assertEqual", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_bijvoeglijk_naamwoord_met_of_zonder_e",
+     "qualname": "TestZinnenmachine.test_bijvoeglijk_naamwoord_met_of_zonder_e",
+     "kind": "method",
+     "lines": [125, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adjective endings with or without -e are right.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [128]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.label_van",
+       "lines": [129],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.label_van"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIn", ".assertNotRegex", "len", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geen_weggelaten_lv_op_makkelijk_en_normaal",
+     "qualname": "TestZinnenmachine.test_geen_weggelaten_lv_op_makkelijk_en_normaal",
+     "kind": "method",
+     "lines": [136, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "\"Oma at.\" alleen op Moeilijk en hoger (de vader, 7/11): op Makkelijk en Normaal krijgt een zin zonder lv alleen een werkwoord dat nooit een lv heeft (slapen, lachen …).",
+     "explanation": "A sentence without a direct object ('Oma at.') appears only from the hard level, with verbs that never need one on lower levels.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [141, 142]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [139]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [145, 149]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertGreater", ".assertNotIn", ".assertTrue", "len", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tijd_en_bepaling_passen",
+     "qualname": "TestZinnenmachine.test_tijd_en_bepaling_passen",
+     "kind": "method",
+     "lines": [152, 158],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Time words and adverbials fit the tense.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [154]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestStappenEnNakijken",
+   "qualname": "TestStappenEnNakijken",
+   "lines": [161, 238],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Steps and checking.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_stappen_per_leerjaar",
+     "qualname": "TestStappenEnNakijken.test_stappen_per_leerjaar",
+     "kind": "method",
+     "lines": [162, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Steps per school year (pv, o, then lv, mv ...).",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [164, 165, 166, 168]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [163, 167]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [164, 165, 166, 168]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_juist_en_er_is_er_geen",
+     "qualname": "TestStappenEnNakijken.test_juist_en_er_is_er_geen",
+     "kind": "method",
+     "lines": [170, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Right answers and 'there is none' are checked correctly.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [172, 173, 174, 175]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [171]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_denkfouten",
+     "qualname": "TestStappenEnNakijken.test_de_denkfouten",
+     "kind": "method",
+     "lines": [177, 197],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typical errors (verb first word, a non-verb as verb, ...) get the right diagnosis.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [190, 195, 196, 197]},
+      {
+       "target": "tests/test_taal_zinsontleding.py::posities",
+       "lines": [180, 181, 182, 183, 184, 185, 186, 187, 195, 196]
+      },
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [178, 194]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", ".assertIsNotNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_tips_zeggen_het_antwoord_niet",
+     "qualname": "TestStappenEnNakijken.test_de_tips_zeggen_het_antwoord_niet",
+     "kind": "method",
+     "lines": [199, 208],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No tip gives the answer away.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [201]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [202]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::tips", "lines": [207]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [203]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotIn", ".choice", "list", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_uitleg_en_de_vraag_van_school",
+     "qualname": "TestStappenEnNakijken.test_de_uitleg_en_de_vraag_van_school",
+     "kind": "method",
+     "lines": [210, 220],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The explanation and the school question ('Wat geeft oma?').",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [218]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [214, 217]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [212, 213, 216, 220]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [211, 215]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertNotIn", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vrij_kleuren",
+     "qualname": "TestStappenEnNakijken.test_vrij_kleuren",
+     "kind": "method",
+     "lines": [222, 230],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Free colouring is checked per part.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [225, 228]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [223]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", "all"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_in_zinsdelen_verdelen",
+     "qualname": "TestStappenEnNakijken.test_in_zinsdelen_verdelen",
+     "kind": "method",
+     "lines": [232, 238],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The right division is computed and checked.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_verdeling", "lines": [235, 236]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verdeling", "lines": [234, 238]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [233, 237]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestNagekekenZinnen",
+   "qualname": "TestNagekekenZinnen",
+   "lines": [241, 309],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "0.25.1: de met de hand geschreven zinnen (inhoud/taal/zinnen.json).",
+   "explanation": "Hand-written sentences.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_zin_is_volledig_ontleed_en_past",
+     "qualname": "TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "kind": "method",
+     "lines": [244, 262],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Each hand-written sentence is fully parsed and fits the screen.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [246, 248, 249]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [252]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [251]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [262]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [261]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.deel",
+       "lines": [256, 257, 260],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.haakjes",
+       "lines": [251],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertFalse",
+      ".assertGreaterEqual",
+      ".assertIn",
+      ".assertLessEqual",
+      ".assertTrue",
+      "len",
+      "sum"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt",
+     "qualname": "TestNagekekenZinnen.test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt",
+     "kind": "method",
+     "lines": [264, 271],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A sentence only contains parts asked in that school year.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [266, 267, 268, 269]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_verdeling", "lines": [270]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::verdeling", "lines": [270]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.alle",
+       "lines": [266],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.alle"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.deel",
+       "lines": [266, 267, 268],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertTrue", "all", "any", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zinnen_met_twee_persoonsvormen",
+     "qualname": "TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "kind": "method",
+     "lines": [273, 283],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "At least 20 sentences with two finite verbs, all valid.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::twee", "lines": [275, 276]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [279]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [278]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [280]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [283]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.haakjes",
+       "lines": [278, 283],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "zin(z.haakjes()).haakjes",
+       "lines": [283],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertGreaterEqual", ".assertLessEqual", ".assertTrue", "all", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_reeks_mengt_de_lijst_en_de_machine",
+     "qualname": "TestNagekekenZinnen.test_een_reeks_mengt_de_lijst_en_de_machine",
+     "kind": "method",
+     "lines": [285, 298],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A series mixes machine, hand-written and two-verb sentences by year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.maak",
+       "lines": [291],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [294], "candidates": [], "candidates_count": 25}
+     ],
+     "external_calls": [".assertEqual", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhalen_geeft_dezelfde_soort_zin",
+     "qualname": "TestNagekekenZinnen.test_herhalen_geeft_dezelfde_soort_zin",
+     "kind": "method",
+     "lines": [300, 309],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeat gives the same kind of sentence.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.herhaal_data",
+       "lines": [305],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak",
+       "lines": [303, 308],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak_herhaling",
+       "lines": [305],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertNotEqual", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTweePersoonsvormen",
+   "qualname": "TestTweePersoonsvormen",
+   "lines": [312, 390],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "0.25.1: een zin met meer dan één pv (alleen pv en o), de stappen en de denkfouten.",
+   "explanation": "Two finite verbs.",
+   "attributes": [
+    {
+     "name": "GROOT",
+     "line": 314,
+     "scope": "class",
+     "value_preview": "'[o Grootvader] [pv vertelt] | dat [o de kist] onder de gro…"
+    },
+    {
+     "name": "EMMA",
+     "line": 315,
+     "scope": "class",
+     "value_preview": "'[o Emma] [pv leest] de brief en [pv krijgt] een idee.'"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_haakjes",
+     "qualname": "TestTweePersoonsvormen.test_de_haakjes",
+     "kind": "method",
+     "lines": [317, 324],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The notation marks a compound sentence and finds the sub-clauses.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [320, 323]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [318, 322]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "e.haakjes",
+       "lines": [324],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.haakjes",
+       "lines": [321],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_stappen_en_het_nakijken",
+     "qualname": "TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "kind": "method",
+     "lines": [326, 336],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Steps are pv, o1, o2; checking and labels.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::kort", "lines": [336]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::naam_van_stap", "lines": [335]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [330, 331, 332, 333]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [334]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [329]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [328]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [327]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_denkfouten",
+     "qualname": "TestTweePersoonsvormen.test_de_denkfouten",
+     "kind": "method",
+     "lines": [338, 351],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forgetting one verb, choosing the wrong verb are diagnosed.",
+     "calls": [
+      {
+       "target": "leeravontuur/kern/taal/zinsontleding.py::diagnose",
+       "lines": [340, 341, 342, 343, 344, 345, 346, 347, 348, 350, 351]
+      },
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [339, 349, 351]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tips_en_uitleg",
+     "qualname": "TestTweePersoonsvormen.test_tips_en_uitleg",
+     "kind": "method",
+     "lines": [353, 361],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Tips and explanations exist per step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [355]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::tips", "lines": [356]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [360, 361]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [354]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vrij_kleuren",
+     "qualname": "TestTweePersoonsvormen.test_vrij_kleuren",
+     "kind": "method",
+     "lines": [363, 370],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Free colouring works for compound sentences.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [366, 367, 369]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [364]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "all"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_machine",
+     "qualname": "TestTweePersoonsvormen.test_de_machine",
+     "kind": "method",
+     "lines": [372, 384],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The machine builds valid compound sentences.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [377]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [376]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [378]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak_samengesteld", "lines": [375]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [382]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.haakjes",
+       "lines": [376, 380, 381, 382],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "zin(z.haakjes()).haakjes",
+       "lines": [382],
+       "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.haakjes"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", "all", "len", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_gewone_zin_verandert_niet",
+     "qualname": "TestTweePersoonsvormen.test_een_gewone_zin_verandert_niet",
+     "kind": "method",
+     "lines": [386, 390],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A normal sentence is not compound and keeps its steps.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [390]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [389]},
+      {"target": "tests/test_taal_zinsontleding.py::zin", "lines": [387]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "zin",
+   "qualname": "zin",
+   "kind": "function",
+   "lines": [16, 17],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Reads a bracket-notation sentence with the word list's word-kind lookup.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [17]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_taal_zinsontleding.py::TestHaakjes.test_fouten_in_gewone_taal", "lines": [63]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestHaakjes.test_gezegde_in_stukken", "lines": [43]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestHaakjes.test_lezen", "lines": [36]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestHaakjes.test_woordsoort_meegeven", "lines": [48]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "lines": [283]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_denkfouten",
+     "lines": [178, 194]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_uitleg_en_de_vraag_van_school",
+     "lines": [211, 215]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_in_zinsdelen_verdelen",
+     "lines": [233, 237]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_juist_en_er_is_er_geen",
+     "lines": [171]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_vrij_kleuren", "lines": [223]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_denkfouten",
+     "lines": [339, 349, 351]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_haakjes",
+     "lines": [318, 322]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_machine", "lines": [382]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [327]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_een_gewone_zin_verandert_niet",
+     "lines": [387]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_tips_en_uitleg", "lines": [354]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_vrij_kleuren", "lines": [364]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "lines": [108]
+    }
+   ]
+  },
+  {
+   "name": "breedte",
+   "qualname": "breedte",
+   "kind": "function",
+   "lines": [20, 22],
+   "params": [
+    {"name": "z", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zoals op het scherm: 7 kolommen inspringen, de woorden met 2 spaties ertussen (een leesteken tegen het woord).",
+   "explanation": "Width of a sentence as drawn on screen (7 columns indent plus words with two spaces between).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [22]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "lines": [109]
+    }
+   ]
+  },
+  {
+   "name": "posities",
+   "qualname": "posities",
+   "kind": "function",
+   "lines": [25, 31],
+   "params": [
+    {"name": "z", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De posities van de woorden 'tekst' (na elkaar) in de zin.",
+   "explanation": "Positions of consecutive words of a text inside a sentence.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["AssertionError", "len", "range", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_denkfouten",
+     "lines": [180, 181, 182, 183, 184, 185, 186, 187, 195, 196]
+    }
+   ]
+  }
+ ]
+}

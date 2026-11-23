@@ -1,0 +1,1509 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_ouder.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 341,
+ "source_sha256": "3bd2e73bc107f0d2683affb3c86c6d2b6bbf05cf3e94be830cd2ee952f5df0f7",
+ "purpose": "Screen tests for the parent area, the PIN, the timer, remarks and the stop lock setup.",
+ "details": "OuderBasis (also used by test_gemengd and test_stopslot) lowers password hash iterations and creates a database with a parent password. Covers access (first password, mismatch, three wrong, inactivity lock, --ouder), reports/export/calendar, managing a child (school year, timer, PIN, wipe, export all), display settings, the timer, 'Zeg het ons', the answers log and the stop-lock setup.",
+ "module_docstring": "Schermtests voor het ouderdeel, de pincode en de timer.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["stopslot", "wachtwoord"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/stopslot.py", "leeravontuur/kern/wachtwoord.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen",
+   "names": ["ouder"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/schermen/__init__.py", "leeravontuur/terminal/schermen/ouder.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "HOOFDMENU", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "HOOFDMENU", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["feedback"],
+   "alias": null,
+   "line": 199,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/feedback.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["feedback"],
+   "alias": null,
+   "line": 212,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/feedback.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 224,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["tests/test_gemengd.py", "tests/test_stopslot.py"],
+ "module_calls": [],
+ "constants": [
+  {"name": "WW", "line": 16, "value_type": "Constant", "value_preview": "'geheim1'", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "OuderBasis",
+   "qualname": "OuderBasis",
+   "lines": [19, 36],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared setup for parent-area tests.",
+   "attributes": [
+    {"name": "oude_iteraties", "line": 22, "scope": "instance", "value_preview": null},
+    {"name": "docs", "line": 24, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "OuderBasis.setUp",
+     "kind": "method",
+     "lines": [20, 25],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Faster password hashing and a temporary documents folder.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".setUp", "super", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "OuderBasis.tearDown",
+     "kind": "method",
+     "lines": [27, 31],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Restores them.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".cleanup", ".tearDown", "os.environ.pop", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "met_wachtwoord",
+     "qualname": "OuderBasis.met_wachtwoord",
+     "kind": "method",
+     "lines": [33, 36],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kinderen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Storage with children and the parent password set.",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [35]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.zet_ouder_wachtwoord",
+       "lines": [35],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".opslag"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_ouder.py::TestAntwoorden.met_antwoorden", "lines": [225]},
+      {"caller": "tests/test_ouder.py::TestAntwoorden.test_zonder_antwoorden", "lines": [253]},
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_export_alles", "lines": [126]},
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_leerjaar_wijzigen", "lines": [100]},
+      {
+       "caller": "tests/test_ouder.py::TestKinderenBeheren.test_pincode_instellen_en_gebruiken",
+       "lines": [110]
+      },
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_timer_verbergen", "lines": [105]},
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_wissen_vraagt_de_naam", "lines": [119]},
+      {"caller": "tests/test_ouder.py::TestRapportenScherm.test_rapport_export_en_kalender", "lines": [80]},
+      {
+       "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+       "lines": [295]
+      },
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_geen_slot_zonder_ouderpin", "lines": [262]},
+      {
+       "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_het_laatst_gekozen_kind_met_slot",
+       "lines": [274]
+      },
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_ouderpin_kiezen_en_wijzigen", "lines": [332]},
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_uitzetten_en_pin_weghalen", "lines": [316]},
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_zonder_pin_verandert_er_niets", "lines": [309]},
+      {"caller": "tests/test_ouder.py::TestToegang.test_drie_keer_fout", "lines": [54]},
+      {"caller": "tests/test_ouder.py::TestToegang.test_meteen_ouderdeel_met_argument", "lines": [71]},
+      {"caller": "tests/test_ouder.py::TestToegang.test_vergrendelen_na_inactiviteit", "lines": [61]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_alleen_voor_dat_kind", "lines": [158]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_ascii_startargument_blijft_voorgaan", "lines": [175]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_avatar_en_animaties_uitzetten", "lines": [141]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_plaatswaarden_aanzetten", "lines": [150]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_startargument_wordt_niet_bewaard", "lines": [166]},
+      {"caller": "tests/test_ouder.py::TestZegHetOns.test_opmerking_bewaren_en_lezen", "lines": [200]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TestToegang",
+   "qualname": "TestToegang",
+   "lines": [39, 75],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Access.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_eerste_keer_wachtwoord_kiezen",
+     "qualname": "TestToegang.test_eerste_keer_wachtwoord_kiezen",
+     "kind": "method",
+     "lines": [40, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The first visit asks to choose a password (twice).",
+     "calls": [
+      {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [45]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.ouder_wachtwoord",
+       "lines": [45],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [43],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", ".opslag"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verschillende_wachtwoorden",
+     "qualname": "TestToegang.test_verschillende_wachtwoorden",
+     "kind": "method",
+     "lines": [47, 51],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Two different passwords give 'niet gelijk'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.ouder_wachtwoord",
+       "lines": [51],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [49],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIsNone", ".assertTrue", ".ergens", ".opslag"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_drie_keer_fout",
+     "qualname": "TestToegang.test_drie_keer_fout",
+     "kind": "method",
+     "lines": [53, 58],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Three wrong passwords give no access.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [54]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [56],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vergrendelen_na_inactiviteit",
+     "qualname": "TestToegang.test_vergrendelen_na_inactiviteit",
+     "kind": "method",
+     "lines": [60, 68],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After the inactivity time the area locks with a message.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [61]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [65],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_meteen_ouderdeel_met_argument",
+     "qualname": "TestToegang.test_meteen_ouderdeel_met_argument",
+     "kind": "method",
+     "lines": [70, 75],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starting with --ouder goes straight to the password prompt.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [73]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [72]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [71]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.start",
+       "lines": [74],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestRapportenScherm",
+   "qualname": "TestRapportenScherm",
+   "lines": [78, 91],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Reports screen.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_rapport_export_en_kalender",
+     "qualname": "TestRapportenScherm.test_rapport_export_en_kalender",
+     "kind": "method",
+     "lines": [79, 91],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Report, export and calendar are reachable and work.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [80]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [82, 85],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".iterdir", "pathlib.Path", "sorted", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKinderenBeheren",
+   "qualname": "TestKinderenBeheren",
+   "lines": [94, 128],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Child management.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "beheer",
+     "qualname": "TestKinderenBeheren.beheer",
+     "kind": "method",
+     "lines": [95, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Ouderdeel → Kinderen → eerste kind, dan de gegeven toetsen.",
+     "explanation": "Plays keys from the parent menu to the first child's settings.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [97],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_export_alles", "lines": [127]},
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_leerjaar_wijzigen", "lines": [101]},
+      {
+       "caller": "tests/test_ouder.py::TestKinderenBeheren.test_pincode_instellen_en_gebruiken",
+       "lines": [111]
+      },
+      {"caller": "tests/test_ouder.py::TestKinderenBeheren.test_timer_verbergen", "lines": [106]}
+     ]
+    },
+    {
+     "name": "test_leerjaar_wijzigen",
+     "qualname": "TestKinderenBeheren.test_leerjaar_wijzigen",
+     "kind": "method",
+     "lines": [99, 102],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Changing the school year is stored.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [100]},
+      {"target": "tests/test_ouder.py::TestKinderenBeheren.beheer", "lines": [101]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [102],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_timer_verbergen",
+     "qualname": "TestKinderenBeheren.test_timer_verbergen",
+     "kind": "method",
+     "lines": [104, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Toggling the timer is stored.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [105]},
+      {"target": "tests/test_ouder.py::TestKinderenBeheren.beheer", "lines": [106]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [107],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [107],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_pincode_instellen_en_gebruiken",
+     "qualname": "TestKinderenBeheren.test_pincode_instellen_en_gebruiken",
+     "kind": "method",
+     "lines": [109, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A child PIN is set (twice) and stored.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [110]},
+      {"target": "tests/test_ouder.py::TestKinderenBeheren.beheer", "lines": [111]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [112],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.pincode",
+       "lines": [112],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.pincode",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.pincode"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [113],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_wissen_vraagt_de_naam",
+     "qualname": "TestKinderenBeheren.test_wissen_vraagt_de_naam",
+     "kind": "method",
+     "lines": [118, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Wiping a child needs the exact name; a wrong name wipes nothing.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [119]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [123],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [121],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_export_alles",
+     "qualname": "TestKinderenBeheren.test_export_alles",
+     "kind": "method",
+     "lines": [125, 128],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Exporting everything writes a CSV and a JSON file.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [126]},
+      {"target": "tests/test_ouder.py::TestKinderenBeheren.beheer", "lines": [127]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".iterdir", "pathlib.Path", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWeergave",
+   "qualname": "TestWeergave",
+   "lines": [131, 180],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "Ouders › Kinderen › kind › Weergave (de 3de keuze): de instellingen die vroeger in Opties stonden. In de lijst: 0 Eenvoudige tekens, 1 Muis, 2 Typrichting, 3 Avatar, 4 Animaties, 5 Klokvenster, 6 Plaatswaarden.",
+   "explanation": "Display settings.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "weergave",
+     "qualname": "TestWeergave.weergave",
+     "kind": "method",
+     "lines": [135, 138],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "klikken", "kind": "vararg", "default": null, "annotation": null},
+      {"name": "start", "kind": "keyword-only", "default": "(OK, '3')", "annotation": null},
+      {"name": "voorrang", "kind": "keyword-only", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plays keys to the display settings of the first child.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [138],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_ouder.py::TestWeergave.test_alleen_voor_dat_kind", "lines": [159]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_ascii_startargument_blijft_voorgaan", "lines": [176]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_avatar_en_animaties_uitzetten", "lines": [142]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_plaatswaarden_aanzetten", "lines": [152]},
+      {"caller": "tests/test_ouder.py::TestWeergave.test_startargument_wordt_niet_bewaard", "lines": [167]}
+     ]
+    },
+    {
+     "name": "test_avatar_en_animaties_uitzetten",
+     "qualname": "TestWeergave.test_avatar_en_animaties_uitzetten",
+     "kind": "method",
+     "lines": [140, 146],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Avatar and animations can be switched off.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [141]},
+      {"target": "tests/test_ouder.py::TestWeergave.weergave", "lines": [142]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [143],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [143],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_plaatswaarden_aanzetten",
+     "qualname": "TestWeergave.test_plaatswaarden_aanzetten",
+     "kind": "method",
+     "lines": [148, 155],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#18: de ouder zet de plaatswaarden bij cijferen aan (standaard uit).",
+     "explanation": "The parent can switch place values for Cijferen on (#18).",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [150]},
+      {"target": "tests/test_ouder.py::TestWeergave.weergave", "lines": [152]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [151, 153],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [151, 153],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_alleen_voor_dat_kind",
+     "qualname": "TestWeergave.test_alleen_voor_dat_kind",
+     "kind": "method",
+     "lines": [157, 162],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A display setting changes only that child.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [158]},
+      {"target": "tests/test_ouder.py::TestWeergave.weergave", "lines": [159]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [160],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [160],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_startargument_wordt_niet_bewaard",
+     "qualname": "TestWeergave.test_startargument_wordt_niet_bewaard",
+     "kind": "method",
+     "lines": [164, 171],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Gestart met --contrast; in Weergave de muis uitzetten: de muis wordt bewaard, het contrast niet.",
+     "explanation": "A start argument wins but is not stored.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [166]},
+      {"target": "tests/test_ouder.py::TestWeergave.weergave", "lines": [167]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [168],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [168],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ascii_startargument_blijft_voorgaan",
+     "qualname": "TestWeergave.test_ascii_startargument_blijft_voorgaan",
+     "kind": "method",
+     "lines": [173, 180],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Met --ascii gestart, het actieve kind krijgt in Weergave 'Eenvoudige tekens uit': het scherm blijft ASCII.",
+     "explanation": "--ascii keeps winning over a stored 'simple characters off'.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [175]},
+      {"target": "tests/test_ouder.py::TestWeergave.weergave", "lines": [176]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [177],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIs", ".assertTrue", "all", "ord", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTimer",
+   "qualname": "TestTimer",
+   "lines": [183, 194],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Timer.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "vrije_vraag",
+     "qualname": "TestTimer.vrije_vraag",
+     "kind": "method",
+     "lines": [184, 188],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zichtbaar", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Whether the timer text shows in a free-practice question.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [186],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".opslag", "any", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_ouder.py::TestTimer.test_timer_verborgen", "lines": [194]},
+      {"caller": "tests/test_ouder.py::TestTimer.test_timer_zichtbaar", "lines": [191]}
+     ]
+    },
+    {
+     "name": "test_timer_zichtbaar",
+     "qualname": "TestTimer.test_timer_zichtbaar",
+     "kind": "method",
+     "lines": [190, 191],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A visible timer shows seconds.",
+     "calls": [
+      {"target": "tests/test_ouder.py::TestTimer.vrije_vraag", "lines": [191]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_timer_verborgen",
+     "qualname": "TestTimer.test_timer_verborgen",
+     "kind": "method",
+     "lines": [193, 194],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hidden timer shows none.",
+     "calls": [
+      {"target": "tests/test_ouder.py::TestTimer.vrije_vraag", "lines": [194]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestZegHetOns",
+   "qualname": "TestZegHetOns",
+   "lines": [197, 217],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Remarks.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_opmerking_bewaren_en_lezen",
+     "qualname": "TestZegHetOns.test_opmerking_bewaren_en_lezen",
+     "kind": "method",
+     "lines": [198, 209],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A remark is stored and shown in the parent area.",
+     "calls": [
+      {"target": "leeravontuur/kern/feedback.py::lees", "lines": [204]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [200]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [202, 207],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_leeg_bewaart_niets_en_stoppen_met_een_cijfer",
+     "qualname": "TestZegHetOns.test_leeg_bewaart_niets_en_stoppen_met_een_cijfer",
+     "kind": "method",
+     "lines": [211, 217],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An empty remark stores nothing.",
+     "calls": [
+      {"target": "leeravontuur/kern/feedback.py::lees", "lines": [215]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [214],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".opslag", "len", "str", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestAntwoorden",
+   "qualname": "TestAntwoorden",
+   "lines": [220, 255],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "#24: Ouders › Antwoorden › kind: elke vraag met het antwoord; Enter = details, H = in de herhaalbak.",
+   "explanation": "Answers log.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "met_antwoorden",
+     "qualname": "TestAntwoorden.met_antwoorden",
+     "kind": "method",
+     "lines": [223, 232],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Storage with some stored answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [227]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [225]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [226],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [230],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [229],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_ouder.py::TestAntwoorden.test_lijst_details_en_herhaalbak", "lines": [235]},
+      {"caller": "tests/test_ouder.py::TestAntwoorden.test_punten_tonen_de_vraag", "lines": [248]}
+     ]
+    },
+    {
+     "name": "test_lijst_details_en_herhaalbak",
+     "qualname": "TestAntwoorden.test_lijst_details_en_herhaalbak",
+     "kind": "method",
+     "lines": [234, 245],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The answers list, the details page and H adding to the repeat bin.",
+     "calls": [
+      {"target": "tests/test_ouder.py::TestAntwoorden.met_antwoorden", "lines": [235]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.herhaalbak",
+       "lines": [245],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [236],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".ergens", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_punten_tonen_de_vraag",
+     "qualname": "TestAntwoorden.test_punten_tonen_de_vraag",
+     "kind": "method",
+     "lines": [247, 250],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The points log shows the question.",
+     "calls": [
+      {"target": "tests/test_ouder.py::TestAntwoorden.met_antwoorden", "lines": [248]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [249],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_antwoorden",
+     "qualname": "TestAntwoorden.test_zonder_antwoorden",
+     "kind": "method",
+     "lines": [252, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An empty answers list says so.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [253]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [254],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestStoppenOpSlot",
+   "qualname": "TestStoppenOpSlot",
+   "lines": [258, 341],
+   "bases": ["OuderBasis"],
+   "decorators": [],
+   "docstring": "Het slot op Stoppen (0.23.2): de ouderpin en \"Stoppen op slot\" per kind (kern/stopslot.py).",
+   "explanation": "Stop-lock setup.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_geen_slot_zonder_ouderpin",
+     "qualname": "TestStoppenOpSlot.test_geen_slot_zonder_ouderpin",
+     "kind": "method",
+     "lines": [261, 271],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A lock flag without a parent PIN has no effect.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [264, 267]},
+      {"target": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [269, 270, 271]},
+      {"target": "leeravontuur/kern/stopslot.py::vergrendeld_kind", "lines": [265, 268]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [266]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [262]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [263],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIsNone", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_het_laatst_gekozen_kind_met_slot",
+     "qualname": "TestStoppenOpSlot.test_het_laatst_gekozen_kind_met_slot",
+     "kind": "method",
+     "lines": [273, 283],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The last chosen locked child is the one the program starts at.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::vergrendeld_kind", "lines": [279, 281, 283]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_alle_sloten_af", "lines": [282]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [276]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [274]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [277],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.zet_algemeen",
+       "lines": [278, 280],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "als_ouder",
+     "qualname": "TestStoppenOpSlot.als_ouder",
+     "kind": "method",
+     "lines": [285, 292],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Starten met --ouder (titelscherm, dan meteen het wachtwoord).",
+     "explanation": "Starts with --ouder and plays keys.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [289]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [287]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "App(scherm, o, kleuren=False).start",
+       "lines": [289],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+       "lines": [305]
+      },
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_uitzetten_en_pin_weghalen", "lines": [322, 326]}
+     ]
+    },
+    {
+     "name": "test_aanzetten_vraagt_eerst_een_ouderpin",
+     "qualname": "TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+     "kind": "method",
+     "lines": [294, 306],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Turning on the lock asks for a parent PIN first.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [300]},
+      {"target": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [299]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [295]},
+      {"target": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [305]},
+      {"target": "tests/test_ouder.py::TestStoppenOpSlot.beheer_slot", "lines": [297]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [298],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_pin_verandert_er_niets",
+     "qualname": "TestStoppenOpSlot.test_zonder_pin_verandert_er_niets",
+     "kind": "method",
+     "lines": [308, 313],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cancelling the PIN prompt changes nothing.",
+     "calls": [
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [309]},
+      {"target": "tests/test_ouder.py::TestStoppenOpSlot.beheer_slot", "lines": [310]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [312],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [312],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.ouder_pin",
+       "lines": [311],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertIsNone", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_uitzetten_en_pin_weghalen",
+     "qualname": "TestStoppenOpSlot.test_uitzetten_en_pin_weghalen",
+     "kind": "method",
+     "lines": [315, 329],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The lock can be turned off and removing the PIN switches all locks off.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [323, 324]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_pin", "lines": [317]},
+      {"target": "leeravontuur/kern/stopslot.py::zet_slot", "lines": [319]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [316]},
+      {"target": "tests/test_ouder.py::TestStoppenOpSlot.als_ouder", "lines": [322, 326]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [328],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [318, 320],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.ouder_pin",
+       "lines": [327],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertIsNone", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ouderpin_kiezen_en_wijzigen",
+     "qualname": "TestStoppenOpSlot.test_ouderpin_kiezen_en_wijzigen",
+     "kind": "method",
+     "lines": [331, 337],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Choosing and changing the parent PIN.",
+     "calls": [
+      {"target": "leeravontuur/kern/stopslot.py::pin_ok", "lines": [337]},
+      {"target": "tests/test_ouder.py::OuderBasis.met_wachtwoord", "lines": [332]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [333],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "beheer_slot",
+     "qualname": "TestStoppenOpSlot.beheer_slot",
+     "kind": "method",
+     "lines": [339, 341],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Ouderdeel → Kinderen → het eerste kind, dan de gegeven toetsen.",
+     "explanation": "Plays keys from the parent menu to the first child's settings.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [341],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+       "lines": [297]
+      },
+      {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_zonder_pin_verandert_er_niets", "lines": [310]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}
