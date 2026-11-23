@@ -1,0 +1,1121 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/cijferen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 511,
+ "source_sha256": "e32147c38a4fb02747479e97efa25695108c65a8b237714880680f89a2dbb440",
+ "purpose": "The topics of column arithmetic: adding, subtracting and multiplying under each other in a grid (with carry rows), and long division step by step.",
+ "details": "The helper functions optel_kolommen, aftrek_kolommen and maal_rij compute, per column from right to left, exactly what happens (digits, carry or borrow, the digit to write) and are used for both the explanation and the per-cell help of the grid input. Optellen, Aftrekken and Vermenigvuldigen make a Rooster model (kern/modellen.py) and expect the answer rows through the grid input object (terminal/rooster.py); Delen builds the steps of a long division (deel, maal, min, neer) with staart_stappen and gives a hint per wrong step with staart_fout (terminal/rooster.py plays them). A decimal comma is handled per topic (aligned for + and -, placed by the child for x). Delen is marked `lang` (counts as a long question in mixed series). Note: _Cijferen.tip tells the child to press '?' for help, but the grid's help key is F1; and _decimalen here duplicates kern/getal.decimalen.",
+ "module_docstring": "Cijferen: optellen, aftrekken en vermenigvuldigen onder elkaar in een rooster (met onthouden-rij), en de staartdeling stap voor stap (deel, vermenigvuldig, trek af, haal neer).",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Rooster", "Staartdeling", "Stap"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.getallen",
+   "names": ["AFK", "NAAM", "_getal"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/wiskunde/getallen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/kern/catalogus.py", "leeravontuur/terminal/curriculum/wiskunde.py", "tests/test_cijferen.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [507, 508, 509, 510]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 13,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 46,
+   "value_type": "List",
+   "value_preview": "[('CIJFEREN ONDER ELKAAR', 'accent'), (' Zet eenheden onder eenheden,…",
+   "explanation": "The cheat sheet of column arithmetic."
+  },
+  {
+   "name": "OPTELLEN",
+   "line": 507,
+   "value_type": "Call",
+   "value_preview": "Optellen()",
+   "explanation": "The one instance of the adding topic."
+  },
+  {
+   "name": "AFTREKKEN",
+   "line": 508,
+   "value_type": "Call",
+   "value_preview": "Aftrekken()",
+   "explanation": "The one instance of the subtracting topic."
+  },
+  {
+   "name": "VERMENIGVULDIGEN",
+   "line": 509,
+   "value_type": "Call",
+   "value_preview": "Vermenigvuldigen()",
+   "explanation": "The one instance of the multiplying topic."
+  },
+  {
+   "name": "DELEN",
+   "line": 510,
+   "value_type": "Call",
+   "value_preview": "Delen()",
+   "explanation": "The one instance of the long-division topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 511,
+   "value_type": "List",
+   "value_preview": "[OPTELLEN, AFTREKKEN, VERMENIGVULDIGEN, DELEN]",
+   "explanation": "List of the four topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 511,
+   "description": "The four topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Cijferen",
+   "qualname": "_Cijferen",
+   "lines": [70, 75],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the four topics: shared cheat sheet and hint.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "_Cijferen.spiekbrief",
+     "kind": "method",
+     "lines": [71, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the shared cheat sheet of column arithmetic.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "_Cijferen.tip",
+     "kind": "method",
+     "lines": [74, 75],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Begin rechts. Druk ? ...' (stale: the grid's help key is F1).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Optellen",
+   "qualname": "Optellen",
+   "lines": [95, 167],
+   "bases": ["_Cijferen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.cijferen.optellen: adding in a grid with carries.",
+   "attributes": [
+    {"name": "id", "line": 96, "scope": "class", "value_preview": "'wiskunde.cijferen.optellen'"},
+    {"name": "naam", "line": 97, "scope": "class", "value_preview": "'Cijferend optellen'"},
+    {"name": "spiek_kop", "line": 98, "scope": "class", "value_preview": "'OPTELLEN'"},
+    {"name": "omschrijving", "line": 99, "scope": "class", "value_preview": "'onder elkaar, met onthouden'"},
+    {
+     "name": "denkfouten",
+     "line": 100,
+     "scope": "class",
+     "value_preview": "{'onthouden_vergeten': 'onthouden vergeten bij het optellen…"
+    },
+    {"name": "vast", "line": 101, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Optellen.maak_met",
+     "kind": "method",
+     "lines": [103, 124],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes an addition of 2 or more numbers with at least one carry, sorted large to small, as a grid question (natural numbers or decimals).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [119, 120]},
+      {"target": "leeravontuur/kern/modellen.py::Rooster", "lines": [120]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [123]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [111, 117]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_geheel_lengte", "lines": [118]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [113]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_getal", "lines": [109]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".normalize", ".randint", ".random", "any", "max", "range", "str", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "getallen",
+     "qualname": "Optellen.getallen",
+     "kind": "method",
+     "lines": [126, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The terms of the question as Decimals.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [127], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.diagnose", "lines": [142]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.kolom_hulp", "lines": [155]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.uitleg", "lines": [131]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Optellen.uitleg",
+     "kind": "method",
+     "lines": [129, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Column by column what to write and carry, shortened to the columns with carries when long.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.getallen", "lines": [131]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_kol", "lines": [133]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_som_tekst", "lines": [132]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [131]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Optellen.diagnose",
+     "kind": "method",
+     "lines": [139, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a forgotten carry (wrong in all carry columns or exactly the sum without carries).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.getallen", "lines": [142]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_cijfers", "lines": [146]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [142]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [143], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "all", "set", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kolom_hulp",
+     "qualname": "Optellen.kolom_hulp",
+     "kind": "method",
+     "lines": [153, 162],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Hint for one cell: the column's digits plus carry, the sum, what to write and what to carry.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.getallen", "lines": [155]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_kol", "lines": [159, 160]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_som_tekst", "lines": [157]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [155]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "v.model.macht",
+       "lines": [154],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.macht"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["bool", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Optellen.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [164, 167],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'kommagetallen' or 'natuurlijke getallen' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Aftrekken",
+   "qualname": "Aftrekken",
+   "lines": [186, 254],
+   "bases": ["_Cijferen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.cijferen.aftrekken: subtracting in a grid with borrowing.",
+   "attributes": [
+    {"name": "id", "line": 187, "scope": "class", "value_preview": "'wiskunde.cijferen.aftrekken'"},
+    {"name": "naam", "line": 188, "scope": "class", "value_preview": "'Cijferend aftrekken'"},
+    {"name": "spiek_kop", "line": 189, "scope": "class", "value_preview": "'AFTREKKEN'"},
+    {"name": "omschrijving", "line": 190, "scope": "class", "value_preview": "'onder elkaar, met lenen'"},
+    {
+     "name": "denkfouten",
+     "line": 191,
+     "scope": "class",
+     "value_preview": "{'kleinste_van_grootste': 'per kolom de kleinste van de gro…"
+    },
+    {"name": "vast", "line": 193, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Aftrekken.maak_met",
+     "kind": "method",
+     "lines": [195, 215],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a subtraction a - b (b smaller) with at least one borrow, natural or decimal.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [210, 211]},
+      {"target": "leeravontuur/kern/modellen.py::Rooster", "lines": [211]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [214]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [204, 208]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_geheel_lengte", "lines": [202, 209]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::aftrek_kolommen", "lines": [206]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_getal", "lines": [200, 202]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".normalize", ".randint", ".random", "max", "range", "str", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ab",
+     "qualname": "Aftrekken.ab",
+     "kind": "method",
+     "lines": [217, 218],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The two numbers of the question as Decimals.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [218], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.diagnose", "lines": [232]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.kolom_hulp", "lines": [242]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.uitleg", "lines": [222, 226]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Aftrekken.uitleg",
+     "kind": "method",
+     "lines": [220, 227],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The columns where borrowing is needed, then the result and the check by adding back.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [226]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.ab", "lines": [222, 226]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_kol", "lines": [224]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::aftrek_kolommen", "lines": [222]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Aftrekken.diagnose",
+     "kind": "method",
+     "lines": [229, 238],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises subtracting the smaller digit from the larger per column, and borrowing without making the next column one smaller.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.ab", "lines": [232]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::aftrek_kolommen", "lines": [232]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [233, 236], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "abs", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kolom_hulp",
+     "qualname": "Aftrekken.kolom_hulp",
+     "kind": "method",
+     "lines": [240, 249],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Hint for one cell: the (reduced) top digit minus the bottom digit, borrowing when needed.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.ab", "lines": [242]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_kol", "lines": [244]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::aftrek_kolommen", "lines": [242]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "v.model.macht",
+       "lines": [241],
+       "candidates": ["leeravontuur/kern/modellen.py::Rooster.macht"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Aftrekken.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [251, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'kommagetallen' or 'natuurlijke getallen' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Vermenigvuldigen",
+   "qualname": "Vermenigvuldigen",
+   "lines": [273, 383],
+   "bases": ["_Cijferen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.cijferen.vermenigvuldigen: multiplying in a grid, including decimals.",
+   "attributes": [
+    {"name": "id", "line": 274, "scope": "class", "value_preview": "'wiskunde.cijferen.vermenigvuldigen'"},
+    {"name": "naam", "line": 275, "scope": "class", "value_preview": "'Cijferend vermenigvuldigen'"},
+    {"name": "spiek_kop", "line": 276, "scope": "class", "value_preview": "'VERMENIGVULDIGEN'"},
+    {
+     "name": "omschrijving",
+     "line": 277,
+     "scope": "class",
+     "value_preview": "'onder elkaar, ook met 2 cijfers en kommagetallen'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 278,
+     "scope": "class",
+     "value_preview": "{'niet_opgeschoven': 'de tweede rij niet opgeschoven (de 0 …"
+    },
+    {"name": "vast", "line": 280, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Vermenigvuldigen.maak_met",
+     "kind": "method",
+     "lines": [282, 308],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a multiplication with a 1- or 2-digit multiplier (digits 2-9), sometimes with decimals; the grid asks one row per digit of the multiplier plus the result and the child places the comma.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [297, 301, 304]},
+      {"target": "leeravontuur/kern/modellen.py::Rooster", "lines": [305]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [308]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_getal", "lines": [287]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [296, 300], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", ".random", ".scaleb", "enumerate", "int", "len", "max", "min", "range", "reversed", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ABr",
+     "qualname": "Vermenigvuldigen.ABr",
+     "kind": "method",
+     "lines": [310, 313],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The numbers as integers plus the total number of decimals.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [312, 313]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [311], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "int"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.diagnose", "lines": [334]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.kolom_hulp", "lines": [344]},
+      {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.uitleg", "lines": [316]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Vermenigvuldigen.uitleg",
+     "kind": "method",
+     "lines": [315, 329],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "One line per row (number x digit, with the shift zeros), the sum of the rows, and the comma rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.ABr", "lines": [316]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [327]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [327], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["enumerate", "int", "reversed", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Vermenigvuldigen.diagnose",
+     "kind": "method",
+     "lines": [331, 341],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a misplaced comma and a second row that was not shifted.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.ABr", "lines": [334]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [339], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "int", "range", "str", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kolom_hulp",
+     "qualname": "Vermenigvuldigen.kolom_hulp",
+     "kind": "method",
+     "lines": [343, 375],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rij", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kolom", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Hint for one cell: the shift zero, the carry to write, the product of a digit plus carry, or the column sum of the rows with the comma remark.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.ABr", "lines": [344]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_som_tekst", "lines": [353]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::maal_rij", "lines": [364]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [350]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "int", "len", "list", "reversed", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Vermenigvuldigen.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [377, 383],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'kommagetallen' or 'x N cijfer(s)' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Delen",
+   "qualname": "Delen",
+   "lines": [443, 504],
+   "bases": ["_Cijferen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.cijferen.delen: long division step by step (a long question).",
+   "attributes": [
+    {"name": "id", "line": 444, "scope": "class", "value_preview": "'wiskunde.cijferen.delen'"},
+    {"name": "naam", "line": 445, "scope": "class", "value_preview": "'Staartdeling'"},
+    {"name": "lang", "line": 446, "scope": "class", "value_preview": "True"},
+    {"name": "spiek_kop", "line": 447, "scope": "class", "value_preview": "'STAARTDELING'"},
+    {
+     "name": "omschrijving",
+     "line": 448,
+     "scope": "class",
+     "value_preview": "'stap voor stap: deel, maal, min, neer'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 449,
+     "scope": "class",
+     "value_preview": "{'staart_te_veel': 'bij de staartdeling te veel keer gescha…"
+    },
+    {"name": "vast", "line": 453, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Delen.maak_met",
+     "kind": "method",
+     "lines": [455, 481],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a long-division question (dividend, divisor, with remainder, without remainder or with decimals) and its steps as a Staartdeling model with the staart input.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [477, 480]},
+      {"target": "leeravontuur/kern/modellen.py::Staartdeling", "lines": [476]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [480]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [467]},
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::staart_stappen", "lines": [475]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [465, 471, 473], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".normalize", ".randint", ".scaleb", "int", "max", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "stap_fout",
+     "qualname": "Delen.stap_fout",
+     "kind": "method",
+     "lines": [483, 484],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "stap", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gegeven", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Delegates a wrong step answer to staart_fout.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/cijferen.py::staart_fout", "lines": [484]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Delen.lees",
+     "kind": "method",
+     "lines": [486, 488],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads the typed quotient, ignoring text after the number (for example 'rest 4').",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [488]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".group", "re.match"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Delen.uitleg",
+     "kind": "method",
+     "lines": [490, 496],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The result and the check quotient x divisor (+ remainder) = dividend.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [493, 494, 495]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [493], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Delen.tip",
+     "kind": "method",
+     "lines": [498, 499],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The four steps and the remainder rule.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Delen.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [501, 504],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'kommagetal' or 'staartdeling' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_cijfers",
+   "qualname": "_cijfers",
+   "kind": "function",
+   "lines": [16, 25],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{macht: cijfer} van |x|, bv. 12,5 → {1: 1, 0: 2, -1: 5}.",
+   "explanation": "{power of ten: digit} of the absolute value, for example 12,5 gives {1: 1, 0: 2, -1: 5}.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [18], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".normalize", "abs", "enumerate", "format", "int", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.diagnose", "lines": [146]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::aftrek_kolommen", "lines": [174]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::optel_kolommen", "lines": [82]}
+   ]
+  },
+  {
+   "name": "_decimalen",
+   "qualname": "_decimalen",
+   "kind": "function",
+   "lines": [28, 29],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Number of decimals of a number (same as kern/getal.decimalen).",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [29], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".as_tuple", ".normalize", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [204, 208]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.maak_met", "lines": [467]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [111, 117]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.ABr", "lines": [312, 313]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.uitleg", "lines": [327]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::staart_stappen", "lines": [391]},
+    {"caller": "tests/test_cijferen.py::TestGeneratoren.controleer_rooster", "lines": [59]}
+   ]
+  },
+  {
+   "name": "_geheel_lengte",
+   "qualname": "_geheel_lengte",
+   "kind": "function",
+   "lines": [32, 33],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Number of digits before the comma.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [33], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".normalize", "abs", "format", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [202, 209]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [118]}
+   ]
+  },
+  {
+   "name": "_kol",
+   "qualname": "_kol",
+   "kind": "function",
+   "lines": [36, 37],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The column abbreviation for a power of ten (E, T, H ...), or '10^k' when unknown.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["leeravontuur.kern.wiskunde.getallen.AFK.get"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.kolom_hulp", "lines": [244]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.uitleg", "lines": [224]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.kolom_hulp", "lines": [159, 160]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.uitleg", "lines": [133]}
+   ]
+  },
+  {
+   "name": "_som_tekst",
+   "qualname": "_som_tekst",
+   "kind": "function",
+   "lines": [40, 43],
+   "params": [
+    {"name": "cijfers", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onth", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'7 + 5 + 1 (onthouden)'.",
+   "explanation": "'7 + 5 + 1 (onthouden)': the digits of a column plus the carried number.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.kolom_hulp", "lines": [157]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.uitleg", "lines": [132]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.kolom_hulp", "lines": [353]}
+   ]
+  },
+  {
+   "name": "optel_kolommen",
+   "qualname": "optel_kolommen",
+   "kind": "function",
+   "lines": [80, 92],
+   "params": [
+    {"name": "getallen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Per kolom (van rechts naar links): (macht, cijfers, onthouden_in, som, schrijf, onthouden_uit).",
+   "explanation": "For adding numbers: per column from right to left (power, digits, carry in, sum, digit to write, carry out); continues while there is still a carry.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/cijferen.py::_cijfers", "lines": [82]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["max", "min", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.diagnose", "lines": [142]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.kolom_hulp", "lines": [155]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [113]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.uitleg", "lines": [131]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.kolom_hulp", "lines": [350]}
+   ]
+  },
+  {
+   "name": "aftrek_kolommen",
+   "qualname": "aftrek_kolommen",
+   "kind": "function",
+   "lines": [172, 183],
+   "params": [
+    {"name": "a", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Per kolom (van rechts naar links): (macht, boven, onder, geleend_in, leent, schrijf).",
+   "explanation": "For subtracting: per column (power, top digit, bottom digit, borrowed in, borrows, digit to write).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/cijferen.py::_cijfers", "lines": [174]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["max", "min", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.diagnose", "lines": [232]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.kolom_hulp", "lines": [242]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [206]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.uitleg", "lines": [222]}
+   ]
+  },
+  {
+   "name": "maal_rij",
+   "qualname": "maal_rij",
+   "kind": "function",
+   "lines": [259, 270],
+   "params": [
+    {"name": "A", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cijfer", "kind": "positional", "default": null, "annotation": null},
+    {"name": "r", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Per kolom van rechts naar links voor A × cijfer, r plaatsen opgeschoven: (macht, cijfer van A of None, onthouden_in, product, schrijf, onthouden_uit).",
+   "explanation": "For one row of a multiplication (number times one digit, shifted r places): per column (power, digit or None, carry in, product, digit to write, carry out).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "int", "len", "range", "reversed", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.kolom_hulp", "lines": [364]}
+   ]
+  },
+  {
+   "name": "staart_stappen",
+   "qualname": "staart_stappen",
+   "kind": "function",
+   "lines": [388, 425],
+   "params": [
+    {"name": "deeltal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "deler", "kind": "positional", "default": null, "annotation": null},
+    {"name": "decimalen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bouwt de stappen van deeltal : deler (deeltal als Decimal; het quotiënt krijgt hoogstens `decimalen` decimalen, of meer als het deeltal er zelf meer heeft). Geeft (getoond deeltal, stappen, quotiënt, rest).",
+   "explanation": "Builds the steps of a long division: the displayed dividend (padded with zeros for decimals), a list of Stap (deel, maal, min, neer, with questions, answers and hints), the quotient and the remainder.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Stap", "lines": [409, 412, 414, 420]},
+    {"target": "leeravontuur/kern/wiskunde/cijferen.py::_decimalen", "lines": [391]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [393, 424], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".quantize", ".scaleb", "format", "int", "len", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.maak_met", "lines": [475]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_staart_fouten", "lines": [112, 116, 119]},
+    {"caller": "tests/test_cijferen.py::staart_vraag", "lines": [240]}
+   ]
+  },
+  {
+   "name": "staart_fout",
+   "qualname": "staart_fout",
+   "kind": "function",
+   "lines": [428, 440],
+   "params": [
+    {"name": "stap", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gegeven", "kind": "positional", "default": null, "annotation": null},
+    {"name": "deler", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(code, uitleg) voor een fout antwoord op een stap.",
+   "explanation": "(code, message) for a wrong answer to a long-division step: too many or too few times, a wrong multiplication, subtraction or bring-down.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.stap_fout", "lines": [484]},
+    {"caller": "tests/test_cijferen.py::TestDiagnose.test_staart_fouten", "lines": [114, 115]}
+   ]
+  }
+ ]
+}

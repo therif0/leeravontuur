@@ -1,0 +1,860 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/getallen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 409,
+ "source_sha256": "7737274bdd2ca68b68b3947d04cfc8d81734ccae5fd77af121ea36e82f88bcfe",
+ "purpose": "The topics of the domain 'Getallen': place value, rounding, divisibility (with divisors, multiples, primes, gcd and lcm) and the number line.",
+ "details": "Four Onderwerp subclasses share a cheat sheet (SPIEKBRIEF) through the helper base class _Getallen: Plaatswaarde (digit at a place, value of a digit, compose a number from place values), Afronden (round to tens, hundreds ... tenths with ROUND_HALF_UP), Deelbaarheid (yes/no divisibility rules, primes, number of divisors, gcd, lcm) and GetallenlijnOnderwerp (read an arrow, point out a number with zoom, jumps, thermometer with negative numbers). Everything uses Decimal. Each topic gives thinking-error codes, explanations and hints, and a repetition group in onderwerp_van_sleutel. Note: PLAATSEN here (power, name, abbreviation, up to millions) overlaps in purpose with modellen.PLAATSEN (power -> (short, long), up to ten millions) which the grid uses.",
+ "module_docstring": "Getallen: plaatswaarde, afronden, deelbaarheid (en delers, veelvouden, priemgetallen, ggd, kgv) en de getallenlijn (aflezen, aanduiden met inzoomen, sprongen, thermometer met negatieve getallen).",
+ "imports": [
+  {"module": "math", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "decimal",
+   "names": ["ROUND_HALF_UP", "Decimal"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "fmt_groot"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Getallenlijn"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/wiskunde/cijferen.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "tests/test_getallen.py",
+  "tests/test_schermen.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [405, 406, 407, 408]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 12,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "PLAATSEN",
+   "line": 14,
+   "value_type": "List",
+   "value_preview": "[(6, 'miljoenen', 'M'), (5, 'honderdduizendtallen', 'HD'), (4, 'tiend…",
+   "explanation": "Place names as (power of ten, name, abbreviation) from millions to thousandths."
+  },
+  {
+   "name": "NAAM",
+   "line": 19,
+   "value_type": "DictComp",
+   "value_preview": "{k: n for k, n, _ in PLAATSEN}",
+   "explanation": "Power of ten to place name."
+  },
+  {
+   "name": "AFK",
+   "line": 20,
+   "value_type": "DictComp",
+   "value_preview": "{k: a for k, _, a in PLAATSEN}",
+   "explanation": "Power of ten to abbreviation."
+  },
+  {
+   "name": "REGELS",
+   "line": 155,
+   "value_type": "Dict",
+   "value_preview": "{2: 'het laatste cijfer is even (0, 2, 4, 6 of 8)', 3: 'de som van de…",
+   "explanation": "Divisibility rules in words by divisor."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 381,
+   "value_type": "List",
+   "value_preview": "[('PLAATSWAARDE', 'accent'), (' M HD TD D H T E , t h d', 'bold'), ('…",
+   "explanation": "The cheat sheet of the domain."
+  },
+  {
+   "name": "PLAATSWAARDE",
+   "line": 405,
+   "value_type": "Call",
+   "value_preview": "Plaatswaarde()",
+   "explanation": "The one instance of the place-value topic."
+  },
+  {
+   "name": "AFRONDEN",
+   "line": 406,
+   "value_type": "Call",
+   "value_preview": "Afronden()",
+   "explanation": "The one instance of the rounding topic."
+  },
+  {
+   "name": "DEELBAARHEID",
+   "line": 407,
+   "value_type": "Call",
+   "value_preview": "Deelbaarheid()",
+   "explanation": "The one instance of the divisibility topic."
+  },
+  {
+   "name": "GETALLENLIJN",
+   "line": 408,
+   "value_type": "Call",
+   "value_preview": "GetallenlijnOnderwerp()",
+   "explanation": "The one instance of the number-line topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 409,
+   "value_type": "List",
+   "value_preview": "[PLAATSWAARDE, AFRONDEN, DEELBAARHEID, GETALLENLIJN]",
+   "explanation": "List of the four topics of this domain."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 409,
+   "description": "The four topic instances; instantiating them registers each skill in the registry and in ONDERWERPEN."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Getallen",
+   "qualname": "_Getallen",
+   "lines": [36, 38],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the four topics: provides the shared cheat sheet.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "_Getallen.spiekbrief",
+     "kind": "method",
+     "lines": [37, 38],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Plaatswaarde",
+   "qualname": "Plaatswaarde",
+   "lines": [43, 103],
+   "bases": ["_Getallen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.getallen.plaatswaarde: place value.",
+   "attributes": [
+    {"name": "id", "line": 44, "scope": "class", "value_preview": "'wiskunde.getallen.plaatswaarde'"},
+    {"name": "naam", "line": 45, "scope": "class", "value_preview": "'Plaatswaarde'"},
+    {"name": "spiek_kop", "line": 46, "scope": "class", "value_preview": "'PLAATSWAARDE'"},
+    {
+     "name": "omschrijving",
+     "line": 47,
+     "scope": "class",
+     "value_preview": "'wat is elk cijfer waard? (E, T, H … t, h)'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 48,
+     "scope": "class",
+     "value_preview": "{'cijfer_ipv_waarde': 'het cijfer gegeven in plaats van zij…"
+    },
+    {"name": "vast", "line": 50, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Plaatswaarde.maak_met",
+     "kind": "method",
+     "lines": [52, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes one of three question kinds: which digit stands at a place, how much a digit is worth, or compose a number from its place values (shuffled); digits and decimals follow the leerlijn.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [62, 65, 71]},
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [63, 66]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [62, 65, 71]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_cijfer_op", "lines": [57, 59, 67]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_getal", "lines": [55]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [63, 66], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".scaleb", ".shuffle", "max", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Plaatswaarde.uitleg",
+     "kind": "method",
+     "lines": [73, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Explanation per kind: the digits in a place table, the value as digit x place, or the composed number with zeros for empty places.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [78, 82, 84]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_cijfer_op", "lines": [76, 78, 80]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [75, 82], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Plaatswaarde.tip",
+     "kind": "method",
+     "lines": [87, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Count from the comma (or from the right): E, T, H, D ... and after the comma t, h, d.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Plaatswaarde.diagnose",
+     "kind": "method",
+     "lines": [90, 99],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises giving the digit instead of its value, or the digit one place to the side.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_cijfer_op", "lines": [95, 97]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [94], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Plaatswaarde.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [101, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind in a stored key (cijfer, waarde or samenstellen).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Afronden",
+   "qualname": "Afronden",
+   "lines": [108, 150],
+   "bases": ["_Getallen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.getallen.afronden: rounding.",
+   "attributes": [
+    {"name": "id", "line": 109, "scope": "class", "value_preview": "'wiskunde.getallen.afronden'"},
+    {"name": "naam", "line": 110, "scope": "class", "value_preview": "'Afronden'"},
+    {"name": "spiek_kop", "line": 111, "scope": "class", "value_preview": "'AFRONDEN'"},
+    {
+     "name": "omschrijving",
+     "line": 112,
+     "scope": "class",
+     "value_preview": "'op tientallen, honderdtallen … en tienden'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 113,
+     "scope": "class",
+     "value_preview": "{'afgekapt': 'afgekapt in plaats van afgerond', 'verkeerde_…"
+    },
+    {"name": "vast", "line": 114, "scope": "class", "value_preview": "('k',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Afronden.maak_met",
+     "kind": "method",
+     "lines": [116, 124],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a rounding question for a place (from the leerlijn or repetition data), with enough digits before or after the comma.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [123]},
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [123]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [123]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_getal", "lines": [120]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [121], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".normalize", ".quantize", ".randint", ".scaleb", "max", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Afronden.uitleg",
+     "kind": "method",
+     "lines": [126, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Look at the digit right of the place: 5 or more rounds up, less rounds down; shows the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [132]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_cijfer_op", "lines": [128]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [127], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Afronden.tip",
+     "kind": "method",
+     "lines": [134, 135],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Look at the digit just right of the place: 0-4 down, 5-9 up.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Afronden.diagnose",
+     "kind": "method",
+     "lines": [137, 146],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises truncating instead of rounding, and rounding at a neighbouring place.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [140, 144], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".quantize", ".scaleb"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Afronden.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [148, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The name of the rounding place in a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["int", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Deelbaarheid",
+   "qualname": "Deelbaarheid",
+   "lines": [176, 262],
+   "bases": ["_Getallen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.getallen.deelbaarheid: divisibility, primes, divisors, gcd, lcm.",
+   "attributes": [
+    {"name": "id", "line": 177, "scope": "class", "value_preview": "'wiskunde.getallen.deelbaarheid'"},
+    {"name": "naam", "line": 178, "scope": "class", "value_preview": "'Deelbaarheid'"},
+    {"name": "spiek_kop", "line": 179, "scope": "class", "value_preview": "'DEELBAAR DOOR …'"},
+    {
+     "name": "omschrijving",
+     "line": 180,
+     "scope": "class",
+     "value_preview": "'kenmerken, delers, priemgetallen, ggd, kgv'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 181,
+     "scope": "class",
+     "value_preview": "{'kenmerk': 'het kenmerk van deelbaarheid verkeerd toegepas…"
+    },
+    {"name": "vast", "line": 182, "scope": "class", "value_preview": "('soort', 'deler')"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Deelbaarheid.maak_met",
+     "kind": "method",
+     "lines": [184, 211],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes one of five kinds: divisible by a number (yes/no), prime (yes/no), number of divisors, gcd, lcm.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [194]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [194, 199, 204, 208, 210]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_delers", "lines": [204]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_priem", "lines": [200]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [194, 204, 209, 211], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".random", ".sample", "len", "math.gcd", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Deelbaarheid.uitleg",
+     "kind": "method",
+     "lines": [213, 243],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Explains with the rule of divisibility (digit sum where relevant), the factor pair, the lists of divisors or multiples.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [223]},
+      {"target": "leeravontuur/kern/getal.py::fmt_groot", "lines": [223]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_delers", "lines": [233, 238]},
+      {"target": "leeravontuur/kern/wiskunde/getallen.py::_priem", "lines": [227]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [223], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["int", "len", "map", "math.gcd", "next", "range", "str", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Deelbaarheid.tip",
+     "kind": "method",
+     "lines": [245, 251],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint per kind: the divisibility rule, two divisors for a prime, divisors in pairs, lists of divisors or multiples.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Deelbaarheid.diagnose",
+     "kind": "method",
+     "lines": [253, 256],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For divisibility questions: reminds of the rule when the answer is wrong.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Deelbaarheid.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [258, 262],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The repetition group: 'deelbaar door N' or the kind.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "GetallenlijnOnderwerp",
+   "qualname": "GetallenlijnOnderwerp",
+   "lines": [267, 378],
+   "bases": ["_Getallen"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.getallen.getallenlijn: reading and pointing out on the number line, jumps, thermometer.",
+   "attributes": [
+    {"name": "id", "line": 268, "scope": "class", "value_preview": "'wiskunde.getallen.getallenlijn'"},
+    {"name": "naam", "line": 269, "scope": "class", "value_preview": "'Getallenlijn'"},
+    {"name": "spiek_kop", "line": 270, "scope": "class", "value_preview": "'GETALLENLIJN'"},
+    {
+     "name": "omschrijving",
+     "line": 271,
+     "scope": "class",
+     "value_preview": "'aflezen, aanduiden, sprongen, thermometer'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 272,
+     "scope": "class",
+     "value_preview": "{'streepje_ernaast': 'één streepje ernaast', 'niet_ingezoom…"
+    },
+    {"name": "vast", "line": 274, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "GetallenlijnOnderwerp.maak_met",
+     "kind": "method",
+     "lines": [276, 326],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a number-line question: read the arrow, point out a number (sometimes between ticks, needing zoom), a jump (plus right, minus left) or a temperature change on a thermometer.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [294, 302, 316, 325]},
+      {"target": "leeravontuur/kern/modellen.py::Getallenlijn", "lines": [289, 314, 322]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [294, 302, 316, 324]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "D",
+       "lines": [282, 283, 285, 286, 297, 314, 316, 317, 322, 325],
+       "candidates": [],
+       "candidates_count": 0
+      }
+     ],
+     "external_calls": [".choice", ".randint", ".random", ".scaleb", "abs", "int", "max", "min", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "GetallenlijnOnderwerp.uitleg",
+     "kind": "method",
+     "lines": [328, 350],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Explains per kind: tick size and counting, zooming in, the jump steps, warmer is up and colder is down.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [332, 333, 335, 338, 339, 340, 345, 346, 349]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "D",
+       "lines": [332, 335, 336, 337, 338, 339, 345, 346, 349],
+       "candidates": [],
+       "candidates_count": 0
+      }
+     ],
+     "external_calls": ["abs", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "GetallenlijnOnderwerp.tip",
+     "kind": "method",
+     "lines": [352, 358],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per kind: look at the value of a tick, move the arrow and zoom with + and -, or draw the jump in your mind.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "GetallenlijnOnderwerp.diagnose",
+     "kind": "method",
+     "lines": [360, 374],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises not zooming in, one tick off, and jumping or changing temperature in the wrong direction.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [365, 366, 368], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "GetallenlijnOnderwerp.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [376, 378],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind in a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_getal",
+   "qualname": "_getal",
+   "kind": "function",
+   "lines": [23, 29],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cijfers", "kind": "positional", "default": null, "annotation": null},
+    {"name": "decimalen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "verschillend", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een getal met `cijfers` cijfers voor de komma en `decimalen` erna (liefst allemaal verschillend).",
+   "explanation": "A random number with the given digits before the comma and decimals after it, preferably with all digits different (tries up to 100 times).",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [29], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".randint", ".scaleb", "len", "range", "set", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [200, 202]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [109]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.maak_met", "lines": [287]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.maak_met", "lines": [120]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.maak_met", "lines": [55]}
+   ]
+  },
+  {
+   "name": "_cijfer_op",
+   "qualname": "_cijfer_op",
+   "kind": "function",
+   "lines": [32, 33],
+   "params": [
+    {"name": "getal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The digit of a number at power-of-ten position k.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".scaleb", "abs", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.uitleg", "lines": [128]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.diagnose", "lines": [95, 97]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.maak_met", "lines": [57, 59, 67]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.uitleg", "lines": [76, 78, 80]}
+   ]
+  },
+  {
+   "name": "_delers",
+   "qualname": "_delers",
+   "kind": "function",
+   "lines": [168, 169],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "All divisors of n in ascending order.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.maak_met", "lines": [204]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.uitleg", "lines": [233, 238]}
+   ]
+  },
+  {
+   "name": "_priem",
+   "qualname": "_priem",
+   "kind": "function",
+   "lines": [172, 173],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Whether n is a prime number.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["all", "int", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.maak_met", "lines": [200]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.uitleg", "lines": [227]}
+   ]
+  }
+ ]
+}
