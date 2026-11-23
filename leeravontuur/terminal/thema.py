@@ -11,11 +11,11 @@ import curses
 # (de vader, 8/11: de kleuren van de stiften thuis): zwarte tekst op een lichte achtergrond. pv geel, o blauw,
 # lv groen, mv roze, het gezegde (wwg of nwg, nooit samen in een zin) oranje, de bwb paars.
 ZINSDEEL_ROLLEN = ("z_pv", "z_o", "z_wwg", "z_nwg", "z_lv", "z_mv", "z_bwb")
-# de beta van de schermen 1.0 (werk/schermen.md, de vader 22/11): de vraag in oranje op een donkergrijze band, de cursor
-# donkergeel. Na zijn akkoord worden ze de rollen voor elke oefening.
-BETA_ROLLEN = ("b_vraag", "b_band", "b_cursor")
+# de schermen met vakken (werk/schermen.md, de vader 22/11): de vraag in oranje op een donkergrijze band, de cursor waar
+# je invult donkergeel, de rand van een vak gedimd (het vak waar je typt: in een kleur).
+VAK_ROLLEN = ("vraag", "band", "invulcursor", "rand", "rand_focus")
 ROLLEN = ("titel", "voet", "knop", "bold", "dim", "goed", "fout", "accent", "accent2",
-          "cursor", "goedvak", "foutvak", "veld", "info", *ZINSDEEL_ROLLEN, *BETA_ROLLEN)
+          "cursor", "goedvak", "foutvak", "veld", "info", *ZINSDEEL_ROLLEN, *VAK_ROLLEN)
 
 # kleur = naam (8 kleuren) of (nummer bij 256 kleuren, naam bij 8 kleuren); -1 = achtergrond van de terminal
 _ZWART, _WIT = "zwart", "wit"
@@ -32,8 +32,8 @@ PALETTEN = {
         "z_lv": ("zwart", (120, "groen"), False), "z_mv": ("zwart", (213, "magenta"), False),
         "z_wwg": ("zwart", (215, "rood"), False), "z_nwg": ("zwart", (215, "rood"), False),
         "z_bwb": ("zwart", (183, "wit"), False),
-        "b_vraag": ((208, "geel"), (236, "zwart"), True), "b_band": (_WIT, (236, "zwart"), False),
-        "b_cursor": ("zwart", (178, "geel"), False),
+        "vraag": ((208, "geel"), (236, "zwart"), True), "band": (_WIT, (236, "zwart"), False),
+        "invulcursor": ("zwart", (178, "geel"), False), "rand_focus": ("cyaan", -1, True),
     },
     # Okabe-Ito-kleuren: blauw en oranje blijven te onderscheiden bij rood-groen-kleurenblindheid
     "rood-groen": {
@@ -47,8 +47,8 @@ PALETTEN = {
         "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
         "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
         "z_bwb": (_WIT, (25, "blauw"), True),
-        "b_vraag": (_WIT, (236, "zwart"), True), "b_band": (_WIT, (236, "zwart"), False),  # oranje = fout hier
-        "b_cursor": ("zwart", (255, "wit"), False),
+        "vraag": (_WIT, (236, "zwart"), True), "band": (_WIT, (236, "zwart"), False),  # oranje = fout hier
+        "invulcursor": ("zwart", (255, "wit"), False), "rand_focus": (_WIT, -1, True),
     },
     # bij blauw-geel-kleurenblindheid blijven rood en blauwgroen goed te onderscheiden
     "blauw-geel": {
@@ -62,8 +62,8 @@ PALETTEN = {
         "z_lv": (_WIT, (36, "groen"), True), "z_mv": ("zwart", (175, "magenta"), False),
         "z_wwg": ("zwart", (214, "rood"), False), "z_nwg": ("zwart", (214, "rood"), False),
         "z_bwb": (_WIT, (25, "blauw"), True),
-        "b_vraag": (_WIT, (236, "zwart"), True), "b_band": (_WIT, (236, "zwart"), False),  # oranje = fout hier
-        "b_cursor": ("zwart", (255, "wit"), False),
+        "vraag": (_WIT, (236, "zwart"), True), "band": (_WIT, (236, "zwart"), False),  # oranje = fout hier
+        "invulcursor": ("zwart", (255, "wit"), False), "rand_focus": (_WIT, -1, True),
     },
     "contrast": {
         "titel": ("zwart", "wit", False), "voet": ("zwart", "wit", False),
@@ -73,7 +73,8 @@ PALETTEN = {
         "cursor": ("zwart", "wit", False), "goedvak": ("zwart", "wit", False),
         "foutvak": ("zwart", "wit", False), "info": ("wit", -1, False),
         **{rol: ("zwart", "wit", False) for rol in ZINSDEEL_ROLLEN},  # hoog contrast: het verschil zit in de afkorting
-        "b_vraag": ("zwart", "wit", True), "b_band": ("zwart", "wit", False), "b_cursor": ("zwart", "wit", False),
+        "vraag": ("zwart", "wit", True), "band": ("zwart", "wit", False), "invulcursor": ("zwart", "wit", False),
+        "rand_focus": ("wit", -1, True),
     },
 }
 
@@ -87,7 +88,8 @@ def _mono():
         "goedvak": A.A_REVERSE, "foutvak": A.A_REVERSE | A.A_UNDERLINE,
         "veld": A.A_UNDERLINE, "info": 0, "": 0,
         **{rol: A.A_REVERSE | (A.A_UNDERLINE if rol == "z_pv" else 0) for rol in ZINSDEEL_ROLLEN},
-        "b_vraag": A.A_REVERSE | A.A_BOLD, "b_band": A.A_REVERSE, "b_cursor": A.A_REVERSE,
+        "vraag": A.A_REVERSE | A.A_BOLD, "band": A.A_REVERSE, "invulcursor": A.A_REVERSE,
+        "rand": A.A_DIM, "rand_focus": A.A_BOLD,
     }
 
 

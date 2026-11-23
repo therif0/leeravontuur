@@ -27,7 +27,7 @@ GROOT_H = 30                  # vanaf zoveel rijen: de reeks in een vak en lucht
 STAPPEN = "deel → maal → min → neer"  # staat bij de staartdeling in de rand van het vak
 VERSCHUIF = {"rooster": -6, "staart": -3}  # het object tekent op vaste kolommen: zo komt het in het vak
 KORTER = {"uitkomst  (typrichting ←)": "uitkomst", "uitkomst  (typrichting →)": "uitkomst"}  # de richting staat in de rand
-RUSTIG = {"bold": "", "cursor": "b_cursor"}  # de cijfers in het rooster gewoon (de vraag valt op), de cursor donkergeel
+RUSTIG = {"bold": "", "cursor": "invulcursor"}  # de cijfers in het rooster gewoon (de vraag valt op), de cursor donkergeel
 GEEN_TIP = {"rooster": "F1 = een tip voor dit vakje.", "staart": "F1 = een tip voor deze stap."}
 
 
@@ -222,8 +222,8 @@ class BetaOefenaar(Oefenaar):
         vak.teken(s, ry, 0, onder - ry + 1, vb, titel, niveau, onder_label if bezig else "",
                   ord("r") if bezig and richting is not None else None)
         for r in range(vy - groot, vy + groot + 1):  # de band: één spatie van de rand
-            s.put(r, 2, " " * (vb - 4), "b_band")
-        s.put(vy, 4, vraag[:vb - 8], "b_vraag")
+            s.put(r, 2, " " * (vb - 4), "band")
+        s.put(vy, 4, vraag[:vb - 8], "vraag")
         obj.teken(InVak(s, VERSCHUIF[v.invoer], 2, vb - 2, RUSTIG), oy, goed, tip)
         # eronder: de tip tijdens het rekenen, de uitleg na het nakijken
         ty = onder + 1

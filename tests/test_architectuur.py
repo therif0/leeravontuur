@@ -40,7 +40,7 @@ class TestArchitectuur(unittest.TestCase):
 
 class TestThemas(unittest.TestCase):
     def test_elk_palet_heeft_alle_kleurrollen(self):
-        kleurrollen = set(thema.ROLLEN) - {"bold", "dim", "veld"}
+        kleurrollen = set(thema.ROLLEN) - {"bold", "dim", "veld", "rand"}  # zonder kleur: alleen een attribuut
         for naam, palet in thema.PALETTEN.items():
             with self.subTest(naam):
                 self.assertEqual(set(palet), kleurrollen)
