@@ -181,6 +181,11 @@ en de titel in de rand. Het moet sober blijven, maar het mag een echte verbouwin
   Wat er al is: de reeks, de punten, vandaag, de herhaalbak, fris houden, laatst geoefend en het percentage juist.
   Nieuw: "Moeilijk voor jou" (de denkfouten per onderwerp tellen).
 
+## Gekozen over de uitrol (23/11, de vader)
+- **De uitrol gaat per kind, niet alles tegelijk** (voorstel van Claude, de vader akkoord): een schakelaar bij de ouder
+  zet de nieuwe schermen voor één kind aan of uit, zodat de vader zijn zoon kan overzetten wanneer hij klaar is en
+  meteen kan terugzetten. De details staan bij fase 7b.
+
 ## Gekozen na de inventaris (22/11, de vader)
 De details en de nummers staan in [schermen-inventaris.md](schermen-inventaris.md) (*Open vragen*).
 - **Eén werkwijze** voor alle oefeningen: Vraag, Klad (Tab), Tip (F1), dan de spiekbrief.
@@ -251,8 +256,17 @@ niet netjes op te lossen is, en bij elke **schets** (★).
    - Spiekbrieven, Gemengd en Herhalen.
    - Snelrekenen (Vraag, Tijd, Reeks).
    - Het einde van een reeks (★ eerst een schets).
+7b. **De schakelaar "Nieuwe schermen"** (per kind, voor de uitrol):
+   - `Instellingen.nieuwe_schermen` (standaard uit), te zetten door de ouder bij Ouders › Kinderen › kind ›
+     **Weergave**. `LEERAVONTUUR_BETA=1` blijft bestaan om te testen en geeft altijd de nieuwe schermen.
+   - Dezelfde codepaden als de beta: de schakelaar kiest alleen welke weg het scherm neemt.
+   - Instellingen staan per kind in de JSON, dus waarschijnlijk **geen migratie**. Vraagt het toch een migratie:
+     **stoppen en vragen**.
+   - Open vragen voor de vader: de naam in het menu ("Nieuwe schermen"?); alleen per kind, of ook per domein; alleen
+     de ouder mag hem omzetten (aanbeveling: ja, het kind kiest dit niet zelf).
 8. **Beta → iedereen:**
-   - De schakelaar en de oude weg verdwijnen (één codepad).
+   - **Pas als de vader zijn zoon een tijd op de nieuwe schermen liet oefenen en akkoord geeft**: de schakelaar
+     (`nieuwe_schermen` en `LEERAVONTUUR_BETA`) en de oude weg verdwijnen (één codepad).
    - Een kader rond ouderdeel, kinderkeuze, winkel, slot, oeps en opmerkingen.
    - Documenten: `docs/architectuur.md` (schermen: vakken en indeling), CLAUDE.md ("past in 80×24 en groeit mee"),
      `docs/testlijst.md`, CHANGELOG, README.
