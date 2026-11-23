@@ -1,0 +1,723 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/tools/schermafdrukken.py",
+ "kind": "python",
+ "layer": "docs",
+ "lines": 328,
+ "source_sha256": "76750a8ff17ef4dc6ae3b4d5c6b7d989e0c48b129159fca2dad21633cb169a9e",
+ "purpose": "Makes the handbook screenshots: runs the real program in tmux (80×24) with a sample child and a fixed random seed, captures the screen with colours, and writes it as an SVG.",
+ "details": "main() builds a sample database (maak_voorbeeld: a child, parent password 'ouder', three weeks of history with a faked stopwatch, some purchases, a saved outfit, a remark), then for each scenario of scenarios.SCENARIOS (optionally filtered by name prefix) starts a Draai (a tmux session running leeravontuur.py on a copy of the data, with LEERAVONTUUR_ZAAD set to the scenario name so questions repeat), runs the scenario and removes the session. lees_ansi parses tmux's ANSI colour output into a cell grid and naar_svg turns that into text and rectangles in an SVG (so git stays small and GitHub shows it). Needs tmux. Writes to docs/handleiding/beelden/. Not part of the program; only a documentation tool.",
+ "module_docstring": "Maakt de schermafdrukken voor de handleiding (docs/handleiding/beelden/*.svg).",
+ "imports": [
+  {"module": "html", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "shutil", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {"module": "subprocess", "names": [], "alias": null, "line": 16, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 17, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 18, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 19, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 20, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 159, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["datetime", "timedelta"],
+   "alias": null,
+   "line": 160,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar", "catalogus", "feedback", "herhaling", "klok", "sessie", "wachtwoord"],
+   "alias": null,
+   "line": 163,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/wachtwoord.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 164,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 165,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 166,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "scenarios",
+   "names": ["SCENARIOS"],
+   "alias": null,
+   "line": 304,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "docs/tools/schermafdrukken.py::main", "lines": [328]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "str", "sys.exit", "sys.path.insert"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "WORTEL",
+   "line": 22,
+   "value_type": "Subscript",
+   "value_preview": "Path(__file__).resolve().parents[2]",
+   "explanation": "Repository root."
+  },
+  {
+   "name": "BEELDEN",
+   "line": 24,
+   "value_type": "BinOp",
+   "value_preview": "WORTEL / 'docs' / 'handleiding' / 'beelden'",
+   "explanation": "Output folder of the images."
+  },
+  {
+   "name": "BREED",
+   "line": 25,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Terminal width (80)."
+  },
+  {
+   "name": "HOOG",
+   "line": 25,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Terminal height (24)."
+  },
+  {
+   "name": "SESSIE",
+   "line": 26,
+   "value_type": "Constant",
+   "value_preview": "'handleiding'",
+   "explanation": "Name of the tmux session."
+  },
+  {
+   "name": "BASIS",
+   "line": 30,
+   "value_type": "List",
+   "value_preview": "['#000000', '#cd3131', '#0dbc79', '#e5e510', '#2472c8', '#bc3fbc', '#…",
+   "explanation": "The 16 base ANSI colours."
+  },
+  {
+   "name": "VOOR",
+   "line": 32,
+   "value_type": "Tuple",
+   "value_preview": "('#d4d4d4', '#1e1e1e')",
+   "explanation": "Default foreground colour."
+  },
+  {
+   "name": "ACHTER",
+   "line": 32,
+   "value_type": "Tuple",
+   "value_preview": "('#d4d4d4', '#1e1e1e')",
+   "explanation": "Default background colour."
+  },
+  {
+   "name": "CW",
+   "line": 33,
+   "value_type": "Tuple",
+   "value_preview": "(9, 18, 15)",
+   "explanation": "Pixel width of a character cell."
+  },
+  {
+   "name": "CH",
+   "line": 33,
+   "value_type": "Tuple",
+   "value_preview": "(9, 18, 15)",
+   "explanation": "Pixel height of a character cell."
+  },
+  {
+   "name": "LETTER",
+   "line": 33,
+   "value_type": "Tuple",
+   "value_preview": "(9, 18, 15)",
+   "explanation": "Font size."
+  },
+  {
+   "name": "RAND",
+   "line": 34,
+   "value_type": "Constant",
+   "value_preview": "8",
+   "explanation": "Margin around the image."
+  },
+  {
+   "name": "BLOKKEN",
+   "line": 107,
+   "value_type": "Dict",
+   "value_preview": "{'█': (0, 1), '▀': (0, 0.5), '▄': (0.5, 1)}",
+   "explanation": "Block characters with the part of the cell height they fill."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Stopwatch",
+   "qualname": "maak_voorbeeld.Stopwatch",
+   "lines": [170, 176],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Stand-in for the time module used by Sessie so that the sample answers get realistic durations.",
+   "attributes": [
+    {"name": "t", "line": 171, "scope": "class", "value_preview": "0.0"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "monotonic",
+     "qualname": "maak_voorbeeld.maak_voorbeeld.Stopwatch.monotonic",
+     "kind": "classmethod",
+     "lines": [174, 176],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "",
+     "explanation": "Fake monotonic clock that advances 1.5–7.5 seconds per call so every question has a realistic duration.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".uniform"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Draai",
+   "qualname": "Draai",
+   "lines": [237, 300],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Eén keer het programma starten en er toetsen naar sturen.",
+   "explanation": "One run of the program in tmux that scenarios send keys to and photograph.",
+   "attributes": [
+    {"name": "map", "line": 241, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "docs/tools/schermafdrukken.py::main", "lines": [315]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Draai.__init__",
+     "kind": "method",
+     "lines": [240, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "voorbeeld", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zaad", "kind": "positional", "default": null, "annotation": null},
+      {"name": "argumenten", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "kind", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Copies the sample data to /tmp/leeravontuur, starts the program in a new tmux session of 80×24 with the data, seed, no clock window, a short Esc delay and a documents folder, and (unless kind=False) presses through to the main menu as the sample child.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::Draai.toets", "lines": [251, 253]},
+      {"target": "docs/tools/schermafdrukken.py::Draai.wacht", "lines": [249, 252, 254]},
+      {"target": "docs/tools/schermafdrukken.py::tmux", "lines": [244, 248]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["pathlib.Path", "shutil.copytree", "shutil.rmtree", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "docs/tools/schermafdrukken.py::main", "lines": [315]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "Draai.toets",
+     "kind": "method",
+     "lines": [256, 265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sends keys: ('klik', row, col) as an SGR mouse click, ('tekst', text) as literal text, otherwise a tmux key name; waits until the screen is quiet after each.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::rustig", "lines": [265]},
+      {"target": "docs/tools/schermafdrukken.py::tmux", "lines": [259, 261, 263]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance", "time.sleep"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "docs/tools/schermafdrukken.py::Draai.__init__", "lines": [251, 253]},
+      {"caller": "docs/tools/schermafdrukken.py::Draai.zoek", "lines": [281]}
+     ]
+    },
+    {
+     "name": "wacht",
+     "qualname": "Draai.wacht",
+     "kind": "method",
+     "lines": [267, 274],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "patroon", "kind": "positional", "default": null, "annotation": null},
+      {"name": "max_s", "kind": "positional", "default": "6.0", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Waits until a regex appears on the screen (raises RuntimeError with the screen when it does not).",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::rustig", "lines": [271]},
+      {"target": "docs/tools/schermafdrukken.py::scherm", "lines": [270, 274]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["RuntimeError", "re.search", "time.sleep", "time.time"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "docs/tools/schermafdrukken.py::Draai.__init__", "lines": [249, 252, 254]}
+     ]
+    },
+    {
+     "name": "zoek",
+     "qualname": "Draai.zoek",
+     "kind": "method",
+     "lines": [276, 282],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "patroon", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opnieuw", "kind": "positional", "default": null, "annotation": null},
+      {"name": "keer", "kind": "positional", "default": "40", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Herhaal de toetsen `opnieuw` tot het patroon op het scherm staat (een bepaald soort vraag).",
+     "explanation": "Repeats keys until a pattern is on screen (to get a certain kind of question); raises RuntimeError after `keer` tries.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::Draai.toets", "lines": [281]},
+      {"target": "docs/tools/schermafdrukken.py::scherm", "lines": [279, 282]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["RuntimeError", "range", "re.search"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "plek",
+     "qualname": "Draai.plek",
+     "kind": "method",
+     "lines": [284, 290],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "woord", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(rij, kolom) van een woord op het scherm.",
+     "explanation": "Row and column of a word on the screen.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::scherm", "lines": [286]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["RuntimeError", "enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "foto",
+     "qualname": "Draai.foto",
+     "kind": "method",
+     "lines": [292, 296],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+      {"name": "titel", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Writes the current screen as docs/handleiding/beelden/<name>.svg and prints the name.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::lees_ansi", "lines": [295]},
+      {"target": "docs/tools/schermafdrukken.py::naar_svg", "lines": [295]},
+      {"target": "docs/tools/schermafdrukken.py::rustig", "lines": [293]},
+      {"target": "docs/tools/schermafdrukken.py::scherm", "lines": [295]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".mkdir", ".write_text", "print"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "stop",
+     "qualname": "Draai.stop",
+     "kind": "method",
+     "lines": [298, 300],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Kills the tmux session and removes the temporary data copy.",
+     "calls": [
+      {"target": "docs/tools/schermafdrukken.py::tmux", "lines": [299]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["shutil.rmtree"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "kleur256",
+   "qualname": "kleur256",
+   "kind": "function",
+   "lines": [37, 46],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Converts an xterm 256-colour index to a hex colour (16 base colours, a 6×6×6 cube and a grey ramp).",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "f", "lines": [44], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::lees_ansi", "lines": [90]}
+   ]
+  },
+  {
+   "name": "lees_ansi",
+   "qualname": "lees_ansi",
+   "kind": "function",
+   "lines": [49, 104],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "breed", "kind": "positional", "default": "BREED", "annotation": null},
+    {"name": "hoog", "kind": "positional", "default": "HOOG", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het scherm als raster van cellen (teken, voorgrond, achtergrond, vet, dim, onderlijnd).",
+   "explanation": "Parses text with ANSI colour escape codes into a grid of cells (character, foreground, background, bold, dim, underline), handling 16, 256 and true colours and reverse video.",
+   "calls": [
+    {"target": "docs/tools/schermafdrukken.py::kleur256", "lines": [90]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".group", "dict", "enumerate", "int", "len", "range", "re.fullmatch", "re.split", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::Draai.foto", "lines": [295]}
+   ]
+  },
+  {
+   "name": "naar_svg",
+   "qualname": "naar_svg",
+   "kind": "function",
+   "lines": [110, 152],
+   "params": [
+    {"name": "raster", "kind": "positional", "default": null, "annotation": null},
+    {"name": "titel", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Renders a cell grid as an SVG: a dark background, merged background rectangles, block characters (▀ ▄ █, the pixel avatar and clock) as rectangles, and text runs with the same style.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "html.escape", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::Draai.foto", "lines": [295]}
+   ]
+  },
+  {
+   "name": "maak_voorbeeld",
+   "qualname": "maak_voorbeeld",
+   "kind": "function",
+   "lines": [157, 212],
+   "params": [
+    {"name": "map_", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een databank met Imrane (5de leerjaar), een ouderwachtwoord ('ouder') en drie weken oefengeschiedenis.",
+   "explanation": "Creates the sample database in a folder: child 'Imrane' (5th year), parent password 'ouder', 21 days of practice history from random topics with 80 % correct answers (using a faked clock and stopwatch), 250 bonus points, some bought items, a package on its way, a saved outfit and one remark.",
+   "calls": [
+    {"target": "leeravontuur/kern/feedback.py::bewaar", "lines": [211]},
+    {"target": "leeravontuur/kern/herhaling.py::fout", "lines": [196]},
+    {"target": "leeravontuur/kern/klok.py::zet", "lines": [186, 198]},
+    {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [178]},
+    {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [188]},
+    {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [179]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "o.aangeboden",
+     "lines": [182],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "o.herhaal_data",
+     "lines": [196],
+     "candidates": [
+      "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+      "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "o.maak",
+     "lines": [190],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "o.onderwerp",
+     "lines": [196],
+     "candidates": [
+      "leeravontuur/kern/onderwerp.py::Onderwerp.onderwerp",
+      "leeravontuur/kern/wiskunde/eenheden.py::Maten.onderwerp"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "opslag.bewaar_avatar",
+     "lines": [209],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_avatar"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.bewaar_outfit",
+     "lines": [210],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_outfit"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.nieuw_kind",
+     "lines": [180],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.punten_bij",
+     "lines": [200, 205, 207],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.sluit",
+     "lines": [212],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "opslag.zet_bezit",
+     "lines": [204, 206],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_bezit"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.zet_ouder_wachtwoord",
+     "lines": [179],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "ses.antwoord",
+     "lines": [194],
+     "candidates": [
+      "leeravontuur/kern/sessie.py::Sessie.antwoord",
+      "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "ses.sluit",
+     "lines": [197],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "ses.vraag_getoond",
+     "lines": [192],
+     "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [
+    ".astimezone",
+    ".random",
+    ".sample",
+    "datetime.datetime.now",
+    "datetime.timedelta",
+    "leeravontuur.kern.onderwerp.ONDERWERPEN.values",
+    "random.Random",
+    "range",
+    "str"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::main", "lines": [310]}
+   ]
+  },
+  {
+   "name": "tmux",
+   "qualname": "tmux",
+   "kind": "function",
+   "lines": [217, 219],
+   "params": [
+    {"name": "args", "kind": "vararg", "default": null, "annotation": null},
+    {"name": "uitvoer", "kind": "keyword-only", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Runs a tmux command; returns its output when asked.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["subprocess.run"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::Draai.__init__", "lines": [244, 248]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.stop", "lines": [299]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.toets", "lines": [259, 261, 263]},
+    {"caller": "docs/tools/schermafdrukken.py::scherm", "lines": [223]}
+   ]
+  },
+  {
+   "name": "scherm",
+   "qualname": "scherm",
+   "kind": "function",
+   "lines": [222, 223],
+   "params": [
+    {"name": "kleur", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The current text of the tmux pane (with colour codes when asked).",
+   "calls": [
+    {"target": "docs/tools/schermafdrukken.py::tmux", "lines": [223]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::Draai.foto", "lines": [295]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.plek", "lines": [286]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.wacht", "lines": [270, 274]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.zoek", "lines": [279, 282]},
+    {"caller": "docs/tools/schermafdrukken.py::rustig", "lines": [230]}
+   ]
+  },
+  {
+   "name": "rustig",
+   "qualname": "rustig",
+   "kind": "function",
+   "lines": [226, 234],
+   "params": [
+    {"name": "max_s", "kind": "positional", "default": "3.0", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wacht tot het scherm niet meer verandert.",
+   "explanation": "Waits until the screen stops changing (at most max_s seconds).",
+   "calls": [
+    {"target": "docs/tools/schermafdrukken.py::scherm", "lines": [230]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["time.sleep", "time.time"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::Draai.foto", "lines": [293]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.toets", "lines": [265]},
+    {"caller": "docs/tools/schermafdrukken.py::Draai.wacht", "lines": [271]}
+   ]
+  },
+  {
+   "name": "main",
+   "qualname": "main",
+   "kind": "function",
+   "lines": [303, 324],
+   "params": [
+    {"name": "filters", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Entry point: checks tmux, builds the sample data, runs the (filtered) scenarios each in a fresh Draai, reports failures and returns 1 when any scenario failed.",
+   "calls": [
+    {"target": "docs/tools/schermafdrukken.py::Draai.__init__", "lines": [315]},
+    {"target": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [310]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.stop",
+     "lines": [322],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.stop",
+      "leeravontuur/terminal/nepscherm.py::NepKlokvenster.stop",
+      "leeravontuur/terminal/venster.py::Klokvenster.stop"
+     ],
+     "candidates_count": 3
+    },
+    {"expr": "f", "lines": [317], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [
+    "any",
+    "pathlib.Path",
+    "print",
+    "scenarios.SCENARIOS.items",
+    "shutil.rmtree",
+    "shutil.which",
+    "tempfile.mkdtemp"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::<module>", "lines": [328]}
+   ]
+  }
+ ]
+}

@@ -71,7 +71,8 @@ def merge(path):
         def put(entries):
             for e in entries:
                 seen_f.add(e["qualname"])
-                e["explanation"] = fx.get(e["qualname"], "")
+                seen_f.add(e["qualname"] + "@" + str(e["lines"][0]))
+                e["explanation"] = fx.get(e["qualname"] + "@" + str(e["lines"][0])) or fx.get(e["qualname"], "")
                 if not e["explanation"].strip():
                     err.append(f"{path}: missing function {e['qualname']}")
         put(f["functions"])

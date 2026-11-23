@@ -5,8 +5,8 @@
  "layer": "root",
  "lines": 8,
  "source_sha256": "b88a38bad029d6861b558d2d9ac4559296b4d1a4712875e525c4603be0aba923",
- "purpose": "The old name of the starter: runs leeravontuur.py.",
- "details": "Kept so old shortcuts and habits (python3 oefeningen.py) keep working; it executes leeravontuur.py with runpy as __main__.",
+ "purpose": "The old name of the starter, kept so that old shortcuts and habits (`python3 oefeningen.py`) keep working: it runs leeravontuur.py.",
+ "details": "Uses runpy.run_path on leeravontuur.py next to it with run_name '__main__'. No functions of its own.",
  "module_docstring": "De oude naam van de starter: start nu leeravontuur.py. Dit bestand blijft voorlopig bestaan, zodat oude snelkoppelingen en gewoontes (python3 oefeningen.py) blijven werken.",
  "imports": [
   {"module": "runpy", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},

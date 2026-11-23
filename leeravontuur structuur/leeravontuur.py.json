@@ -5,8 +5,8 @@
  "layer": "root",
  "lines": 26,
  "source_sha256": "15c994dfc63fef4668a9d56d2778b63278683cc3d9bb67ddfd013e7780bc8fc9",
- "purpose": "The starter script: checks Python 3.10+ and curses, then runs leeravontuur/__main__.main.",
- "details": "If Python is too old or curses is missing (Windows needs windows-curses from requirements.txt) it prints a short instruction instead of a traceback. The double-click files leeravontuur-win.bat, -mac.command and -linux.sh call this script.",
+ "purpose": "The start file: checks the Python version and curses, then calls leeravontuur/__main__.main().",
+ "details": "Runs at import/exec time (no functions): exits with a friendly Dutch message if Python is older than 3.10 or curses is missing (with the pip command for Windows or others), otherwise imports main from leeravontuur.__main__ and exits with its return code. The double-click files (leeravontuur-win.bat, -mac.command, -linux.sh) start this file; oefeningen.py (the old name) runs it.",
  "module_docstring": "Leeravontuur starten: python3 leeravontuur.py (hulp: python3 leeravontuur.py --help)",
  "imports": [
   {"module": "sys", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},

@@ -1,0 +1,213 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_starten.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 66,
+ "source_sha256": "2281a51583d2df2219d473bc454fbe92fad1ab1593987922b0c1fe08ce939a63",
+ "purpose": "Tests starting the program: leeravontuur.py, the old name oefeningen.py and the double-click file per system.",
+ "details": "Runs `<command> --versie` in a subprocess from another folder (as a shortcut would) and checks the output; checks the start files exist, point at leeravontuur.py, have the right line endings (CRLF for .bat, LF for the shell scripts) and are executable; runs the start file of the current system when it can.",
+ "module_docstring": "Starten: leeravontuur.py, de oude naam oefeningen.py en een dubbelklik-bestand per systeem.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "subprocess", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur",
+   "names": ["VERSIE"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/__init__.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "unittest.main"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class TestStarten>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["unittest.skipIf"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "WORTEL",
+   "line": 11,
+   "value_type": "Attribute",
+   "value_preview": "Path(__file__).resolve().parent.parent",
+   "explanation": ""
+  },
+  {
+   "name": "STARTBESTANDEN",
+   "line": 12,
+   "value_type": "Dict",
+   "value_preview": "{'win32': 'leeravontuur-win.bat', 'darwin': 'leeravontuur-mac.command…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestStarten",
+   "qualname": "TestStarten",
+   "lines": [24, 62],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Start-file tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_leeravontuur_py",
+     "qualname": "TestStarten.test_leeravontuur_py",
+     "kind": "method",
+     "lines": [25, 26],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "python leeravontuur.py --versie prints the program name and version.",
+     "calls": [
+      {"target": "tests/test_starten.py::versie", "lines": [26]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_oude_naam_werkt_nog",
+     "qualname": "TestStarten.test_oude_naam_werkt_nog",
+     "kind": "method",
+     "lines": [28, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "python oefeningen.py (the old name) prints the same version line.",
+     "calls": [
+      {"target": "tests/test_starten.py::versie", "lines": [29]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_startbestand_bestaat_en_start_leeravontuur_py",
+     "qualname": "TestStarten.test_elk_startbestand_bestaat_en_start_leeravontuur_py",
+     "kind": "method",
+     "lines": [31, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Each double-click file exists and mentions leeravontuur.py.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".read_text", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_regeleinden",
+     "qualname": "TestStarten.test_regeleinden",
+     "kind": "method",
+     "lines": [36, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Windows wil CRLF in een .bat, macOS en Linux LF (anders start het script niet).",
+     "explanation": "The .bat file has CRLF line endings only; the .command and .sh files have LF only.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertTrue", ".read_bytes", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_uitvoerbaar",
+     "qualname": "TestStarten.test_uitvoerbaar",
+     "kind": "method",
+     "lines": [47, 50],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["unittest.skipIf(sys.platform == 'win32'…"],
+     "docstring": "",
+     "explanation": "The macOS and Linux start files have the executable bit.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".subTest", "os.access"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_startbestand_van_dit_systeem",
+     "qualname": "TestStarten.test_startbestand_van_dit_systeem",
+     "kind": "method",
+     "lines": [52, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Runs the start file of the current platform with --versie (skipped when there is none).",
+     "calls": [
+      {"target": "tests/test_starten.py::versie", "lines": [58]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".skipTest", "str", "sys.platform.startswith"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "versie",
+   "qualname": "versie",
+   "kind": "function",
+   "lines": [16, 21],
+   "params": [
+    {"name": "opdracht", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De uitvoer van `<opdracht> --versie`, gestart vanuit een andere map (zoals een dubbelklik of snelkoppeling).",
+   "explanation": "Runs a start command with --versie from the home folder with no stdin and returns its output.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["pathlib.Path.home", "subprocess.run"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_starten.py::TestStarten.test_leeravontuur_py", "lines": [26]},
+    {"caller": "tests/test_starten.py::TestStarten.test_oude_naam_werkt_nog", "lines": [29]},
+    {"caller": "tests/test_starten.py::TestStarten.test_startbestand_van_dit_systeem", "lines": [58]}
+   ]
+  }
+ ]
+}

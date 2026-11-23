@@ -1,0 +1,513 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_herhaling.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 133,
+ "source_sha256": "1c124a58df9902e5809b9ea966aad4271bebea989fd2acc28762293a39d8b1d4",
+ "purpose": "Tests the repeat bin (Leitner boxes), question selection weights and the repeat screens.",
+ "details": "TestHerhaalbak uses a fixed clock (klok.zet) to walk a mistake through the boxes; TestSelectie tests weights, avoidance of recent questions and pair selection of unit conversions; TestSchermen plays 'fouten opnieuw', the 'Herhalen' menu and 'Verder waar je was'.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "unittest", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["datetime", "timedelta", "timezone"],
+   "alias": null,
+   "line": 2,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["herhaling", "klok", "selectie"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/selectie.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["datetime.datetime", "datetime.timedelta", "datetime.timezone", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "CET",
+   "line": 15,
+   "value_type": "Call",
+   "value_preview": "timezone(timedelta(hours=1))",
+   "explanation": ""
+  },
+  {
+   "name": "DAG",
+   "line": 16,
+   "value_type": "Call",
+   "value_preview": "datetime(2026, 10, 24, 15, 0, tzinfo=CET)",
+   "explanation": ""
+  },
+  {"name": "ID", "line": 17, "value_type": "Attribute", "value_preview": "E.OMZETTEN.id", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestHerhaalbak",
+   "qualname": "TestHerhaalbak",
+   "lines": [20, 64],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Repeat-bin logic tests.",
+   "attributes": [
+    {"name": "o", "line": 22, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 23, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestHerhaalbak.setUp",
+     "kind": "method",
+     "lines": [21, 24],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creates storage, a child and sets the clock.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [24]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [22]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [23],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "TestHerhaalbak.tearDown",
+     "kind": "method",
+     "lines": [26, 27],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Resets the clock.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [27]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "ga_naar",
+     "qualname": "TestHerhaalbak.ga_naar",
+     "kind": "method",
+     "lines": [29, 30],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "dagen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves the fake clock forward by days.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [30]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["datetime.timedelta"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_fout_begint_opnieuw", "lines": [52]},
+      {"caller": "tests/test_herhaling.py::TestHerhaalbak.test_leitner", "lines": [35, 39, 41, 45]}
+     ]
+    },
+    {
+     "name": "test_leitner",
+     "qualname": "TestHerhaalbak.test_leitner",
+     "kind": "method",
+     "lines": [32, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A mistake is due only the next day, and each correct repeat moves it through longer intervals until it is mastered (with a bonus).",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [34, 36, 40, 42, 46]},
+      {"target": "leeravontuur/kern/herhaling.py::fout", "lines": [33]},
+      {"target": "leeravontuur/kern/herhaling.py::juist", "lines": [38, 44, 47]},
+      {"target": "tests/test_herhaling.py::TestHerhaalbak.ga_naar", "lines": [35, 39, 41, 45]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.herhaalbak",
+       "lines": [48],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fout_begint_opnieuw",
+     "qualname": "TestHerhaalbak.test_fout_begint_opnieuw",
+     "kind": "method",
+     "lines": [50, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A new mistake on a bin item resets it to the first box.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [53]},
+      {"target": "leeravontuur/kern/herhaling.py::fout", "lines": [51, 54]},
+      {"target": "leeravontuur/kern/herhaling.py::juist", "lines": [53]},
+      {"target": "tests/test_herhaling.py::TestHerhaalbak.ga_naar", "lines": [52]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.herhaalbak",
+       "lines": [55, 57],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_status",
+     "qualname": "TestHerhaalbak.test_status",
+     "kind": "method",
+     "lines": [59, 64],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The status of a topic: not seen, busy, mastered, depending on the last answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::status", "lines": [60, 61, 62, 63, 64]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSelectie",
+   "qualname": "TestSelectie",
+   "lines": [67, 92],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Selection tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_gewichten",
+     "qualname": "TestSelectie.test_gewichten",
+     "kind": "method",
+     "lines": [68, 73],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Weights are higher for question types answered wrongly (4.0 for three wrong).",
+     "calls": [
+      {"target": "leeravontuur/kern/selectie.py::gewichten", "lines": [70]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vermijden",
+     "qualname": "TestSelectie.test_vermijden",
+     "kind": "method",
+     "lines": [75, 80],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recently seen questions are avoided when making new ones.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [78]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotIn", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_paar_en_gewichten",
+     "qualname": "TestSelectie.test_paar_en_gewichten",
+     "kind": "method",
+     "lines": [82, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A requested pair of units is respected by the generator.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [84, 86]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreater", "range", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_onderwerp_van_sleutel",
+     "qualname": "TestSelectie.test_onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [89, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question key maps back to its sub-topic ('km>m'); unknown keys give None.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [90]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::onderwerp_van_sleutel", "lines": [91, 92]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [95, 129],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Repeat screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_fouten_opnieuw_na_reeks",
+     "qualname": "TestSchermen.test_fouten_opnieuw_na_reeks",
+     "kind": "method",
+     "lines": [96, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After a series with mistakes, F replays the wrong questions.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [101],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.herhaalbak",
+       "lines": [107],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [99],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertGreaterEqual",
+      ".assertTrue",
+      ".ergens",
+      ".opslag",
+      "len",
+      "sum",
+      "test_schermen.naar"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhalen_en_verder",
+     "qualname": "TestSchermen.test_herhalen_en_verder",
+     "kind": "method",
+     "lines": [109, 122],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A bin item due today shows in Herhalen and is played; the 'Verder' entry offers repeating first.",
+     "calls": [
+      {"target": "leeravontuur/kern/herhaling.py::fout", "lines": [113]},
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [112, 114]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [115]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.herhaalbak",
+       "lines": [121],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [111],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [117],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertTrue",
+      ".astimezone",
+      ".ergens",
+      ".opslag",
+      "datetime.datetime.now",
+      "datetime.timedelta",
+      "decimal.Decimal",
+      "test_schermen.hm",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verder_hervat_vorige_oefening",
+     "qualname": "TestSchermen.test_verder_hervat_vorige_oefening",
+     "kind": "method",
+     "lines": [124, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Verder waar je was' restarts the last exercise.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [126, 127],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", ".opslag", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

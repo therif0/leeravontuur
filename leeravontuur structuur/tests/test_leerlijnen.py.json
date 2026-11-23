@@ -1,0 +1,159 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_leerlijnen.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 48,
+ "source_sha256": "17038f66ae1160544b9f34cd1dbcaf22922f942220cd897960945b007d5a3680",
+ "purpose": "Tests the learning-line JSON files and the school-year helpers.",
+ "details": "Loads every learning line from inhoud/leerlijnen through kern/leerlijnen and checks validity, validation errors and inheritance; checks how the four levels shift with the child's school year (kern/leerjaren).",
+ "module_docstring": "",
+ "imports": [
+  {"module": "unittest", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren", "leerlijnen"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py", "leeravontuur/kern/leerlijnen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestLeerlijnen",
+   "qualname": "TestLeerlijnen",
+   "lines": [6, 31],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Learning-line file tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerlijnen_geldig",
+     "qualname": "TestLeerlijnen.test_alle_leerlijnen_geldig",
+     "kind": "method",
+     "lines": [7, 15],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every learning line loads and passes valideer (no errors), and the unit-conversion line is present.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::alle", "lines": [8]},
+      {"target": "leeravontuur/kern/leerlijnen.py::laad", "lines": [12]},
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [15]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_valideer_vindt_fouten",
+     "qualname": "TestLeerlijnen.test_valideer_vindt_fouten",
+     "kind": "method",
+     "lines": [17, 26],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "valideer reports errors for a malformed learning line (wrong types, unknown years) and none for a good one.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::valideer", "lines": [20, 22]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "any", "dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_overerving",
+     "qualname": "TestLeerlijnen.test_overerving",
+     "kind": "method",
+     "lines": [28, 31],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A year without its own parameters inherits those of the previous year (m2 equals m1 for unit conversion).",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [31]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestLeerjaren",
+   "qualname": "TestLeerjaren",
+   "lines": [34, 44],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "School-year helper tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_niveaus_schuiven_mee",
+     "qualname": "TestLeerjaren.test_niveaus_schuiven_mee",
+     "kind": "method",
+     "lines": [35, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The four levels map to school years relative to the child's own year (5 -> 4,5,6,m1; 6 -> 5,6,m1,m2).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "f", "lines": [37, 38, 39, 40], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_volgend",
+     "qualname": "TestLeerjaren.test_volgend",
+     "kind": "method",
+     "lines": [42, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "volgend gives the next school year and stays at m2.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerjaren.py::volgend", "lines": [43, 44]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

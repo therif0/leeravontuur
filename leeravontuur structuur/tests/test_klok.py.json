@@ -1,0 +1,531 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_klok.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 155,
+ "source_sha256": "9ee4da049604a4eb9ec382efbf0038ff4ae88818eaae7e6cd8c60610ded22812",
+ "purpose": "Tests the clock topic: Flemish words, questions per year, thinking errors, the drawn clock and setting the hands.",
+ "details": "Covers kern/wiskunde/klok (K.woorden / K.lees_woorden and the question generator O), the clock pixel drawing in terminal/modellen, the KlokInvoer object and clock times in word problems.",
+ "module_docstring": "De klok: Vlaamse woorden, vragen per leerjaar, denkfouten, de getekende wijzerklok en de wijzers zetten.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Wijzerklok"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["klok"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.balk",
+   "names": ["KlokInvoer"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/balk.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["NepScherm"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["Scherm"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "O", "line": 18, "value_type": "Attribute", "value_preview": "K.KLOK", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestWoorden",
+   "qualname": "TestWoorden",
+   "lines": [25, 42],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Word conversion tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_heen_en_terug",
+     "qualname": "TestWoorden.test_heen_en_terug",
+     "kind": "method",
+     "lines": [26, 28],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Words and reading are inverse for every 5 minutes of 12 hours.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [28]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [28]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vlaamse_woorden",
+     "qualname": "TestWoorden.test_vlaamse_woorden",
+     "kind": "method",
+     "lines": [30, 35],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Flemish phrases such as 'half vier', 'vijf voor half vier', 'tien over half vier'.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [31, 32, 33, 34, 35]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_andere_schrijfwijzen",
+     "qualname": "TestWoorden.test_andere_schrijfwijzen",
+     "kind": "method",
+     "lines": [37, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Alternative spellings are read ('5 voor half 4', 'kwart over drie', 'half een').",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [40, 42]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestVragen",
+   "qualname": "TestVragen",
+   "lines": [45, 92],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Question tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_soort_in_elk_leerjaar",
+     "qualname": "TestVragen.test_elke_soort_in_elk_leerjaar",
+     "kind": "method",
+     "lines": [46, 58],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every kind of clock question can be generated for every year it is offered in, and its answer checks.",
+     "calls": [
+      {"target": "tests/test_klok.py::maak", "lines": [51]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [57], "candidates": [], "candidates_count": 37},
+      {"expr": "O.lees_vraag", "lines": [56], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "O.nakijken",
+       "lines": [54, 56],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {
+       "expr": "O.parameters",
+       "lines": [48],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      },
+      {"expr": "O.uitleg", "lines": [58], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertIsNone", ".assertTrue", ".subTest", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_wijzerklok_toont_12_uur",
+     "qualname": "TestVragen.test_een_wijzerklok_toont_12_uur",
+     "kind": "method",
+     "lines": [60, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An analogue clock shows 12 hours: 15.15 counts as correct for 3.15.",
+     "calls": [
+      {"target": "tests/test_klok.py::maak", "lines": [61]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.nakijken",
+       "lines": [62],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      }
+     ],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_24_uur_moet_juist",
+     "qualname": "TestVragen.test_24_uur_moet_juist",
+     "kind": "method",
+     "lines": [64, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For the 24-hour kind, the 12-hour time is wrong and diagnosed 'klok_24'.",
+     "calls": [
+      {"target": "tests/test_klok.py::maak", "lines": [65]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [67], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "O.nakijken",
+       "lines": [66],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_24_uur_vraag_is_duidelijk",
+     "qualname": "TestVragen.test_24_uur_vraag_is_duidelijk",
+     "kind": "method",
+     "lines": [69, 73],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#21: \"Hoe laat is het in 24 uur?\" leek te vragen wat het over een dag is (dan is het hetzelfde uur).",
+     "explanation": "The 24-hour question is worded as 'digital clock (24-hour notation)' (feedback #21).",
+     "calls": [
+      {"target": "tests/test_klok.py::maak", "lines": [71]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_denkfouten",
+     "qualname": "TestVragen.test_denkfouten",
+     "kind": "method",
+     "lines": [75, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typical clock errors are recognised (hands swapped, 'half' read as past the half hour, ...).",
+     "calls": [
+      {"target": "tests/test_klok.py::maak", "lines": [80, 85, 90]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [78, 79, 82, 84, 88, 89, 92], "candidates": [], "candidates_count": 37},
+      {"expr": "O.lees_vraag", "lines": [87], "candidates": [], "candidates_count": 11},
+      {"expr": "O.maak_met", "lines": [76], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "O.parameters",
+       "lines": [76],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "decimal.Decimal", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTekenen",
+   "qualname": "TestTekenen",
+   "lines": [95, 120],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Drawing tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_wijzers_op_de_juiste_plek",
+     "qualname": "TestTekenen.test_wijzers_op_de_juiste_plek",
+     "kind": "method",
+     "lines": [96, 105],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The pixel clock puts the hands at the angles of the model for many times.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Wijzerklok", "lines": [98, 99]},
+      {"target": "leeravontuur/terminal/modellen.py::klok_pixels", "lines": [98]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Wijzerklok(t).hoeken",
+       "lines": [99],
+       "candidates": ["leeravontuur/kern/modellen.py::Wijzerklok.hoeken"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIn", "math.cos", "math.radians", "math.sin", "range", "round"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_past_en_ascii",
+     "qualname": "TestTekenen.test_past_en_ascii",
+     "kind": "method",
+     "lines": [107, 120],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The clock draws on the fake screen in both pixel and ASCII mode within its size.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [110]},
+      {"target": "leeravontuur/kern/modellen.py::Wijzerklok", "lines": [113]},
+      {"target": "leeravontuur/terminal/modellen.py::teken_klok", "lines": [113]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [109]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [112]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWijzersZetten",
+   "qualname": "TestWijzersZetten",
+   "lines": [123, 137],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Setting the hands.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_toetsen_en_klikken",
+     "qualname": "TestWijzersZetten.test_toetsen_en_klikken",
+     "kind": "method",
+     "lines": [124, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "KlokInvoer: arrows, + and − and clicks set the time (the hour hand follows past 12).",
+     "calls": [
+      {"target": "leeravontuur/terminal/balk.py::KlokInvoer.__init__", "lines": [126]},
+      {"target": "tests/test_klok.py::maak", "lines": [125]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.toets", "lines": [128, 129, 130, 132, 134, 136], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", "decimal.Decimal", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTijdInVraagstukken",
+   "qualname": "TestTijdInVraagstukken",
+   "lines": [140, 151],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Clock times in word problems.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_klad_en_antwoord",
+     "qualname": "TestTijdInVraagstukken.test_klad_en_antwoord",
+     "kind": "method",
+     "lines": [141, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A time word problem accepts clock times in the klad and in the answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [146]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [145]}
+     ],
+     "unresolved_calls": [
+      {"expr": "o.lees_vraag", "lines": [148, 150, 151], "candidates": [], "candidates_count": 11},
+      {"expr": "o.maak_met", "lines": [143, 149], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "o.nakijken",
+       "lines": [148, 150, 151],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {
+       "expr": "o.parameters",
+       "lines": [143, 149],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "int", "random.Random", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "maak",
+   "qualname": "maak",
+   "kind": "function",
+   "lines": [21, 22],
+   "params": [
+    {"name": "jaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "zaad", "kind": "positional", "default": "1", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds one clock question for a year, kind and seed.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "O.maak_met", "lines": [22], "candidates": [], "candidates_count": 39},
+    {
+     "expr": "O.parameters",
+     "lines": [22],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["random.Random"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_klok.py::TestVragen.test_24_uur_moet_juist", "lines": [65]},
+    {"caller": "tests/test_klok.py::TestVragen.test_24_uur_vraag_is_duidelijk", "lines": [71]},
+    {"caller": "tests/test_klok.py::TestVragen.test_denkfouten", "lines": [80, 85, 90]},
+    {"caller": "tests/test_klok.py::TestVragen.test_een_wijzerklok_toont_12_uur", "lines": [61]},
+    {"caller": "tests/test_klok.py::TestVragen.test_elke_soort_in_elk_leerjaar", "lines": [51]},
+    {"caller": "tests/test_klok.py::TestWijzersZetten.test_toetsen_en_klikken", "lines": [125]}
+   ]
+  }
+ ]
+}

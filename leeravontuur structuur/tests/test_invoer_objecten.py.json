@@ -1,0 +1,169 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_invoer_objecten.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 41,
+ "source_sha256": "a75dd184d33adbcb1d110ad7f28a8365a4827d327410ce6a836ac8ef3dc68be9",
+ "purpose": "Guards the rule that an input object declares how the Oefenaar treats it (no per-kind lists in the Oefenaar).",
+ "details": "Checks the derived GEEN_TWEEDE_KANS set, vraagtekst, and the shared StappenHulp help logic. Written with the cleanup (werk/opruimen.md) so that adding a new input object cannot silently change behaviour.",
+ "module_docstring": "Een invoer-object zegt zelf hoe de Oefenaar het behandelt (geen lijsten per soort in de Oefenaar).",
+ "imports": [
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "types",
+   "names": ["SimpleNamespace"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["oefenaar"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.stappenhulp",
+   "names": ["StappenHulp"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/terminal/stappenhulp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestInvoerObjecten",
+   "qualname": "TestInvoerObjecten",
+   "lines": [10, 37],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Tests of the input-object protocol shared by the Oefenaar.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_geen_tweede_kans_zoals_voor_de_opkuis",
+     "qualname": "TestInvoerObjecten.test_geen_tweede_kans_zoals_voor_de_opkuis",
+     "kind": "method",
+     "lines": [11, 13],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Asserts GEEN_TWEEDE_KANS equals the exact set it had before the cleanup (janee, vergelijk, keuze, rooster, staart, speur, zinsdelen, werkwoord, eenheid, tabel).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vraagtekst",
+     "qualname": "TestInvoerObjecten.test_vraagtekst",
+     "kind": "method",
+     "lines": [15, 21],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "vraagtekst adds ' ?' to a normal question, keeps a question that ends in '?', and leaves a sentence-type question (vraag_is_zin) untouched.",
+     "calls": [
+      {"target": "leeravontuur/terminal/oefenaar.py::vraagtekst", "lines": [18, 19, 20, 21]},
+      {
+       "target": "tests/test_invoer_objecten.py::TestInvoerObjecten.test_vraagtekst.v",
+       "lines": [18, 19, 20, 21]
+      }
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "v",
+     "qualname": "TestInvoerObjecten.test_vraagtekst.v",
+     "kind": "nested",
+     "lines": [16, 17],
+     "params": [
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "invoer", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds a small question stand-in with a text and an answer type.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["types.SimpleNamespace"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_invoer_objecten.py::TestInvoerObjecten.test_vraagtekst",
+       "lines": [18, 19, 20, 21]
+      }
+     ]
+    },
+    {
+     "name": "test_stappenhulp_tips_en_spiekbrief",
+     "qualname": "TestInvoerObjecten.test_stappenhulp_tips_en_spiekbrief",
+     "kind": "method",
+     "lines": [23, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Walks a StappenHulp through its tips and the cheat-sheet step: tip counting, tips_op after the last tip, and the restart at tip 1 after the cheat sheet.",
+     "calls": [
+      {"target": "leeravontuur/terminal/stappenhulp.py::StappenHulp", "lines": [24]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "h.begin_hulp",
+       "lines": [26],
+       "candidates": ["leeravontuur/terminal/stappenhulp.py::StappenHulp.begin_hulp"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "h.geef_tip",
+       "lines": [27, 29, 34, 36],
+       "candidates": ["leeravontuur/terminal/stappenhulp.py::StappenHulp.geef_tip"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "h.spiekbrief_bekeken",
+       "lines": [31],
+       "candidates": [
+        "leeravontuur/terminal/stappenhulp.py::StappenHulp.spiekbrief_bekeken",
+        "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.spiekbrief_bekeken",
+        "leeravontuur/terminal/vraagstuk.py::_MetTip.spiekbrief_bekeken"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "types.SimpleNamespace"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

@@ -1,0 +1,90 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/ci.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 30,
+ "source_sha256": "5bf94a9516a9a05a7ccf0e97e333ce6748492c7c374bb83582e0bcd7891ec358",
+ "purpose": "Test runner for CI: like `python -m unittest discover -s tests`, but failures also appear as GitHub annotations.",
+ "details": "Discovers the whole tests folder, runs it with verbosity 2 and, when GITHUB_ACTIONS is set, prints a '::error' annotation for each failure/error so it shows in the pull request. Called by .github/workflows/tests.yml. Not a test itself.",
+ "module_docstring": "Tests voor CI: zoals `python -m unittest discover -s tests`, maar fouten verschijnen ook als annotaties.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 9, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "tests/ci.py::main", "lines": [30]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "str", "sys.exit", "sys.path.insert"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "MAP",
+   "line": 11,
+   "value_type": "Attribute",
+   "value_preview": "Path(__file__).resolve().parent",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "annotatie",
+   "qualname": "annotatie",
+   "kind": "function",
+   "lines": [15, 17],
+   "params": [
+    {"name": "titel", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Prints a GitHub Actions '::error title=...::text' line, escaping %, newlines and carriage returns.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["print"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/ci.py::main", "lines": [25]}
+   ]
+  },
+  {
+   "name": "main",
+   "qualname": "main",
+   "kind": "function",
+   "lines": [20, 26],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Discovers and runs all tests; in GitHub Actions reports each failure and error as an annotation. Returns 0 on success, 1 otherwise.",
+   "calls": [
+    {"target": "tests/ci.py::annotatie", "lines": [25]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".run",
+    ".wasSuccessful",
+    "os.environ.get",
+    "str",
+    "unittest.TextTestRunner",
+    "unittest.defaultTestLoader.discover"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/ci.py::<module>", "lines": [30]}
+   ]
+  }
+ ]
+}

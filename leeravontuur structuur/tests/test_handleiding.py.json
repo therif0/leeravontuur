@@ -1,0 +1,225 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_handleiding.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 78,
+ "source_sha256": "d9c8a7bec0e882b48c5fe9d18f4bdfce03a2f643d2d40fbad07e61daa1f8bf13",
+ "purpose": "Checks that the handbook follows the program: every topic and start argument is described, links work, automatic parts are up to date.",
+ "details": "Loads docs/tools/handleiding.py as a module and uses it to compare generated blocks with the files. NOG_TE_BESCHRIJVEN (a list in this file) holds topic ids still to be documented in the future handbook project; it is the to-do of that project. Red means: run `python3 docs/tools/handleiding.py` and add the missing text.",
+ "module_docstring": "De handleiding (docs/handleiding) volgt het programma: elk onderwerp en elk startargument staat erin, elke verwijzing klopt en de automatische stukken (tabellen per leerjaar, denkfouten, spiekbrieven) zijn bijgewerkt. Rood? Draai `python3 …",
+ "imports": [
+  {"module": "importlib.util", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.__main__",
+   "names": ["maak_parser"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/__main__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".is_dir", ".resolve", "pathlib.Path", "unittest.main", "unittest.skipUnless"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "WORTEL",
+   "line": 17,
+   "value_type": "Attribute",
+   "value_preview": "Path(__file__).resolve().parent.parent",
+   "explanation": ""
+  },
+  {
+   "name": "MAP",
+   "line": 18,
+   "value_type": "BinOp",
+   "value_preview": "WORTEL / 'docs' / 'handleiding'",
+   "explanation": ""
+  },
+  {
+   "name": "NOG_TE_BESCHRIJVEN",
+   "line": 20,
+   "value_type": "Set",
+   "value_preview": "{'taal.zinsontleding', 'taal.werkwoordspelling.tt', 'taal.werkwoordsp…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestHandleiding",
+   "qualname": "TestHandleiding",
+   "lines": [33, 74],
+   "bases": ["unittest.TestCase"],
+   "decorators": ["unittest.skipUnless(MAP.is_dir(), 'de h…"],
+   "docstring": "",
+   "explanation": "Handbook consistency tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUpClass",
+     "qualname": "TestHandleiding.setUpClass",
+     "kind": "classmethod",
+     "lines": [35, 37],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "",
+     "explanation": "Reads all handbook pages once.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".read_text", ".rglob"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_onderwerp_staat_erin",
+     "qualname": "TestHandleiding.test_elk_onderwerp_staat_erin",
+     "kind": "method",
+     "lines": [39, 46],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic id (except those in NOG_TE_BESCHRIJVEN) appears somewhere in the handbook.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".subTest", "leeravontuur.kern.onderwerp.ONDERWERPEN.values"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_nog_te_beschrijven_bestaat",
+     "qualname": "TestHandleiding.test_nog_te_beschrijven_bestaat",
+     "kind": "method",
+     "lines": [48, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Elke id in NOG_TE_BESCHRIJVEN is een echt onderwerp (geen tikfout, niets vergeten na een hernoeming).",
+     "explanation": "Every id in NOG_TE_BESCHRIJVEN is a real topic.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_startargument_staat_erin",
+     "qualname": "TestHandleiding.test_elk_startargument_staat_erin",
+     "kind": "method",
+     "lines": [54, 59],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every start argument of the parser appears in startargumenten.md.",
+     "calls": [
+      {"target": "leeravontuur/__main__.py::maak_parser", "lines": [56]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verwijzingen_kloppen",
+     "qualname": "TestHandleiding.test_verwijzingen_kloppen",
+     "kind": "method",
+     "lines": [61, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every relative markdown link in the handbook points to an existing file.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".exists", ".relative_to", ".subTest", "re.findall"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_automatische_stukken_zijn_bijgewerkt",
+     "qualname": "TestHandleiding.test_automatische_stukken_zijn_bijgewerkt",
+     "kind": "method",
+     "lines": [69, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The automatic blocks of each page equal freshly generated text.",
+     "calls": [
+      {"target": "tests/test_handleiding.py::laad_script", "lines": [70]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".relative_to", ".subTest", ".vul_in", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "laad_script",
+   "qualname": "laad_script",
+   "kind": "function",
+   "lines": [25, 29],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Imports docs/tools/handleiding.py by path and returns the module.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".exec_module", "importlib.util.module_from_spec", "importlib.util.spec_from_file_location"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_handleiding.py::TestHandleiding.test_automatische_stukken_zijn_bijgewerkt",
+     "lines": [70]
+    }
+   ]
+  }
+ ]
+}

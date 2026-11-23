@@ -1,0 +1,95 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/tools/klokvenster_foto.py",
+ "kind": "python",
+ "layer": "docs",
+ "lines": 60,
+ "source_sha256": "44c9b3f039b69d3a092225dad797ae02e846e6335342ab4c890ae859c2340707",
+ "purpose": "Makes one real screenshot of the clock window next to a full-screen terminal for the handbook (Linux with Xvfb, openbox, xterm, xdotool and ImageMagick).",
+ "details": "main(python) starts a virtual display, a window manager and a maximised xterm that runs the program on the sample data (schermafdrukken.maak_voorbeeld) with a fixed seed, presses keys with xdotool to reach a clock question, captures the display with ImageMagick and writes docs/handleiding/beelden/klokvenster-scherm.png (the only PNG in the repo). It exits with a list of missing tools if any is absent. A python with tkinter must be passed as an argument when the default has none.",
+ "module_docstring": "Een echte schermafdruk van het klokvenster naast een terminal op het hele scherm (voor de handleiding).",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "shutil", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "subprocess", "names": [], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {
+   "module": "schermafdrukken",
+   "names": ["maak_voorbeeld"],
+   "alias": null,
+   "line": 22,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "docs/tools/klokvenster_foto.py::main", "lines": [60]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "len", "pathlib.Path", "str", "sys.exit", "sys.path.insert"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "WORTEL",
+   "line": 16,
+   "value_type": "Attribute",
+   "value_preview": "Path(__file__).resolve().parent.parent.parent",
+   "explanation": "Repository root."
+  },
+  {
+   "name": "BEELD",
+   "line": 17,
+   "value_type": "BinOp",
+   "value_preview": "WORTEL / 'docs' / 'handleiding' / 'beelden' / 'klokvenster-scherm.png'",
+   "explanation": "Output path of the screenshot."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "main",
+   "qualname": "main",
+   "kind": "function",
+   "lines": [21, 56],
+   "params": [
+    {"name": "python", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Checks the required tools, builds the sample data, starts Xvfb, openbox and the xterm with the program, sends the keys to open a clock question, takes the screenshot, resizes it to 70 % with 96 colours, and cleans up (also on errors). Returns 0, or 1 when tools are missing.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".relative_to",
+    ".terminate",
+    "any",
+    "dict",
+    "pathlib.Path",
+    "print",
+    "schermafdrukken.maak_voorbeeld",
+    "shutil.rmtree",
+    "shutil.which",
+    "str",
+    "subprocess.Popen",
+    "subprocess.run",
+    "tempfile.mkdtemp",
+    "time.sleep"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/klokvenster_foto.py::<module>", "lines": [60]}
+   ]
+  }
+ ]
+}
