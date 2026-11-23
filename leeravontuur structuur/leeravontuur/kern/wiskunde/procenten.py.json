@@ -1,0 +1,883 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/procenten.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 390,
+ "source_sha256": "34ca46fbb232598b73e8a96051f4f4c0b016d526454d2ffaf9902b0b5d425991",
+ "purpose": "The topics of percentages: the hundred-field, percent versus fraction versus decimal, percent of a number (with the percentage strip), and discount, VAT and percentage change.",
+ "details": "Four Onderwerp subclasses sharing a base _Procenten (cheat sheet, repetition group from the key, question kind from the leerlijn, and a reader that ignores % and the euro sign). The helper deel_uitleg and deel_regels explain and write out a handy strategy for p percent of a total (half, quarter, three quarters, a tenth, a hundredth, five percent, multiples of ten, else per 1 percent), used by both ProcentVan and Korting. Models: Honderdveld (colour or read the field) and Procentstrook (shown after checking). ProcentVan and Korting have worked solutions in klad lines. Money results are shown with two decimals via geld().",
+ "module_docstring": "Procenten: het honderdveld (aflezen en kleuren), procent ↔ breuk ↔ kommagetal, procent van een getal (met de procentstrook) en korting, btw en procentuele verandering.",
+ "imports": [
+  {"module": "math", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["GetypteBreuk", "fmt", "lees_getal"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["oplossing_van"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Honderdveld", "Procentstrook"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/wiskunde/grootheden.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "tests/test_procenten.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [386, 387, 388, 389]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 14,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "F",
+   "line": 15,
+   "value_type": "Name",
+   "value_preview": "Fraction",
+   "explanation": "Short alias for Fraction."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 24,
+   "value_type": "List",
+   "value_preview": "[('PROCENT = PER HONDERD', 'accent'), (' 35 % = 35 van de 100 = 35/10…",
+   "explanation": "The percentages cheat sheet."
+  },
+  {
+   "name": "NETTE_BREUKEN",
+   "line": 156,
+   "value_type": "List",
+   "value_preview": "[(1, 2), (1, 4), (3, 4), (1, 5), (2, 5), (3, 5), (4, 5), (1, 10), (3,…",
+   "explanation": "Fractions (numerator, denominator) with a whole percentage, for conversions."
+  },
+  {
+   "name": "DINGEN",
+   "line": 281,
+   "value_type": "List",
+   "value_preview": "['een fiets', 'een jas', 'een spelcomputer', 'een paar schoenen', 'ee…",
+   "explanation": "Things used in discount and VAT questions."
+  },
+  {
+   "name": "VELD",
+   "line": 386,
+   "value_type": "Call",
+   "value_preview": "Veld()",
+   "explanation": "The one instance of the hundred-field topic."
+  },
+  {
+   "name": "OMZETTEN",
+   "line": 387,
+   "value_type": "Call",
+   "value_preview": "Omzetten()",
+   "explanation": "The one instance of the conversion topic."
+  },
+  {
+   "name": "PROCENT_VAN",
+   "line": 388,
+   "value_type": "Call",
+   "value_preview": "ProcentVan()",
+   "explanation": "The one instance of the percent-of topic."
+  },
+  {
+   "name": "KORTING",
+   "line": 389,
+   "value_type": "Call",
+   "value_preview": "Korting()",
+   "explanation": "The one instance of the discount topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 390,
+   "value_type": "List",
+   "value_preview": "[VELD, OMZETTEN, PROCENT_VAN, KORTING]",
+   "explanation": "List of the four topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 390,
+   "description": "The four topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Procenten",
+   "qualname": "_Procenten",
+   "lines": [84, 98],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the percentage topics.",
+   "attributes": [
+    {"name": "vast", "line": 85, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "_Procenten.spiekbrief",
+     "kind": "method",
+     "lines": [87, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared percentages cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "_Procenten.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [90, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "soort",
+     "qualname": "_Procenten.soort",
+     "kind": "method",
+     "lines": [94, 95],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from repetition data or a random one from the leerlijn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.maak_met", "lines": [296]},
+      {"caller": "leeravontuur/kern/wiskunde/procenten.py::Omzetten.maak_met", "lines": [169]},
+      {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.maak_met", "lines": [225]},
+      {"caller": "leeravontuur/kern/wiskunde/procenten.py::Veld.maak_met", "lines": [112]}
+     ]
+    },
+    {
+     "name": "lees",
+     "qualname": "_Procenten.lees",
+     "kind": "method",
+     "lines": [97, 98],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed number ignoring a percent sign or euro sign.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [98]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Veld",
+   "qualname": "Veld",
+   "lines": [103, 151],
+   "bases": ["_Procenten"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.procenten.honderdveld: the hundred-field.",
+   "attributes": [
+    {"name": "id", "line": 104, "scope": "class", "value_preview": "'wiskunde.procenten.honderdveld'"},
+    {"name": "naam", "line": 105, "scope": "class", "value_preview": "'Het honderdveld'"},
+    {"name": "spiek_kop", "line": 106, "scope": "class", "value_preview": "'PROCENT = PER HONDERD'"},
+    {
+     "name": "omschrijving",
+     "line": 107,
+     "scope": "class",
+     "value_preview": "'procent = per honderd: aflezen en kleuren'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 108,
+     "scope": "class",
+     "value_preview": "{'wit_geteld': 'de witte vakjes geteld in plaats van de gek…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Veld.maak_met",
+     "kind": "method",
+     "lines": [111, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a hundred-field question: colour a percentage, colour a simple fraction (as a percentage), or read which percentage is coloured.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Honderdveld", "lines": [120, 125, 127]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [119, 124, 126]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::_Procenten.soort", "lines": [112]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [119, 124, 126], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Veld.uitleg",
+     "kind": "method",
+     "lines": [129, 138],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The percentage as whole rows of ten plus loose squares (and the fraction scaled to hundredths).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["divmod"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Veld.tip",
+     "kind": "method",
+     "lines": [140, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The field has 100 squares; one row is 10 squares, 10 percent.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Veld.diagnose",
+     "kind": "method",
+     "lines": [143, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises counting the white squares and answering with the decimal instead of the percentage.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [150]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [149, 150], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Omzetten",
+   "qualname": "Omzetten",
+   "lines": [160, 210],
+   "bases": ["_Procenten"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.procenten.omzetten: percent, fraction and decimal.",
+   "attributes": [
+    {"name": "id", "line": 161, "scope": "class", "value_preview": "'wiskunde.procenten.omzetten'"},
+    {"name": "naam", "line": 162, "scope": "class", "value_preview": "'Procent, breuk en kommagetal'"},
+    {"name": "spiek_kop", "line": 163, "scope": "class", "value_preview": "'HANDIG OM TE KENNEN'"},
+    {"name": "omschrijving", "line": 164, "scope": "class", "value_preview": "'25 % = 1/4 = 0,25'"},
+    {
+     "name": "denkfouten",
+     "line": 165,
+     "scope": "class",
+     "value_preview": "{'komma_procent': 'kommagetal en procent: de komma 2 plaats…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Omzetten.maak_met",
+     "kind": "method",
+     "lines": [168, 181],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a conversion between percent, fraction and decimal for a 'nice' fraction (four directions: percent to fraction, fraction to percent, decimal to percent, percent to decimal).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [174, 180, 181]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [174, 177, 180, 181]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::_Procenten.soort", "lines": [169]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [171], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [175], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Omzetten.uitleg",
+     "kind": "method",
+     "lines": [183, 196],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Percent means per hundred; make the denominator 100; times 100 or divide by 100 for decimals.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [186, 189, 193, 195, 196]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [185], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Omzetten.tip",
+     "kind": "method",
+     "lines": [198, 199],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Percent' means 'per hundred': 35 percent is 35/100 is 0,35.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Omzetten.diagnose",
+     "kind": "method",
+     "lines": [201, 210],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a correct but unsimplified fraction and a misplaced comma (a factor of 10 or 100 off).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "ProcentVan",
+   "qualname": "ProcentVan",
+   "lines": [215, 276],
+   "bases": ["_Procenten"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.procenten.van: percent of a number.",
+   "attributes": [
+    {"name": "id", "line": 216, "scope": "class", "value_preview": "'wiskunde.procenten.van'"},
+    {"name": "naam", "line": 217, "scope": "class", "value_preview": "'Procent van een getal'"},
+    {"name": "spiek_kop", "line": 218, "scope": "class", "value_preview": "'PROCENT VAN EEN GETAL'"},
+    {
+     "name": "omschrijving",
+     "line": 219,
+     "scope": "class",
+     "value_preview": "'20 % van 80, en hoeveel % is 12 van 48?'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 220,
+     "scope": "class",
+     "value_preview": "{'procent_als_antwoord': 'het percentage zelf als antwoord …"
+    },
+    {"name": "klad", "line": 250, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "ProcentVan.maak_met",
+     "kind": "method",
+     "lines": [224, 239],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes 'p percent of a total' (total chosen so the part is a nice number, with the strip shown after checking) or 'how many percent is part of total'.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [235, 236]},
+      {"target": "leeravontuur/kern/modellen.py::Procentstrook", "lines": [237, 239]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [235, 238]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::_Procenten.soort", "lines": [225]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [232, 236, 237, 239], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", "math.gcd", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "ProcentVan.uitleg",
+     "kind": "method",
+     "lines": [241, 248],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The handy strategy sentence, or the fraction of the total turned into hundredths.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [246]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::deel_uitleg", "lines": [248]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [244], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [245], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "ProcentVan.oplossing",
+     "kind": "method",
+     "lines": [252, 257],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines (the strategy lines, or part : total then times 100).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [256]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [256, 257]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::deel_regels", "lines": [257]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [255, 256], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "ProcentVan.tip",
+     "kind": "method",
+     "lines": [259, 262],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Start from 10 percent or 1 percent, or use half and quarter; or write part/total with denominator 100.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "ProcentVan.diagnose",
+     "kind": "method",
+     "lines": [264, 276],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises giving the percentage itself, dividing by the percentage, and computing the other part (100 percent minus).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [272], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Korting",
+   "qualname": "Korting",
+   "lines": [285, 383],
+   "bases": ["_Procenten"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.procenten.korting: discount, VAT and percentage change.",
+   "attributes": [
+    {"name": "id", "line": 286, "scope": "class", "value_preview": "'wiskunde.procenten.korting'"},
+    {"name": "naam", "line": 287, "scope": "class", "value_preview": "'Korting en btw'"},
+    {"name": "spiek_kop", "line": 288, "scope": "class", "value_preview": "'KORTING EN BTW'"},
+    {
+     "name": "omschrijving",
+     "line": 289,
+     "scope": "class",
+     "value_preview": "'wat betaal je met korting of met btw?'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 290,
+     "scope": "class",
+     "value_preview": "{'alleen_korting': 'alleen de korting berekend (niet afgetr…"
+    },
+    {"name": "klad", "line": 342, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Korting.maak_met",
+     "kind": "method",
+     "lines": [295, 325],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a discount, VAT, price-increase or price-decrease question with a thing to buy and numbers that come out nicely.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [323]},
+      {"target": "leeravontuur/kern/modellen.py::Procentstrook", "lines": [307]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [305, 314, 323]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::_Procenten.soort", "lines": [296]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [308, 316, 324]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [303, 307, 312, 320, 324], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", "math.gcd", "max", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Korting.uitleg",
+     "kind": "method",
+     "lines": [327, 340],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The strategy for the amount, then subtracting (discount) or adding (VAT), or the difference compared with the old price.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [332, 336]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::deel_uitleg", "lines": [332, 336]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [332, 333, 336, 337, 339, 340]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [331, 335, 338], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Korting.oplossing",
+     "kind": "method",
+     "lines": [344, 354],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines: the amount, then the new price; or the difference, divided by the old price, times 100.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [349, 352, 353, 354]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [348, 352]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::deel_regels", "lines": [348]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [347, 350, 353, 354], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs", "max", "min"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Korting.tip",
+     "kind": "method",
+     "lines": [356, 362],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Compute the discount or VAT first, then subtract or add; for change, compare the difference with the OLD price.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Korting.diagnose",
+     "kind": "method",
+     "lines": [364, 383],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises giving the discount or VAT amount only, adding a discount, forgetting the VAT, and taking the percentage of the wrong base.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [373]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [370, 380, 381], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".quantize", "abs"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "geld",
+   "qualname": "geld",
+   "kind": "function",
+   "lines": [18, 21],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een bedrag: 24 → '24', 24,2 → '24,20'.",
+   "explanation": "An amount as text: whole euros without decimals, otherwise two decimals with a comma ('24,20').",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [21]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [20, 21], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".quantize", ".to_integral_value"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.maak_met",
+     "lines": [259, 262, 270, 271, 278, 279]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.uitleg",
+     "lines": [285, 287, 290, 291, 293, 294]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.diagnose", "lines": [373]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.maak_met", "lines": [308, 316, 324]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.uitleg",
+     "lines": [332, 333, 336, 337, 339, 340]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [164]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1167]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1030]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [994]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [91]},
+    {"caller": "tests/test_procenten.py::TestGeneratoren.test_geld", "lines": [74, 75]}
+   ]
+  },
+  {
+   "name": "deel_regels",
+   "qualname": "deel_regels",
+   "kind": "function",
+   "lines": [43, 60],
+   "params": [
+    {"name": "p", "kind": "positional", "default": null, "annotation": null},
+    {"name": "totaal", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "p % van totaal als klad-regels, met dezelfde handige strategie als deel_uitleg.",
+   "explanation": "p percent of a total as klad lines using the handy strategy (: 2, : 4, 3 x quarter, : 10, : 100, 10 percent then times, or per 1 percent).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [47, 49, 51, 53, 55, 57, 59, 60]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [45], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.oplossing", "lines": [348]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.oplossing", "lines": [257]}
+   ]
+  },
+  {
+   "name": "deel_uitleg",
+   "qualname": "deel_uitleg",
+   "kind": "function",
+   "lines": [63, 81],
+   "params": [
+    {"name": "p", "kind": "positional", "default": null, "annotation": null},
+    {"name": "totaal", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoe je p % van totaal uitrekent, met een handige strategie.",
+   "explanation": "The same strategy as one explanation sentence.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [66, 68, 70, 72, 74, 76, 78, 80, 81]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [65, 66, 72, 78, 80, 81], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.uitleg", "lines": [332, 336]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.uitleg", "lines": [248]}
+   ]
+  }
+ ]
+}

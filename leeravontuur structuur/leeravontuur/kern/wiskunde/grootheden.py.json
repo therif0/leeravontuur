@@ -1,0 +1,859 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/grootheden.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 448,
+ "source_sha256": "40b7b87504db9bf1b1048d5533c1ef8e5f522c36ef66052666487959c5e0901a",
+ "purpose": "The topics 'Tijd, geld en snelheid' (time, money and speed): quantities that do not (only) work with the units table, plus the readers and writers of durations and clock times.",
+ "details": "Time works with 60 (not 100), the place where children go wrong and where the thinking errors look. A duration is typed as '2 u 15 min' and a clock time as '11.15 u'; lees_duur and lees_klok parse them (minutes, or minutes after midnight), duur_tekst and klok_tekst write them, and klok_cijfers shows what the digital clock display (terminal/digitaal.py) shows while the child types. Three topics share a base _Grootheid (klad on, cheat sheet, reader that ignores the euro sign): Tijd (convert units, mixed hours and minutes, duration between two times, arrival time), Geld (euro and cent, change, a purchase of two fruits) and Snelheid (distance, time, speed in km/u and m/s). Each has a worked solution in klad lines. Note: DINGEN here (things to buy) has the same name as, but different content from, DINGEN in procenten.py.",
+ "module_docstring": "Tijd, geld en snelheid: grootheden die niet (alleen) met de eenhedentabel werken.",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["oplossing_van"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.procenten",
+   "names": ["geld"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/wiskunde/procenten.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/scenarios.py",
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/wiskunde/klok.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/balk.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/vraagstuk.py",
+  "tests/test_grootheden.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [445, 446, 447]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 15,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "OMREKENEN",
+   "line": 92,
+   "value_type": "List",
+   "value_preview": "[('u', 'u', 'min', 60), ('min', 'min', 's', 60), ('dag', 'dagen', 'u'…",
+   "explanation": "Time unit pairs (large, plural, small, factor)."
+  },
+  {
+   "name": "DINGEN",
+   "line": 237,
+   "value_type": "List",
+   "value_preview": "[('een boek', 8, 25), ('een spel', 12, 40), ('een pizza', 6, 15), ('e…",
+   "explanation": "Things to buy with a price range, for change questions."
+  },
+  {
+   "name": "FRUIT",
+   "line": 239,
+   "value_type": "List",
+   "value_preview": "[('appel', 'appels', 25, 70), ('peer', 'peren', 30, 80), ('banaan', '…",
+   "explanation": "Fruits with singular, plural and a price range in cents."
+  },
+  {
+   "name": "REIZIGERS",
+   "line": 328,
+   "value_type": "List",
+   "value_preview": "[('Een fietser', 'fietst', 12, 24, 4), ('Een auto', 'rijdt', 60, 120,…",
+   "explanation": "Travellers with verb and speed range for speed questions."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 425,
+   "value_type": "List",
+   "value_preview": "[('TIJD', 'accent'), (' 1 u = 60 min 1 min = 60 s 1 dag = 24 u', ''),…",
+   "explanation": "The shared cheat sheet."
+  },
+  {
+   "name": "TIJD",
+   "line": 445,
+   "value_type": "Call",
+   "value_preview": "Tijd()",
+   "explanation": "The one instance of the time topic."
+  },
+  {
+   "name": "GELD",
+   "line": 446,
+   "value_type": "Call",
+   "value_preview": "Geld()",
+   "explanation": "The one instance of the money topic."
+  },
+  {
+   "name": "SNELHEID",
+   "line": 447,
+   "value_type": "Call",
+   "value_preview": "Snelheid()",
+   "explanation": "The one instance of the speed topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 448,
+   "value_type": "List",
+   "value_preview": "[TIJD, GELD, SNELHEID]",
+   "explanation": "List of the three topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 448,
+   "description": "The three topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Grootheid",
+   "qualname": "_Grootheid",
+   "lines": [72, 87],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the three topics: klad on, shared cheat sheet and reader.",
+   "attributes": [
+    {"name": "vast", "line": 73, "scope": "class", "value_preview": "('soort',)"},
+    {"name": "klad", "line": 74, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "_Grootheid.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [76, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "soort",
+     "qualname": "_Grootheid.soort",
+     "kind": "method",
+     "lines": [80, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from repetition data or a random one from the leerlijn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.maak_met", "lines": [252]},
+      {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.maak_met", "lines": [342]},
+      {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.maak_met", "lines": [107]}
+     ]
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "_Grootheid.spiekbrief",
+     "kind": "method",
+     "lines": [83, 84],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the shared cheat sheet (time, money, speed).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "_Grootheid.lees",
+     "kind": "method",
+     "lines": [86, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed number ignoring the euro sign.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [87]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.lees_vraag", "lines": [147]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Tijd",
+   "qualname": "Tijd",
+   "lines": [97, 232],
+   "bases": ["_Grootheid"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.eenheden.tijd: time.",
+   "attributes": [
+    {"name": "id", "line": 98, "scope": "class", "value_preview": "'wiskunde.eenheden.tijd'"},
+    {"name": "naam", "line": 99, "scope": "class", "value_preview": "'Tijd'"},
+    {"name": "spiek_kop", "line": 100, "scope": "class", "value_preview": "'TIJD'"},
+    {
+     "name": "omschrijving",
+     "line": 101,
+     "scope": "class",
+     "value_preview": "'uren, minuten, seconden en tijdsduur'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 102,
+     "scope": "class",
+     "value_preview": "{'tijd_met_100': 'met 100 gerekend in plaats van met 60', '…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Tijd.maak_met",
+     "kind": "method",
+     "lines": [106, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a time question: unit conversion (hours, minutes, seconds, days, weeks, years), mixed to minutes, minutes to hours and minutes (typed as duration), the duration between two times, or the arrival time (typed as clock time).",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [116, 118, 125, 127, 135, 138]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::_Grootheid.soort", "lines": [107]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [128, 139]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [136, 139, 140]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [117, 119, 125, 127, 136, 140], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".randrange", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Tijd.lees_vraag",
+     "kind": "method",
+     "lines": [142, 147],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads the answer as a duration, a clock time or a number depending on the input kind.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::_Grootheid.lees", "lines": [147]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_duur", "lines": [144]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [146]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Tijd.uitleg",
+     "kind": "method",
+     "lines": [149, 171],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per kind: the factor, the hours times 60, the division with remainder, counting in steps to the full hour.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [162, 168, 169, 170]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [167, 168, 169, 170, 171]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Tijd.oplossing",
+     "kind": "method",
+     "lines": [173, 194],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines (with time values and the step to the full hour).",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [177, 179, 182, 187, 190, 192, 194]},
+      {
+       "target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst",
+       "lines": [187, 188, 190, 192, 193, 194]
+      }
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Tijd.tip",
+     "kind": "method",
+     "lines": [196, 200],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The conversion rule, or 'an hour has 60 minutes, not 100; count in steps to the full hour'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Tijd.diagnose",
+     "kind": "method",
+     "lines": [202, 232],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises using 100 instead of 60, wrong direction of conversion, subtracting times as if an hour were 100 minutes, and forgetting the extra hour over 59 minutes.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [208], "candidates": [], "candidates_count": 0},
+      {"expr": "kl", "lines": [227], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Geld",
+   "qualname": "Geld",
+   "lines": [243, 323],
+   "bases": ["_Grootheid"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.eenheden.geld: money.",
+   "attributes": [
+    {"name": "id", "line": 244, "scope": "class", "value_preview": "'wiskunde.eenheden.geld'"},
+    {"name": "naam", "line": 245, "scope": "class", "value_preview": "'Geld'"},
+    {"name": "spiek_kop", "line": 246, "scope": "class", "value_preview": "'GELD'"},
+    {
+     "name": "omschrijving",
+     "line": 247,
+     "scope": "class",
+     "value_preview": "'euro en cent, betalen en wisselgeld'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 248,
+     "scope": "class",
+     "value_preview": "{'geld_komma': 'de komma verkeerd: 1 euro = 100 cent', 'wis…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Geld.maak_met",
+     "kind": "method",
+     "lines": [251, 279],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a money question: euro to cent, cent to euro, change from a note, or the price of two kinds of fruit.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [259, 261, 269, 277]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::_Grootheid.soort", "lines": [252]},
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [259, 262, 270, 271, 278, 279]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [257, 259, 265, 273], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".sample", "next", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Geld.uitleg",
+     "kind": "method",
+     "lines": [281, 294],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Times or divide by 100, subtract (or count up to the note), or the two products added.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [285, 287, 290, 291, 293, 294]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [285, 287, 289, 292], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Geld.oplossing",
+     "kind": "method",
+     "lines": [296, 306],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [299, 301, 303, 305, 306]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [299, 301, 303, 305]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [299, 301, 303, 304], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Geld.tip",
+     "kind": "method",
+     "lines": [308, 311],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Change is what you pay minus the price; 1 euro = 100 cent.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Geld.diagnose",
+     "kind": "method",
+     "lines": [313, 323],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a misplaced comma (factors of 10 or 100) and adding instead of subtracting for change.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [321], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Snelheid",
+   "qualname": "Snelheid",
+   "lines": [332, 422],
+   "bases": ["_Grootheid"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.eenheden.snelheid: distance, time and speed.",
+   "attributes": [
+    {"name": "id", "line": 333, "scope": "class", "value_preview": "'wiskunde.eenheden.snelheid'"},
+    {"name": "naam", "line": 334, "scope": "class", "value_preview": "'Snelheid'"},
+    {"name": "spiek_kop", "line": 335, "scope": "class", "value_preview": "'SNELHEID (6de leerjaar)'"},
+    {
+     "name": "omschrijving",
+     "line": 336,
+     "scope": "class",
+     "value_preview": "'afstand, tijd en snelheid (km/u, m/s)'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 337,
+     "scope": "class",
+     "value_preview": "{'snelheid_bewerking': 'vermenigvuldigd in plaats van gedee…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Snelheid.maak_met",
+     "kind": "method",
+     "lines": [341, 367],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a speed question: convert km/u and m/s, distance from speed and time, time from distance and speed, or average speed (a traveller from a list).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [349, 363, 366]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [349, 351, 358, 362, 365]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::_Grootheid.soort", "lines": [342]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [359, 366]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [346, 349, 355, 363, 366], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randrange", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Snelheid.uitleg",
+     "kind": "method",
+     "lines": [369, 383],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The formulas distance = speed x time and so on, with minutes converted to hours, or the 3,6 rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [374, 375, 376, 377]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [378]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [374, 375, 376, 377], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Snelheid.oplossing",
+     "kind": "method",
+     "lines": [385, 396],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [388, 390]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [389, 393, 395, 396]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [388, 390], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Snelheid.tip",
+     "kind": "method",
+     "lines": [398, 401],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "1 m/s = 3,6 km/u, and convert minutes to hours first.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Snelheid.diagnose",
+     "kind": "method",
+     "lines": [403, 422],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises the wrong direction with 3,6, using minutes instead of hours, and the wrong operation.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [409, 410, 413], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "duur_tekst",
+   "qualname": "duur_tekst",
+   "kind": "function",
+   "lines": [18, 23],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "95 → '1 u 35 min', 120 → '2 u', 45 → '45 min'.",
+   "explanation": "A number of minutes as '1 u 35 min', '2 u' or '45 min'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["divmod", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [815]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.maak_met", "lines": [359, 366]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.uitleg", "lines": [378]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.maak_met", "lines": [128, 139]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.uitleg", "lines": [162, 168, 169, 170]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [191]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [295, 296, 300, 301]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1029]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [95]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_teksten", "lines": [50, 51, 52]}
+   ]
+  },
+  {
+   "name": "klok_tekst",
+   "qualname": "klok_tekst",
+   "kind": "function",
+   "lines": [26, 29],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een tijdstip in minuten na middernacht → '9.05 u'.",
+   "explanation": "Minutes after midnight as a clock time such as '9.05 u'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["divmod", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [584, 815]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.maak_met", "lines": [136, 139, 140]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.oplossing",
+     "lines": [187, 188, 190, 192, 193, 194]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.uitleg", "lines": [167, 168, 169, 170, 171]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [181, 191, 192]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/klok.py::Klok.oplossing",
+     "lines": [204, 209, 210, 211, 214, 215, 216]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg",
+     "lines": [289, 294, 295, 296, 299, 300, 301]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1027]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [93]},
+    {"caller": "leeravontuur/terminal/balk.py::KlokInvoer.toets", "lines": [281]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_teksten", "lines": [53]}
+   ]
+  },
+  {
+   "name": "lees_duur",
+   "qualname": "lees_duur",
+   "kind": "function",
+   "lines": [32, 42],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'2 u 15 min', '2u15', '2 uur', '45 min' → minuten (Decimal). Met uren moeten de minuten onder 60 blijven; zonder uren mag het niet meer dan 59 minuten zijn (anders schreef het kind de vraag gewoon over).",
+   "explanation": "Parses '2 u 15 min', '2u15', '2 uur', '45 min' into minutes (Decimal); minutes must be under 60 (or the text is rejected); None when it is not a duration.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [42], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".group", "int", "re.fullmatch"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [807]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.lees_vraag", "lines": [144]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.lees_vraag", "lines": [1113]},
+    {"caller": "tests/test_grootheden.py::TestDiagnose.test_tijd", "lines": [90]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_duur", "lines": [25, 27]}
+   ]
+  },
+  {
+   "name": "lees_klok",
+   "qualname": "lees_klok",
+   "kind": "function",
+   "lines": [45, 54],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'11.15 u', '11:15', '11 u 15', '11u15', '1115', '9.05', '11 u' → minuten na middernacht (Decimal) of None.",
+   "explanation": "Parses '11.15 u', '11:15', '11 u 15', '1115', '9.05' or '11 u' into minutes after midnight (Decimal), or None.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [54], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".group", "int", "re.fullmatch"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [802, 807]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.lees_vraag", "lines": [146]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.lees_vraag", "lines": [222, 223]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [53]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Vraagstukken.lees_vraag", "lines": [1111]},
+    {"caller": "tests/test_grootheden.py::TestDiagnose.test_tijd", "lines": [100]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_klok", "lines": [32, 34]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_klok_cijfers", "lines": [47]}
+   ]
+  },
+  {
+   "name": "klok_cijfers",
+   "qualname": "klok_cijfers",
+   "kind": "function",
+   "lines": [57, 69],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat een digitaal klokje toont terwijl het kind een tijdstip typt (#21): 4 tekens (uur, uur, min, min), '_' = nog leeg, ' ' = geen cijfer. '16.1' → '161_', '9.45' en '945' → ' 945', '' → '____'. None als het geen tijdstip kan worden ('abc',…",
+   "explanation": "What the digital clock display shows while typing: 4 characters (hour, hour, minute, minute) with '_' for not typed yet and a space for no digit; None when it cannot become a time.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".groups", "len", "re.fullmatch"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [325, 504]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_stappen", "lines": [212]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_antwoord", "lines": [433]},
+    {"caller": "tests/test_grootheden.py::TestLezen.test_klok_cijfers", "lines": [42, 44, 46]}
+   ]
+  }
+ ]
+}
