@@ -1,0 +1,2236 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/werkwoorden.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 1023,
+ "source_sha256": "8db871863fdbb6a5a3d827cab6dce9c9915f3b2a3c0880adb4005bd5507f04b9",
+ "purpose": "Verb spelling (werkwoordspelling): the verb list access, the rules, the sentence with a gap, the thinking scheme in steps, checking, thinking errors, hints, explanations, cheat sheets and the five exercise topics.",
+ "details": "A question is a WwZin: a sentence with a gap and the infinitive in brackets ('Gisteren ___ Noor in het park. (fietsen)'). Every form is written out in inhoud/taal/werkwoorden.json and the answer always comes from that list; the rule functions (regel_tt, regel_vt, regel_vd) only explain and are used by tests to recompute every weak form, so a typo in the list turns red. The steps (stappen) are data: a choice, a word to type or a word to point at; the last step is always the form itself; Tab (or Moeilijk) gives only that last step. The mnemonic is 't kofschip. Five topics are made by subclasses of Werkwoordspelling (present tense, weak past, strong past, past participle, 'turn into the past tense'); each makes a leerlijn-driven choice of verbs and sentence patterns and a repetition group such as 'jij_inv/d'. The input object that plays the steps is terminal/werkwoord.py. No curses.",
+ "module_docstring": "Werkwoordspelling (T3, 0.26): de werkwoordenlijst, de zin met een gat, het denkschema in stappen, het nakijken, de denkfouten, de tips, de uitleg en de spiekbrieven. Zonder curses.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 16, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 777,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/terminal/curriculum/taal.py",
+  "leeravontuur/terminal/werkwoord.py",
+  "tests/test_taal_werkwoorden.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [998, 999, 1000, 1001, 1002]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_rijtjes", "lines": [716]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "dataclasses.dataclass", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PAD",
+   "line": 18,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent.parent / 'inhoud' / 'taal' / '…",
+   "explanation": "Path of the verb list JSON."
+  },
+  {
+   "name": "KOFSCHIP",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "\"'t kofschip\"",
+   "explanation": "The mnemonic's name."
+  },
+  {
+   "name": "KOF_LETTERS",
+   "line": 20,
+   "value_type": "Constant",
+   "value_preview": "'tkfschpx'",
+   "explanation": "Consonants of 't kofschip (plus x for faxen)."
+  },
+  {
+   "name": "BREED",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "66",
+   "explanation": "Maximum width of the sentence with the gap."
+  },
+  {
+   "name": "GAT",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "'___'",
+   "explanation": "The gap marker."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 24,
+   "value_type": "Dict",
+   "value_preview": "{'ws_onderwerp': 'het onderwerp niet juist gezien (wie doet het, één …",
+   "explanation": "Thinking-error codes (ws_...) with descriptions for reports."
+  },
+  {
+   "name": "MENSEN",
+   "line": 131,
+   "value_type": "Tuple",
+   "value_preview": "(('ik', 'ik'), ('jij', 'jij'), ('hij', 'hij'), ('de juf', 'hij'), ('m…",
+   "explanation": "Subjects with their person (ik, jij, hij for one, mv for more); no zij/ze because the gap would have two right answers."
+  },
+  {
+   "name": "PERSONEN",
+   "line": 135,
+   "value_type": "Tuple",
+   "value_preview": "('ik', 'jij', 'jij_inv', 'hij', 'mv')",
+   "explanation": "The persons a leerlijn may ask (jij_inv = jij after the verb, then the t falls away)."
+  },
+  {
+   "name": "PATRONEN",
+   "line": 136,
+   "value_type": "Tuple",
+   "value_preview": "('gewoon', 'inversie', 'vraag')",
+   "explanation": "Sentence patterns: plain, inversion (time word first), question."
+  },
+  {
+   "name": "TT_WOORDEN",
+   "line": 137,
+   "value_type": "Tuple",
+   "value_preview": "('vandaag', 'nu', 'soms')",
+   "explanation": "Present-tense time words."
+  },
+  {
+   "name": "VT_WOORDEN",
+   "line": 138,
+   "value_type": "Tuple",
+   "value_preview": "('gisteren', 'vorige week', 'toen')",
+   "explanation": "Past-tense time words."
+  },
+  {
+   "name": "VROEGER",
+   "line": 139,
+   "value_type": "Tuple",
+   "value_preview": "('vroeger', 'toen', 'vorig jaar')",
+   "explanation": "Time words for verbs like wonen/leven that sound better with 'vroeger'."
+  },
+  {
+   "name": "VD_WOORDEN",
+   "line": 140,
+   "value_type": "Tuple",
+   "value_preview": "('gisteren', 'vorige week', 'daarnet')",
+   "explanation": "Time words for participle sentences."
+  },
+  {
+   "name": "BEGIN",
+   "line": 141,
+   "value_type": "Tuple",
+   "value_preview": "('daarna', 'die dag', 'even later', 'op zaterdag')",
+   "explanation": "Sentence starters that fit both the present and the past tense."
+  },
+  {
+   "name": "WIE",
+   "line": 142,
+   "value_type": "Dict",
+   "value_preview": "{'ik': 'ik', 'jij': 'jij', 'jij_inv': 'jij', 'hij': 'hij, zij, het of…",
+   "explanation": "Display names of the persons for the 'who does it' step."
+  },
+  {
+   "name": "TT_REGEL",
+   "line": 285,
+   "value_type": "Tuple",
+   "value_preview": "('de stam', 'de stam + t', 'het hele werkwoord')",
+   "explanation": "Options of the rule step (the stem, stem + t, the whole verb)."
+  },
+  {
+   "name": "KORT_WIE",
+   "line": 287,
+   "value_type": "Tuple",
+   "value_preview": "('ik', 'jij', 'hij, zij of het', 'meer dan één')",
+   "explanation": "Short names of the persons."
+  },
+  {
+   "name": "TT_KEUZE",
+   "line": 288,
+   "value_type": "Dict",
+   "value_preview": "{'ik': 0, 'jij': 1, 'jij_inv': 0, 'hij': 1, 'mv': 2}",
+   "explanation": "Which rule option is right for each person."
+  },
+  {
+   "name": "TT_WAAROM",
+   "line": 289,
+   "value_type": "Dict",
+   "value_preview": "{'ik': 'Bij ik schrijf je alleen de stam.', 'jij': 'Jij staat vóór he…",
+   "explanation": "Why, per person, shown after the rule step."
+  },
+  {
+   "name": "_NOG_TT",
+   "line": 551,
+   "value_type": "Constant",
+   "value_preview": "'Dat is nog de tegenwoordige tijd. Zet het werkwoord in de verleden t…",
+   "explanation": "Message when a present form was typed for the past tense."
+  },
+  {
+   "name": "KOP",
+   "line": 619,
+   "value_type": "Dict",
+   "value_preview": "{'stam': 'DE STAM', 'wie': 'WIE DOET HET?', 'getal': 'EEN OF MEER', '…",
+   "explanation": "Cheat-sheet headings by step."
+  },
+  {
+   "name": "HOMOFOON_KOP",
+   "line": 629,
+   "value_type": "Constant",
+   "value_preview": "'VERHUIST OF VERHUISD?'",
+   "explanation": "Heading for the verhuist-or-verhuisd part of the present-tense cheat sheet."
+  },
+  {
+   "name": "_STAM",
+   "line": 631,
+   "value_type": "List",
+   "value_preview": "[(KOP['stam'], 'accent'), (' De stam is de ik-vorm: ik werk, ik loop,…",
+   "explanation": "Cheat-sheet lines about the stem, shared by several sheets."
+  },
+  {
+   "name": "SPIEKBRIEF_TT",
+   "line": 640,
+   "value_type": "List",
+   "value_preview": "[('Tegenwoordige tijd: zo schrijf je het werkwoord', 'accent'), ('Zoe…",
+   "explanation": "Cheat sheet of the present tense."
+  },
+  {
+   "name": "SPIEKBRIEF_VT",
+   "line": 668,
+   "value_type": "List",
+   "value_preview": "[(\"Verleden tijd van zwakke werkwoorden: 't kofschip\", 'accent'), ('E…",
+   "explanation": "Cheat sheet of the weak past tense."
+  },
+  {
+   "name": "SPIEKBRIEF_STERK",
+   "line": 703,
+   "value_type": "List",
+   "value_preview": "[('Sterke werkwoorden: de klank verandert', 'accent'), ('lopen, liep,…",
+   "explanation": "Cheat sheet of the strong verbs, with the list of rows generated from the verb list."
+  },
+  {
+   "name": "SPIEKBRIEF_VD",
+   "line": 719,
+   "value_type": "List",
+   "value_preview": "[('Voltooid deelwoord: gewerkt, gespeeld, gelopen', 'accent'), ('Het …",
+   "explanation": "Cheat sheet of the past participle."
+  },
+  {
+   "name": "SPIEKBRIEF_NAAR_VT",
+   "line": 747,
+   "value_type": "List",
+   "value_preview": "[('Van de tegenwoordige naar de verleden tijd', 'accent'), ('Zoek de …",
+   "explanation": "Cheat sheet of 'turn into the past tense'."
+  },
+  {
+   "name": "TEGENWOORDIGE_TIJD",
+   "line": 998,
+   "value_type": "Call",
+   "value_preview": "TegenwoordigeTijd()",
+   "explanation": "The one instance of the present-tense topic."
+  },
+  {
+   "name": "VERLEDEN_TIJD_ZWAK",
+   "line": 999,
+   "value_type": "Call",
+   "value_preview": "VerledenTijdZwak()",
+   "explanation": "The one instance of the weak-past topic."
+  },
+  {
+   "name": "VERLEDEN_TIJD_STERK",
+   "line": 1000,
+   "value_type": "Call",
+   "value_preview": "VerledenTijdSterk()",
+   "explanation": "The one instance of the strong-past topic."
+  },
+  {
+   "name": "VOLTOOID_DEELWOORD",
+   "line": 1001,
+   "value_type": "Call",
+   "value_preview": "VoltooidDeelwoord()",
+   "explanation": "The one instance of the participle topic."
+  },
+  {
+   "name": "ZET_IN_DE_VERLEDEN_TIJD",
+   "line": 1002,
+   "value_type": "Call",
+   "value_preview": "ZetInDeVerledenTijd()",
+   "explanation": "The one instance of the 'turn into past' topic."
+  }
+ ],
+ "registries": [
+  {
+   "name": "TEGENWOORDIGE_TIJD",
+   "line": 998,
+   "description": "Instantiating the five topic classes at the bottom of the file registers their skills (taal.werkwoordspelling.tt, vt_zwak, vt_sterk, vd, naar_vt) in the skill registry and in ONDERWERPEN; screens reach them through those registries."
+  }
+ ],
+ "classes": [
+  {
+   "name": "WwZin",
+   "qualname": "WwZin",
+   "lines": [146, 192],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A question: the sentence split around a gap, the infinitive, which form is asked, the person, the subject, the right answer, the pattern, and whether it is a 'turn into the past tense' question.",
+   "attributes": [
+    {"name": "voor", "line": 147, "scope": "class", "value_preview": null},
+    {"name": "na", "line": 148, "scope": "class", "value_preview": null},
+    {"name": "inf", "line": 149, "scope": "class", "value_preview": null},
+    {"name": "vorm", "line": 150, "scope": "class", "value_preview": null},
+    {"name": "persoon", "line": 151, "scope": "class", "value_preview": null},
+    {"name": "o", "line": 152, "scope": "class", "value_preview": null},
+    {"name": "antwoord", "line": 153, "scope": "class", "value_preview": null},
+    {"name": "patroon", "line": 154, "scope": "class", "value_preview": "'gewoon'"},
+    {"name": "omzetten", "line": 155, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [241, 256]},
+    {"caller": "tests/test_taal_werkwoorden.py::<module>", "lines": [455, 456, 457, 458, 459]}
+   ],
+   "methods": [
+    {
+     "name": "zin",
+     "qualname": "WwZin.zin",
+     "kind": "property",
+     "lines": [158, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De zin met het gat: \"Gisteren ___ Noor in het park.\"",
+     "explanation": "The sentence with the gap.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::_plak", "lines": [160]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tekst",
+     "qualname": "WwZin.tekst",
+     "kind": "property",
+     "lines": [163, 164],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The question as shown in reports: the sentence with the infinitive in brackets (or the source sentence plus 'to past tense').",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bron_vorm",
+     "qualname": "WwZin.bron_vorm",
+     "kind": "property",
+     "lines": [167, 169],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De persoonsvorm zoals ze in de zin in de tegenwoordige tijd staat.",
+     "explanation": "The pv as it stands in the present-tense source sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::vorm_van", "lines": [169]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bron",
+     "qualname": "WwZin.bron",
+     "kind": "property",
+     "lines": [172, 174],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De zin in de tegenwoordige tijd (bij omzetten): \"Noor fietst in het park.\"",
+     "explanation": "The present-tense source sentence (for turning into the past).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::WwZin.vol", "lines": [174]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "pv_plek",
+     "qualname": "WwZin.pv_plek",
+     "kind": "property",
+     "lines": [177, 179],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Het hoeveelste woord van de bron de persoonsvorm is (vanaf 0).",
+     "explanation": "Which word of the source is the pv (counting from 0).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vol",
+     "qualname": "WwZin.vol",
+     "kind": "method",
+     "lines": [181, 184],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vorm", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De zin met de vorm ingevuld (met een hoofdletter als de zin ermee begint).",
+     "explanation": "The sentence with a form filled in (the right answer by default), capitalised when it starts the sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::_plak", "lines": [184]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::WwZin.bron", "lines": [174]}
+     ]
+    },
+    {
+     "name": "ww",
+     "qualname": "WwZin.ww",
+     "kind": "property",
+     "lines": [187, 188],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The verb entry of this sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [188]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "meervoud",
+     "qualname": "WwZin.meervoud",
+     "kind": "property",
+     "lines": [191, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Whether the subject is plural.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Stap",
+   "qualname": "Stap",
+   "lines": [270, 282],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "One step of the thinking scheme: name, kind (choice, type or point at a word), question, options, the right answer, explanation, hints, the letter of 't kofschip to light up, the cheat-sheet heading and a sub line.",
+   "attributes": [
+    {"name": "naam", "line": 271, "scope": "class", "value_preview": null},
+    {"name": "soort", "line": 272, "scope": "class", "value_preview": null},
+    {"name": "vraag", "line": 273, "scope": "class", "value_preview": null},
+    {"name": "opties", "line": 274, "scope": "class", "value_preview": "()"},
+    {"name": "juist", "line": 275, "scope": "class", "value_preview": "None"},
+    {"name": "uitleg", "line": 277, "scope": "class", "value_preview": "''"},
+    {"name": "tips", "line": 278, "scope": "class", "value_preview": "()"},
+    {"name": "voor", "line": 279, "scope": "class", "value_preview": "''"},
+    {"name": "kofschip", "line": 280, "scope": "class", "value_preview": "''"},
+    {"name": "kop", "line": 281, "scope": "class", "value_preview": "''"},
+    {"name": "sub", "line": 282, "scope": "class", "value_preview": "''"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_stam_stap", "lines": [311]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_vorm_stap", "lines": [332, 356]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [372, 377, 393, 396, 403, 411, 424]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Werkwoordspelling",
+   "qualname": "Werkwoordspelling",
+   "lines": [780, 867],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "Een onderwerp van Werkwoordspelling: een zin met een gat (het invoer-object terminal/werkwoord.py speelt de stappen en geeft de getypte vorm terug). De leerlijn kiest de werkwoorden (niveaus, stammen), de personen en de zinnen (patronen). …",
+   "explanation": "Base class of the five verb-spelling topics: makes the sentence with a gap from the leerlijn and delegates checking, thinking errors, hints and explanation to this module's functions.",
+   "attributes": [
+    {"name": "vorm", "line": 784, "scope": "class", "value_preview": "'tt'"},
+    {"name": "denkfouten", "line": 785, "scope": "class", "value_preview": "DENKFOUTEN"},
+    {"name": "brief", "line": 786, "scope": "class", "value_preview": "()"},
+    {"name": "kop_anders", "line": 787, "scope": "class", "value_preview": "None"},
+    {"name": "omzetten", "line": 803, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kandidaten",
+     "qualname": "Werkwoordspelling.kandidaten",
+     "kind": "method",
+     "lines": [789, 791],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De werkwoorden van dit leerjaar.",
+     "explanation": "The verbs of this year: level, stem kind and the topic's own filter.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.past", "lines": [791]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [791]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [791]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.kandidaten", "lines": [888]},
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.lijst_voor", "lines": [807]}
+     ]
+    },
+    {
+     "name": "past",
+     "qualname": "Werkwoordspelling.past",
+     "kind": "method",
+     "lines": [793, 794],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Extra filter on a verb for a topic; default accepts all.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten", "lines": [791]}
+     ]
+    },
+    {
+     "name": "groepje",
+     "qualname": "Werkwoordspelling.groepje",
+     "kind": "method",
+     "lines": [796, 797],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The repetition group, person/stem kind (for example 'jij_inv/d').",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [797]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.groepje", "lines": [904]},
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [832]}
+     ]
+    },
+    {
+     "name": "vorm_voor",
+     "qualname": "Werkwoordspelling.vorm_voor",
+     "kind": "method",
+     "lines": [799, 801],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "groep", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vorm die de zin vraagt (een onderwerp kan er meer dan één mengen).",
+     "explanation": "Which form the question asks (a topic may mix several).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [824]}
+     ]
+    },
+    {
+     "name": "lijst_voor",
+     "qualname": "Werkwoordspelling.lijst_voor",
+     "kind": "method",
+     "lines": [805, 807],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "groep", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De werkwoorden waaruit deze vraag kiest (een onderwerp kan eerst een soort kiezen).",
+     "explanation": "The verbs from which this question chooses.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten", "lines": [807]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [811]}
+     ]
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Werkwoordspelling.maak_met",
+     "kind": "method",
+     "lines": [809, 835],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes the Vraag: reuses the person and stem kind from repetition data, picks the stem kind with tricky kinds as often as others, makes a sentence that fits the width (up to 300 tries, relaxing the person after 100), and stores the group, infinitive and step setting.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [834]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.groepje", "lines": [832]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.lijst_voor", "lines": [811]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.vorm_voor", "lines": [824]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [825, 827]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [817, 823]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice", ".choices", "RuntimeError", "len", "list", "range", "sorted"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.maak_met", "lines": [896]}
+     ]
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Werkwoordspelling.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [837, 839],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The repetition group in a stored key, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Werkwoordspelling.lees_vraag",
+     "kind": "method",
+     "lines": [841, 843],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The typed word in lowercase, or None when empty.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nakijken",
+     "qualname": "Werkwoordspelling.nakijken",
+     "kind": "method",
+     "lines": [845, 846],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Checks the typed form against the sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken", "lines": [846]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Werkwoordspelling.diagnose",
+     "kind": "method",
+     "lines": [848, 849],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The thinking error of a typed form.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [849]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Werkwoordspelling.uitleg",
+     "kind": "method",
+     "lines": [851, 852],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The explanation lines of the question.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [852]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Werkwoordspelling.tip",
+     "kind": "method",
+     "lines": [854, 855],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The first hint of the form step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [855]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tips",
+     "qualname": "Werkwoordspelling.tips",
+     "kind": "method",
+     "lines": [857, 858],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All hints of the form step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [858]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Werkwoordspelling.spiekbrief",
+     "kind": "method",
+     "lines": [860, 861],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet of this topic.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kop_op_spiekbrief",
+     "qualname": "Werkwoordspelling.kop_op_spiekbrief",
+     "kind": "method",
+     "lines": [863, 867],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kopje van de stap waar het kind is (het invoer-object zet v.data[\"spiek_kop\"]).",
+     "explanation": "The heading where the cheat sheet opens: the step's heading if it is on this topic's sheet, else the topic's fallback heading, else the top.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [865]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TegenwoordigeTijd",
+   "qualname": "TegenwoordigeTijd",
+   "lines": [870, 904],
+   "bases": ["Werkwoordspelling"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic taal.werkwoordspelling.tt: present tense (ik werk, hij werkt, word jij?).",
+   "attributes": [
+    {"name": "id", "line": 871, "scope": "class", "value_preview": "'taal.werkwoordspelling.tt'"},
+    {"name": "naam", "line": 872, "scope": "class", "value_preview": "'Tegenwoordige tijd'"},
+    {
+     "name": "omschrijving",
+     "line": 873,
+     "scope": "class",
+     "value_preview": "'ik werk, hij werkt, word jij?'"
+    },
+    {"name": "vorm", "line": 874, "scope": "class", "value_preview": "'tt'"},
+    {"name": "brief", "line": 875, "scope": "class", "value_preview": "SPIEKBRIEF_TT"},
+    {"name": "kop_anders", "line": 876, "scope": "class", "value_preview": "HOMOFOON_KOP"},
+    {"name": "HOMOFOON_OP_TIEN", "line": 885, "scope": "class", "value_preview": "4"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "past",
+     "qualname": "TegenwoordigeTijd.past",
+     "kind": "method",
+     "lines": [878, 881],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Irregular verbs (zijn, hebben) only when the leerlijn allows; others must follow the rule (gaan, staan, slaan have their own forms and are left out).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_tt", "lines": [881]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["bool"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kandidaten",
+     "qualname": "TegenwoordigeTijd.kandidaten",
+     "kind": "method",
+     "lines": [887, 889],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "On the hardest level can restrict to verbs with a homophone pair.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten", "lines": [888]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::homofoon", "lines": [889]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "TegenwoordigeTijd.maak_met",
+     "kind": "method",
+     "lines": [891, 896],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With the leerlijn's 'homofoon' setting about 4 of 10 questions (and repetitions of that group) become 'verhuist or verhuisd' questions with person jij/hij only.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [896]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".random", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "vorm_voor",
+     "qualname": "TegenwoordigeTijd.vorm_voor",
+     "kind": "method",
+     "lines": [898, 901],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "groep", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Present tense, or for homophone questions the participle half the time.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "groepje",
+     "qualname": "TegenwoordigeTijd.groepje",
+     "kind": "method",
+     "lines": [903, 904],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'vd/<stem kind>' for participle questions, else person/stem kind.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.groepje", "lines": [904]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [904]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "VerledenTijdZwak",
+   "qualname": "VerledenTijdZwak",
+   "lines": [907, 918],
+   "bases": ["Werkwoordspelling"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic taal.werkwoordspelling.vt_zwak: past tense of weak verbs ('t kofschip).",
+   "attributes": [
+    {"name": "id", "line": 908, "scope": "class", "value_preview": "'taal.werkwoordspelling.vt_zwak'"},
+    {"name": "naam", "line": 909, "scope": "class", "value_preview": "'Verleden tijd: zwakke werkwoorden'"},
+    {
+     "name": "omschrijving",
+     "line": 910,
+     "scope": "class",
+     "value_preview": "\"'t kofschip: werkte, speelde\""
+    },
+    {"name": "vorm", "line": 911, "scope": "class", "value_preview": "'vt'"},
+    {"name": "brief", "line": 912, "scope": "class", "value_preview": "SPIEKBRIEF_VT"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "past",
+     "qualname": "VerledenTijdZwak.past",
+     "kind": "method",
+     "lines": [914, 915],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Only weak verbs.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "groepje",
+     "qualname": "VerledenTijdZwak.groepje",
+     "kind": "method",
+     "lines": [917, 918],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'ev' or 'mv' plus stem kind.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [918]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "VerledenTijdSterk",
+   "qualname": "VerledenTijdSterk",
+   "lines": [921, 934],
+   "bases": ["Werkwoordspelling"],
+   "decorators": [],
+   "docstring": "De verleden tijd van sterke werkwoorden: geen regel, het rijtje kennen. Het groepje voor herhaling is het werkwoord zelf (\"ev/lopen\"): wat fout ging, komt terug in een andere zin.",
+   "explanation": "Topic taal.werkwoordspelling.vt_sterk: past tense of strong verbs, learned by heart.",
+   "attributes": [
+    {"name": "id", "line": 924, "scope": "class", "value_preview": "'taal.werkwoordspelling.vt_sterk'"},
+    {"name": "naam", "line": 925, "scope": "class", "value_preview": "'Verleden tijd: sterke werkwoorden'"},
+    {"name": "omschrijving", "line": 926, "scope": "class", "value_preview": "'liep, gaf, schreef'"},
+    {"name": "vorm", "line": 927, "scope": "class", "value_preview": "'vt'"},
+    {"name": "brief", "line": 928, "scope": "class", "value_preview": "SPIEKBRIEF_STERK"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "past",
+     "qualname": "VerledenTijdSterk.past",
+     "kind": "method",
+     "lines": [930, 931],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Only strong verbs.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "groepje",
+     "qualname": "VerledenTijdSterk.groepje",
+     "kind": "method",
+     "lines": [933, 934],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'ev' or 'mv' plus the verb itself, so a mistake returns with the same verb in another sentence.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "VoltooidDeelwoord",
+   "qualname": "VoltooidDeelwoord",
+   "lines": [937, 954],
+   "bases": ["Werkwoordspelling"],
+   "decorators": [],
+   "docstring": "Het voltooid deelwoord: zwak (ge + stam + t of d, 't kofschip) of sterk (van buiten). De leerlijn zegt welke sterke werkwoorden meedoen (`sterk`: hun niveaus) en of werkwoorden zonder ge- meedoen (`zonder_ge`).",
+   "explanation": "Topic taal.werkwoordspelling.vd: the past participle.",
+   "attributes": [
+    {"name": "id", "line": 940, "scope": "class", "value_preview": "'taal.werkwoordspelling.vd'"},
+    {"name": "naam", "line": 941, "scope": "class", "value_preview": "'Voltooid deelwoord'"},
+    {"name": "omschrijving", "line": 942, "scope": "class", "value_preview": "'gewerkt, gespeeld, gelopen'"},
+    {"name": "vorm", "line": 943, "scope": "class", "value_preview": "'vd'"},
+    {"name": "brief", "line": 944, "scope": "class", "value_preview": "SPIEKBRIEF_VD"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kandidaten",
+     "qualname": "VoltooidDeelwoord.kandidaten",
+     "kind": "method",
+     "lines": [946, 950],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Weak verbs of the chosen levels and stem kinds plus strong verbs of the strong levels, and those without ge- only if allowed.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [947, 949]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [948]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "groepje",
+     "qualname": "VoltooidDeelwoord.groepje",
+     "kind": "method",
+     "lines": [952, 954],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'vd/<verb>' for strong verbs, 'vd/<stem kind>' for weak.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [954]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "ZetInDeVerledenTijd",
+   "qualname": "ZetInDeVerledenTijd",
+   "lines": [957, 990],
+   "bases": ["Werkwoordspelling"],
+   "decorators": [],
+   "docstring": "Een zin in de tegenwoordige tijd; het kind zoekt de persoonsvorm en zet ze in de verleden tijd (zoals het taaldossier van school, zin per zin). Zwakke en sterke werkwoorden door elkaar: de leerlijn zegt welke (`niveaus` en `stammen` voor d…",
+   "explanation": "Topic taal.werkwoordspelling.naar_vt: a present-tense sentence in which the child finds the pv and turns it into the past tense.",
+   "attributes": [
+    {"name": "id", "line": 962, "scope": "class", "value_preview": "'taal.werkwoordspelling.naar_vt'"},
+    {"name": "naam", "line": 963, "scope": "class", "value_preview": "'Zet in de verleden tijd'"},
+    {"name": "omschrijving", "line": 964, "scope": "class", "value_preview": "'een zin van nu naar gisteren'"},
+    {"name": "vorm", "line": 965, "scope": "class", "value_preview": "'vt'"},
+    {"name": "omzetten", "line": 966, "scope": "class", "value_preview": "True"},
+    {"name": "brief", "line": 967, "scope": "class", "value_preview": "SPIEKBRIEF_NAAR_VT"},
+    {"name": "kop_anders", "line": 968, "scope": "class", "value_preview": "KOP['soort']"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kandidaten",
+     "qualname": "ZetInDeVerledenTijd.kandidaten",
+     "kind": "method",
+     "lines": [970, 971],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Weak plus strong verbs.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.sterke", "lines": [971]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.zwakke", "lines": [971]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zwakke",
+     "qualname": "ZetInDeVerledenTijd.zwakke",
+     "kind": "method",
+     "lines": [973, 975],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Weak verbs of the chosen levels and stem kinds.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [974]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [975]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.kandidaten", "lines": [971]},
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.lijst_voor", "lines": [981]}
+     ]
+    },
+    {
+     "name": "sterke",
+     "qualname": "ZetInDeVerledenTijd.sterke",
+     "kind": "method",
+     "lines": [977, 978],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Strong verbs of the chosen levels.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [978]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.kandidaten", "lines": [971]},
+      {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.lijst_voor", "lines": [981]}
+     ]
+    },
+    {
+     "name": "lijst_voor",
+     "qualname": "ZetInDeVerledenTijd.lijst_voor",
+     "kind": "method",
+     "lines": [980, 986],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "groep", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses weak or strong (equally often) unless a repetition group says which.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.sterke", "lines": [981]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.zwakke", "lines": [981]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "groepje",
+     "qualname": "ZetInDeVerledenTijd.groepje",
+     "kind": "method",
+     "lines": [988, 990],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'sterk/<verb>' or 'zwak/<stem kind>'.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [990]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "lijst",
+   "qualname": "lijst",
+   "kind": "function",
+   "lines": [51, 52],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "The verb list from the JSON (cached).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::VoltooidDeelwoord.kandidaten", "lines": [947, 949]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten", "lines": [791]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.sterke", "lines": [978]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.zwakke", "lines": [974]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_op_inf", "lines": [57]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_rijtjes", "lines": [695]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_tegenwoordige_tijd_volgt_de_regel",
+     "lines": [65, 67]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_velden", "lines": [42]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_een_sterk_werkwoord_volgt_de_regel_niet",
+     "lines": [83]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_elke_zwakke_vorm_volgt_t_kofschip",
+     "lines": [74, 78]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_zin_met_het_voltooid_deelwoord",
+     "lines": [298]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_verhuist_of_verhuisd_op_heel_moeilijk",
+     "lines": [375]
+    }
+   ]
+  },
+  {
+   "name": "_op_inf",
+   "qualname": "_op_inf",
+   "kind": "function",
+   "lines": [56, 57],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "Dict infinitive -> verb entry (cached).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [57]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [62]}
+   ]
+  },
+  {
+   "name": "ww",
+   "qualname": "ww",
+   "kind": "function",
+   "lines": [60, 62],
+   "params": [
+    {"name": "inf", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het werkwoord uit de lijst (een dict), of None.",
+   "explanation": "The verb entry for an infinitive, or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_op_inf", "lines": [62]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::WwZin.ww", "lines": [188]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [233]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [93, 95, 96, 97]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_de_drie_patronen", "lines": [121]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_het_onderwerp_staat_niet_ook_achteraan",
+     "lines": [127]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_stappen", "lines": [311]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.omzet", "lines": [395]},
+    {"caller": "tests/test_taal_werkwoorden.py::zin", "lines": [32]}
+   ]
+  },
+  {
+   "name": "ruw",
+   "qualname": "ruw",
+   "kind": "function",
+   "lines": [67, 69],
+   "params": [
+    {"name": "inf", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het werkwoord zonder -en (of -n): werk, lev, reiz, prat. Naar de laatste letter hiervan kijkt 't kofschip.",
+   "explanation": "The verb without -en (or -n): werk, lev, reiz, prat; 't kofschip looks at its last letter.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [579]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_dubbel", "lines": [123]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_vz_fout", "lines": [117]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [460, 462, 476]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [530, 539, 544, 546]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [79]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [74]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [103]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [413, 418, 426, 431]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [596]}
+   ]
+  },
+  {
+   "name": "letter",
+   "qualname": "letter",
+   "kind": "function",
+   "lines": [72, 75],
+   "params": [
+    {"name": "inf", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De letter(s) waar 't kofschip naar kijkt: de laatste letter vóór -en (ch telt als één klank).",
+   "explanation": "The letter 't kofschip looks at: the last letter before -en ('ch' counts as one sound).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [74]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [561, 574]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [477, 478]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [540, 541]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [401]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [595]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [92]}
+   ]
+  },
+  {
+   "name": "in_kofschip",
+   "qualname": "in_kofschip",
+   "kind": "function",
+   "lines": [78, 79],
+   "params": [
+    {"name": "inf", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Whether that letter is one of t, k, f, s, c, h, p, x (the letters of 't kofschip).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [79]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::regel_vd", "lines": [97]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::regel_vt", "lines": [91]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [401]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [595]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [92]}
+   ]
+  },
+  {
+   "name": "regel_tt",
+   "qualname": "regel_tt",
+   "kind": "function",
+   "lines": [82, 86],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[ik, jij, hij, meervoud] volgens de regel stam + t (geen tweede t na een stam op t).",
+   "explanation": "[ik, jij, hij, plural] by the rule stem + t (no second t after a stem on t).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.past", "lines": [881]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_tegenwoordige_tijd_volgt_de_regel",
+     "lines": [65]
+    }
+   ]
+  },
+  {
+   "name": "regel_vt",
+   "qualname": "regel_vt",
+   "kind": "function",
+   "lines": [89, 92],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[enkelvoud, meervoud] van een zwak werkwoord: stam + te(n) of de(n).",
+   "explanation": "[singular, plural] of a weak verb: stem + te(n) or de(n) by 't kofschip.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [91]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [492]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [95, 96]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_een_sterk_werkwoord_volgt_de_regel_niet",
+     "lines": [85]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_elke_zwakke_vorm_volgt_t_kofschip",
+     "lines": [77]
+    }
+   ]
+  },
+  {
+   "name": "regel_vd",
+   "qualname": "regel_vd",
+   "kind": "function",
+   "lines": [95, 98],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het voltooid deelwoord van een zwak werkwoord: (ge) + stam + t of d (geen tweede t of d).",
+   "explanation": "The past participle of a weak verb: (ge) + stem + t or d, without a second t or d.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [97]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [569]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [97]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_elke_zwakke_vorm_volgt_t_kofschip",
+     "lines": [80]
+    }
+   ]
+  },
+  {
+   "name": "stamsoort",
+   "qualname": "stamsoort",
+   "kind": "function",
+   "lines": [101, 105],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat de stam lastig maakt: \"t\" of \"d\" (de stam eindigt erop), \"vz\" (v of z vóór -en), anders \"gewoon\".",
+   "explanation": "What makes the stem tricky: 'vz' (v or z before -en), 't' or 'd' (stem ends in it), else 'gewoon'.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [103]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.groepje", "lines": [904]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::VerledenTijdZwak.groepje", "lines": [918]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::VoltooidDeelwoord.groepje", "lines": [954]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::VoltooidDeelwoord.kandidaten", "lines": [948]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.groepje", "lines": [797]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten", "lines": [791]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [817, 823]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.groepje", "lines": [990]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.zwakke", "lines": [975]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_stam_stap", "lines": [308]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_vz_fout", "lines": [117]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [458, 475]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [488]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [611, 612]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeLijst.test_de_regels", "lines": [93]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestElkOnderwerpInElkLeerjaar.test_de_leerlijn",
+     "lines": [262, 266, 268]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestElkOnderwerpInElkLeerjaar.test_herhalen_geeft_hetzelfde_groepje",
+     "lines": [279]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_een_sterk_werkwoord_komt_terug_in_een_andere_zin",
+     "lines": [372]
+    }
+   ]
+  },
+  {
+   "name": "_klinker",
+   "qualname": "_klinker",
+   "kind": "function",
+   "lines": [108, 110],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Krijgt de stam een dubbele klinker die het werkwoord niet heeft (lopen → loop)?",
+   "explanation": "Whether the stem gets a double vowel the infinitive does not have (lopen to loop).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["any"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [579]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_stam_stap", "lines": [300]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [460]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [530, 544]}
+   ]
+  },
+  {
+   "name": "_vz_fout",
+   "qualname": "_vz_fout",
+   "kind": "function",
+   "lines": [113, 118],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "getypt", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Staat er een v of z waar de stam een f of s heeft (leevt, reizde, levde)?",
+   "explanation": "Whether the typed form has a v or z where the stem has an f or s (leevt, reizde).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [117]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [117]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [577]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [528, 542]}
+   ]
+  },
+  {
+   "name": "_dubbel",
+   "qualname": "_dubbel",
+   "kind": "function",
+   "lines": [121, 124],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Verliest de stam een dubbele medeklinker (pakken → pak)?",
+   "explanation": "Whether the stem loses a doubled consonant (pakken to pak).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [123]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_stam_stap", "lines": [303]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [462]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [546]}
+   ]
+  },
+  {
+   "name": "_plak",
+   "qualname": "_plak",
+   "kind": "function",
+   "lines": [195, 197],
+   "params": [
+    {"name": "voor", "kind": "positional", "default": null, "annotation": null},
+    {"name": "midden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "na", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Joins the part before the gap, the filled-in word and the part after it into text, attaching punctuation without a space.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::WwZin.vol", "lines": [184]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::WwZin.zin", "lines": [160]}
+   ]
+  },
+  {
+   "name": "_hoofd",
+   "qualname": "_hoofd",
+   "kind": "function",
+   "lines": [200, 201],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Capitalises the first letter.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [236, 238, 240, 251, 255]}
+   ]
+  },
+  {
+   "name": "vorm_van",
+   "qualname": "vorm_van",
+   "kind": "function",
+   "lines": [204, 210],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "persoon", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De juiste vorm uit de lijst.",
+   "explanation": "The right form from the list for a form kind (present, past, participle) and person.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::WwZin.bron_vorm", "lines": [169]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [233, 256]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestElkOnderwerpInElkLeerjaar.test_de_vragen", "lines": [229]}
+   ]
+  },
+  {
+   "name": "maak_zin",
+   "qualname": "maak_zin",
+   "kind": "function",
+   "lines": [213, 256],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null},
+    {"name": "personen", "kind": "positional", "default": "PERSONEN", "annotation": null},
+    {"name": "patronen", "kind": "positional", "default": "PATRONEN", "annotation": null},
+    {"name": "omzetten", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een zin met een gat voor dit werkwoord. personen en patronen: wat het leerjaar toelaat. Geeft None als er met deze keuzes geen zin kan (bv. een werkwoord met eigen onderwerpen en alleen \"ik\" gevraagd).",
+   "explanation": "Makes a WwZin for a verb: picks a subject and pattern (plain, inversion with a time word, or a question) that the year allows, each person equally often, avoids repeating the subject in the rest, fills tense words, and for the participle puts the gap at the end after the auxiliary; returns None when no sentence is possible with those choices.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::WwZin", "lines": [241, 256]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_hoofd", "lines": [236, 238, 240, 251, 255]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::vorm_van", "lines": [233, 256]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [233]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", ".random", "sorted", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.maak_met", "lines": [825, 827]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_de_drie_patronen", "lines": [121]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_het_onderwerp_staat_niet_ook_achteraan",
+     "lines": [127]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.omzet", "lines": [395]},
+    {"caller": "tests/test_taal_werkwoorden.py::zin", "lines": [32]}
+   ]
+  },
+  {
+   "name": "nakijken",
+   "qualname": "nakijken",
+   "kind": "function",
+   "lines": [259, 264],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "getypt", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is de getypte vorm juist? Hoofdletters tellen niet; \"rij\" naast \"rijd\" mag (de lijst: ook).",
+   "explanation": "Is the typed form right? Case does not matter and 'rij' next to 'rijd' (and other accepted 'ook' forms) is allowed for the present tense.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken", "lines": [846]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [485]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [234]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.klaar", "lines": [270]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_nakijken", "lines": [132, 133, 134, 135]}
+   ]
+  },
+  {
+   "name": "_stam_stap",
+   "qualname": "_stam_stap",
+   "kind": "function",
+   "lines": [298, 313],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The step 'type the stem', with the explanation and hint fitting the verb (long vowel, doubled consonant, v or z).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::Stap", "lines": [311]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_dubbel", "lines": [303]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_klinker", "lines": [300]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [308]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [395, 410, 423]}
+   ]
+  },
+  {
+   "name": "rijtje",
+   "qualname": "rijtje",
+   "kind": "function",
+   "lines": [316, 318],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "lopen – liep – gelopen (zo leer je een sterk werkwoord).",
+   "explanation": "'lopen - liep - gelopen': the way a strong verb is learned.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_rijtjes", "lines": [695]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [369]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [602]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_stappen", "lines": [311]}
+   ]
+  },
+  {
+   "name": "sterk",
+   "qualname": "sterk",
+   "kind": "function",
+   "lines": [321, 323],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is de gevraagde vorm een sterke vorm (van buiten te leren, geen regel)?",
+   "explanation": "Whether the asked form is a strong one (learned by heart, no rule).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::_vorm_stap", "lines": [339]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [491]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [368, 384, 406]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [594, 601]}
+   ]
+  },
+  {
+   "name": "_vorm_stap",
+   "qualname": "_vorm_stap",
+   "kind": "function",
+   "lines": [326, 357],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "direct", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The last step, typing the form, with hints and cheat-sheet heading depending on the exercise (present, strong, weak past, participle, turn into past).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::Stap", "lines": [332, 356]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::sterk", "lines": [339]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [366, 382, 385, 399, 407, 419, 432]}
+   ]
+  },
+  {
+   "name": "stappen",
+   "qualname": "stappen",
+   "kind": "function",
+   "lines": [360, 433],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "stap_voor_stap", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De stappen van het denkschema voor deze zin; de laatste is altijd het typen van de vorm. Zonder stap_voor_stap (Tab, of Moeilijk) is er alleen die laatste stap. Een onregelmatig werkwoord (zijn, hebben) heeft geen regel: dan ook alleen de …",
+   "explanation": "The steps of the thinking scheme for a sentence: only the form for Tab/hard levels and for irregular verbs; for 'turn into past' three steps (find the pv, weak or strong, the form); for the present tense who-does-it, stem, rule, form; for weak past one-or-more, stem, 't kofschip, form; strong ones skip the rule.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::Stap", "lines": [372, 377, 393, 396, 403, 411, 424]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_stam_stap", "lines": [395, 410, 423]},
+    {
+     "target": "leeravontuur/kern/taal/werkwoorden.py::_vorm_stap",
+     "lines": [366, 382, 385, 399, 407, 419, 432]
+    },
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [401]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [401]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::rijtje", "lines": [369]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [413, 418, 426, 431]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::sterk", "lines": [368, 384, 406]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kop_op_spiekbrief", "lines": [865]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.tip", "lines": [855]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.tips", "lines": [858]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [592, 600]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.__init__", "lines": [30, 33]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.wissel", "lines": [222]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestElkOnderwerpInElkLeerjaar.test_de_vragen", "lines": [239]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_stappen_nakijken",
+     "lines": [162, 167, 169, 170, 172, 173]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_het_denkschema",
+     "lines": [141, 146, 151, 155, 159]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_stappen",
+     "lines": [305, 306, 307, 310, 312]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_stappen",
+     "lines": [414, 422, 423, 424, 425]
+    }
+   ]
+  },
+  {
+   "name": "nakijken_stap",
+   "qualname": "nakijken_stap",
+   "kind": "function",
+   "lines": [436, 440],
+   "params": [
+    {"name": "stap", "kind": "positional", "default": null, "annotation": null},
+    {"name": "antwoord", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is het antwoord op deze stap juist? keuze en woord: het nummer; typ: het getypte woord.",
+   "explanation": "Is the answer to a step right: a chosen number for choice and word steps, a typed word for typing steps.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [445]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [234]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_stappen_nakijken",
+     "lines": [163, 164]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_stappen", "lines": [417]}
+   ]
+  },
+  {
+   "name": "diagnose_stap",
+   "qualname": "diagnose_stap",
+   "kind": "function",
+   "lines": [443, 479],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "stap", "kind": "positional", "default": null, "annotation": null},
+    {"name": "antwoord", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(code, wat het programma zegt) bij een fout antwoord op een stap, of None. Zegt het antwoord niet.",
+   "explanation": "(code, message) for a wrong answer to a step (subject, stem mistakes, rule, pv, weak/strong, 't kofschip), or None; never says the answer.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_dubbel", "lines": [462]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_klinker", "lines": [460]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [448]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [477, 478]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken_stap", "lines": [445]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [460, 462, 476]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [458, 475]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [240]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_stappen_nakijken",
+     "lines": [165, 167, 169, 170, 172, 173]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_stappen", "lines": [418, 419]}
+   ]
+  },
+  {
+   "name": "diagnose_vorm",
+   "qualname": "diagnose_vorm",
+   "kind": "function",
+   "lines": [482, 548],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "getypt", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(code, wat het programma zegt) bij een fout getypte vorm, of None als de fout niet herkend is.",
+   "explanation": "(code, message) for a wrongly typed form: strong made weak, number or tense mixed up, homophone, extra or missing t, double t or d forgotten, v/z or vowel mistakes in the stem, wrong -te/-de; or None when the error is not recognised.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_diagnose_vd", "lines": [490]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_dubbel", "lines": [546]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_klinker", "lines": [530, 544]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_vz_fout", "lines": [528, 542]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [540, 541]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken", "lines": [485]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vt", "lines": [492]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [530, 539, 544, 546]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [488]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::sterk", "lines": [491]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.diagnose", "lines": [849]},
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [448]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_denkfouten_in_de_vorm",
+     "lines": [201, 206, 207]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_denkfouten",
+     "lines": [338, 343]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_denkfouten_en_de_uitleg",
+     "lines": [429, 430, 431, 432]
+    }
+   ]
+  },
+  {
+   "name": "_diagnose_vd",
+   "qualname": "_diagnose_vd",
+   "kind": "function",
+   "lines": [554, 581],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "getypt", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De denkfouten in een voltooid deelwoord.",
+   "explanation": "Thinking errors for a past participle: forgotten or extra ge-, d and t swapped, doubled endings, strong made weak, a finite form instead of the participle.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_klinker", "lines": [579]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::_vz_fout", "lines": [577]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [561, 574]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vd", "lines": [569]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [579]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [490]}
+   ]
+  },
+  {
+   "name": "uitleg",
+   "qualname": "uitleg",
+   "kind": "function",
+   "lines": [584, 614],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Na het nakijken: het denkschema voor deze zin, regel per regel, met de vorm op het einde.",
+   "explanation": "After checking: the thinking scheme for this sentence line by line with the form at the end.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [595]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [595]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::rijtje", "lines": [602]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ruw", "lines": [596]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [611, 612]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [592, 600]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::sterk", "lines": [594, 601]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "zin.vol",
+     "lines": [599, 614],
+     "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.uitleg", "lines": [852]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.klaar", "lines": [280]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_uitleg",
+     "lines": [210, 214, 215]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_uitleg",
+     "lines": [346, 347, 348, 349, 350]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_denkfouten_en_de_uitleg",
+     "lines": [433, 437]
+    }
+   ]
+  },
+  {
+   "name": "_rijtjes",
+   "qualname": "_rijtjes",
+   "kind": "function",
+   "lines": [691, 700],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De sterke werkwoorden als rijtjes, twee naast elkaar, van heel gewoon naar minder gewoon.",
+   "explanation": "The strong verbs as rows, two side by side, grouped from very common to less common, for the cheat sheet.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [695]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::rijtje", "lines": [695]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::<module>", "lines": [716]}
+   ]
+  },
+  {
+   "name": "homofoon",
+   "qualname": "homofoon",
+   "kind": "function",
+   "lines": [993, 995],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Klinkt de hij-vorm zoals het voltooid deelwoord, met een andere letter (verhuist – verhuisd)?",
+   "explanation": "Whether the he-form sounds like the past participle with a different letter (verhuist and verhuisd).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.kandidaten", "lines": [889]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_verhuist_of_verhuisd_op_heel_moeilijk",
+     "lines": [375, 379]
+    }
+   ]
+  },
+  {
+   "name": "kort",
+   "qualname": "kort",
+   "kind": "function",
+   "lines": [1005, 1023],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "stap", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het juiste antwoord van een afgewerkte stap, kort (voor de regel met wat al gevonden is).",
+   "explanation": "The right answer of a finished step in short form for the line showing what has been found.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [237, 253]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_stappen", "lines": [310]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_stappen", "lines": [420]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,1124 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/zinsontleding.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 531,
+ "source_sha256": "baf01f2ed2edb9d6e7cff9ff99b4651114032034e57f4ddd594e3cb843d41d6f",
+ "purpose": "Sentence analysis (zinsontleding) as an exercise: the steps, checking, thinking errors, hints, explanations, free colouring, dividing into parts, the cheat sheet and the Onderwerp that makes the questions.",
+ "details": "Step by step as at school (pv, then o, then lv, then mv; on harder levels also the predicate and the adverbial): a hint with the school question ('wie of wat + pv?'), a try with a second chance and an explanation. In each step the child chooses words (a tuple of positions) or says that the part does not exist (None). A sentence with more than one pv first asks all pv's (step 'pv') and then the subject of each pv (steps 'o1', 'o2', ...; soort('o2') is 'o' for name and colour). The Zinsontleding class (registered as ZINSONTLEDING at the bottom of the file) makes the questions from the leerlijn: sentences from the machine, the hand-checked list, or compound sentences, in proportions set by the leerlijn. The input object that plays the steps is terminal/zinsdelen.py. No curses.",
+ "module_docstring": "Zinsontleding: de stappen, het nakijken, de denkfouten, de tips (de proefjes) en de uitleg. Zonder curses.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern.taal.zinnen",
+   "names": ["GEZEGDE", "ZINSDELEN", "deelzinnen"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/taal/zinnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 355,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["nagekeken"],
+   "alias": null,
+   "line": 356,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/nagekeken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["zinnenmachine"],
+   "alias": null,
+   "line": 357,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/zinnenmachine.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/terminal/curriculum/taal.py",
+  "leeravontuur/terminal/zinsdelen.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [531]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "VOLGORDE",
+   "line": 13,
+   "value_type": "Tuple",
+   "value_preview": "('pv', 'o', 'wwg', 'nwg', 'lv', 'mv', 'bwb')",
+   "explanation": "Order of the steps."
+  },
+  {
+   "name": "NAMEN",
+   "line": 14,
+   "value_type": "Name",
+   "value_preview": "ZINSDELEN",
+   "explanation": "Names of the parts (from zinnen.ZINSDELEN)."
+  },
+  {
+   "name": "LIDWOORD",
+   "line": 15,
+   "value_type": "Dict",
+   "value_preview": "{'pv': 'de', 'o': 'het', 'wwg': 'het', 'nwg': 'het', 'lv': 'het', 'mv…",
+   "explanation": "Article ('de' or 'het') used when naming each part in a sentence."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 17,
+   "value_type": "Dict",
+   "value_preview": "{'zo_pv_geen_ww': 'als persoonsvorm een woord gekozen dat geen werkwo…",
+   "explanation": "Thinking-error codes of this exercise with a short description for reports."
+  },
+  {
+   "name": "VERWISSELD",
+   "line": 151,
+   "value_type": "Dict",
+   "value_preview": "{('o', 'lv'): ('zo_o_lv', 'Dat is het lijdend voorwerp. Het onderwerp…",
+   "explanation": "Which wrong part a child may have chosen instead, with the code and the sentence shown."
+  },
+  {
+   "name": "TIP1",
+   "line": 216,
+   "value_type": "Dict",
+   "value_preview": "{'pv': 'Maak er een vraag van: het werkwoord dat vooraan komt, is de …",
+   "explanation": "The first hint per part."
+  },
+  {
+   "name": "TIP_VERDELEN",
+   "line": 322,
+   "value_type": "List",
+   "value_preview": "['Woorden die samen één zinsdeel zijn, kan je samen verplaatsen.', 'D…",
+   "explanation": "The two hints of the 'divide into parts' step."
+  },
+  {
+   "name": "NAGEKEKEN",
+   "line": 359,
+   "value_type": "Tuple",
+   "value_preview": "('nagekeken', 'twee_lijst')",
+   "explanation": "Structure code for a sentence from the hand-checked list."
+  },
+  {
+   "name": "TWEE_LIJST",
+   "line": 359,
+   "value_type": "Tuple",
+   "value_preview": "('nagekeken', 'twee_lijst')",
+   "explanation": "Structure code for a compound sentence from the hand-checked list."
+  },
+  {
+   "name": "ZINSBOUW",
+   "line": 360,
+   "value_type": "Tuple",
+   "value_preview": "(*M.ZINSBOUW, *M.SAMENGESTELD, NAGEKEKEN, TWEE_LIJST)",
+   "explanation": "All structure codes this exercise accepts."
+  },
+  {
+   "name": "SPIEK_KOP",
+   "line": 377,
+   "value_type": "Dict",
+   "value_preview": "{'verdelen': 'IN ZINSDELEN VERDELEN', 'pv': 'DE PERSOONSVORM (pv)', '…",
+   "explanation": "Cheat-sheet headings by step."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 389,
+   "value_type": "List",
+   "value_preview": "[('Zinsontleding: zo vind je de zinsdelen', 'accent'), ('Altijd in de…",
+   "explanation": "The cheat sheet as (text, role) lines, including a colour legend using the part colours."
+  },
+  {
+   "name": "ZINSONTLEDING",
+   "line": 531,
+   "value_type": "Call",
+   "value_preview": "Zinsontleding()",
+   "explanation": "The one instance of the topic (created at import, which registers it)."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ZINSONTLEDING",
+   "line": 531,
+   "description": "Instantiating the topic registers the skill taal.zinsontleding in vaardigheden.REGISTER and ONDERWERPEN, which is how screens reach it."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Zinsontleding",
+   "qualname": "Zinsontleding",
+   "lines": [451, 528],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "Taal › Zinsontleding › Zinsdelen: een zin van de zinnenmachine ontleden (het invoer-object terminal/zinsdelen.py doet de stappen en geeft \"juist\" of \"fout\" terug).",
+   "explanation": "The Onderwerp 'taal.zinsontleding' (Zinsdelen): makes sentence-analysis questions from the leerlijn.",
+   "attributes": [
+    {"name": "id", "line": 454, "scope": "class", "value_preview": "'taal.zinsontleding'"},
+    {"name": "naam", "line": 455, "scope": "class", "value_preview": "'Zinsdelen'"},
+    {
+     "name": "omschrijving",
+     "line": 456,
+     "scope": "class",
+     "value_preview": "'de pv, het onderwerp, het lijdend en meewerkend voorwerp a…"
+    },
+    {"name": "denkfouten", "line": 457, "scope": "class", "value_preview": "DENKFOUTEN"},
+    {"name": "vast", "line": 458, "scope": "class", "value_preview": "('zinsbouw',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Zinsontleding.kies_onderwerp",
+     "kind": "method",
+     "lines": [460, 461],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For repetition/weights: chooses the sentence structure to practise.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kies_zinsbouw", "lines": [461]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_zinsbouw",
+     "qualname": "Zinsontleding.kies_zinsbouw",
+     "kind": "method",
+     "lines": [463, 476],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Welke soort zin: een zin met twee pv's (`twee_op_tien` van de 10, alleen waar de leerlijn ze geeft), een nagekeken zin (`nagekeken_op_tien`), anders een zin van de machine (met gewichten: wat moeilijk was, vaker).",
+     "explanation": "Decides what kind of sentence to make: a compound one (twee_op_tien of 10), a hand-checked one (nagekeken_op_tien of 10), else a machine structure (weighted towards harder ones when weights are given).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [467]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice", ".choices", ".random", "bool", "list", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kies_onderwerp", "lines": [461]},
+      {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_met", "lines": [498]}
+     ]
+    },
+    {
+     "name": "past",
+     "qualname": "Zinsontleding.past",
+     "kind": "method",
+     "lines": [478, 484],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zb", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Mag deze zinsbouw in dit leerjaar (bv. een herhaling uit een ander leerjaar)?",
+     "explanation": "Whether a structure may be used in this year's leerlijn parameters (for repetition from another year).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::zinnen", "lines": [481]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["any", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_met", "lines": [497]}
+     ]
+    },
+    {
+     "name": "maak_zin",
+     "qualname": "Zinsontleding.maak_zin",
+     "kind": "method",
+     "lines": [486, 493],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zb", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Produces the sentence for a structure: from the checked list, the compound list, the compound machine or the simple machine.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/nagekeken.py::kies", "lines": [488]},
+      {"target": "leeravontuur/kern/taal/nagekeken.py::twee", "lines": [490]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [493]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::maak_samengesteld", "lines": [492]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_met", "lines": [499]}
+     ]
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Zinsontleding.maak_met",
+     "kind": "method",
+     "lines": [495, 504],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes the Vraag: chooses/validates the structure, makes the sentence and stores the asked parts, whether dividing comes first and whether the steps are guided in the question data; the input kind is 'zinsdelen' and the model is the Zin.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [503]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kies_zinsbouw", "lines": [498]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_zin", "lines": [499]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.past", "lines": [497]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [504]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Zinsontleding.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [506, 508],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The structure code inside a stored question key (taal.zinsontleding:<structure>:<sentence>), or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Zinsontleding.lees_vraag",
+     "kind": "method",
+     "lines": [510, 514],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het object geeft \"juist\" of \"fout\"; de juiste ontleding getypt (zoals in het rapport) telt ook als juist.",
+     "explanation": "The input object returns 'juist' or 'fout'; typing the right analysis exactly as shown in reports also counts as right.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Zinsontleding.uitleg",
+     "kind": "method",
+     "lines": [516, 518],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "One explanation line per asked step.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [518]},
+      {"target": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [518]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Zinsontleding.tip",
+     "kind": "method",
+     "lines": [520, 521],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The first hint of the pv step (the screen object supplies the step hints itself).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Zinsontleding.spiekbrief",
+     "kind": "method",
+     "lines": [523, 524],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet lines for Leerstof and for after the last hint.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kop_op_spiekbrief",
+     "qualname": "Zinsontleding.kop_op_spiekbrief",
+     "kind": "method",
+     "lines": [526, 528],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kopje van de stap waar het kind is (het invoer-object zet v.data[\"spiek_kop\"]).",
+     "explanation": "The cheat-sheet heading of the step the child is on (set by the input object in v.data['spiek_kop']).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "soort",
+   "qualname": "soort",
+   "kind": "function",
+   "lines": [32, 34],
+   "params": [
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het zinsdeel van een stap: \"o2\" (het onderwerp bij de tweede pv) is een \"o\".",
+   "explanation": "The sentence part of a step label: 'o2' (subject of the second pv) is 'o'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_nr", "lines": [39]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [88]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.fout", "lines": [333]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.hint_tekst", "lines": [216]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar", "lines": [427]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar.namen", "lines": [425]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [400]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_voortgang", "lines": [201, 203]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_zin", "lines": [176, 181]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.vraag", "lines": [76]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.wissel", "lines": [303]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::rol", "lines": [34]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [329]
+    }
+   ]
+  },
+  {
+   "name": "_nr",
+   "qualname": "_nr",
+   "kind": "function",
+   "lines": [37, 39],
+   "params": [
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het nummer van de deelzin bij een stap \"o1\", \"o2\" … (vanaf 0), of None.",
+   "explanation": "The clause number of a step 'o1', 'o2' ... (from 0), or None for ordinary steps.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [39]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_diagnose_samengesteld", "lines": [135]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [147]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::naam_van_stap", "lines": [288]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [63, 65]}
+   ]
+  },
+  {
+   "name": "stappen",
+   "qualname": "stappen",
+   "kind": "function",
+   "lines": [42, 57],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gevraagd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De labels die in deze oefening gevraagd worden, in de volgorde van de stappen. gevraagd = de zinsdelen van het leerjaar (leerlijn). Het gezegde is één stap: wwg of nwg, wat de zin heeft.",
+   "explanation": "The labels asked in this exercise in step order; a compound sentence asks 'pv' then one 'o' per clause; the predicate is a single step (wwg or nwg, whichever the sentence has).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [46]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "zin.deel",
+     "lines": [52],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len", "next", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.uitleg", "lines": [518]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [303, 311]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [369]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.__init__", "lines": [42]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_tips_zeggen_het_antwoord_niet",
+     "lines": [202]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_stappen_per_leerjaar",
+     "lines": [164, 165, 166, 168]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [328]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_een_gewone_zin_verandert_niet",
+     "lines": [389]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_tips_en_uitleg", "lines": [355]}
+   ]
+  },
+  {
+   "name": "verwacht",
+   "qualname": "verwacht",
+   "kind": "function",
+   "lines": [60, 69],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De posities van het zinsdeel (alle bwb's samen, alle pv's van een samengestelde zin), of None als de zin het niet heeft.",
+   "explanation": "The right positions of a part (all adverbials together, all pv's of a compound sentence), or None when the sentence lacks it.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [64]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_nr", "lines": [63, 65]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "zin.alle",
+     "lines": [66],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.alle"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len", "sorted", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_tekst", "lines": [163]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [82, 105]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [74]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [304]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [370]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [256, 257, 269, 270]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [193, 194, 195, 196, 197]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [315, 326]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [394, 405]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken", "lines": [120]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.vraag", "lines": [75]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_tips_zeggen_het_antwoord_niet",
+     "lines": [203]
+    }
+   ]
+  },
+  {
+   "name": "nakijken",
+   "qualname": "nakijken",
+   "kind": "function",
+   "lines": [72, 77],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gekozen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is de keuze voor deze stap juist? gekozen = tuple van posities, of None (\"er is er geen\").",
+   "explanation": "Is the choice for a step right? The chosen positions (or None for 'there is none') must equal the right ones.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [74]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["sorted", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [83]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [301, 316]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [314]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_juist_en_er_is_er_geen",
+     "lines": [172, 173, 174, 175]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [330, 331, 332, 333]
+    }
+   ]
+  },
+  {
+   "name": "diagnose",
+   "qualname": "diagnose",
+   "kind": "function",
+   "lines": [80, 113],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gekozen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(code, uitleg voor het kind) bij een foute keuze, of None als er geen bekende denkfout is.",
+   "explanation": "For a wrong choice, (code, explanation) of a known thinking error or None: forgot or invented a part, wrong pv (not a verb, the first word, the other verb), too big or too small a group, subject and direct object swapped, direct and indirect object swapped.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_diagnose_samengesteld", "lines": [92]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [83]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::soort", "lines": [88]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [82, 105]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [86, 108]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "min", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [301, 316]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [319]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_denkfouten",
+     "lines": [190, 195, 196, 197]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_denkfouten",
+     "lines": [340, 341, 342, 343, 344, 345, 346, 347, 348, 350, 351]
+    }
+   ]
+  },
+  {
+   "name": "_diagnose_samengesteld",
+   "qualname": "_diagnose_samengesteld",
+   "kind": "function",
+   "lines": [116, 142],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "keuze", "kind": "positional", "default": null, "annotation": null},
+    {"name": "juist", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De denkfouten in een zin met meer dan één pv (alleen pv en o zijn aangeduid).",
+   "explanation": "Thinking errors in a compound sentence: missing or extra pv's, a word that is a verb but does not change with tense, and the subject of the other pv.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [118, 134, 136]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_nr", "lines": [135]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [133]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "len", "set", "sorted", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [92]}
+   ]
+  },
+  {
+   "name": "_pv_van",
+   "qualname": "_pv_van",
+   "kind": "function",
+   "lines": [145, 147],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De pv (het woord) bij de stap \"o1\", \"o2\" …",
+   "explanation": "The pv word of the clause that a step 'o1', 'o2' ... belongs to.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [147]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_nr", "lines": [147]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [147]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_diagnose_samengesteld", "lines": [133]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::naam_van_stap", "lines": [288]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [258]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [192]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.vraag", "lines": [77]}
+   ]
+  },
+  {
+   "name": "_tekst",
+   "qualname": "_tekst",
+   "kind": "function",
+   "lines": [162, 164],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The words of the right answer for a part, as text.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [163]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [259]}
+   ]
+  },
+  {
+   "name": "_naam",
+   "qualname": "_naam",
+   "kind": "function",
+   "lines": [167, 173],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "p", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Houdt woord p zijn hoofdletter midden in een vraag? Ja voor een naam: een zelfstandig naamwoord met een hoofdletter (een gewoon zn begint de zin niet zonder lidwoord of voornaamwoord: ‘de juf’, ‘mijn broer’).",
+   "explanation": "Whether word p keeps its capital in the middle of a question (a name), using how the machine wrote it.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [181]}
+   ]
+  },
+  {
+   "name": "_woorden",
+   "qualname": "_woorden",
+   "kind": "function",
+   "lines": [176, 184],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "posities", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De woorden op die posities, met een kleine letter als het eerste woord van de zin midden in een vraag komt.",
+   "explanation": "The words at those positions, with a lowercase first letter when the sentence's first word appears mid-question (unless it is a name).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_naam", "lines": [181]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [147]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::kort", "lines": [282, 283]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::opsomming", "lines": [275]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [367, 371]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [257, 269, 270]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [193, 194, 195, 197]}
+   ]
+  },
+  {
+   "name": "vraag_naar",
+   "qualname": "vraag_naar",
+   "kind": "function",
+   "lines": [187, 213],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De vraag zoals op school, ingevuld met deze zin (zonder het antwoord).",
+   "explanation": "The school question for a part filled in with this sentence, without the answer (for example 'Wat geeft oma?').",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [192]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [193, 194, 195, 197]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [193, 194, 195, 196, 197]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [86, 108]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::tips", "lines": [234, 235]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [258, 269]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "lines": [261]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_uitleg_en_de_vraag_van_school",
+     "lines": [212, 213, 216, 220]
+    }
+   ]
+  },
+  {
+   "name": "tips",
+   "qualname": "tips",
+   "kind": "function",
+   "lines": [227, 249],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[tip 1 (de vraag), tip 2 (het proefje op deze zin, zonder het antwoord te zeggen)].",
+   "explanation": "[tip 1 (the question), tip 2 (the proof applied to this sentence, never the answer)]; for pv a tense proof, for compound sentences the clause hints.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [234, 235]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende_tip", "lines": [417]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_tips_zeggen_het_antwoord_niet",
+     "lines": [207]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_tips_en_uitleg", "lines": [356]}
+   ]
+  },
+  {
+   "name": "uitleg",
+   "qualname": "uitleg",
+   "kind": "function",
+   "lines": [252, 270],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Na het nakijken (of na de tweede kans): het juiste antwoord, met de vraag of het proefje.",
+   "explanation": "After checking: the right answer with its question or proof, in plain sentences.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [258]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_tekst", "lines": [259]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [257, 269, 270]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::opsomming", "lines": [256]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [256, 257, 269, 270]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::vraag_naar", "lines": [258, 269]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.uitleg", "lines": [518]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [327]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.klaar", "lines": [435]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "lines": [262]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_uitleg_en_de_vraag_van_school",
+     "lines": [214, 217]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_tips_en_uitleg",
+     "lines": [360, 361]
+    }
+   ]
+  },
+  {
+   "name": "opsomming",
+   "qualname": "opsomming",
+   "kind": "function",
+   "lines": [273, 276],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "posities", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "‘vertelt’ en ‘ligt’ (losse woorden, zoals de pv's van een samengestelde zin).",
+   "explanation": "'vertelt' and 'ligt' style list of words in quotes.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [275]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::uitleg", "lines": [256]}
+   ]
+  },
+  {
+   "name": "kort",
+   "qualname": "kort",
+   "kind": "function",
+   "lines": [279, 283],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null},
+    {"name": "posities", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De woorden van een nagekeken stap, kort: \"mijn ouders\", of \"vertelt, ligt\" (de pv's van een samengestelde zin).",
+   "explanation": "The words of a checked step in short form (pv's of a compound sentence separated by commas).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [282, 283]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [316]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.teken_voortgang", "lines": [200]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [336]
+    }
+   ]
+  },
+  {
+   "name": "naam_van_stap",
+   "qualname": "naam_van_stap",
+   "kind": "function",
+   "lines": [286, 288],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "label", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoe de stap heet in een melding: \"pv\", \"lv\", of \"o bij ‘ligt’\" (samengestelde zin).",
+   "explanation": "How a step is named in a message: 'pv', 'lv' or 'o bij ligt'.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_nr", "lines": [288]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [288]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.kies", "lines": [317]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [335]
+    }
+   ]
+  },
+  {
+   "name": "nakijken_vrij",
+   "qualname": "nakijken_vrij",
+   "kind": "function",
+   "lines": [293, 317],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gevraagd", "kind": "positional", "default": null, "annotation": null},
+    {"name": "markering", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "markering = {positie: label} (wat het kind kleurde). Geeft {label: (juist?, diagnose of None)} per gevraagd label. De pv hoort ook bij het gezegde: wie de pv kleurt, kleurt dat woord ook als stuk van het gezegde. In een zin met meer dan éé…",
+   "explanation": "For free colouring: for each asked part, (right?, diagnosis) from the child's marking {position: label}; the pv also counts as part of the predicate; compound sentences check that all pv's and all subjects are coloured.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [302]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::diagnose", "lines": [301, 316]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::nakijken", "lines": [301, 316]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [303, 311]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [304]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["set", "sorted", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.nakijken_vrij", "lines": [391]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende_tip", "lines": [412]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_vrij_kleuren",
+     "lines": [225, 228]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_vrij_kleuren",
+     "lines": [366, 367, 369]
+    }
+   ]
+  },
+  {
+   "name": "verdeling",
+   "qualname": "verdeling",
+   "kind": "function",
+   "lines": [326, 343],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De zinsdelen als aaneengesloten stukken: [(posities), …] in de volgorde van de zin. De pv is een eigen stuk; de rest van het gezegde (bv. ‘gekocht’) ook.",
+   "explanation": "The sentence parts as consecutive pieces (for the 'divide into parts' step); the pv and the rest of the predicate are separate pieces.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verdeling.wie", "lines": [338, 342]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_verdeling", "lines": [348]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_verdelen", "lines": [371]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt",
+     "lines": [270]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_in_zinsdelen_verdelen",
+     "lines": [234, 238]
+    }
+   ]
+  },
+  {
+   "name": "wie",
+   "qualname": "verdeling.wie",
+   "kind": "nested",
+   "lines": [329, 332],
+   "params": [
+    {"name": "i", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "An identity of the part word i belongs to (the pv if any), used to merge neighbouring words.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["id"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::verdeling", "lines": [338, 342]}
+   ]
+  },
+  {
+   "name": "nakijken_verdeling",
+   "qualname": "nakijken_verdeling",
+   "kind": "function",
+   "lines": [346, 350],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "stukken", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zijn de stukken van het kind dezelfde als de zinsdelen? Geeft (juist?, de stukken die niet kloppen).",
+   "explanation": "Whether the child's pieces equal the sentence parts; returns (right?, the pieces that are wrong).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verdeling", "lines": [348]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "map", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets_verdelen", "lines": [358]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_het_leerjaar_van_de_zin_heeft_wat_er_gevraagd_wordt",
+     "lines": [270]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_in_zinsdelen_verdelen",
+     "lines": [235, 236]
+    }
+   ]
+  },
+  {
+   "name": "samenvatting",
+   "qualname": "samenvatting",
+   "kind": "function",
+   "lines": [363, 372],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gevraagd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De juiste ontleding kort, voor het rapport: \"pv geeft · o oma · lv een fiets · mv (geen)\". Een zin met meer dan één pv: \"pv vertelt · o grootvader | pv ligt · o de kist\".",
+   "explanation": "The right analysis in short form for reports: 'pv geeft · o oma · lv een fiets · mv (geen)', clauses separated by '|' for compound sentences.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [367]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::_woorden", "lines": [367, 371]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [369]},
+    {"target": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [370]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_met", "lines": [504]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_stappen_en_het_nakijken",
+     "lines": [334]
+    }
+   ]
+  }
+ ]
+}
