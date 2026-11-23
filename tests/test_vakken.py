@@ -182,10 +182,7 @@ class TestPast(unittest.TestCase):
                     ind = I.oefenscherm(h, w, maatje=False)  # een groot model krijgt de volle breedte (vraag 2)
                     b = ind.links.binnen
                     s = Opnemer()
-                    try:
-                        M.teken_model(s, 0, model, x0=b.x, tekst=v.tekst, breedte=b.w)
-                    except AttributeError:  # een model dat pixels wil: zonder pixels getekend
-                        continue
+                    M.teken_model(s, 0, model, x0=b.x, tekst=v.tekst, breedte=b.w)
                     if not s.puts:
                         continue
                     with self.subTest(model=type(model).__name__, o=o.id, h=h, w=w):

@@ -139,7 +139,10 @@ def teken_model(s, y, model, x0=8, uitslag=None, tekst="", breedte=None):
         if breedte is None:
             teken_getallenlijn(s, y + 1, model)
             return 5, 76
-        teken_getallenlijn(s, y + 1, model, x0=x0, breedte=breedte - LIJN_MARGE)
+        half = max(len(fmt(w)) for w in model.streepjes()) // 2 + 1  # een label staat in het midden onder zijn streepje
+        links = max(2, half, max((len(t) // 2 for t in model.markeringen.values()), default=0), 3)
+        rechts = max(3 + (len(model.eenheid) + 1 if model.eenheid else 0), half)
+        teken_getallenlijn(s, y + 1, model, x0=x0 + links, breedte=breedte - links - rechts)
         return 5, breedte
     if isinstance(model, Honderdveld):
         return teken_veld(s, y, model.gekleurd) if breedte is None else teken_veld(s, y, model.gekleurd, x0)

@@ -62,7 +62,7 @@ def scroll_rand(s, y, x, h, w, boven, onder, rand="rand"):
 
 
 def scroll_stap(k, top, plaats):
-    """De nieuwe top na een toets (PgUp, PgDn) of het scrollwiel (("scroll", ±1)), of None als het geen scrolltoets is."""
+    """De nieuwe top na een toets (PgUp, PgDn) of het scrollwiel (("scroll", 1) of ("scroll", -1)), of None als het geen scrolltoets is."""
     if k == curses.KEY_PPAGE:
         return top - (plaats - 1)
     if k == curses.KEY_NPAGE:
