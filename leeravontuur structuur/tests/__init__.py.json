@@ -1,0 +1,18 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/__init__.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 0,
+ "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+ "purpose": "Marks the tests folder as a package so that `python -m unittest discover` and relative imports (from .test_stabiliteit import ...) work.",
+ "details": "Empty file.",
+ "module_docstring": "",
+ "imports": [],
+ "imported_by": ["tests/test_stopslot.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

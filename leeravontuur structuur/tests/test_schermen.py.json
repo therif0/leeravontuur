@@ -1,0 +1,4096 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_schermen.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 1082,
+ "source_sha256": "02286e97bf5f49bc2a40eff263068af0a6bf330abfddafafe56b55ae8fbb1365",
+ "purpose": "Screen tests without a real terminal: keys, mouse clicks and the scroll wheel through NepScherm, for most of the program.",
+ "details": "Defines the shared Basis (temporary data folder, speel() plays keys through App on a NepScherm and returns (screen, app), ergens() searches the frames) and helpers (hm, hm_klik, naar, plek, naar_spiekbrief, leerstof_vak, na_het_kader) that other test files import. Classes cover start, series, mouse, word problems, clock (also in the separate window using a NepKlokvenster), the fixed work method (klad, tips, second chance, 'Wil je stoppen?'), typing, the numeric keypad and the menu with letter keys.",
+ "module_docstring": "Schermtests zonder echte terminal: toetsen, muisklikken en het scrollwiel via NepScherm.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["NepKlokvenster", "NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["Scherm"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 212,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {"module": "json", "names": [], "alias": null, "line": 281, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 282,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 317,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 368, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 369, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 370,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 431, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 432, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 433,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 451, "resolves_to": [], "internal": false},
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 452,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 453, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Wijzerklok"],
+   "alias": null,
+   "line": 454,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["klok"],
+   "alias": null,
+   "line": 455,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/klok.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 581, "resolves_to": [], "internal": false},
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 588,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 589,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 590,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 622, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 623,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 645,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 660, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 661,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 732,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 779, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 780,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 781,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 815,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 887,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 888,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["getallen"],
+   "alias": null,
+   "line": 889,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/getallen.py"],
+   "internal": true
+  },
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 900,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 901,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 902,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 917, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 918,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 919,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 972, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["scherm"],
+   "alias": null,
+   "line": 973,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "teken_van"],
+   "alias": null,
+   "line": 983,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 1004, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["scherm"],
+   "alias": null,
+   "line": 1005,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 1011, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["scherm"],
+   "alias": null,
+   "line": 1012,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["teken_van"],
+   "alias": null,
+   "line": 1013,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 792, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 930, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "tests/test_avatar.py",
+  "tests/test_breuken.py",
+  "tests/test_cijferen.py",
+  "tests/test_gemengd.py",
+  "tests/test_getallen.py",
+  "tests/test_grootheden.py",
+  "tests/test_herhaling.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_meetkunde.py",
+  "tests/test_ouder.py",
+  "tests/test_procenten.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_stopslot.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_werkwoorden.py",
+  "tests/test_winkel.py"
+ ],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []},
+  {
+   "scope": "<class TestKlok>",
+   "calls": [
+    {"target": "tests/test_schermen.py::naar", "lines": [448]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {"name": "ESC", "line": 15, "value_type": "Constant", "value_preview": "'\\x1b'", "explanation": ""},
+  {"name": "OK", "line": 16, "value_type": "Constant", "value_preview": "'\\n'", "explanation": ""},
+  {"name": "F1", "line": 17, "value_type": "Attribute", "value_preview": "curses.KEY_F1", "explanation": ""},
+  {
+   "name": "HOOFDMENU",
+   "line": 20,
+   "value_type": "List",
+   "value_preview": "['▶ Verder', 'Herhalen', *[v.label for v in CU.VAKKEN], *[label for l…",
+   "explanation": ""
+  },
+  {"name": "TAB", "line": 942, "value_type": "Constant", "value_preview": "9", "explanation": ""},
+  {
+   "name": "INVOER_OBJECTEN",
+   "line": 943,
+   "value_type": "Set",
+   "value_preview": "{'rooster', 'staart', 'vraagstuk', 'speur', 'keuze', 'balk', 'veld', …",
+   "explanation": ""
+  },
+  {
+   "name": "PAD",
+   "line": 963,
+   "value_type": "Dict",
+   "value_preview": "{'/': 458, 'Enter': 459, 'Ctrl+Enter': 460, 'Alt+Enter': 461, '.': 46…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Basis",
+   "qualname": "Basis",
+   "lines": [82, 121],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared base class of screen tests (imported by many other test files).",
+   "attributes": [
+    {"name": "tmp", "line": 84, "scope": "instance", "value_preview": null},
+    {"name": "oud", "line": 85, "scope": "instance", "value_preview": null},
+    {"name": "open", "line": 87, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "Basis.setUp",
+     "kind": "method",
+     "lines": [83, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Temporary data folder.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["os.environ.get", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening", "lines": [305]},
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.setUp", "lines": [971]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.setUp", "lines": [367]}
+     ]
+    },
+    {
+     "name": "tearDown",
+     "qualname": "Basis.tearDown",
+     "kind": "method",
+     "lines": [89, 96],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Closes the databases and resets the environment.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.sluit",
+       "lines": [91],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".cleanup", "os.environ.pop"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening", "lines": [304]}
+     ]
+    },
+    {
+     "name": "opslag",
+     "qualname": "Basis.opslag",
+     "kind": "method",
+     "lines": [98, 106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kinderen", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Databank in de tijdelijke map met de gevraagde kinderen: (naam, leerjaar[, {opties}]).",
+     "explanation": "A database in the temporary folder with the requested children.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [103]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [100]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.algemeen",
+       "lines": [104],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [103],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.zet_algemeen",
+       "lines": [105],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::Basis.speel", "lines": [112]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_half_vier_is_geen_half_vijf", "lines": [480]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_in_woorden", "lines": [489]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_lezen_ook_in_ascii", "lines": [469]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_wijzers_zetten", "lines": [497]},
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [510]},
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_versleepte_plek_onthouden", "lines": [568]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+       "lines": [525]
+      },
+      {"caller": "tests/test_schermen.py::TestMuis.test_schermkleuren_met_de_muis", "lines": [259]},
+      {"caller": "tests/test_schermen.py::TestMuis.verder_klaar", "lines": [283]},
+      {
+       "caller": "tests/test_schermen.py::TestNumeriekKlavier.test_menu_en_klad_met_het_numeriek_klavier",
+       "lines": [991]
+      },
+      {"caller": "tests/test_schermen.py::TestReeks.test_esc_bij_maten_vraagt_eerst", "lines": [226]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_f1_is_ook_een_tip", "lines": [241]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_niveau_dat_nog_niet_bestaat", "lines": [214]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_reeks_van_tien_wordt_bewaard", "lines": [173]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_vrij_oefenen_tip", "lines": [202]},
+      {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_schatten_met_de_muis", "lines": [438]},
+      {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_speurneus", "lines": [423]},
+      {"caller": "tests/test_schermen.py::TestStart.test_dubbele_naam", "lines": [142]},
+      {"caller": "tests/test_schermen.py::TestStart.test_eerste_start_maakt_kind", "lines": [126]},
+      {"caller": "tests/test_schermen.py::TestStart.test_schermkleuren_kiezen_bewaart_ze", "lines": [162]},
+      {"caller": "tests/test_schermen.py::TestStart.test_tweede_start_kiest_laatste_kind", "lines": [135]},
+      {
+       "caller": "tests/test_schermen.py::TestStart.test_wissel_van_kind_met_eigen_instellingen",
+       "lines": [148]
+      },
+      {"caller": "tests/test_schermen.py::TestTypen.test_accenten_typen", "lines": [955]},
+      {"caller": "tests/test_schermen.py::TestTypen.test_broodkruimel_bij_een_nieuw_kind", "lines": [950]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_meteen_juist", "lines": [384]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_tweede_kans_en_tips", "lines": [395]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_esc_blijft_en_links_enter_stopt",
+       "lines": [683]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [673]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+       "lines": [735]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_hoofdmenu_uitleg_stopt_voor_de_avatar",
+       "lines": [816]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_ja_nee_zonder_tweede_kans", "lines": [893]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klad_met_tab_en_dan_antwoorden", "lines": [597]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_ja_gaat_naar_dat_menu", "lines": [710]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [700]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord",
+       "lines": [826]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_na_de_tips_de_spiekbrief", "lines": [627]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_splitsen_eerst_het_klad", "lines": [906]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tab_zonder_enter_houdt_de_regel", "lines": [609]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_tweede_kans_halve_punten_en_herhaalbak",
+       "lines": [831]
+      }
+     ]
+    },
+    {
+     "name": "speel",
+     "qualname": "Basis.speel",
+     "kind": "method",
+     "lines": [108, 118],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "voorrang", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "klokvenster", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "scherm_opties", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Speelt de toetsen af. Geeft (nepscherm, app). Stopt netjes als de toetsen op zijn. klokvenster: een NepKlokvenster (anders tekent de terminal de klok, zoals zonder beeldscherm).",
+     "explanation": "Plays keys on a fake screen through the App; returns (fake screen, app).",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [112]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [111]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [112]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.start",
+       "lines": [115],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestKlok.test_half_vier_is_geen_half_vijf", "lines": [481]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_in_woorden", "lines": [490]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_lezen_ook_in_ascii", "lines": [470]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_wijzers_zetten", "lines": [498]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_f2_klok_in_de_terminal_en_terug",
+       "lines": [548, 555]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [512]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_tekst_blijft_links_van_het_venster",
+       "lines": [561]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_venster_gesloten_dan_klok_in_de_terminal",
+       "lines": [540]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_versleepte_plek_onthouden", "lines": [573]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+       "lines": [528]
+      },
+      {"caller": "tests/test_schermen.py::TestMuis.test_broodkruimel_terug_naar_hoofdmenu", "lines": [355]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_een_volle_reeks_is_af", "lines": [319, 322]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_hoofdmenu_in_groepen", "lines": [340, 346, 349, 351]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_knop_in_voetbalk", "lines": [275]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_schermkleuren_met_de_muis", "lines": [261]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_scrollwiel_in_spiekbrief", "lines": [359]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_stoppen_en_esc_naar_het_titelscherm", "lines": [330]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_tabel_klikken_en_komma", "lines": [254]},
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening",
+       "lines": [295, 306]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_zonder_kader_als_de_oefening_niet_af_was",
+       "lines": [311]
+      },
+      {"caller": "tests/test_schermen.py::TestMuis.test_voetbalk_van_mijn_avatar", "lines": [268, 271]},
+      {
+       "caller": "tests/test_schermen.py::TestNumeriekKlavier.test_menu_en_klad_met_het_numeriek_klavier",
+       "lines": [996]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestReeks.test_esc_bij_maten_vraagt_eerst",
+       "lines": [227, 230, 235]
+      },
+      {"caller": "tests/test_schermen.py::TestReeks.test_f1_is_ook_een_tip", "lines": [242]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_niveau_dat_nog_niet_bestaat", "lines": [215, 219]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_reeks_van_tien_wordt_bewaard", "lines": [176, 188]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_vrij_oefenen_tip", "lines": [204]},
+      {"caller": "tests/test_schermen.py::TestReeks.test_zelf_kiezen_met_het_toetsenbord", "lines": [196]},
+      {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_schatten_met_de_muis", "lines": [439]},
+      {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_speurneus", "lines": [424]},
+      {"caller": "tests/test_schermen.py::TestStart.test_ascii", "lines": [156]},
+      {"caller": "tests/test_schermen.py::TestStart.test_dubbele_naam", "lines": [143]},
+      {"caller": "tests/test_schermen.py::TestStart.test_eerste_start_maakt_kind", "lines": [127]},
+      {"caller": "tests/test_schermen.py::TestStart.test_schermkleuren_kiezen_bewaart_ze", "lines": [163]},
+      {"caller": "tests/test_schermen.py::TestStart.test_tweede_start_kiest_laatste_kind", "lines": [137]},
+      {
+       "caller": "tests/test_schermen.py::TestStart.test_wissel_van_kind_met_eigen_instellingen",
+       "lines": [149]
+      },
+      {"caller": "tests/test_schermen.py::TestTypen.test_accenten_typen", "lines": [955]},
+      {"caller": "tests/test_schermen.py::TestTypen.test_broodkruimel_bij_een_nieuw_kind", "lines": [949]},
+      {"caller": "tests/test_schermen.py::TestTypen.test_te_klein_venster", "lines": [959]},
+      {
+       "caller": "tests/test_schermen.py::TestVraagstuk.test_aanduiden_met_de_muis_en_ascii",
+       "lines": [411, 415]
+      },
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_meteen_juist", "lines": [385]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_tweede_kans_en_tips", "lines": [398, 402]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_elk_rekenonderwerp_past_met_het_klad_open",
+       "lines": [934]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_esc_blijft_en_links_enter_stopt",
+       "lines": [684, 688]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_esc_klik_op_ja", "lines": [693]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_na_het_nakijken_stopt_meteen",
+       "lines": [756]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [674]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_f1_geeft_de_volgende_tip", "lines": [861]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_bij_maten", "lines": [749]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+       "lines": [736, 744]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_hoofdmenu_uitleg_stopt_voor_de_avatar",
+       "lines": [817]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_ja_nee_zonder_tweede_kans", "lines": [894]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_blijft_staan_na_het_nakijken",
+       "lines": [762]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_kader_ook_bij_juist_en_niet_zonder_klad",
+       "lines": [771, 774]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klad_kader_past_overal", "lines": [797]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klad_met_tab_en_dan_antwoorden", "lines": [599]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klik_op_het_klad", "lines": [883]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_ja_gaat_naar_dat_menu", "lines": [711]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_na_het_nakijken_meteen", "lines": [726]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+       "lines": [717, 720]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [701]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord",
+       "lines": [827]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_na_de_tips_de_spiekbrief", "lines": [630, 632]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_spiekbrief_na_de_tips_overal",
+       "lines": [649, 653]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_splitsen_eerst_het_klad", "lines": [908, 912]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_tab_zonder_enter_houdt_de_regel",
+       "lines": [611, 616]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tip_terwijl_je_in_het_klad_typt", "lines": [877]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tips_draaien_rond", "lines": [855]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tips_getrapt", "lines": [848]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_twee_keer_fout_zo_kan_het", "lines": [842]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_tweede_kans_halve_punten_en_herhaalbak",
+       "lines": [832]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_vraagteken_in_het_klad_is_gewoon_een_teken",
+       "lines": [867, 872]
+      }
+     ]
+    },
+    {
+     "name": "ergens",
+     "qualname": "Basis.ergens",
+     "kind": "method",
+     "lines": [120, 121],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Whether a text appears in any frame.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["any"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestKlok.test_half_vier_is_geen_half_vijf", "lines": [482]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_lezen_ook_in_ascii", "lines": [472]},
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [514]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_hoofdmenu_in_groepen", "lines": [347, 348, 350, 352]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_schermkleuren_met_de_muis", "lines": [264, 265]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_scrollwiel_in_spiekbrief", "lines": [360]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_stoppen_en_esc_naar_het_titelscherm", "lines": [331]},
+      {"caller": "tests/test_schermen.py::TestMuis.test_tabel_klikken_en_komma", "lines": [255]},
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening",
+       "lines": [296, 297]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_zonder_kader_als_de_oefening_niet_af_was",
+       "lines": [312, 313]
+      },
+      {"caller": "tests/test_schermen.py::TestMuis.test_voetbalk_van_mijn_avatar", "lines": [272]},
+      {
+       "caller": "tests/test_schermen.py::TestNumeriekKlavier.test_menu_en_klad_met_het_numeriek_klavier",
+       "lines": [997]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestReeks.test_esc_bij_maten_vraagt_eerst",
+       "lines": [228, 231, 236]
+      },
+      {"caller": "tests/test_schermen.py::TestReeks.test_f1_is_ook_een_tip", "lines": [244, 245]},
+      {
+       "caller": "tests/test_schermen.py::TestReeks.test_niveau_dat_nog_niet_bestaat",
+       "lines": [217, 218, 221, 222]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestReeks.test_reeks_van_tien_wordt_bewaard",
+       "lines": [177, 178, 190]
+      },
+      {"caller": "tests/test_schermen.py::TestReeks.test_vrij_oefenen_tip", "lines": [205]},
+      {
+       "caller": "tests/test_schermen.py::TestReeks.test_zelf_kiezen_met_het_toetsenbord",
+       "lines": [197, 198, 199]
+      },
+      {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_speurneus", "lines": [425, 426]},
+      {"caller": "tests/test_schermen.py::TestStart.test_dubbele_naam", "lines": [144]},
+      {"caller": "tests/test_schermen.py::TestStart.test_eerste_start_maakt_kind", "lines": [128, 129]},
+      {"caller": "tests/test_schermen.py::TestStart.test_schermkleuren_kiezen_bewaart_ze", "lines": [165]},
+      {"caller": "tests/test_schermen.py::TestStart.test_tweede_start_kiest_laatste_kind", "lines": [138]},
+      {
+       "caller": "tests/test_schermen.py::TestStart.test_wissel_van_kind_met_eigen_instellingen",
+       "lines": [150]
+      },
+      {"caller": "tests/test_schermen.py::TestTypen.test_broodkruimel_bij_een_nieuw_kind", "lines": [951]},
+      {"caller": "tests/test_schermen.py::TestTypen.test_te_klein_venster", "lines": [960]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_aanduiden_met_de_muis_en_ascii", "lines": [416]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_meteen_juist", "lines": [387, 388]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_tweede_kans_en_tips", "lines": [399, 400]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_na_het_nakijken_stopt_meteen",
+       "lines": [757, 758]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [676, 677]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_f1_geeft_de_volgende_tip", "lines": [862, 863]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+       "lines": [745]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_ja_nee_zonder_tweede_kans", "lines": [897]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_kader_ook_bij_juist_en_niet_zonder_klad",
+       "lines": [775]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_met_tab_en_dan_antwoorden",
+       "lines": [600, 601]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klik_op_het_klad", "lines": [884]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_na_het_nakijken_meteen",
+       "lines": [727, 728]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+       "lines": [718, 721]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [703]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_na_de_tips_de_spiekbrief", "lines": [638]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_spiekbrief_na_de_tips_overal", "lines": [654]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_splitsen_eerst_het_klad", "lines": [909]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tips_getrapt", "lines": [849, 850, 851]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_tweede_kans_halve_punten_en_herhaalbak",
+       "lines": [833, 834]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_vraagteken_in_het_klad_is_gewoon_een_teken",
+       "lines": [868, 873]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "TestStart",
+   "qualname": "TestStart",
+   "lines": [124, 168],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Start.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_eerste_start_maakt_kind",
+     "qualname": "TestStart.test_eerste_start_maakt_kind",
+     "kind": "method",
+     "lines": [125, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "First start asks a name and school year and creates the child.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [128, 129]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [126]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [127]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.algemeen",
+       "lines": [132],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [130],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tweede_start_kiest_laatste_kind",
+     "qualname": "TestStart.test_tweede_start_kiest_laatste_kind",
+     "kind": "method",
+     "lines": [134, 139],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The next start begins at the last child.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [138]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [135]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [137]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [136],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.zet_algemeen",
+       "lines": [136],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_dubbele_naam",
+     "qualname": "TestStart.test_dubbele_naam",
+     "kind": "method",
+     "lines": [141, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A duplicate name is refused with a message.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [144]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [142]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [143]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_wissel_van_kind_met_eigen_instellingen",
+     "qualname": "TestStart.test_wissel_van_kind_met_eigen_instellingen",
+     "kind": "method",
+     "lines": [146, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Wisselen gaat via Stoppen → het titelscherm → Wie ben jij? (0.23: geen \"Wissel van kind\" meer).",
+     "explanation": "Switching child via Stoppen > title > Wie ben jij? applies that child's settings.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [150]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [148]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [149]},
+      {"target": "tests/test_schermen.py::hm", "lines": [149]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ascii",
+     "qualname": "TestStart.test_ascii",
+     "kind": "method",
+     "lines": [155, 158],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "--ascii draws only ASCII.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [156]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_schermkleuren_kiezen_bewaart_ze",
+     "qualname": "TestStart.test_schermkleuren_kiezen_bewaart_ze",
+     "kind": "method",
+     "lines": [160, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Gestart met --contrast; in Mijn avatar › Schermkleuren zelf iets kiezen: dat wordt wel bewaard.",
+     "explanation": "Choosing colours in Mijn avatar is stored even when started with --contrast.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [165]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [162]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [163]},
+      {"target": "tests/test_schermen.py::hm", "lines": [163]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [166],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestReeks",
+   "qualname": "TestReeks",
+   "lines": [171, 246],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Series.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_reeks_van_tien_wordt_bewaard",
+     "qualname": "TestReeks.test_reeks_van_tien_wordt_bewaard",
+     "kind": "method",
+     "lines": [172, 190],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A series of ten is stored with ten answers.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [177, 178, 190]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [173]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [176, 188]},
+      {"target": "tests/test_schermen.py::naar", "lines": [175]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.vandaag",
+       "lines": [186],
+       "candidates": ["leeravontuur/terminal/app.py::App.vandaag"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.antwoorden",
+       "lines": [179],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.sessies",
+       "lines": [183],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessies"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNotNone", ".assertTrue", "all", "len", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zelf_kiezen_met_het_toetsenbord",
+     "qualname": "TestReeks.test_zelf_kiezen_met_het_toetsenbord",
+     "kind": "method",
+     "lines": [192, 199],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Choosing your own units with the keyboard.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [197, 198, 199]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [196]},
+      {"target": "tests/test_schermen.py::naar", "lines": [194]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vrij_oefenen_tip",
+     "qualname": "TestReeks.test_vrij_oefenen_tip",
+     "kind": "method",
+     "lines": [201, 207],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "F1 gives a tip in free practice.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [205]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [202]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [204]},
+      {"target": "tests/test_schermen.py::naar", "lines": [203]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [206],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niveau_dat_nog_niet_bestaat",
+     "qualname": "TestReeks.test_niveau_dat_nog_niet_bestaat",
+     "kind": "method",
+     "lines": [209, 222],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#27: Snelheid bestaat pas vanaf het 6de. Voor een kind van het 5de staat \"Hoe moeilijk?\" op Moeilijk (Enter werkt meteen); Makkelijk kiezen zegt waarom het niet gaat en zet de keuze op Moeilijk.",
+     "explanation": "A level that does not exist for the child's year is explained and starts at the nearest one (#27).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [217, 218, 221, 222]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [214]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [215, 219]},
+      {"target": "tests/test_schermen.py::naar", "lines": [215, 219]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_bij_maten_vraagt_eerst",
+     "qualname": "TestReeks.test_esc_bij_maten_vraagt_eerst",
+     "kind": "method",
+     "lines": [224, 237],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#33: ook bij Maten (vrij en de tabel-oefening).",
+     "explanation": "Esc in Maten asks 'Wil je stoppen?' first (#33).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [228, 231, 236]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [226]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [227, 230, 235]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [237]},
+      {"target": "tests/test_schermen.py::naar", "lines": [227, 230, 234]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [229],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_f1_is_ook_een_tip",
+     "qualname": "TestReeks.test_f1_is_ook_een_tip",
+     "kind": "method",
+     "lines": [239, 246],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#14: F1 geeft een tip (eigen scherm van de maten); ? doet niets meer (0.21.7).",
+     "explanation": "F1 is a tip; ? does nothing any more (#14).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [244, 245]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [241]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [242]},
+      {"target": "tests/test_schermen.py::naar", "lines": [242]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [246],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestMuis",
+   "qualname": "TestMuis",
+   "lines": [249, 360],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Mouse and menus.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_tabel_klikken_en_komma",
+     "qualname": "TestMuis.test_tabel_klikken_en_komma",
+     "kind": "method",
+     "lines": [250, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clicking cells and commas in the unit table.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [255]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [254]},
+      {"target": "tests/test_schermen.py::naar", "lines": [251]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_schermkleuren_met_de_muis",
+     "qualname": "TestMuis.test_schermkleuren_met_de_muis",
+     "kind": "method",
+     "lines": [257, 265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hoofdmenu › Mijn avatar (klik) › klik op de regel [L] schermkleuren › klik op het 2de thema.",
+     "explanation": "Mijn avatar > colours by clicking.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [264, 265]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [259]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [261]},
+      {"target": "tests/test_schermen.py::hm_klik", "lines": [260]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.instellingen_van",
+       "lines": [263],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_voetbalk_van_mijn_avatar",
+     "qualname": "TestMuis.test_voetbalk_van_mijn_avatar",
+     "kind": "method",
+     "lines": [267, 272],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The avatar footer shows [L] schermkleuren.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [272]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [268, 271]},
+      {"target": "tests/test_schermen.py::hm", "lines": [268, 271]},
+      {"target": "tests/test_schermen.py::plek", "lines": [269]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_knop_in_voetbalk",
+     "qualname": "TestMuis.test_knop_in_voetbalk",
+     "kind": "method",
+     "lines": [274, 277],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on a footer button acts like its key.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [275]},
+      {"target": "tests/test_schermen.py::hm", "lines": [275]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verder_klaar",
+     "qualname": "TestMuis.verder_klaar",
+     "kind": "method",
+     "lines": [279, 289],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "af", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een kind met een vorige oefening (af of niet) en een herhaalvraag die vandaag aan de beurt is.",
+     "explanation": "A child with a finished last exercise and a repeat question due today.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [283]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.herhaal_zet",
+       "lines": [288],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaal_zet"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [284],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.zet_algemeen",
+       "lines": [285],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["json.dumps"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestMuis.test_een_volle_reeks_is_af", "lines": [318]},
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening",
+       "lines": [294, 306]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_zonder_kader_als_de_oefening_niet_af_was",
+       "lines": [310]
+      }
+     ]
+    },
+    {
+     "name": "test_verder_na_een_afgewerkte_oefening",
+     "qualname": "TestMuis.test_verder_na_een_afgewerkte_oefening",
+     "kind": "method",
+     "lines": [291, 307],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "0.23: was de vorige oefening af en staan er herhaalvragen klaar, dan vraagt Verder eerst, met Verder gekozen (Enter = verder met de oefening, ← Enter = eerst herhalen).",
+     "explanation": "'Verder' proposes repeating first after a finished exercise.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [296, 297]},
+      {"target": "tests/test_schermen.py::Basis.setUp", "lines": [305]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [295, 306]},
+      {"target": "tests/test_schermen.py::Basis.tearDown", "lines": [304]},
+      {
+       "target": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening.erna",
+       "lines": [301, 307]
+      },
+      {"target": "tests/test_schermen.py::TestMuis.verder_klaar", "lines": [294, 306]},
+      {"target": "tests/test_schermen.py::hm", "lines": [295, 306]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.open[-1].sluit",
+       "lines": [302],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "erna",
+     "qualname": "TestMuis.test_verder_na_een_afgewerkte_oefening.erna",
+     "kind": "nested",
+     "lines": [298, 300],
+     "params": [
+      {"name": "scherm", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the first line of the first frame after the 'vorige oefening is af' dialog.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "max", "next"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening",
+       "lines": [301, 307]
+      }
+     ]
+    },
+    {
+     "name": "test_verder_zonder_kader_als_de_oefening_niet_af_was",
+     "qualname": "TestMuis.test_verder_zonder_kader_als_de_oefening_niet_af_was",
+     "kind": "method",
+     "lines": [309, 313],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No prompt when the last exercise was not finished.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [312, 313]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [311]},
+      {"target": "tests/test_schermen.py::TestMuis.verder_klaar", "lines": [310]},
+      {"target": "tests/test_schermen.py::hm", "lines": [311]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_volle_reeks_is_af",
+     "qualname": "TestMuis.test_een_volle_reeks_is_af",
+     "kind": "method",
+     "lines": [315, 323],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een reeks tot het resultaat = af; vrij oefenen nooit (dat bepaalt of Verder eerst herhalen voorstelt).",
+     "explanation": "A full series is 'done'; free practice never is.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [319, 322]},
+      {"target": "tests/test_schermen.py::TestMuis.verder_klaar", "lines": [318]},
+      {"target": "tests/test_schermen.py::naar", "lines": [319, 322]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.laatste_oefening",
+       "lines": [321, 323],
+       "candidates": ["leeravontuur/terminal/app.py::App.laatste_oefening"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_stoppen_en_esc_naar_het_titelscherm",
+     "qualname": "TestMuis.test_stoppen_en_esc_naar_het_titelscherm",
+     "kind": "method",
+     "lines": [325, 335],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "0.23: Stoppen en Esc in het hoofdmenu brengen je naar het titelscherm (zonder kader). Daar is Enter = \"Wie ben jij?\" en Esc = het programma sluiten.",
+     "explanation": "Stoppen and Esc in the main menu lead to the title screen.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [331]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [330]},
+      {"target": "tests/test_schermen.py::hm", "lines": [328]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertGreaterEqual", ".assertIn", ".subTest", "enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hoofdmenu_in_groepen",
+     "qualname": "TestMuis.test_hoofdmenu_in_groepen",
+     "kind": "method",
+     "lines": [337, 352],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "0.23: kopjes VAKKEN, JIJ, FEEDBACK; Winkel en Leerstof rechtstreeks. Taal is er sinds 0.25 (de domeinen die nog niet gebouwd zijn, staan grijs in het menu van Taal).",
+     "explanation": "The main menu groups VAKKEN, JIJ, FEEDBACK.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [347, 348, 350, 352]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [340, 346, 349, 351]},
+      {"target": "tests/test_schermen.py::hm", "lines": [346, 351]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "len", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_broodkruimel_terug_naar_hoofdmenu",
+     "qualname": "TestMuis.test_broodkruimel_terug_naar_hoofdmenu",
+     "kind": "method",
+     "lines": [354, 356],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A breadcrumb click returns to the main menu.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [355]},
+      {"target": "tests/test_schermen.py::hm", "lines": [355]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_scrollwiel_in_spiekbrief",
+     "qualname": "TestMuis.test_scrollwiel_in_spiekbrief",
+     "kind": "method",
+     "lines": [358, 360],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The wheel scrolls a cheat sheet.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [360]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [359]},
+      {"target": "tests/test_schermen.py::naar_spiekbrief", "lines": [359]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestVraagstuk",
+   "qualname": "TestVraagstuk",
+   "lines": [363, 418],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Wiskunde › Vraagstukken › Oplossen › V (vrij oefenen), met een vast vraagstuk.",
+   "explanation": "Word problem screen.",
+   "attributes": [
+    {"name": "v", "line": 372, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestVraagstuk.setUp",
+     "kind": "method",
+     "lines": [366, 375],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Patches the word-problem maker to a fixed problem.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.setUp", "lines": [367]}
+     ],
+     "unresolved_calls": [
+      {"expr": "o.maak_met", "lines": [372], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "o.parameters",
+       "lines": [372],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "patch.start",
+       "lines": [374],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", "random.Random", "super", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "start",
+     "qualname": "TestVraagstuk.start",
+     "kind": "method",
+     "lines": [377, 378],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key sequence to free practice of word problems.",
+     "calls": [
+      {"target": "tests/test_schermen.py::naar", "lines": [378]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_schermen.py::TestVraagstuk.test_aanduiden_met_de_muis_en_ascii",
+       "lines": [411, 415]
+      },
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_meteen_juist", "lines": [385]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_tweede_kans_en_tips", "lines": [397]}
+     ]
+    },
+    {
+     "name": "antwoord",
+     "qualname": "TestVraagstuk.antwoord",
+     "kind": "method",
+     "lines": [380, 381],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The keys that type an answer.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["list", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_meteen_juist", "lines": [385]},
+      {"caller": "tests/test_schermen.py::TestVraagstuk.test_tweede_kans_en_tips", "lines": [397, 401]}
+     ]
+    },
+    {
+     "name": "test_meteen_juist",
+     "qualname": "TestVraagstuk.test_meteen_juist",
+     "kind": "method",
+     "lines": [383, 392],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Answering a word problem right at once.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [387, 388]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [384]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [385]},
+      {"target": "tests/test_schermen.py::TestVraagstuk.antwoord", "lines": [385]},
+      {"target": "tests/test_schermen.py::TestVraagstuk.start", "lines": [385]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [389],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [392],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tweede_kans_en_tips",
+     "qualname": "TestVraagstuk.test_tweede_kans_en_tips",
+     "kind": "method",
+     "lines": [394, 408],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong immediate answer, tips and the second chance.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [399, 400]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [395]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [398, 402]},
+      {"target": "tests/test_schermen.py::TestVraagstuk.antwoord", "lines": [397, 401]},
+      {"target": "tests/test_schermen.py::TestVraagstuk.start", "lines": [397]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [403],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.herhaalbak",
+       "lines": [408],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [407],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_aanduiden_met_de_muis_en_ascii",
+     "qualname": "TestVraagstuk.test_aanduiden_met_de_muis_en_ascii",
+     "kind": "method",
+     "lines": [410, 418],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Marking givens with the mouse and ASCII drawing.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [416]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [411, 415]},
+      {"target": "tests/test_schermen.py::TestVraagstuk.start", "lines": [411, 415]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "all", "enumerate", "len", "next", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSpeurneusEnSchatten",
+   "qualname": "TestSpeurneusEnSchatten",
+   "lines": [421, 443],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Speurneus and estimating.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_speurneus",
+     "qualname": "TestSpeurneusEnSchatten.test_speurneus",
+     "kind": "method",
+     "lines": [422, 428],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The Speurneus screen accepts 'all right' and shows the result.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [425, 426]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [423]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [424]},
+      {"target": "tests/test_schermen.py::naar", "lines": [424]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [427],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_schatten_met_de_muis",
+     "qualname": "TestSpeurneusEnSchatten.test_schatten_met_de_muis",
+     "kind": "method",
+     "lines": [430, 443],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The estimating question can be answered with a click.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [438]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [439]},
+      {"target": "tests/test_schermen.py::naar", "lines": [439]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VS.SCHATTEN.maak",
+       "lines": [434],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.antwoorden",
+       "lines": [441],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "patch.start",
+       "lines": [436],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", ".assertEqual", ".assertTrue", "random.Random", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKlok",
+   "qualname": "TestKlok",
+   "lines": [446, 501],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Wiskunde › Tijd, geld en snelheid › De klok › V (vrij oefenen), met een vaste vraag.",
+   "explanation": "Clock.",
+   "attributes": [
+    {
+     "name": "START",
+     "line": 448,
+     "scope": "class",
+     "value_preview": "naar('wiskunde.tijd_geld_snelheid.klok')"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "vaste_vraag",
+     "qualname": "TestKlok.vaste_vraag",
+     "kind": "method",
+     "lines": [450, 465],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "t", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Patches the clock maker to a fixed question.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Wijzerklok", "lines": [461]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [459]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [459]}
+     ],
+     "unresolved_calls": [
+      {"expr": "K.KLOK.maak_met", "lines": [456], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "K.KLOK.parameters",
+       "lines": [456],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "patch.start",
+       "lines": [463],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", "decimal.Decimal", "isinstance", "random.Random", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestKlok.test_half_vier_is_geen_half_vijf", "lines": [479]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_in_woorden", "lines": [488]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_lezen_ook_in_ascii", "lines": [468]},
+      {"caller": "tests/test_schermen.py::TestKlok.test_wijzers_zetten", "lines": [494]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_f2_klok_in_de_terminal_en_terug",
+       "lines": [546]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_lezen_in_het_venster", "lines": [509]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_tekst_blijft_links_van_het_venster",
+       "lines": [559]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_venster_gesloten_dan_klok_in_de_terminal",
+       "lines": [538]
+      },
+      {"caller": "tests/test_schermen.py::TestKlokvenster.test_versleepte_plek_onthouden", "lines": [572]},
+      {
+       "caller": "tests/test_schermen.py::TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+       "lines": [524]
+      }
+     ]
+    },
+    {
+     "name": "test_lezen_ook_in_ascii",
+     "qualname": "TestKlok.test_lezen_ook_in_ascii",
+     "kind": "method",
+     "lines": [467, 476],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reading the clock, also in ASCII.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [472]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [469]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [470]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [468]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [473],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_half_vier_is_geen_half_vijf",
+     "qualname": "TestKlok.test_half_vier_is_geen_half_vijf",
+     "kind": "method",
+     "lines": [478, 485],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Answering 'half vier' as 4.30 is explained.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [482]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [480]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [481]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [479]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [483],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_in_woorden",
+     "qualname": "TestKlok.test_in_woorden",
+     "kind": "method",
+     "lines": [487, 491],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typing the time in words.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [489]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [490]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [488]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [491],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_wijzers_zetten",
+     "qualname": "TestKlok.test_wijzers_zetten",
+     "kind": "method",
+     "lines": [493, 501],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Setting the hands with keys.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [497]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [498]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [494]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [499],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "int", "next", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKlokvenster",
+   "qualname": "TestKlokvenster",
+   "lines": [504, 574],
+   "bases": ["TestKlok"],
+   "decorators": [],
+   "docstring": "De klok in een eigen venster (zonder echt proces): de terminal verwijst ernaar, klikken en toetsen uit het venster komen in de oefening, en zonder klok in beeld verdwijnt het venster.",
+   "explanation": "Clock in the window.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_lezen_in_het_venster",
+     "qualname": "TestKlokvenster.test_lezen_in_het_venster",
+     "kind": "method",
+     "lines": [508, 521],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reading the clock with the clock in the (fake) window; keys from the window arrive.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [511]},
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [514]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [510]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [512]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [509]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [515],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_wijzers_zetten_met_een_klik_in_het_venster",
+     "qualname": "TestKlokvenster.test_wijzers_zetten_met_een_klik_in_het_venster",
+     "kind": "method",
+     "lines": [523, 535],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click in the window sets the hands.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [527]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [525]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [528]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [524]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [530],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_venster_gesloten_dan_klok_in_de_terminal",
+     "qualname": "TestKlokvenster.test_venster_gesloten_dan_klok_in_de_terminal",
+     "kind": "method",
+     "lines": [537, 543],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After the window closes the terminal draws the clock.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [539]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [540]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [538]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_f2_klok_in_de_terminal_en_terug",
+     "qualname": "TestKlokvenster.test_f2_klok_in_de_terminal_en_terug",
+     "kind": "method",
+     "lines": [545, 556],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "F2 moves the clock to the terminal and back.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [547, 554]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [548, 555]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [546]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tekst_blijft_links_van_het_venster",
+     "qualname": "TestKlokvenster.test_tekst_blijft_links_van_het_venster",
+     "kind": "method",
+     "lines": [558, 565],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The text stays left of the window column.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [560]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [561]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [559]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "len", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_versleepte_plek_onthouden",
+     "qualname": "TestKlokvenster.test_versleepte_plek_onthouden",
+     "kind": "method",
+     "lines": [567, 574],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A moved window's position is stored.",
+     "calls": [
+      {"target": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [570]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [568]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [573]},
+      {"target": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [572]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWerkwijze",
+   "qualname": "TestWerkwijze",
+   "lines": [577, 939],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "De vaste werkwijze in elke oefening: klad met Tab, getrapte tips, een tweede kans en \"Zo kan het:\".",
+   "explanation": "The fixed work method.",
+   "attributes": [
+    {
+     "name": "KRUIMEL_WISKUNDE",
+     "line": 696,
+     "scope": "class",
+     "value_preview": "('klik_op', ('kruimel', 1))"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "vast",
+     "qualname": "TestWerkwijze.vast",
+     "kind": "method",
+     "lines": [580, 585],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Patches a topic's maker to a fixed question.",
+     "calls": [
+      {"target": "tests/test_schermen.py::naar", "lines": [585]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "patch.start",
+       "lines": [583],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [594]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_ja_nee_zonder_tweede_kans", "lines": [894]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_na_de_tips_de_spiekbrief", "lines": [629]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_splitsen_eerst_het_klad", "lines": [907]}
+     ]
+    },
+    {
+     "name": "plusmin",
+     "qualname": "TestWerkwijze.plusmin",
+     "kind": "method",
+     "lines": [587, 594],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key sequence to a fixed plus/minus question.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [591]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.vast", "lines": [594]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["decimal.Decimal"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_esc_blijft_en_links_enter_stopt",
+       "lines": [684, 688]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_esc_klik_op_ja", "lines": [693]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_na_het_nakijken_stopt_meteen",
+       "lines": [756]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [674]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_f1_geeft_de_volgende_tip", "lines": [861]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+       "lines": [733]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_hoofdmenu_uitleg_stopt_voor_de_avatar",
+       "lines": [817]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_blijft_staan_na_het_nakijken",
+       "lines": [762]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_klad_kader_ook_bij_juist_en_niet_zonder_klad",
+       "lines": [771, 774]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klad_met_tab_en_dan_antwoorden", "lines": [598]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_klik_op_het_klad", "lines": [882]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_ja_gaat_naar_dat_menu", "lines": [711]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_na_het_nakijken_meteen", "lines": [726]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+       "lines": [717, 720]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+       "lines": [701]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord",
+       "lines": [827]
+      },
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tab_zonder_enter_houdt_de_regel", "lines": [610]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tip_terwijl_je_in_het_klad_typt", "lines": [877]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tips_draaien_rond", "lines": [855]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_tips_getrapt", "lines": [848]},
+      {"caller": "tests/test_schermen.py::TestWerkwijze.test_twee_keer_fout_zo_kan_het", "lines": [842]},
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_tweede_kans_halve_punten_en_herhaalbak",
+       "lines": [832]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestWerkwijze.test_vraagteken_in_het_klad_is_gewoon_een_teken",
+       "lines": [867, 872]
+      }
+     ]
+    },
+    {
+     "name": "test_klad_met_tab_en_dan_antwoorden",
+     "qualname": "TestWerkwijze.test_klad_met_tab_en_dan_antwoorden",
+     "kind": "method",
+     "lines": [596, 605],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Klad with Tab and then answering.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [600, 601]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [597]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [599]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [598]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [602],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [605],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tab_zonder_enter_houdt_de_regel",
+     "qualname": "TestWerkwijze.test_tab_zonder_enter_houdt_de_regel",
+     "kind": "method",
+     "lines": [607, 617],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#22: een klad-regel getypt zonder Enter en dan Tab: de regel blijft staan (nagekeken), niet weg.",
+     "explanation": "A klad line without Enter followed by Tab stays and is checked (#22).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [609]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [611, 616]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [610]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [617],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".assertNotIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_na_de_tips_de_spiekbrief",
+     "qualname": "TestWerkwijze.test_na_de_tips_de_spiekbrief",
+     "kind": "method",
+     "lines": [619, 641],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#20: na de laatste tip opent nog eens ? de spiekbrief (bij het juiste kopje); Esc = terug naar dezelfde vraag (niets kwijt); daarna begint ? weer bij tip 1. De spiekbrief telt als een tip.",
+     "explanation": "After the last tip F1 opens the cheat sheet at the right heading; Esc returns (#20).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [638]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [627]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [630, 632]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.vast", "lines": [629]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "H.TAFELS.klad_voor",
+       "lines": [628],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.klad_voor",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.klad_voor",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.klad_voor"
+       ],
+       "candidates_count": 4
+      },
+      {"expr": "H.TAFELS.maak_met", "lines": [624], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "H.TAFELS.parameters",
+       "lines": [624],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "H.TAFELS.tips",
+       "lines": [628],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.tips",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.tips"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.antwoorden",
+       "lines": [639],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIn",
+      ".assertTrue",
+      "bool",
+      "len",
+      "max",
+      "next",
+      "random.Random",
+      "range",
+      "reversed",
+      "str"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_na_de_tips_overal",
+     "qualname": "TestWerkwijze.test_spiekbrief_na_de_tips_overal",
+     "kind": "method",
+     "lines": [643, 656],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#20: rooster (? twee keer op hetzelfde vakje), vraagstuk (na de 4 tips) en Maten (na de tip).",
+     "explanation": "The same for the grid, word problems and Maten.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [654]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [649, 653]},
+      {"target": "tests/test_schermen.py::naar", "lines": [649, 653]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", ".assertTrue", ".subTest", "any", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_spiekkopje_bestaat",
+     "qualname": "TestWerkwijze.test_elk_spiekkopje_bestaat",
+     "kind": "method",
+     "lines": [658, 669],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kopje waar de spiekbrief opent (Onderwerp.kop_op_spiekbrief) staat echt op de spiekbrief.",
+     "explanation": "The heading the cheat sheet opens at really exists.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.jaar_voor",
+       "lines": [665],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.jaar_voor"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kop_op_spiekbrief",
+       "lines": [666],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.kop_op_spiekbrief"
+       ],
+       "candidates_count": 5
+      },
+      {
+       "expr": "o.maak",
+       "lines": [665],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "o.spiekbrief", "lines": [663], "candidates": [], "candidates_count": 22}
+     ],
+     "external_calls": [".assertIn", ".subTest", "leeravontuur.kern.onderwerp.ONDERWERPEN.values", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_vraagt_eerst_en_nee_houdt_alles",
+     "qualname": "TestWerkwijze.test_esc_vraagt_eerst_en_nee_houdt_alles",
+     "kind": "method",
+     "lines": [671, 680],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#33: Esc midden in een vraag vraagt eerst \"Wil je stoppen?\"; Nee (gekozen) houdt antwoord en klad.",
+     "explanation": "Esc mid-question asks first; No keeps answer and klad (#33).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [676, 677]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [673]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [674]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [674]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [678],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_esc_blijft_en_links_enter_stopt",
+     "qualname": "TestWerkwijze.test_esc_esc_blijft_en_links_enter_stopt",
+     "kind": "method",
+     "lines": [682, 690],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Esc twice stays; ← Enter stops.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [683]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [684, 688]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [684, 688]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [685, 690]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [687, 689],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_klik_op_ja",
+     "qualname": "TestWerkwijze.test_esc_klik_op_ja",
+     "kind": "method",
+     "lines": [692, 694],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clicking Yes stops.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [693]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [693]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [694]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+     "qualname": "TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+     "kind": "method",
+     "lines": [698, 707],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#33 (opnieuw): een klik op de broodkruimel midden in een vraag vraagt ook eerst \"Wil je stoppen?\".",
+     "explanation": "A breadcrumb click asks first too.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [703]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [700]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [701]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [701]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [704]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [705],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kruimel_ja_gaat_naar_dat_menu",
+     "qualname": "TestWerkwijze.test_kruimel_ja_gaat_naar_dat_menu",
+     "kind": "method",
+     "lines": [709, 713],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Yes on the breadcrumb goes to that menu.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [710]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [711]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [711]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [712]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [713],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+     "qualname": "TestWerkwijze.test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+     "kind": "method",
+     "lines": [715, 723],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "In de spiekbrief vanuit een vraag: de broodkruimel vraagt eerst; Esc gaat gewoon terug naar de vraag.",
+     "explanation": "The breadcrumb from a cheat sheet in a question asks first; Esc goes back.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [718, 721]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [717, 720]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [717, 720]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [719]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", ".assertTrue", "enumerate", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kruimel_na_het_nakijken_meteen",
+     "qualname": "TestWerkwijze.test_kruimel_na_het_nakijken_meteen",
+     "kind": "method",
+     "lines": [725, 728],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After checking the breadcrumb leaves at once.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [727, 728]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [726]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [726]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gestopte_reeks_toont_het_resultaat",
+     "qualname": "TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+     "kind": "method",
+     "lines": [730, 746],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Werkwijzen fase 2: een reeks die je halverwege stopt, toont het resultaat van wat al gedaan is.",
+     "explanation": "A series stopped halfway shows the result so far.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [745]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [735]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [736, 744]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [733]},
+      {"target": "tests/test_schermen.py::na_het_kader", "lines": [746]},
+      {"target": "tests/test_schermen.py::naar", "lines": [734]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gestopte_reeks_bij_maten",
+     "qualname": "TestWerkwijze.test_gestopte_reeks_bij_maten",
+     "kind": "method",
+     "lines": [748, 753],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The same for Maten.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [749]},
+      {"target": "tests/test_schermen.py::naar", "lines": [749]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_esc_na_het_nakijken_stopt_meteen",
+     "qualname": "TestWerkwijze.test_esc_na_het_nakijken_stopt_meteen",
+     "kind": "method",
+     "lines": [755, 758],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Esc after checking stops at once.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [757, 758]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [756]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [756]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klad_blijft_staan_na_het_nakijken",
+     "qualname": "TestWerkwijze.test_klad_blijft_staan_na_het_nakijken",
+     "kind": "method",
+     "lines": [760, 768],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#22: na het nakijken staat je klad in een kader \"Jouw klad\", met ! op de regel waar het misging.",
+     "explanation": "After checking the klad stays in a frame 'Jouw klad' with ! at the wrong line (#22).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [762]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [762]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klad_kader_ook_bij_juist_en_niet_zonder_klad",
+     "qualname": "TestWerkwijze.test_klad_kader_ook_bij_juist_en_niet_zonder_klad",
+     "kind": "method",
+     "lines": [770, 775],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The frame also after a right answer but not without a klad.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [775]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [771, 774]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [771, 774]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klad_kader_past_overal",
+     "qualname": "TestWerkwijze.test_klad_kader_past_overal",
+     "kind": "method",
+     "lines": [777, 811],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na twee foute antwoorden met 6 klad-regels: het kader staat heel (niets schrijft erover), binnen 80 × 24.",
+     "explanation": "With six klad lines the frame stays whole within 80×24.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [797]},
+      {"target": "tests/test_schermen.py::naar", "lines": [796]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [786],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.klad_voor",
+       "lines": [788, 796],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.klad_voor",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.klad_voor",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.klad_voor"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "o.maak",
+       "lines": [788],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertTrue",
+      ".subTest",
+      "enumerate",
+      "leeravontuur.kern.onderwerp.ONDERWERPEN.items",
+      "len",
+      "next",
+      "random.Random",
+      "range",
+      "reversed",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hoofdmenu_uitleg_stopt_voor_de_avatar",
+     "qualname": "TestWerkwijze.test_hoofdmenu_uitleg_stopt_voor_de_avatar",
+     "kind": "method",
+     "lines": [813, 823],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De uitleg in het hoofdmenu liep onder de avatar door (\"vraagst▄\"); nu stopt ze ervoor (met … als het moet).",
+     "explanation": "The main-menu explanation stops before the avatar (with an ellipsis).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [816]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [817]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [817]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "any", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord",
+     "qualname": "TestWerkwijze.test_lege_regel_in_het_klad_gaat_terug_naar_het_antwoord",
+     "kind": "method",
+     "lines": [825, 828],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An empty klad line returns to the answer.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [826]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [827]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [827]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [828],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tweede_kans_halve_punten_en_herhaalbak",
+     "qualname": "TestWerkwijze.test_tweede_kans_halve_punten_en_herhaalbak",
+     "kind": "method",
+     "lines": [830, 839],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A right second try earns half points and goes to the repeat bin.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [833, 834]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [831]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [832]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [832]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [835, 836],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.herhaalbak",
+       "lines": [839],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [838],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_twee_keer_fout_zo_kan_het",
+     "qualname": "TestWerkwijze.test_twee_keer_fout_zo_kan_het",
+     "kind": "method",
+     "lines": [841, 845],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Two wrong answers show 'Zo kan het:'.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [842]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [842]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tips_getrapt",
+     "qualname": "TestWerkwijze.test_tips_getrapt",
+     "kind": "method",
+     "lines": [847, 851],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Tips come one by one ('Tip 1 van 3').",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [849, 850, 851]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [848]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [848]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tips_draaien_rond",
+     "qualname": "TestWerkwijze.test_tips_draaien_rond",
+     "kind": "method",
+     "lines": [853, 857],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#15: na de laatste tip (en de spiekbrief, #20) begint ? opnieuw bij de eerste.",
+     "explanation": "After the last tip and the cheat sheet the tips restart (#15).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [855]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [855]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_f1_geeft_de_volgende_tip",
+     "qualname": "TestWerkwijze.test_f1_geeft_de_volgende_tip",
+     "kind": "method",
+     "lines": [859, 863],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#14: F1 geeft de volgende tip, ook in het klad (en typt daar niets).",
+     "explanation": "F1 gives the next tip, also in the klad, and types nothing (#14).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [862, 863]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [861]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [861]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vraagteken_in_het_klad_is_gewoon_een_teken",
+     "qualname": "TestWerkwijze.test_vraagteken_in_het_klad_is_gewoon_een_teken",
+     "kind": "method",
+     "lines": [865, 873],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "0.21.7: het kind schrijft ? in zijn klad als vraag aan zichzelf: geen tip, geen ✘ of !.",
+     "explanation": "A ? in the klad is just a character.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [868, 873]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [867, 872]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [867, 872]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", ".assertNotIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tip_terwijl_je_in_het_klad_typt",
+     "qualname": "TestWerkwijze.test_tip_terwijl_je_in_het_klad_typt",
+     "kind": "method",
+     "lines": [875, 879],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#15: F1 midden in een klad-regel geeft een tip, en de regel blijft staan.",
+     "explanation": "F1 mid-line gives a tip and keeps the line (#15).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [877]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [877]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "next", "reversed"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klik_op_het_klad",
+     "qualname": "TestWerkwijze.test_klik_op_het_klad",
+     "kind": "method",
+     "lines": [881, 884],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on the klad gives it focus.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [884]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [883]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.plusmin", "lines": [882]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ja_nee_zonder_tweede_kans",
+     "qualname": "TestWerkwijze.test_ja_nee_zonder_tweede_kans",
+     "kind": "method",
+     "lines": [886, 897],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Yes/no questions have no second chance.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [890]},
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [897]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [893]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [894]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.vast", "lines": [894]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [895],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_splitsen_eerst_het_klad",
+     "qualname": "TestWerkwijze.test_splitsen_eerst_het_klad",
+     "kind": "method",
+     "lines": [899, 913],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The splitting topic starts in the klad.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [903]},
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [909]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [906]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [908, 912]},
+      {"target": "tests/test_schermen.py::TestWerkwijze.vast", "lines": [907]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [910, 913],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_rekenonderwerp_past_met_het_klad_open",
+     "qualname": "TestWerkwijze.test_elk_rekenonderwerp_past_met_het_klad_open",
+     "kind": "method",
+     "lines": [915, 939],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "In elk leerjaar: 6 klad-regels en 3 tips, en alles blijft binnen 80 × 24 (de knoppen blijven zichtbaar).",
+     "explanation": "Every calculation topic fits in 80×24 with six klad lines and three tips.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [934]},
+      {"target": "tests/test_schermen.py::naar", "lines": [933]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [924],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.klad_voor",
+       "lines": [926, 933],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.klad_voor",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.klad_voor",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.klad_voor"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "o.maak",
+       "lines": [926],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertLess",
+      ".assertTrue",
+      ".subTest",
+      "enumerate",
+      "leeravontuur.kern.onderwerp.ONDERWERPEN.items",
+      "len",
+      "next",
+      "random.Random",
+      "range",
+      "reversed",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTypen",
+   "qualname": "TestTypen",
+   "lines": [946, 960],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Typing.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_broodkruimel_bij_een_nieuw_kind",
+     "qualname": "TestTypen.test_broodkruimel_bij_een_nieuw_kind",
+     "kind": "method",
+     "lines": [947, 952],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een klik op \"Wie ben jij?\" terwijl je je naam typt: terug naar de keuze, nooit een fout.",
+     "explanation": "A breadcrumb click while typing a name returns without error.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [951]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [950]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [949]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_accenten_typen",
+     "qualname": "TestTypen.test_accenten_typen",
+     "kind": "method",
+     "lines": [954, 956],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Accented characters can be typed (Zoë).",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [955]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [955]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_te_klein_venster",
+     "qualname": "TestTypen.test_te_klein_venster",
+     "kind": "method",
+     "lines": [958, 960],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A too-small window shows 'te klein'.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [960]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [959]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestNumeriekKlavier",
+   "qualname": "TestNumeriekKlavier",
+   "lines": [966, 1019],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Het numeriek klavier op Windows (#11): PDCurses geeft eigen codes voor / * - + . en Enter.",
+   "explanation": "Numeric keypad.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestNumeriekKlavier.setUp",
+     "kind": "method",
+     "lines": [970, 976],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Patches the Windows keypad codes.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.setUp", "lines": [971]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "patch.start",
+       "lines": [975],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".addCleanup", "super", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toetsen",
+     "qualname": "TestNumeriekKlavier.toetsen",
+     "kind": "method",
+     "lines": [978, 980],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "codes", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads keys through a Scherm.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [979]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [979]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [979]}
+     ],
+     "unresolved_calls": [
+      {"expr": "s.toets", "lines": [980], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.test_elders_ongewijzigd", "lines": [1007]},
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.test_linux_op_naam", "lines": [1017]},
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.test_tekens_en_enter", "lines": [984, 986]}
+     ]
+    },
+    {
+     "name": "test_tekens_en_enter",
+     "qualname": "TestNumeriekKlavier.test_tekens_en_enter",
+     "kind": "method",
+     "lines": [982, 987],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Keypad / * - + . and Enter give the right characters.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [985]},
+      {"target": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [984, 986]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_menu_en_klad_met_het_numeriek_klavier",
+     "qualname": "TestNumeriekKlavier.test_menu_en_klad_met_het_numeriek_klavier",
+     "kind": "method",
+     "lines": [989, 1000],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Enter van het klavier kiest in de menu's; + en - komen in het klad; Enter kijkt het antwoord na.",
+     "explanation": "Keypad Enter chooses in menus; + and - go in the klad.",
+     "calls": [
+      {"target": "tests/test_schermen.py::Basis.ergens", "lines": [997]},
+      {"target": "tests/test_schermen.py::Basis.opslag", "lines": [991]},
+      {"target": "tests/test_schermen.py::Basis.speel", "lines": [996]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [998],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".plusmin"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elders_ongewijzigd",
+     "qualname": "TestNumeriekKlavier.test_elders_ongewijzigd",
+     "kind": "method",
+     "lines": [1002, 1007],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Op Linux en macOS (ncurses) blijven die codes wat ze zijn.",
+     "explanation": "On Linux/macOS those codes keep their meaning.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [1007]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_linux_op_naam",
+     "qualname": "TestNumeriekKlavier.test_linux_op_naam",
+     "kind": "method",
+     "lines": [1009, 1019],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "ncurses: het klavier in toepassingsmodus geeft extra toetsen (code boven KEY_MAX) met een naam.",
+     "explanation": "ncurses keypad-mode keys above KEY_MAX are read by name.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [1018]},
+      {"target": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [1017]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "list", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestMenuToetsen",
+   "qualname": "TestMenuToetsen",
+   "lines": [1022, 1078],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Het menu met lettertoetsen per keuze (de onderwerpenlijst): de aanroeper bepaalt de toetsen.",
+   "explanation": "Menu with letter keys.",
+   "attributes": [
+    {
+     "name": "OPTIES",
+     "line": 1025,
+     "scope": "class",
+     "value_preview": "[('Tafels', ''), ('Gemengd', ''), ('Hoeken', '')]"
+    },
+    {
+     "name": "TOETSEN",
+     "line": 1026,
+     "scope": "class",
+     "value_preview": "[[('Enter', 'reeks'), ('v', 'vrij'), ('s', 'spiekbrief'), (…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "menu",
+     "qualname": "TestMenuToetsen.menu",
+     "kind": "method",
+     "lines": [1030, 1037],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "met_toetsen", "kind": "positional", "default": "True", "annotation": null},
+      {"name": "inst", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Runs a menu with letter keys on a fake screen.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [1032]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [1031]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [1032]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.menu",
+       "lines": [1034],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_schermen.py::TestMenuToetsen.test_eenvoudige_tekens", "lines": [1071]},
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_enter_cijfer_en_klik_zijn_enter",
+       "lines": [1049, 1050, 1051]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_hoofdletter_en_kleine_letter",
+       "lines": [1040, 1041, 1042]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_langste_voetregel_past_met_esc",
+       "lines": [1064]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_letter_die_niet_geldt_doet_niets",
+       "lines": [1045, 1046]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_voetregel_volgt_de_markering_en_is_klikbaar",
+       "lines": [1054, 1061]
+      },
+      {
+       "caller": "tests/test_schermen.py::TestMenuToetsen.test_zonder_toetsen_zoals_vroeger",
+       "lines": [1075, 1076, 1077]
+      }
+     ]
+    },
+    {
+     "name": "test_hoofdletter_en_kleine_letter",
+     "qualname": "TestMenuToetsen.test_hoofdletter_en_kleine_letter",
+     "kind": "method",
+     "lines": [1039, 1042],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Upper and lower case letters both work.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1040, 1041, 1042]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_letter_die_niet_geldt_doet_niets",
+     "qualname": "TestMenuToetsen.test_letter_die_niet_geldt_doet_niets",
+     "kind": "method",
+     "lines": [1044, 1046],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An invalid letter does nothing.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1045, 1046]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_enter_cijfer_en_klik_zijn_enter",
+     "qualname": "TestMenuToetsen.test_enter_cijfer_en_klik_zijn_enter",
+     "kind": "method",
+     "lines": [1048, 1051],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Enter, a digit and a click all mean Enter on that item.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1049, 1050, 1051]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_voetregel_volgt_de_markering_en_is_klikbaar",
+     "qualname": "TestMenuToetsen.test_voetregel_volgt_de_markering_en_is_klikbaar",
+     "kind": "method",
+     "lines": [1053, 1061],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The footer follows the highlighted item and is clickable.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1054, 1061]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_langste_voetregel_past_met_esc",
+     "qualname": "TestMenuToetsen.test_langste_voetregel_past_met_esc",
+     "kind": "method",
+     "lines": [1063, 1068],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The longest footer fits with Esc.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1064]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertLessEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_eenvoudige_tekens",
+     "qualname": "TestMenuToetsen.test_eenvoudige_tekens",
+     "kind": "method",
+     "lines": [1070, 1072],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "ASCII mode draws only ASCII.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1071]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_toetsen_zoals_vroeger",
+     "qualname": "TestMenuToetsen.test_zonder_toetsen_zoals_vroeger",
+     "kind": "method",
+     "lines": [1074, 1078],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Without letter keys the menu works as before.",
+     "calls": [
+      {"target": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1075, 1076, 1077]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "hm",
+   "qualname": "hm",
+   "kind": "function",
+   "lines": [25, 27],
+   "params": [
+    {"name": "keuze", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De toets voor een keuze in het hoofdmenu (de 10de keuze heeft toets 0).",
+   "explanation": "The key for a choice in the main menu (the 10th choice is 0).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::TestMuis.test_broodkruimel_terug_naar_hoofdmenu", "lines": [355]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_hoofdmenu_in_groepen", "lines": [346, 351]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_knop_in_voetbalk", "lines": [275]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_stoppen_en_esc_naar_het_titelscherm", "lines": [328]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_verder_na_een_afgewerkte_oefening", "lines": [295, 306]},
+    {
+     "caller": "tests/test_schermen.py::TestMuis.test_verder_zonder_kader_als_de_oefening_niet_af_was",
+     "lines": [311]
+    },
+    {"caller": "tests/test_schermen.py::TestMuis.test_voetbalk_van_mijn_avatar", "lines": [268, 271]},
+    {"caller": "tests/test_schermen.py::TestStart.test_schermkleuren_kiezen_bewaart_ze", "lines": [163]},
+    {
+     "caller": "tests/test_schermen.py::TestStart.test_wissel_van_kind_met_eigen_instellingen",
+     "lines": [149]
+    },
+    {"caller": "tests/test_schermen.py::naar", "lines": [48]},
+    {"caller": "tests/test_schermen.py::naar_spiekbrief", "lines": [73]}
+   ]
+  },
+  {
+   "name": "hm_klik",
+   "qualname": "hm_klik",
+   "kind": "function",
+   "lines": [30, 32],
+   "params": [
+    {"name": "keuze", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een muisklik op een keuze in het hoofdmenu (op de zone van die keuze, niet op een vaste rij).",
+   "explanation": "A mouse click action on a main-menu choice (via its zone).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::TestMuis.test_schermkleuren_met_de_muis", "lines": [260]}
+   ]
+  },
+  {
+   "name": "menu_onderwerp",
+   "qualname": "menu_onderwerp",
+   "kind": "function",
+   "lines": [35, 37],
+   "params": [
+    {"name": "o", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het onderwerp in het leerplan: een menu-id, of een onderwerp uit de kern (gevonden via opslag).",
+   "explanation": "Finds a topic in the curriculum by menu id or kern topic.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::van_opslag", "lines": [37]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::zoek", "lines": [37]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::naar", "lines": [43]}
+   ]
+  },
+  {
+   "name": "naar",
+   "qualname": "naar",
+   "kind": "function",
+   "lines": [40, 48],
+   "params": [
+    {"name": "o", "kind": "positional", "default": null, "annotation": null},
+    {"name": "toets", "kind": "positional", "default": "'v'", "annotation": null},
+    {"name": "niveau", "kind": "positional", "default": "OK", "annotation": null},
+    {"name": "start", "kind": "positional", "default": "(OK, OK)", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Van het startscherm tot de oefening: Vak › Domein › Onderwerp + toets (v vrij, Enter reeks …), dan Normaal in \"Hoe moeilijk?\" (niveau=None: geen niveaukeuze, bv. snelrekenen of zelf kiezen).",
+   "explanation": "Key sequence from the start screen to an exercise: subject > domain > topic + key (v free, Enter series ...), then Normal.",
+   "calls": [
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::domein_van", "lines": [44]},
+    {"target": "leeravontuur/terminal/curriculum/__init__.py::vak_van", "lines": [45]},
+    {"target": "tests/test_schermen.py::hm", "lines": [48]},
+    {"target": "tests/test_schermen.py::menu_onderwerp", "lines": [43]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::<class TestKlok>", "lines": [448]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_een_volle_reeks_is_af", "lines": [319, 322]},
+    {"caller": "tests/test_schermen.py::TestMuis.test_tabel_klikken_en_komma", "lines": [251]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_esc_bij_maten_vraagt_eerst", "lines": [227, 230, 234]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_f1_is_ook_een_tip", "lines": [242]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_niveau_dat_nog_niet_bestaat", "lines": [215, 219]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_reeks_van_tien_wordt_bewaard", "lines": [175]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_vrij_oefenen_tip", "lines": [203]},
+    {"caller": "tests/test_schermen.py::TestReeks.test_zelf_kiezen_met_het_toetsenbord", "lines": [194]},
+    {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_schatten_met_de_muis", "lines": [439]},
+    {"caller": "tests/test_schermen.py::TestSpeurneusEnSchatten.test_speurneus", "lines": [424]},
+    {"caller": "tests/test_schermen.py::TestVraagstuk.start", "lines": [378]},
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_elk_rekenonderwerp_past_met_het_klad_open",
+     "lines": [933]
+    },
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_bij_maten", "lines": [749]},
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+     "lines": [734]
+    },
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_klad_kader_past_overal", "lines": [796]},
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_spiekbrief_na_de_tips_overal", "lines": [649, 653]},
+    {"caller": "tests/test_schermen.py::TestWerkwijze.vast", "lines": [585]}
+   ]
+  },
+  {
+   "name": "na_het_kader",
+   "qualname": "na_het_kader",
+   "kind": "function",
+   "lines": [51, 54],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het eerste beeld na het (laatste) kader \"Wil je stoppen?\" (#33).",
+   "explanation": "The first frame after the last 'Wil je stoppen?' dialog.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "max", "next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::TestReeks.test_esc_bij_maten_vraagt_eerst", "lines": [237]},
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_esc_esc_blijft_en_links_enter_stopt",
+     "lines": [685, 690]
+    },
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_esc_klik_op_ja", "lines": [694]},
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_gestopte_reeks_toont_het_resultaat",
+     "lines": [746]
+    },
+    {"caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_ja_gaat_naar_dat_menu", "lines": [712]},
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vanuit_de_spiekbrief_in_een_vraag",
+     "lines": [719]
+    },
+    {
+     "caller": "tests/test_schermen.py::TestWerkwijze.test_kruimel_vraagt_eerst_en_nee_houdt_alles",
+     "lines": [704]
+    }
+   ]
+  },
+  {
+   "name": "plek",
+   "qualname": "plek",
+   "kind": "function",
+   "lines": [57, 63],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(rij, kolom) van tekst in het laatste beeld waarin hij staat (ook als het scherm daarna nog veranderde).",
+   "explanation": "(row, column) of a text in the last frame that has it.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["AssertionError", "enumerate", "reversed"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::TestMuis.test_voetbalk_van_mijn_avatar", "lines": [269]}
+   ]
+  },
+  {
+   "name": "naar_spiekbrief",
+   "qualname": "naar_spiekbrief",
+   "kind": "function",
+   "lines": [66, 73],
+   "params": [
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "nr", "kind": "positional", "default": "1", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoofdmenu › Leerstof › domein (label): heeft het domein één spiekbrief, dan staat die meteen open; anders de nr-de (#20: \"Welk vak?\" valt weg zolang er één vak is).",
+   "explanation": "Key sequence to a domain's cheat sheet.",
+   "calls": [
+    {"target": "tests/test_schermen.py::hm", "lines": [73]},
+    {"target": "tests/test_schermen.py::leerstof_vak", "lines": [73]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["any", "len", "next", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::TestMuis.test_scrollwiel_in_spiekbrief", "lines": [359]}
+   ]
+  },
+  {
+   "name": "leerstof_vak",
+   "qualname": "leerstof_vak",
+   "kind": "function",
+   "lines": [76, 79],
+   "params": [
+    {"name": "vak", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leerstof vraagt eerst \"Welk vak?\" als meer vakken spiekbrieven hebben (sinds Taal, 0.25).",
+   "explanation": "Key for the subject in 'Leerstof' when more subjects have cheat sheets.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["any", "len", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_schermen.py::naar_spiekbrief", "lines": [73]}
+   ]
+  }
+ ]
+}
