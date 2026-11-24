@@ -1,0 +1,25 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/vraagstukken/werelden.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 3662,
+ "source_sha256": "53c6221486c86377846cd1e3faa254d33cfa0aa5f710cb4f3eeaa51162b27826",
+ "purpose": "The worlds of the story machine: names and per world (bakery, building site, farm, library, school trip, market ...) the words and realistic ranges per kind of problem.",
+ "details": "Loaded by kern/wiskunde/vraagstukken.py. A word is written 'singular|plural|article'; '@naam' picks a name from 'namen'. Each world has an id (stored in answers: never rename), a name, intros, 'weetjes' (facts with a [min, max] range) and, per kind of problem, lists of items: groep (×, :, rest, fair sharing), tel (sum, difference; 'rest' = [the whole, the third moment]), koop (change, two kinds), kg (price per kg), duur (discount, saving), recept, deel (fraction of), tuin (perimeter), rit (speed), kaart (scale), vloer (tiles), lint (cutting into pieces) and agenda (times and durations). Ranges are [min, max]; prices in euro.",
+ "keys": ["uitleg", "namen", "werelden"],
+ "shape": {
+  "uitleg": "string",
+  "namen": {"$list": 30, "$items": "string"},
+  "werelden": {"$list": 22, "$items": "mixed"}
+ },
+ "read_by": ["leeravontuur/kern/wiskunde/vraagstukken.py"],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "The explanation of the format (Dutch)."},
+  {"key": "namen", "explanation": "The list of first names for '@naam'."},
+  {
+   "key": "werelden",
+   "explanation": "The list of worlds (22), each with id, naam, intro, weetjes and item lists per kind of problem."
+  }
+ ]
+}

@@ -1,0 +1,20 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/taal/werkwoorden.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 149,
+ "source_sha256": "287244dd0977507876c77e3045ec644b74e1a2781980f54bcb08f215d3ec2922",
+ "purpose": "All verbs of Werkwoordspelling with every form written out (144 verbs).",
+ "details": "Loaded by kern/taal/werkwoorden.py (PAD). Per verb: inf, stam (the ik form), tt = [ik, jij, hij, plural], vt = [singular, plural], vd (participle), hulp (hebben or zijn), vt_soort and vd_soort (zwak following 't kofschip, a test recomputes every weak form, or sterk = learn by heart), ge (false = the participle has no ge-), niveau 1-3 (from very common to harder), rest (what can follow the verb), and optional o (own subjects), ook (extra accepted ik-forms), vroeger (past sounds better with 'vroeger' than 'gisteren') and onregelmatig (the present tense does not follow stem + t).",
+ "keys": ["uitleg", "werkwoorden"],
+ "shape": {
+  "uitleg": "string",
+  "werkwoorden": {"$list": 144, "$items": "mixed"}
+ },
+ "read_by": ["leeravontuur/kern/taal/werkwoorden.py"],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "The explanation of the fields (Dutch)."},
+  {"key": "werkwoorden", "explanation": "The list of verbs with all forms and flags."}
+ ]
+}

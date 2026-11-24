@@ -1,0 +1,686 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/reeks.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 245,
+ "source_sha256": "440b3e0bc0d2c34a6f33329f0d51478853f01c63c276e339283ef341822f7f20",
+ "purpose": "A series of questions drawn from several topics: the engine of 'Gemengd oefenen' and, later, exams.",
+ "details": "The terminal supplies the themes (domains of the curriculum) as data {theme id: (skill ids)}, so the core does not know the curriculum and Taal joined automatically. kies_onderwerpen picks which practised skills enter the series (weighted: skills that are fading come most, each pick halves its weight, at most 2 in a row from one theme and 3 long questions); maak_vragen builds the questions into a Reeksplan with a Hulp object saying which help exists (Hulp.EXAMEN switches everything off); the terminal plays the plan and Uitslag summarises it per theme. Unit conversion (Maten) takes part through an adapter object. Also holds the parent's choice of themes (child chooses, fixed, or one time).",
+ "module_docstring": "Een reeks vragen uit verschillende onderwerpen: Gemengd oefenen nu, de examens later (zonder curses).",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "datetime", "names": ["date"], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field", "replace"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus", "herhaling", "klok", "selectie"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/selectie.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/overzicht.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/schermen/gemengd.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_beta.py",
+  "tests/test_gemengd.py",
+  "tests/test_reeks.py",
+  "tests/test_taal_werkwoorden.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::Hulp", "lines": [47, 48]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Maten.__init__", "lines": [86]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Reeksplan>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Uitslag>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "GEMENGD_AANTAL",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "20",
+   "explanation": "Default number of questions in mixed practice (20)."
+  },
+  {
+   "name": "MAX_LANG",
+   "line": 23,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "Most long questions in one series."
+  },
+  {
+   "name": "MAX_NA_ELKAAR",
+   "line": 24,
+   "value_type": "Constant",
+   "value_preview": "2",
+   "explanation": "Most consecutive questions from one theme."
+  },
+  {
+   "name": "FRIS_DAGEN",
+   "line": 25,
+   "value_type": "Attribute",
+   "value_preview": "herhaling.FRIS_DAGEN",
+   "explanation": "Days after which a mastered skill counts as 'fris houden' (from herhaling)."
+  },
+  {
+   "name": "SNEL",
+   "line": 26,
+   "value_type": "Tuple",
+   "value_preview": "('snel60', 'snel20')",
+   "explanation": "Modes of speed practice, ignored when judging skills."
+  },
+  {
+   "name": "GEWICHT_FRIS",
+   "line": 29,
+   "value_type": "Constant",
+   "value_preview": "4.0",
+   "explanation": "Weight of a fading skill."
+  },
+  {
+   "name": "GEWICHT_BEZIG",
+   "line": 30,
+   "value_type": "Constant",
+   "value_preview": "2.0",
+   "explanation": "Weight of a skill in progress."
+  },
+  {
+   "name": "GEWICHT_BEHEERST",
+   "line": 31,
+   "value_type": "Constant",
+   "value_preview": "1.0",
+   "explanation": "Weight of a mastered skill."
+  },
+  {
+   "name": "FRIS",
+   "line": 33,
+   "value_type": "Attribute",
+   "value_preview": "herhaling.FRIS_HOUDEN",
+   "explanation": "State name 'fris houden'."
+  },
+  {
+   "name": "MATEN",
+   "line": 86,
+   "value_type": "Call",
+   "value_preview": "E.Maten()",
+   "explanation": "Adapter that lets unit conversion (kern/wiskunde/eenheden.py) act like a topic in a series."
+  },
+  {
+   "name": "KIND",
+   "line": 211,
+   "value_type": "Tuple",
+   "value_preview": "('kind', 'vast', 'een_keer')",
+   "explanation": "Parent setting: the child chooses."
+  },
+  {
+   "name": "VAST",
+   "line": 211,
+   "value_type": "Tuple",
+   "value_preview": "('kind', 'vast', 'een_keer')",
+   "explanation": "Parent setting: fixed themes."
+  },
+  {
+   "name": "EEN_KEER",
+   "line": 211,
+   "value_type": "Tuple",
+   "value_preview": "('kind', 'vast', 'een_keer')",
+   "explanation": "Parent setting: themes for the next series only."
+  },
+  {
+   "name": "STANDEN",
+   "line": 212,
+   "value_type": "Dict",
+   "value_preview": "{KIND: 'het kind kiest', VAST: 'vast', EEN_KEER: 'één keer'}",
+   "explanation": "Display names of the parent settings."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Hulp",
+   "qualname": "Hulp",
+   "lines": [37, 44],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "Welke hulp er is tijdens de reeks. Het klad is er altijd (de vaste werkwijze).",
+   "explanation": "Frozen switches for what help exists during a series: tips, second chance, cheat sheet, explanation afterwards, repeat bin and points; Hulp.ALLES has everything on, Hulp.EXAMEN everything off.",
+   "attributes": [
+    {"name": "tips", "line": 39, "scope": "class", "value_preview": "True"},
+    {"name": "tweede_kans", "line": 40, "scope": "class", "value_preview": "True"},
+    {"name": "spiekbrief", "line": 41, "scope": "class", "value_preview": "True"},
+    {"name": "uitleg_na", "line": 42, "scope": "class", "value_preview": "True"},
+    {"name": "herhaalbak", "line": 43, "scope": "class", "value_preview": "True"},
+    {"name": "punten", "line": 44, "scope": "class", "value_preview": "True"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/reeks.py::<module>", "lines": [47, 48]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Reeksvraag",
+   "qualname": "Reeksvraag",
+   "lines": [52, 55],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "One question of a series with its theme and skill id.",
+   "attributes": [
+    {"name": "thema", "line": 53, "scope": "class", "value_preview": null},
+    {"name": "vaardigheid", "line": 54, "scope": "class", "value_preview": null},
+    {"name": "vraag", "line": 55, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vragen", "lines": [171]},
+    {"caller": "tests/test_reeks.py::TestUitslag.test_per_thema", "lines": [163]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Reeksplan",
+   "qualname": "Reeksplan",
+   "lines": [59, 64],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A series ready to play: kind (mixed, later exam), title, school year, questions and the Hulp.",
+   "attributes": [
+    {"name": "soort", "line": 60, "scope": "class", "value_preview": null},
+    {"name": "titel", "line": 61, "scope": "class", "value_preview": null},
+    {"name": "leerjaar", "line": 62, "scope": "class", "value_preview": null},
+    {"name": "vragen", "line": 63, "scope": "class", "value_preview": "field(default_factory=list)"},
+    {"name": "hulp", "line": 64, "scope": "class", "value_preview": "Hulp.ALLES"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [180]},
+    {"caller": "tests/test_gemengd.py::Basis.vast_plan", "lines": [53]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Uitslag",
+   "qualname": "Uitslag",
+   "lines": [186, 206],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "The result of a series: correct, total, time, per-theme counts and the wrong questions.",
+   "attributes": [
+    {"name": "goed", "line": 187, "scope": "class", "value_preview": "0"},
+    {"name": "totaal", "line": 188, "scope": "class", "value_preview": "0"},
+    {"name": "tijd_ms", "line": 189, "scope": "class", "value_preview": "0"},
+    {"name": "per_thema", "line": 190, "scope": "class", "value_preview": "field(default_factory=dict)"},
+    {"name": "fouten", "line": 191, "scope": "class", "value_preview": "field(default_factory=list)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "van",
+     "qualname": "Uitslag.van",
+     "kind": "classmethod",
+     "lines": [194, 206],
+     "params": [
+      {"name": "cls", "kind": "positional", "default": null, "annotation": null},
+      {"name": "antwoorden", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["classmethod"],
+     "docstring": "antwoorden: [(Reeksvraag, goed, tijd_ms)].",
+     "explanation": "Builds the result from (Reeksvraag, correct, time) tuples: totals, time, [correct, total] per theme in order of first appearance, and the list of wrong questions.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "cls", "lines": [196], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["bool"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.speel_plan", "lines": [832]},
+      {"caller": "tests/test_reeks.py::TestUitslag.test_per_thema", "lines": [164]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "stand",
+   "qualname": "stand",
+   "kind": "function",
+   "lines": [69, 79],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vandaag", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(stand, dagen sinds het laatst geoefend) of None als het nog nooit geoefend werd. stand: \"fris houden\" (beheerst, maar lang niet geoefend), \"bezig\" of \"beheerst\".",
+   "explanation": "(state, days since last practised) of a skill, or None if never practised; state is 'fris houden', 'bezig' or 'beheerst' using the same rule as reports (speed practice answers are ignored).",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::status", "lines": [75]},
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [76]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.recente_antwoorden",
+     "lines": [72],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".date", "datetime.date.fromisoformat"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/overzicht.py::onderwerp_regels", "lines": [62]},
+    {"caller": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [121]},
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.geoefend", "lines": [50]},
+    {"caller": "tests/test_reeks.py::TestStand.test_snelrekenen_telt_niet", "lines": [56]},
+    {"caller": "tests/test_reeks.py::TestStand.test_standen", "lines": [46, 48, 50, 52]}
+   ]
+  },
+  {
+   "name": "gewicht",
+   "qualname": "gewicht",
+   "kind": "function",
+   "lines": [82, 83],
+   "params": [
+    {"name": "st", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Selection weight for a state: fading 4.0, busy 2.0, mastered 1.0.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [123]}
+   ]
+  },
+  {
+   "name": "onderwerp_van",
+   "qualname": "onderwerp_van",
+   "kind": "function",
+   "lines": [89, 91],
+   "params": [
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het Onderwerp van een vaardigheid (Maten: het object hierboven), of None.",
+   "explanation": "The Onderwerp for a skill id; for unit conversion the MATEN adapter; None if unknown.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["leeravontuur.kern.onderwerp.ONDERWERPEN.get"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.speel_plan", "lines": [824]}
+   ]
+  },
+  {
+   "name": "is_maten",
+   "qualname": "is_maten",
+   "kind": "function",
+   "lines": [94, 95],
+   "params": [
+    {"name": "o", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "True for the unit-conversion adapter.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "is_lang",
+   "qualname": "is_lang",
+   "kind": "function",
+   "lines": [98, 100],
+   "params": [
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "True when the topic's questions take long (word problems, long division).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["bool", "leeravontuur.kern.onderwerp.ONDERWERPEN.get"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [130, 138]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_niet_te_veel_na_elkaar_en_lang", "lines": [100]}
+   ]
+  },
+  {
+   "name": "bestaat",
+   "qualname": "bestaat",
+   "kind": "function",
+   "lines": [103, 104],
+   "params": [
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Whether a skill id exists as a topic or as unit conversion.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [119]},
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.geoefend", "lines": [50]},
+    {
+     "caller": "tests/test_reeks.py::TestElkOnderwerp.test_elke_vaardigheid_van_het_leerplan_in_elk_leerjaar",
+     "lines": [153, 155]
+    }
+   ]
+  },
+  {
+   "name": "kies_onderwerpen",
+   "qualname": "kies_onderwerpen",
+   "kind": "function",
+   "lines": [109, 139],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "themas", "kind": "positional", "default": null, "annotation": null},
+    {"name": "aantal", "kind": "positional", "default": "GEMENGD_AANTAL", "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null},
+    {"name": "vandaag", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(thema, vaardigheid)] voor een reeks van `aantal` vragen, uit de gegeven thema's ({thema-id: (vaardigheid-id, ...)}). Alleen wat al geoefend werd (wat nieuw is, leer je in het eigen menu). Leeg = in die thema's werd nog niets geoefend.",
+   "explanation": "Chooses (theme, skill) pairs for a series of N questions from the practised skills of the given themes, with state weights, halving after each pick, a cap on consecutive questions from one theme and on long questions; empty when nothing was practised.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::bestaat", "lines": [119]},
+    {"target": "leeravontuur/kern/reeks.py::gewicht", "lines": [123]},
+    {"target": "leeravontuur/kern/reeks.py::is_lang", "lines": [130, 138]},
+    {"target": "leeravontuur/kern/reeks.py::stand", "lines": [121]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choices", "any", "dict", "len", "list", "range", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [177]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_alleen_wat_al_geoefend_werd", "lines": [79, 81]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_deterministisch_met_een_vaste_seed", "lines": [108, 109]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_fris_houden_komt_het_vaakst", "lines": [90]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_niet_te_veel_na_elkaar_en_lang", "lines": [99]},
+    {"caller": "tests/test_reeks.py::TestKiezen.test_onbekende_vaardigheid_doet_niet_mee", "lines": [114]}
+   ]
+  },
+  {
+   "name": "_gewichten",
+   "qualname": "_gewichten",
+   "kind": "function",
+   "lines": [144, 152],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zoals in een gewone reeks: wat vaak fout gaat, komt vaker.",
+   "explanation": "Sub-topic weights from recent answers for one skill (wrong topics come more often), with a separate path for unit conversion pairs.",
+   "calls": [
+    {"target": "leeravontuur/kern/selectie.py::gewichten", "lines": [149, 152]}
+   ],
+   "unresolved_calls": [
+    {"expr": "o.onderwerp_van_sleutel", "lines": [151], "candidates": [], "candidates_count": 25},
+    {
+     "expr": "opslag.recente_antwoorden",
+     "lines": [146],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [157]}
+   ]
+  },
+  {
+   "name": "maak_vraag",
+   "qualname": "maak_vraag",
+   "kind": "function",
+   "lines": [155, 160],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vermijd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Eén vraag van een vaardigheid (ook Maten), niet recent al gezien.",
+   "explanation": "One question for a skill (also unit conversion) that was not seen recently.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::_gewichten", "lines": [157]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::als_vraag", "lines": [159]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheden_voor", "lines": [159]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [159]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "ONDERWERPEN[vaardigheid].maak",
+     "lines": [160],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vragen", "lines": [169]},
+    {
+     "caller": "tests/test_reeks.py::TestElkOnderwerp.test_elke_vaardigheid_van_het_leerplan_in_elk_leerjaar",
+     "lines": [157]
+    }
+   ]
+  },
+  {
+   "name": "maak_vragen",
+   "qualname": "maak_vragen",
+   "kind": "function",
+   "lines": [163, 172],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "keuze", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[Reeksvraag] voor de gekozen [(thema, vaardigheid)].",
+   "explanation": "Builds the Reeksvraag list for the chosen pairs, remembering keys already used in this series per skill so no question repeats.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::Reeksvraag", "lines": [171]},
+    {"target": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [169]},
+    {"target": "leeravontuur/kern/selectie.py::recent_gezien", "lines": [168]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::gemengd_plan", "lines": [180]},
+    {"caller": "tests/test_gemengd.py::Basis.vast_plan", "lines": [53]}
+   ]
+  },
+  {
+   "name": "gemengd_plan",
+   "qualname": "gemengd_plan",
+   "kind": "function",
+   "lines": [175, 180],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "themas", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "titel", "kind": "positional", "default": "'Gemengd oefenen'", "annotation": null},
+    {"name": "aantal", "kind": "positional", "default": "GEMENGD_AANTAL", "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het plan voor Gemengd oefenen, of None als er in die thema's nog niets geoefend werd.",
+   "explanation": "The plan for Gemengd oefenen, or None when nothing was practised in those themes.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::Reeksplan", "lines": [180]},
+    {"target": "leeravontuur/kern/reeks.py::kies_onderwerpen", "lines": [177]},
+    {"target": "leeravontuur/kern/reeks.py::maak_vragen", "lines": [180]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [86]},
+    {"caller": "tests/test_reeks.py::TestPlan.test_niets_geoefend_geen_plan", "lines": [135]},
+    {"caller": "tests/test_reeks.py::TestPlan.test_vragen_ook_maten_en_een_vraagstuk", "lines": [123]}
+   ]
+  },
+  {
+   "name": "ouder_keuze",
+   "qualname": "ouder_keuze",
+   "kind": "function",
+   "lines": [215, 222],
+   "params": [
+    {"name": "inst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(stand, thema's) die de ouder koos; een ongeldige waarde = het kind kiest.",
+   "explanation": "The parent's choice (state, themes) from the child's settings; an invalid or empty choice means the child chooses.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::na_reeks", "lines": [243]},
+    {"caller": "leeravontuur/kern/reeks.py::themas_voor_reeks", "lines": [228]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.gemengd_oefenen", "lines": [547]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::gemengd_waarde", "lines": [25]},
+    {
+     "caller": "tests/test_gemengd.py::TestDeOuderKiest.test_een_keer_vervalt_na_het_resultaat",
+     "lines": [139, 141]
+    },
+    {"caller": "tests/test_gemengd.py::TestDeOuderKiest.test_in_het_ouderdeel", "lines": [154]}
+   ]
+  },
+  {
+   "name": "themas_voor_reeks",
+   "qualname": "themas_voor_reeks",
+   "kind": "function",
+   "lines": [225, 238],
+   "params": [
+    {"name": "inst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "alle", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(thema's voor de volgende reeks, mag het kind kiezen?). alle = de thema-ids van het leerplan (volgorde). Thema's die niet (meer) bestaan, vallen weg; blijft er niets over van de keuze van de ouder, dan kiest het kind.",
+   "explanation": "The themes for the next series and whether the child may choose: the parent's fixed or one-time themes win; else the child's own choice; else all themes; themes that no longer exist are dropped.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [228]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance", "list"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [77]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_een_keer_vervalt_na_de_reeks", "lines": [190, 192]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_het_kind_kiest", "lines": [176, 178, 180]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_ongeldige_keuze_van_de_ouder", "lines": [199]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_vast", "lines": [185]}
+   ]
+  },
+  {
+   "name": "na_reeks",
+   "qualname": "na_reeks",
+   "kind": "function",
+   "lines": [241, 245],
+   "params": [
+    {"name": "inst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een reeks is af: \"één keer\" van de ouder vervalt (daarna kiest het kind weer). Geeft de nieuwe instellingen.",
+   "explanation": "After a series ends, a parent's 'one time' choice expires: returns new settings with the child choosing again; otherwise the same settings.",
+   "calls": [
+    {"target": "leeravontuur/kern/reeks.py::ouder_keuze", "lines": [243]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.replace"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open", "lines": [101]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_een_keer_vervalt_na_de_reeks", "lines": [191]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_vast", "lines": [186]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/todo.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 75,
+ "source_sha256": "199a4a7b3f19dcba70c999d13fda0a37ffe60f06ac7acf26d8a8dc3e4af818a5",
+ "purpose": "The parked to-do list (state 7/11, version 0.24.0): things for the father, next build steps, parked questions, maths v2 and the plan for the stop lock.",
+ "details": "Follows the rule of koers.md: new ideas that do not fit the current period are parked here. Contains tags and releases the father still has to make, finished steps with ticks (0.23.1 apple problem, 0.23.2 stop lock), parked questions (powers in the klad, daily task), maths v2 items waiting for feedback, and a plan for the stop lock (a slot per child opened by a 4-digit parent PIN).",
+ "summary": "To-do list as of 7/11 (0.24.0): releases the father still has to tag, finished steps, parked questions (powers in the klad, daily task also in school weeks), maths v2 parked items, and the written plan of the stop lock on Stoppen.",
+ "headings": [
+  {"level": 1, "text": "Leeravontuur: to-do (stand 7/11, 0.24.0)", "line": 1},
+  {"level": 2, "text": "Voor de vader", "line": 6},
+  {"level": 2, "text": "Volgende bouwstap (pas na akkoord)", "line": 12},
+  {"level": 2, "text": "Geparkeerd: vragen voor later", "line": 29},
+  {"level": 2, "text": "Geparkeerd: wiskunde v2 (met feedback, na de bevriezing)", "line": 35},
+  {"level": 2, "text": "Plan voor 0.23.2: het slot op Stoppen", "line": 46}
+ ],
+ "links": [
+  {"text": "koers.md", "target": "koers.md", "internal": true},
+  {"text": "taal.md", "target": "taal.md", "internal": true},
+  {"text": "taal.md", "target": "taal.md", "internal": true}
+ ],
+ "referenced_by": ["CLAUDE.md", "docs/koers.md", "docs/taal.md"],
+ "words": 896
+}

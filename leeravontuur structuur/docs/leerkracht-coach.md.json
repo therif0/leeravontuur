@@ -1,0 +1,32 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/leerkracht-coach.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 137,
+ "source_sha256": "0c5edf26f480fb3c38980f6bd51a5e2e6762d533cd93cb6cddb0a1a0447940b2",
+ "purpose": "Brainstorm (not scheduled) for a part of the program for coaches and teachers: sharing data, a coach mode, focus plans, diagnosis, own content, assignments and class view.",
+ "details": "Nothing described here exists in the program. Principles: privacy first (offline, no accounts, data travels only as files someone sends), builds on the stored answers with klad and thinking errors. Ideas numbered 1-8 with an order of steps C1... and questions for the sponsor (a coach) and open points such as consent.",
+ "summary": "A brainstorm for coaches/teachers: principles (privacy first, offline, files), eight ideas (share package from parent to coach, coach mode with its own database, focus plan back to the child, side-by-side mode, diagnosis/intake test, own content, assignments and tests, class scale later), a proposed order, questions for the sponsor and open points (consent).",
+ "headings": [
+  {"level": 1, "text": "Brainstorm: het deel voor coaches en leerkrachten", "line": 1},
+  {"level": 2, "text": "Waarom en voor wie", "line": 6},
+  {"level": 2, "text": "Wat er al is (en waarop het bouwt)", "line": 22},
+  {"level": 2, "text": "Uitgangspunten", "line": 31},
+  {"level": 2, "text": "Ideeën", "line": 41},
+  {"level": 3, "text": "1. Deelpakket: van de ouder naar de coach", "line": 43},
+  {"level": 3, "text": "2. Coachmodus", "line": 51},
+  {"level": 3, "text": "3. Focusplan: van de coach terug naar het kind", "line": 58},
+  {"level": 3, "text": "4. Samen-modus (de coach zit naast het kind)", "line": 70},
+  {"level": 3, "text": "5. Diagnose voor de coach", "line": 76},
+  {"level": 3, "text": "6. Eigen inhoud", "line": 82},
+  {"level": 3, "text": "7. Opdrachten en toetsen", "line": 90},
+  {"level": 3, "text": "8. Klasschaal (later)", "line": 100},
+  {"level": 2, "text": "Volgorde (voorstel)", "line": 107},
+  {"level": 2, "text": "Vragen voor de sponsor", "line": 121},
+  {"level": 2, "text": "Open punten", "line": 131}
+ ],
+ "links": [],
+ "referenced_by": ["docs/plan.md"],
+ "words": 1419
+}

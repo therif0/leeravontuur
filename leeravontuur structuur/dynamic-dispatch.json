@@ -1,0 +1,378 @@
+{
+ "schema": "leeravontuur-structuur/dispatch/1",
+ "based_on_commit": "6f33a3b",
+ "note": "Where the code reaches other code through a table, a registry, getattr with a computed name, a callback or duck typing, so the call cannot be followed as an ordinary call edge in the counterparts. 'dynamic_calls' are the sites the syntax-tree helper detected (a call on a subscript such as X[k](...) and getattr with a computed name). The helper cannot see every site: a method called on a variable whose type is unknown is an 'unresolved_call' in the counterpart of the file, and the protocols below say which classes can be behind such variables.",
+ "dynamic_calls": [
+  {
+   "path": "docs/tools/handleiding.py",
+   "function": "vul_in.maak",
+   "kind": "subscript-call",
+   "line": 278,
+   "expr": "MAKERS[soort]",
+   "leads_to": "MAKERS in docs/tools/handleiding.py",
+   "explanation": "leerlijn_tabel, denkfouten, spiekbrief or the argumenten lambda, chosen by the auto block kind."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/meetkunde.py",
+   "function": "Formules.bereken",
+   "kind": "subscript-call",
+   "line": 206,
+   "expr": "{'rechthoek_opp': lambda: g['l'] * g['b'], 'rechthoek_omtrek': lambda…",
+   "leads_to": "a dict of lambdas defined inside the function",
+   "explanation": "One formula per kind (rechthoek_opp, rechthoek_omtrek, vierkant_*, driehoek_opp, parallellogram_opp, trapezium_opp, cirkel_*, balk_volume, kubus_volume); the lambdas are local and not separate functions in the map."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "function": "Speurneus.maak_met",
+   "kind": "getattr",
+   "line": 1213,
+   "expr": "getattr(self, '_' + soort)",
+   "leads_to": "Speurneus._alles_juist, ._rekenfout, ._denkfout",
+   "explanation": "getattr(self, '_' + soort) picks the generator of the chosen kind of solution (alles_juist, rekenfout, denkfout) from the leerlijn's 'fouten' list."
+  },
+  {
+   "path": "leeravontuur/terminal/app.py",
+   "function": "App.hoofdmenu",
+   "kind": "subscript-call",
+   "line": 229,
+   "expr": "self.voorstel()[1]",
+   "leads_to": "the action returned by App.voorstel()",
+   "explanation": "One of: App.herhaalvragen; a function that resumes the last exercise (built by _vorige_voorstel); App.herhalen_of_verder (asks 'eerst herhalen?' when the last exercise was finished and repeat questions are due); or navigatie.vak(app, first subject)."
+  },
+  {
+   "path": "leeravontuur/terminal/app.py",
+   "function": "App.hoofdmenu",
+   "kind": "subscript-call",
+   "line": 252,
+   "expr": "keuzes[k][2]",
+   "leads_to": "the callbacks in the local list `keuzes` of the main menu",
+   "explanation": "App.herhalen, navigatie.vak(self, vak, [HOOFD]) for each subject, navigatie.spiekbrieven (Leerstof), App.mijn_avatar, App.winkel, App.zeg_het_ons, or None (Stoppen)."
+  },
+  {
+   "path": "leeravontuur/terminal/beta.py",
+   "function": "BetaOefenaar._stel_vraag",
+   "kind": "subscript-call",
+   "line": 60,
+   "expr": "INVOER[v.invoer]",
+   "leads_to": "oefenaar.INVOER",
+   "explanation": "RoosterInvoer or StaartInvoer (INVOER_BETA = rooster, staart)."
+  },
+  {
+   "path": "leeravontuur/terminal/navigatie.py",
+   "function": "start",
+   "kind": "subscript-call",
+   "line": 40,
+   "expr": "modi[modus]",
+   "leads_to": "Onderwerp.modi of the curriculum",
+   "explanation": "The callbacks built in terminal/curriculum/modi.py (oefenaar, eenheden, snel, spiek_oefenaar ...) for the modes reeks, vrij, 60s, 20sommen, tabel; they open the Oefenaar, MatenOefenaar or Snelrekenen screens."
+  },
+  {
+   "path": "leeravontuur/terminal/oefenaar.py",
+   "function": "Oefenaar._stel_vraag_scherm",
+   "kind": "subscript-call",
+   "line": 149,
+   "expr": "INVOER[v.invoer]",
+   "leads_to": "oefenaar.INVOER",
+   "explanation": "The input-object class for the question's answer type; here only classes with eigen_scherm = True (terminal/tabel.py: EenheidInvoer, TabelInvoer) are used."
+  },
+  {
+   "path": "leeravontuur/terminal/oefenaar.py",
+   "function": "Oefenaar._stel_vraag",
+   "kind": "subscript-call",
+   "line": 218,
+   "expr": "INVOER[v.invoer]",
+   "leads_to": "oefenaar.INVOER",
+   "explanation": "Any input-object class: RoosterInvoer, StaartInvoer, BalkInvoer, VeldInvoer, CoordInvoer, KlokInvoer, VraagstukInvoer, SpeurInvoer, KeuzeInvoer, ZinsdelenInvoer, WerkwoordInvoer. Its methods (hoogte, knoppen, teken, toets, hulp, rijen ...) are then called through duck typing and show up as unresolved calls."
+  },
+  {
+   "path": "tests/test_vakken.py",
+   "function": "TestPast.test_elk_invoer_object_past_in_zijn_vak",
+   "kind": "subscript-call",
+   "line": 140,
+   "expr": "INVOER[v.invoer]",
+   "leads_to": "oefenaar.INVOER",
+   "explanation": "Every input-object class; the test draws each one on a recording screen."
+  },
+  {
+   "path": "tests/test_vakken.py",
+   "function": "TestPast.test_cijferen_past_met_de_vraag_de_tip_en_de_rand",
+   "kind": "subscript-call",
+   "line": 168,
+   "expr": "INVOER[v.invoer]",
+   "leads_to": "oefenaar.INVOER",
+   "explanation": "RoosterInvoer or StaartInvoer."
+  }
+ ],
+ "registries": [
+  {
+   "path": "docs/tools/handleiding.py",
+   "name": "MAKERS",
+   "line": 268,
+   "description": "Maps the auto block kinds leerlijn, denkfouten, spiekbrief and argumenten to their generator functions; vul_in looks the kind up here at run time."
+  },
+  {
+   "path": "docs/tools/scenarios.py",
+   "name": "SCENARIOS",
+   "line": 11,
+   "description": "Maps a screenshot scenario name to (function, options); filled by @scenario when the module is imported and read by schermafdrukken.main, which calls each function with a Draai object."
+  },
+  {
+   "path": "leeravontuur/kern/onderwerp.py",
+   "name": "ONDERWERPEN",
+   "line": 18,
+   "description": "Dict skill id -> Onderwerp, filled when each topic class is instantiated at import time (via kern/catalogus.py). The terminal, reports, repetition and mixed practice find topics here instead of importing them, so calls to a topic's methods through it cannot be followed statically."
+  },
+  {
+   "path": "leeravontuur/kern/opslag.py",
+   "name": "MIGRATIES",
+   "line": 29,
+   "description": "Ordered list of SQL scripts; _migreer runs those after the stored schema version. v1 children, settings, sessions, answers (with the append-only trigger); v2 child PIN and expected answer; v3 repeat bin; v4 points log and avatar; v5 shop ownership and saved outfits."
+  },
+  {
+   "path": "leeravontuur/kern/snelrekenen.py",
+   "name": "SOORTEN",
+   "line": 8,
+   "description": "Maps a speed-practice kind to the list of Onderwerp classes (H.TAFELS, H.PLUSMIN, H.DUBBELHELFT) from which vraag() picks one at random and calls its maak method."
+  },
+  {
+   "path": "leeravontuur/kern/taal/werkwoorden.py",
+   "name": "TEGENWOORDIGE_TIJD",
+   "line": 998,
+   "description": "Instantiating the five topic classes at the bottom of the file registers their skills (taal.werkwoordspelling.tt, vt_zwak, vt_sterk, vd, naar_vt) in the skill registry and in ONDERWERPEN; screens reach them through those registries."
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinnenmachine.py",
+   "name": "ZINSBOUW",
+   "line": 31,
+   "description": "The structure codes the leerlijn may name; _maak reads the code's parts (split at underscores) to decide the order of the parts."
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinnenmachine.py",
+   "name": "SAMENGESTELD",
+   "line": 39,
+   "description": "The compound structure codes, handled one by one inside _maak_samengesteld."
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinsontleding.py",
+   "name": "ZINSONTLEDING",
+   "line": 531,
+   "description": "Instantiating the topic registers the skill taal.zinsontleding in vaardigheden.REGISTER and ONDERWERPEN, which is how screens reach it."
+  },
+  {
+   "path": "leeravontuur/kern/vaardigheden.py",
+   "name": "REGISTER",
+   "line": 23,
+   "description": "Dict skill id -> Vaardigheid, filled at import time by every subject module; read by reports, menus and the leerplan test."
+  },
+  {
+   "path": "leeravontuur/kern/vaardigheden.py",
+   "name": "DENKFOUTEN",
+   "line": 24,
+   "description": "Dict diagnosis code -> short description, filled at import time by the subjects; looked up by catalogus.denkfout."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/breuken.py",
+   "name": "ALLE",
+   "line": 626,
+   "description": "The six topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/cijferen.py",
+   "name": "ALLE",
+   "line": 511,
+   "description": "The four topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/eenheden.py",
+   "name": "TABELLEN",
+   "line": 38,
+   "description": "The units tables as data per kind; MACHT_IN, EENHEDEN, CATEGORIE and MACHT are derived from it at import time."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/eenheden.py",
+   "name": "DENKFOUTEN",
+   "line": 232,
+   "description": "Merged into vaardigheden.DENKFOUTEN at import time (line 238) so reports can name the codes."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/getallen.py",
+   "name": "ALLE",
+   "line": 409,
+   "description": "The four topic instances; instantiating them registers each skill in the registry and in ONDERWERPEN."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/grootheden.py",
+   "name": "ALLE",
+   "line": 448,
+   "description": "The three topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+   "name": "ALLE",
+   "line": 620,
+   "description": "The five topic instances; instantiating them registers the skills. TAFELS, PLUSMIN and DUBBELHELFT are also named in kern/snelrekenen.SOORTEN, which picks one at random and calls its maak method."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/meetkunde.py",
+   "name": "FIGUREN",
+   "line": 134,
+   "description": "Maps each formula kind to (shape, quantity, unit); Formules.bereken then chooses the right formula through a dict of lambdas keyed by the same kind."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/meetkunde.py",
+   "name": "ALLE",
+   "line": 585,
+   "description": "The five topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/procenten.py",
+   "name": "ALLE",
+   "line": 390,
+   "description": "The four topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "name": "STRUCTUREN",
+   "line": 796,
+   "description": "Dict structure id -> instance of the 20 Structuur subclasses; stel_samen looks the structure up here by the id from the leerlijn or repetition data, then calls its bouw method."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "name": "WERELDEN",
+   "line": 43,
+   "description": "Worlds loaded from inhoud/vraagstukken/werelden.json; items are picked by structure kind (the structure's soort)."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "name": "ZINNEN",
+   "line": 44,
+   "description": "Wordings loaded from inhoud/vraagstukken/zinnen.json, indexed by structure and variant."
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "name": "ALLE",
+   "line": 1435,
+   "description": "The three topic instances; instantiating them registers the skills."
+  },
+  {
+   "path": "leeravontuur/terminal/balk.py",
+   "name": "INVOER",
+   "line": 291,
+   "description": "Maps answer types 'balk', 'veld', 'coord' and 'wijzers' to BalkInvoer, VeldInvoer, CoordInvoer and KlokInvoer; merged into terminal/oefenaar.py's INVOER."
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/__init__.py",
+   "name": "VAKKEN",
+   "line": 58,
+   "description": "The tree of subjects, domains and topics built from wiskunde.py and taal.py; the menus, the cheat-sheet menus, the reports (indeling) and mixed practice (gemengd_themas) read it, and each mode is a function stored in it that the navigation calls."
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/taal.py",
+   "name": "TAAL",
+   "line": 22,
+   "description": "The subject Taal as data (Vak > Domein > Onderwerp); terminal/curriculum/__init__.py collects it into VAKKEN and the menus are built from that."
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/wiskunde.py",
+   "name": "WISKUNDE",
+   "line": 52,
+   "description": "The subject Wiskunde as data; collected by terminal/curriculum/__init__.py into VAKKEN."
+  },
+  {
+   "path": "leeravontuur/terminal/oefenaar.py",
+   "name": "INVOER",
+   "line": 54,
+   "description": "Maps an answer type (question.invoer) to the input-object class that draws and handles it: the merged INVOER tables of rooster, balk, vraagstuk and tabel plus 'zinsdelen' and 'werkwoord'. Used as INVOER[v.invoer](v, o) in _stel_vraag and _stel_vraag_scherm, and by vraagtekst and GEEN_TWEEDE_KANS."
+  },
+  {
+   "path": "leeravontuur/terminal/oefenaar.py",
+   "name": "GEEN_TWEEDE_KANS",
+   "line": 58,
+   "description": "Set of answer types without a second chance, derived from INVOER by reading each class's geen_tweede_kans attribute at import time."
+  },
+  {
+   "path": "leeravontuur/terminal/rooster.py",
+   "name": "INVOER",
+   "line": 350,
+   "description": "Maps answer types 'rooster' and 'staart' to RoosterInvoer and StaartInvoer; merged into terminal/oefenaar.py's INVOER (and used by terminal/beta.py through that table)."
+  },
+  {
+   "path": "leeravontuur/terminal/tabel.py",
+   "name": "INVOER",
+   "line": 367,
+   "description": "Maps answer types 'eenheid' and 'tabel' to EenheidInvoer and TabelInvoer; merged into terminal/oefenaar.py's INVOER."
+  },
+  {
+   "path": "leeravontuur/terminal/vraagstuk.py",
+   "name": "INVOER",
+   "line": 543,
+   "description": "Maps the answer types 'vraagstuk', 'speur' and 'keuze' to VraagstukInvoer, SpeurInvoer and KeuzeInvoer (the last two added by INVOER.update at the end of the file). Merged into terminal/oefenaar.py's INVOER, where INVOER[v.invoer](v, o) builds the object."
+  }
+ ],
+ "protocols": [
+  {
+   "name": "Input object",
+   "where": "terminal/oefenaar.py (INVOER)",
+   "contract": "Attributes and methods the Oefenaar calls without knowing the class: v, o, hoogte(nagekeken), knoppen(), teken(s, y, uitslag, hulp), toets(k) -> None or (typed answer, number), hulp(o), rijen(), melding, melding_rol, fouten, diagnose, cursor_pos, hint; optional eigen_tekst, eigen_tip, eigen_scherm, geen_tweede_kans, vraag_is_zin, tips_op, spiekbrief_bekeken, naast, extra, uitleg_na, plaatswaarden, tweede_kans, spiekbrief_aan.",
+   "implementers": [
+    "terminal/rooster.py: RoosterInvoer, StaartInvoer",
+    "terminal/balk.py: BalkInvoer, VeldInvoer, CoordInvoer, KlokInvoer",
+    "terminal/vraagstuk.py: VraagstukInvoer, SpeurInvoer, KeuzeInvoer",
+    "terminal/tabel.py: EenheidInvoer, TabelInvoer",
+    "terminal/zinsdelen.py: ZinsdelenInvoer",
+    "terminal/werkwoord.py: WerkwoordInvoer"
+   ],
+   "base_classes": [
+    "terminal/invoer.py: Plaats",
+    "terminal/stappenhulp.py: StappenHulp"
+   ],
+   "consequence": "Calls like obj.toets(k) in Oefenaar._stel_vraag are listed as unresolved_calls with up to six candidates; the Oefenaar and the beta Oefenaar read optional attributes with getattr(obj, 'name', default)."
+  },
+  {
+   "name": "Topic (Onderwerp)",
+   "where": "kern/onderwerp.py (ONDERWERPEN)",
+   "contract": "Subclasses of Onderwerp implement maak_met, nakijken, diagnose, uitleg, tip, spiekbrief, klad_voor, lees_vraag, herhaal_data, maak_herhaling, onderwerp_van_sleutel and more; the screens, reports and repeat bin call them on whichever topic object they got.",
+   "implementers": [
+    "kern/wiskunde/*.py and kern/taal/*.py topic classes (see ONDERWERPEN)"
+   ],
+   "consequence": "Calls such as o.maak(...), o.nakijken(...), o.diagnose(...) on a variable `o` are unresolved_calls with many candidates (listed only when there are six or fewer)."
+  },
+  {
+   "name": "Structure (Structuur)",
+   "where": "kern/wiskunde/vraagstukken.py (STRUCTUREN)",
+   "contract": "The 20 Structuur subclasses each build the numbers and steps of one kind of word problem; stel_samen looks them up by id.",
+   "implementers": [
+    "kern/wiskunde/vraagstukken.py: Structuur subclasses"
+   ],
+   "consequence": "A structure id from the learning line or from stored repeat data chooses the class at run time."
+  },
+  {
+   "name": "Curriculum mode callbacks",
+   "where": "terminal/curriculum/modi.py",
+   "contract": "Each mode of a topic is a callable (app, breadcrumb) that opens a screen.",
+   "implementers": [
+    "terminal/curriculum/modi.py: oefenaar, eenheden, snel, spiek_oefenaar, spiek_eenheden"
+   ],
+   "consequence": "navigatie.start calls modi[modus](app, kr): see the dynamic call list."
+  },
+  {
+   "name": "Cheat sheet objects",
+   "where": "terminal/curriculum, terminal/navigatie.py",
+   "contract": "A topic's `spiek` object has a toon(app, kr) method that opens the right cheat sheet.",
+   "implementers": [
+    "terminal/curriculum/modi.py spiek_* factories"
+   ],
+   "consequence": "onderwerp.spiek.toon(...) in navigatie.start is an unresolved call."
+  },
+  {
+   "name": "Fake screens and windows in tests",
+   "where": "terminal/nepscherm.py and tests",
+   "contract": "NepScherm and NepKlokvenster replace curses and the clock window with the same methods.",
+   "implementers": [
+    "terminal/nepscherm.py: NepScherm, NepKlokvenster",
+    "tests/test_vakken.py: Opnemer"
+   ],
+   "consequence": "Code under test calls the same method names on the fake and on the real object."
+  }
+ ]
+}

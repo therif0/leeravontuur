@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur-mac.command",
+ "kind": "script",
+ "layer": "root",
+ "lines": 4,
+ "source_sha256": "0a198ecd67a0c1f32d04105e9183a7c000950814a797ce2abaae1be08298a68a",
+ "purpose": "Double-click starter for macOS.",
+ "details": "Same as the Linux script: change to the folder and exec python3 leeravontuur.py with the arguments. The first time macOS may need a right-click and Open. LF endings and the executable bit are required."
+}

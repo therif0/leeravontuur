@@ -1,0 +1,385 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_beta.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 101,
+ "source_sha256": "33529a57a545bf1a76b79a2ef0828d66f2da6fe328f4aceb0b8b8f5e97e55b18",
+ "purpose": "Tests the beta screen layout for Cijferen (only with LEERAVONTUUR_BETA=1).",
+ "details": "MetBeta is a context manager that sets or clears the environment variable. TestKeuze tests which Oefenaar class is chosen; TestScherm plays Cijferen exercises on the fake screen (based on Basis from test_schermen) and checks the panel layout, no klad, the always-open cheat sheet and its scrolling.",
+ "module_docstring": "De beta van de schermen 1.0 (werk/schermen.md): Cijferen in vakken, alleen met LEERAVONTUUR_BETA=1.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["beta"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/beta.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["OK", "Basis", "naar"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.reeks",
+   "names": ["Hulp"],
+   "alias": null,
+   "line": 71,
+   "resolves_to": ["leeravontuur/kern/reeks.py"],
+   "internal": true
+  },
+  {"module": "curses", "names": [], "alias": null, "line": 82, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "TAB", "line": 13, "value_type": "Constant", "value_preview": "9", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "MetBeta",
+   "qualname": "MetBeta",
+   "lines": [16, 31],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Context manager for the beta environment variable.",
+   "attributes": [
+    {"name": "waarde", "line": 18, "scope": "instance", "value_preview": null},
+    {"name": "oud", "line": 21, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {
+     "caller": "tests/test_beta.py::TestKeuze.test_alleen_cijferen_en_alleen_als_ze_aan_staat",
+     "lines": [36, 38]
+    },
+    {
+     "caller": "tests/test_beta.py::TestScherm.test_geen_klad_bij_cijferen_tab_is_volgende_rij",
+     "lines": [64]
+    },
+    {
+     "caller": "tests/test_beta.py::TestScherm.test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen",
+     "lines": [73]
+    },
+    {"caller": "tests/test_beta.py::TestScherm.test_spiekbrief_scrollt", "lines": [84]},
+    {"caller": "tests/test_beta.py::TestScherm.test_staartdeling_in_vakken_en_bewaard", "lines": [48]},
+    {"caller": "tests/test_beta.py::TestScherm.test_zonder_beta_het_gewone_scherm", "lines": [94]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "MetBeta.__init__",
+     "kind": "method",
+     "lines": [17, 18],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "waarde", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Remembers the value to set.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_beta.py::TestKeuze.test_alleen_cijferen_en_alleen_als_ze_aan_staat",
+       "lines": [36, 38]
+      },
+      {
+       "caller": "tests/test_beta.py::TestScherm.test_geen_klad_bij_cijferen_tab_is_volgende_rij",
+       "lines": [64]
+      },
+      {
+       "caller": "tests/test_beta.py::TestScherm.test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen",
+       "lines": [73]
+      },
+      {"caller": "tests/test_beta.py::TestScherm.test_spiekbrief_scrollt", "lines": [84]},
+      {"caller": "tests/test_beta.py::TestScherm.test_staartdeling_in_vakken_en_bewaard", "lines": [48]},
+      {"caller": "tests/test_beta.py::TestScherm.test_zonder_beta_het_gewone_scherm", "lines": [94]}
+     ]
+    },
+    {
+     "name": "__enter__",
+     "qualname": "MetBeta.__enter__",
+     "kind": "method",
+     "lines": [20, 25],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets (or removes) LEERAVONTUUR_BETA, remembering the old value.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["os.environ.get", "os.environ.pop"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__exit__",
+     "qualname": "MetBeta.__exit__",
+     "kind": "method",
+     "lines": [27, 31],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Restores the old value.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["os.environ.pop"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKeuze",
+   "qualname": "TestKeuze",
+   "lines": [34, 42],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Class choice test.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alleen_cijferen_en_alleen_als_ze_aan_staat",
+     "qualname": "TestKeuze.test_alleen_cijferen_en_alleen_als_ze_aan_staat",
+     "kind": "method",
+     "lines": [35, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "oefenaar_klasse gives BetaOefenaar only for Cijferen and only when the beta is on.",
+     "calls": [
+      {"target": "leeravontuur/terminal/beta.py::oefenaar_klasse", "lines": [37, 39, 42]},
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [36, 38]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIs"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestScherm",
+   "qualname": "TestScherm",
+   "lines": [45, 97],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Beta screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_staartdeling_in_vakken_en_bewaard",
+     "qualname": "TestScherm.test_staartdeling_in_vakken_en_bewaard",
+     "kind": "method",
+     "lines": [46, 58],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A long division played in the beta layout shows panels and stores its answer.",
+     "calls": [
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [48]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.opslag.antwoorden",
+       "lines": [57],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [49],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".ergens", "all", "len", "next", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geen_klad_bij_cijferen_tab_is_volgende_rij",
+     "qualname": "TestScherm.test_geen_klad_bij_cijferen_tab_is_volgende_rij",
+     "kind": "method",
+     "lines": [60, 68],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De vader 22/11: Cijferen krijgt geen klad-kolom (het rooster is het rekenwerk); Tab houdt in het rooster zijn betekenis (volgende rij).",
+     "explanation": "In the beta there is no klad for Cijferen and Tab goes to the next row of the grid.",
+     "calls": [
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [64]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [65],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen",
+     "qualname": "TestScherm.test_spiekbrief_onderaan_op_een_groot_scherm_niet_in_een_examen",
+     "kind": "method",
+     "lines": [70, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "On a big screen the cheat sheet is shown below; not when the help rules switch it off (exam).",
+     "calls": [
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [73]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [74],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertIn", "next", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_scrollt",
+     "qualname": "TestScherm.test_spiekbrief_scrollt",
+     "kind": "method",
+     "lines": [80, 90],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Past de spiekbrief niet: PgDn en het scrollwiel tonen de rest.",
+     "explanation": "A cheat sheet that does not fit scrolls with PgDn and the wheel.",
+     "calls": [
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [84]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [85],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIn", ".assertNotIn", ".assertTrue", "all", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_beta_het_gewone_scherm",
+     "qualname": "TestScherm.test_zonder_beta_het_gewone_scherm",
+     "kind": "method",
+     "lines": [92, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Without the beta the normal screen is drawn.",
+     "calls": [
+      {"target": "tests/test_beta.py::MetBeta.__init__", "lines": [94]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [95],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

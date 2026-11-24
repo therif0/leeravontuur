@@ -1,0 +1,74 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.coordinaten.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 52,
+ "source_sha256": "deda7ee450f16c31715c479fac4c9a8447ea48f8a342851015aee3a078079185",
+ "purpose": "Learning line for coordinates: treasure map and coordinate system (years 4-m1).",
+ "details": "Map size grows; the coordinate system with axes appears in m1. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"$keys": ["soorten", "kolommen", "rijen", "assen"], "$count": 4, "$values": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "kolommen": "number",
+    "rijen": "number",
+    "assen": "number"
+   },
+   "5": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "kolommen": "number",
+    "rijen": "number",
+    "assen": "number"
+   },
+   "6": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "kolommen": "number",
+    "rijen": "number",
+    "assen": "number"
+   },
+   "m1": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "kolommen": "number",
+    "rijen": "number",
+    "assen": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/meetkunde.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "aflezen/aanduiden on the treasure map and, later, the same on the coordinate system (assen_*)."
+  },
+  {"key": "parameters.kolommen", "explanation": "Number of columns of the grid or map."},
+  {"key": "parameters.rijen", "explanation": "Number of rows of the grid or map."},
+  {
+   "key": "parameters.assen",
+   "explanation": "Largest absolute coordinate of the coordinate system (0 = the treasure map without axes)."
+  }
+ ]
+}

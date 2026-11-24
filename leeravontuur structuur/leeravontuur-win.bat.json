@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur-win.bat",
+ "kind": "script",
+ "layer": "root",
+ "lines": 11,
+ "source_sha256": "42c88215601d8f4db89ec34302a5ba30018825889104a90c61132501a1455878",
+ "purpose": "Double-click starter for Windows.",
+ "details": "Changes to the folder of the script, uses the `py` launcher when available, otherwise `python`, and passes the arguments. If Python is not found (error level 9009) it prints how to install it; on any error it pauses so the window stays open. CRLF line endings are required (see .gitattributes)."
+}

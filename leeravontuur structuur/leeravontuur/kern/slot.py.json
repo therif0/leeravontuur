@@ -1,0 +1,142 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/slot.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 77,
+ "source_sha256": "1c23a0c105aae505d87d92e745de0848aeb6fc9fc4445d688eecc48ad30f0df4",
+ "purpose": "A lock file that tells a second copy of the program that one is already open.",
+ "details": "Two copies open at once risk lost answers, so the program writes its process id and start time to leeravontuur.lock in the data folder and removes it at exit. A lock whose process no longer runs (power failure) is ignored. The process check differs on Windows (kernel32 through ctypes, because os.kill would terminate the process) and elsewhere (signal 0). Never raises.",
+ "module_docstring": "Een slotbestand, zodat het programma merkt dat het al openstaat (twee keer open = kans op verloren antwoorden).",
+ "imports": [
+  {"module": "atexit", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.paden",
+   "names": ["data_map"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/paden.py"],
+   "internal": true
+  },
+  {"module": "ctypes", "names": [], "alias": null, "line": 23, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["leeravontuur/__main__.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "'leeravontuur.lock'",
+   "explanation": "Name of the lock file."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_draait",
+   "qualname": "_draait",
+   "kind": "function",
+   "lines": [17, 43],
+   "params": [
+    {"name": "pid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Draait het proces met dit nummer nog?",
+   "explanation": "True when a process with this number still runs (Windows via OpenProcess and GetExitCodeProcess, otherwise os.kill with signal 0).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".CloseHandle",
+    ".GetExitCodeProcess",
+    ".OpenProcess",
+    "bool",
+    "ctypes.byref",
+    "ctypes.c_ulong",
+    "os.kill"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/slot.py::bezet", "lines": [54]}
+   ]
+  },
+  {
+   "name": "bezet",
+   "qualname": "bezet",
+   "kind": "function",
+   "lines": [46, 56],
+   "params": [
+    {"name": "map_", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Tekst over het programma dat al openstaat (bv. 'sinds 14:02'), of None als het vrij is.",
+   "explanation": "Text like 'sinds 14:02' when another live process holds the lock, else None (also for its own process or a stale lock).",
+   "calls": [
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [48]},
+    {"target": "leeravontuur/kern/slot.py::_draait", "lines": [54]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "int", "len", "os.getpid"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [150]}
+   ]
+  },
+  {
+   "name": "neem",
+   "qualname": "neem",
+   "kind": "function",
+   "lines": [59, 67],
+   "params": [
+    {"name": "map_", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zet het slot (en ruim het op bij het afsluiten). Mag nooit crashen.",
+   "explanation": "Writes the lock (own pid and time) and registers its removal at exit; silently does nothing on an OS error.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::iso", "lines": [64]},
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [61]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".mkdir", ".write_text", "atexit.register", "os.getpid"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [160]}
+   ]
+  },
+  {
+   "name": "geef_vrij",
+   "qualname": "geef_vrij",
+   "kind": "function",
+   "lines": [70, 77],
+   "params": [
+    {"name": "map_", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Removes the lock file if it still holds this process's id.",
+   "calls": [
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [71]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", ".unlink", "int", "os.getpid"],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

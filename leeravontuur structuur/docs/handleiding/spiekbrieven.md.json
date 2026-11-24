@@ -1,0 +1,29 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/spiekbrieven.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 25,
+ "source_sha256": "0670ddfa99cbaee69bc28ffc116b05f41d56800bad4411c449e039e2626194fe",
+ "purpose": "Handbook page about the cheat sheets (spiekbrieven).",
+ "details": "A very short page: where to find the cheat sheets (main menu or in each topic) and that after the last tip F1 opens the right one.",
+ "summary": "Describes where cheat sheets are found (main menu entry or from each topic) and that they open automatically after the last tip.",
+ "headings": [
+  {"level": 1, "text": "Spiekbrieven", "line": 1}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Spiekbrieven", "target": "beelden/spiekbrieven.svg", "internal": true},
+  {"text": "Eenheden", "target": "wiskunde/eenheden.md#spiekbrief", "internal": true},
+  {"text": "Hoofdrekenen", "target": "wiskunde/hoofdrekenen.md#spiekbrief", "internal": true},
+  {"text": "Getallen", "target": "wiskunde/getallen.md#spiekbrief", "internal": true},
+  {"text": "Cijferen", "target": "wiskunde/cijferen.md#spiekbrief", "internal": true},
+  {"text": "Breuken", "target": "wiskunde/breuken.md#spiekbrief", "internal": true},
+  {"text": "Procenten", "target": "wiskunde/procenten.md#spiekbrief", "internal": true},
+  {"text": "Tijd, geld en snelheid", "target": "wiskunde/tijd-geld-snelheid.md#spiekbrief", "internal": true},
+  {"text": "Meetkunde", "target": "wiskunde/meetkunde.md#spiekbrief", "internal": true},
+  {"text": "Vraagstukken", "target": "wiskunde/vraagstukken.md#spiekbrief", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md"],
+ "words": 235
+}

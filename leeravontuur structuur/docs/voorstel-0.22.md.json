@@ -1,0 +1,22 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/voorstel-0.22.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 398,
+ "source_sha256": "e150042c88a201159b1bf8834d2935b2765dac0fe5a78d907ddcb15200807b9d",
+ "purpose": "Mockups for version 0.22: the parent's log of answers, multiplication per level, a highlighted worked example, and long division where the child finds the way.",
+ "details": "Same format as voorstel-0.21: now / picture / recommendation. Items #24, #19, #20c, #17, and a recommended order (0.22.0 the log, 0.22.1 multiplication per level, ...).",
+ "summary": "Proposal for 0.22 with mockups: #24 the parent log (question and answer per entry), #19 multiplication per level, #20c an example that lights up step by step, #17 long division with the child choosing the next step; ends with the recommended order.",
+ "headings": [
+  {"level": 1, "text": "Voorstel 0.22: mockups (groep C)", "line": 1},
+  {"level": 2, "text": "1. Het logboek voor de ouder (#24)", "line": 12},
+  {"level": 2, "text": "2. Cijferend vermenigvuldigen per niveau (#19)", "line": 127},
+  {"level": 2, "text": "3. Een voorbeeld dat oplicht (#20, deel c)", "line": 209},
+  {"level": 2, "text": "4. De staartdeling: zelf de weg zoeken (#17)", "line": 313},
+  {"level": 2, "text": "Volgorde (aanbevolen)", "line": 390}
+ ],
+ "links": [],
+ "referenced_by": [],
+ "words": 2190
+}

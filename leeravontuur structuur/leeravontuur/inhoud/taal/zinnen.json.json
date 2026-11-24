@@ -1,0 +1,30 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/taal/zinnen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 75,
+ "source_sha256": "9ead249c8601ec5eadbb481c415e963762f543cce4324abe099eb9256bea83b6",
+ "purpose": "Hand-written, fully analysed sentences for the sentence parser (for cases the sentence machine does not make well), including sentences with two finite verbs.",
+ "details": "Loaded by kern/taal/nagekeken.py (PAD). Sentences use the bracket notation read by kern/taal/zinnen.lees_haakjes. Each item has a school year ('jaar' 4, 5 or 6), a tense ('tijd' tt/vt), the finite verb in the other tense ('anders', for the tense check), and optional flags: 'wie' (the direct object is a person, so the tip asks 'Wie ...?'), 'vz' (aan or voor for the indirect-object question), 'naam' (the first word is a name and keeps its capital). 'twee' has sentences with more than one finite verb: only pv and o are marked, with '|' between the clauses and /ww on verbs that are not the finite verb. Mixed into series according to the learning line parameters nagekeken and twee_pv.",
+ "keys": ["uitleg", "zinnen", "twee"],
+ "shape": {
+  "uitleg": "string",
+  "zinnen": {"$list": 40, "$items": "mixed"},
+  "twee": {"$list": 26, "$items": "mixed"}
+ },
+ "read_by": [
+  "leeravontuur/kern/taal/nagekeken.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "The explanation of the fields (Dutch)."},
+  {
+   "key": "zinnen",
+   "explanation": "The list of single-clause sentences (40), each with jaar, tijd, anders, zin and optional flags."
+  },
+  {"key": "twee", "explanation": "The list of sentences with two finite verbs (26), each with tijd and zin."}
+ ]
+}

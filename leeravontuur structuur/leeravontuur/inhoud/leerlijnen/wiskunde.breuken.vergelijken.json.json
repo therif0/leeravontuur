@@ -1,0 +1,61 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.vergelijken.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 40,
+ "source_sha256": "92b2ccc82b928d08cbf0021702c020b3361242bc140106d465ecb3c3b2dd88eb",
+ "purpose": "Learning line for comparing fractions with <, > and = (years 4-m1).",
+ "details": "Same denominator or numerator first, unlike denominators later. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "noemer_max": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemer_max": "number"
+   },
+   "5": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "noemer_max": "number"
+   },
+   "6": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemer_max": "number"
+   },
+   "m1": {
+    "soorten": {"$list": 1, "$items": "string"},
+    "noemer_max": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/breuken.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.noemer_max", "explanation": "The largest denominator that may be used in that year."}
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/snelrekenen.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 49,
+ "source_sha256": "f0c42939d25c7f64ee868fd8e0492d25113e2dbed918534ca2534d6d846b124f",
+ "purpose": "Handbook page about Snelrekenen (speed arithmetic).",
+ "details": "Explains the two rounds (60 seconds or 20 sums), that questions come from Hoofdrekenen, what is shown during a round, and the result with records, bonus points and the last rounds.",
+ "summary": "Explains speed arithmetic: 60-second and 20-sum rounds with questions from Hoofdrekenen, the running clock, the result with record and bonus, and the history of recent rounds.",
+ "headings": [
+  {"level": 1, "text": "Snelrekenen", "line": 1},
+  {"level": 2, "text": "Tijdens de ronde", "line": 26},
+  {"level": 2, "text": "Het resultaat", "line": 33}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Hoofdrekenen", "target": "wiskunde/hoofdrekenen.md", "internal": true},
+  {
+   "text": "Snelrekenen: wat wil je snel rekenen?",
+   "target": "beelden/snelrekenen-menu.svg",
+   "internal": true
+  },
+  {"text": "60 seconden of 20 sommen", "target": "beelden/snelrekenen-hoe.svg", "internal": true},
+  {"text": "ouderdeel", "target": "ouderdeel.md", "internal": true},
+  {"text": "20 sommen: de klok loopt mee", "target": "beelden/snelrekenen-bezig.svg", "internal": true},
+  {"text": "Het resultaat met je record", "target": "beelden/snelrekenen-klaar.svg", "internal": true},
+  {"text": "rapport", "target": "ouderdeel.md#rapporten", "internal": true}
+ ],
+ "referenced_by": ["docs/handleiding/README.md", "docs/handleiding/ouderdeel.md"],
+ "words": 332
+}

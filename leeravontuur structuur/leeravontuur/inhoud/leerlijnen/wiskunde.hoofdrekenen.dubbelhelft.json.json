@@ -1,0 +1,44 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.dubbelhelft.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 31,
+ "source_sha256": "f13bf15550cdb44266c62fe750110bca81715cc4d955f287789983661e34a9ae",
+ "purpose": "Learning line for doubling and halving (years 3-m1).",
+ "details": "Bigger numbers; decimals from year 6. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"max": "string", "decimalen": "string"},
+  "leerlijn": {
+   "$keys": ["3", "4", "5", "6", "m1"],
+   "$count": 5,
+   "$values": {"max": "number", "decimalen": "number"}
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.max", "explanation": "Upper limit for the numbers in the questions."},
+  {"key": "parameters.decimalen", "explanation": "Largest number of digits after the decimal comma."}
+ ]
+}

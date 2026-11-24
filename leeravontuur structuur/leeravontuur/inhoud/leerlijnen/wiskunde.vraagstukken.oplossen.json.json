@@ -1,0 +1,110 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.oplossen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 245,
+ "source_sha256": "ce9f6290a1548793337f2e72965d91d060a6bd6376bb83bcc13cac3ab3419db8",
+ "purpose": "Learning line for word problems in four steps (years 3-m1): which story structures, how big the numbers and how often an unneeded given or an introduction appears.",
+ "details": "Structures grow from simple sums to change, discount, speed and rest problems; the step of prices shrinks (1 euro to 1 cent); fractions and percentages are added. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {
+   "$keys": ["structuren", "max", "factor", "geld", "gram", "procenten", "noemers", "overbodig", "…"],
+   "$count": 9,
+   "$values": "string"
+  },
+  "leerlijn": {
+   "3": {
+    "structuren": {"$list": 10, "$items": "string"},
+    "max": "number",
+    "factor": "number",
+    "geld": "string",
+    "gram": "number",
+    "procenten": {"$list": 0},
+    "noemers": {"$list": 0},
+    "overbodig": "number",
+    "intro": "number"
+   },
+   "4": {
+    "structuren": {"$list": 21, "$items": "string"},
+    "max": "number",
+    "factor": "number",
+    "geld": "string",
+    "gram": "number",
+    "procenten": {"$list": 0},
+    "noemers": {"$list": 5, "$items": "number"},
+    "overbodig": "number",
+    "intro": "number"
+   },
+   "5": {
+    "structuren": {"$list": 30, "$items": "string"},
+    "max": "number",
+    "factor": "number",
+    "geld": "string",
+    "gram": "number",
+    "procenten": {"$list": 4, "$items": "number"},
+    "noemers": {"$list": 6, "$items": "number"},
+    "overbodig": "number",
+    "intro": "number"
+   },
+   "6": {
+    "structuren": {"$list": 32, "$items": "string"},
+    "max": "number",
+    "factor": "number",
+    "geld": "string",
+    "gram": "number",
+    "procenten": {"$list": 9, "$items": "number"},
+    "noemers": {"$list": 7, "$items": "number"},
+    "overbodig": "number",
+    "intro": "number"
+   },
+   "m1": {
+    "structuren": {"$list": 19, "$items": "string"},
+    "max": "number",
+    "factor": "number",
+    "geld": "string",
+    "gram": "number",
+    "procenten": {"$list": 10, "$items": "number"},
+    "noemers": {"$list": 7, "$items": "number"},
+    "overbodig": "number",
+    "intro": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.structuren", "explanation": "The kinds of word problem (structure/variant) that occur."},
+  {"key": "parameters.max", "explanation": "Upper limit for the numbers in the questions."},
+  {"key": "parameters.factor", "explanation": "Largest factor/count of groups used in the stories."},
+  {"key": "parameters.geld", "explanation": "The step of prices in euros (as text)."},
+  {"key": "parameters.gram", "explanation": "The step of weights in grams (0 = no weights)."},
+  {"key": "parameters.procenten", "explanation": "The percentages that occur."},
+  {"key": "parameters.noemers", "explanation": "Denominators used in the 'fraction of a number' stories."},
+  {
+   "key": "parameters.overbodig",
+   "explanation": "Probability that a story contains a given that is not needed."
+  },
+  {"key": "parameters.intro", "explanation": "Probability that a story starts with an introductory sentence."}
+ ]
+}

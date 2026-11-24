@@ -1,0 +1,217 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/instellingen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 85,
+ "source_sha256": "35fdab69905407b693627466b5c2f58a989388f34987654bfb1ff230b038c6db",
+ "purpose": "The per-child settings (name, year, colours, mouse, locks, mixed-practice choices) and their validation.",
+ "details": "Settings are stored per child as JSON in the database by Opslag; this module defines the dataclass and makes sure a damaged or hand-edited value falls back to a default instead of crashing. Start arguments override settings for one session only (App.voorrang in the terminal) and are not stored. The legacy file instellingen.json from the first phase is still readable through laad_json so it can be moved into the database on first start.",
+ "module_docstring": "Instellingen van een kind (naam, leerjaar, kleuren, muis …). Ze worden bewaard via kern/opslag.py.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field", "fields"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.paden",
+   "names": ["data_map"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/paden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/opslag.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "leeravontuur/terminal/schermen/winkel.py",
+  "tests/test_cijferen.py",
+  "tests/test_klok.py",
+  "tests/test_menu_architecture.py",
+  "tests/test_opslag.py",
+  "tests/test_reeks.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_vraagstukken.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "<class Instellingen>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "THEMAS",
+   "line": 9,
+   "value_type": "Dict",
+   "value_preview": "{'standaard': 'standaard', 'rood-groen': 'kleurenblind (rood-groen)',…",
+   "explanation": "Colour themes the child can choose, id to display name (standard, two colour-blind themes, high contrast, no colour)."
+  },
+  {
+   "name": "STRAFFEN",
+   "line": 18,
+   "value_type": "Dict",
+   "value_preview": "{'pakje': 'pakje komt na 10 juiste antwoorden', 'tijd': 'pakje komt n…",
+   "explanation": "What happens after two wrong answers in the shop, id to description (package after 10 correct, after 15 minutes, 5 points shipping, none)."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Instellingen",
+   "qualname": "Instellingen",
+   "lines": [27, 71],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "Dataclass with all settings of one child; new fields can be added without a migration because the whole object is stored as JSON.",
+   "attributes": [
+    {"name": "naam", "line": 28, "scope": "class", "value_preview": "''"},
+    {"name": "leerjaar", "line": 29, "scope": "class", "value_preview": "'5'"},
+    {"name": "thema", "line": 30, "scope": "class", "value_preview": "'standaard'"},
+    {"name": "ascii", "line": 31, "scope": "class", "value_preview": "None"},
+    {"name": "muis", "line": 32, "scope": "class", "value_preview": "True"},
+    {"name": "typrichting", "line": 33, "scope": "class", "value_preview": "1"},
+    {"name": "timer_zichtbaar", "line": 34, "scope": "class", "value_preview": "True"},
+    {"name": "avatar", "line": 35, "scope": "class", "value_preview": "True"},
+    {"name": "animaties", "line": 36, "scope": "class", "value_preview": "True"},
+    {"name": "winkel_straf", "line": 37, "scope": "class", "value_preview": "'pakje'"},
+    {"name": "klokvenster", "line": 38, "scope": "class", "value_preview": "True"},
+    {"name": "plaatswaarden", "line": 39, "scope": "class", "value_preview": "False"},
+    {"name": "stoppen_slot", "line": 40, "scope": "class", "value_preview": "False"},
+    {"name": "gemengd_themas", "line": 42, "scope": "class", "value_preview": "None"},
+    {
+     "name": "gemengd_ouder",
+     "line": 43,
+     "scope": "class",
+     "value_preview": "field(default_factory=lambda: {'stand': 'kind', 'themas': […"
+    },
+    {"name": "naam", "line": 50, "scope": "instance", "value_preview": null},
+    {"name": "leerjaar", "line": 52, "scope": "instance", "value_preview": null},
+    {"name": "thema", "line": 54, "scope": "instance", "value_preview": null},
+    {"name": "ascii", "line": 56, "scope": "instance", "value_preview": null},
+    {"name": "muis", "line": 58, "scope": "instance", "value_preview": null},
+    {"name": "typrichting", "line": 60, "scope": "instance", "value_preview": null},
+    {"name": "winkel_straf", "line": 62, "scope": "instance", "value_preview": null},
+    {"name": "gemengd_themas", "line": 65, "scope": "instance", "value_preview": null},
+    {"name": "gemengd_ouder", "line": 67, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd", "lines": [47, 67]},
+    {"caller": "leeravontuur/kern/instellingen.py::laad_json", "lines": [83, 85]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.instellingen_van", "lines": [402]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [380]},
+    {"caller": "leeravontuur/terminal/app.py::App.__init__", "lines": [59]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.teken", "lines": [155]},
+    {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [110]},
+    {"caller": "tests/test_menu_architecture.py::TestModiStarten.setUp", "lines": [138]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_bewaard_en_gecontroleerd", "lines": [210]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_een_keer_vervalt_na_de_reeks", "lines": [189]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_het_kind_kiest", "lines": [175]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_ongeldige_keuze_van_de_ouder", "lines": [198]},
+    {"caller": "tests/test_reeks.py::TestWieKiest.test_vast", "lines": [183]},
+    {"caller": "tests/test_schermen.py::Basis.opslag", "lines": [103]},
+    {"caller": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1032]},
+    {"caller": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [979]},
+    {"caller": "tests/test_stabiliteit.py::TestToetsen.test_teken_met_toetscode_wordt_teken", "lines": [113]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "lines": [408, 412]
+    }
+   ],
+   "methods": [
+    {
+     "name": "gecontroleerd",
+     "qualname": "Instellingen.gecontroleerd",
+     "kind": "method",
+     "lines": [45, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Zet ongeldige waarden terug op de standaard.",
+     "explanation": "Resets every invalid field to its default (name trimmed to 20 characters, year in the known list, theme and penalty in their tables, booleans really boolean, mixed-practice choices well-formed) and returns self.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [47, 67]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["all", "getattr", "isinstance", "setattr"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "pad",
+   "qualname": "pad",
+   "kind": "function",
+   "lines": [74, 76],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het instellingenbestand van fase 1. Wordt bij de eerste start overgezet naar de databank.",
+   "explanation": "Path of the legacy instellingen.json in the data folder.",
+   "calls": [
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [76]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [235]},
+    {"caller": "tests/test_opslag.py::TestOpenen.test_overzetten_uit_fase_1", "lines": [129]}
+   ]
+  },
+  {
+   "name": "laad_json",
+   "qualname": "laad_json",
+   "kind": "function",
+   "lines": [79, 85],
+   "params": [
+    {"name": "bestand", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Reads a settings JSON file, keeps only known fields, and returns validated Instellingen; any read or parse error gives the defaults.",
+   "calls": [
+    {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [83, 85]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "Instellingen(**{k: v for k, v in data.items() if k in namen…",
+     "lines": [85],
+     "candidates": ["leeravontuur/kern/instellingen.py::Instellingen.gecontroleerd"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".read_text", "dataclasses.fields", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_om_uit_json", "lines": [420]}
+   ]
+  }
+ ]
+}

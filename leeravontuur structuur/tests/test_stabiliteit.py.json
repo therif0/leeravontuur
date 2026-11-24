@@ -1,0 +1,1044 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_stabiliteit.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 292,
+ "source_sha256": "daa5f02d888dbfe88603c7292caf34c432b1f4e4b455a3d26dde2ab7ff55ec47",
+ "purpose": "Stability tests: no crashes and no lost data (generators, keys, database copies and damage, the safety net, and the monkey test).",
+ "details": "TempData runs tests against a temporary data folder. TestGeneratoren makes questions for every topic and year and repeats them across years and with odd data; TestToetsen checks function keys type nothing; TestDatabank checks the daily copy, the backup for a damaged file, the copy before a migration, a locked database and damaged JSON; TestVangnet checks that an error in a screen returns to the menu and sessions are closed; TestAapjes presses random keys and clicks through the whole app (the long run is controlled by LEERAVONTUUR_AAP, _AAP_SEEDS and _AAP_RONDES).",
+ "module_docstring": "Stabiliteit: geen crashes en geen verloren gegevens.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "sqlite3", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 16, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 17, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["datetime", "timedelta"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 19, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 20, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus", "foutlog", "klok", "leerjaren", "verhaal"],
+   "alias": null,
+   "line": 22,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/verhaal.py"
+   ],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 23,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["MIGRATIES", "Opslag"],
+   "alias": null,
+   "line": 25,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 26,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 27,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["HangtFout", "NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 28,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["Scherm", "teken_van"],
+   "alias": null,
+   "line": 29,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar", "naar_spiekbrief"],
+   "alias": null,
+   "line": 32,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar", "naar_spiekbrief"],
+   "alias": null,
+   "line": 34,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 185,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 197,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["hoofdrekenen"],
+   "alias": null,
+   "line": 199,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/hoofdrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["navigatie"],
+   "alias": null,
+   "line": 207,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/navigatie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 261,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["app"],
+   "alias": null,
+   "line": 272,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/app.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "tests/test_gemengd.py",
+  "tests/test_stopslot.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_werkwoorden.py"
+ ],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []},
+  {
+   "scope": "<class TestAapjes>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "os.environ.get", "range"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "VREEMD",
+   "line": 36,
+   "value_type": "List",
+   "value_preview": "['', ' ', 'abc', '-5', '0', '999999999', '1/2', '1 1/2', '3/0', 'ja',…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TempData",
+   "qualname": "TempData",
+   "lines": [40, 52],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class with a temporary data folder.",
+   "attributes": [
+    {"name": "tmp", "line": 42, "scope": "instance", "value_preview": null},
+    {"name": "oud", "line": 43, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TempData.setUp",
+     "kind": "method",
+     "lines": [41, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Points LEERAVONTUUR_DATA at a temporary folder.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["os.environ.get", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "TempData.tearDown",
+     "kind": "method",
+     "lines": [46, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Resets the clock and the environment variable.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [47]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".cleanup", "os.environ.pop"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [55, 99],
+   "bases": ["TempData"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generator robustness.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elk_onderwerp_elk_leerjaar",
+     "qualname": "TestGeneratoren.test_elk_onderwerp_elk_leerjaar",
+     "kind": "method",
+     "lines": [56, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic makes many questions in every year without error; answers check and diagnosis works.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [67]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [76],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.diagnose", "lines": [81], "candidates": [], "candidates_count": 37},
+      {"expr": "o.lees_vraag", "lines": [72, 79], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [62, 77],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [72, 80],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [75], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [74], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [73], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [
+      ".assertIsInstance",
+      ".assertLess",
+      ".assertLessEqual",
+      ".assertTrue",
+      "len",
+      "random.Random",
+      "range",
+      "time.monotonic"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhaling_over_leerjaren_heen",
+     "qualname": "TestGeneratoren.test_herhaling_over_leerjaren_heen",
+     "kind": "method",
+     "lines": [83, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeat data made in one year can be replayed in another year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [87],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.herhaal_data",
+       "lines": [90],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak",
+       "lines": [90, 92],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "o.uitleg", "lines": [93], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": ["random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhaling_met_vreemde_data",
+     "qualname": "TestGeneratoren.test_herhaling_met_vreemde_data",
+     "kind": "method",
+     "lines": [95, 99],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Strange stored repeat data still gives a question (no crash).",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::aantal", "lines": [99]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.maak_herhaling",
+       "lines": [97],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertGreater", ".assertIsInstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestToetsen",
+   "qualname": "TestToetsen",
+   "lines": [102, 114],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Key handling.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_functietoetsen_typen_niets",
+     "qualname": "TestToetsen.test_functietoetsen_typen_niets",
+     "kind": "method",
+     "lines": [103, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Function and special keys never type characters.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.bewerk", "lines": [107, 108]},
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [109, 110]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "ord", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_teken_met_toetscode_wordt_teken",
+     "qualname": "TestToetsen.test_teken_met_toetscode_wordt_teken",
+     "kind": "method",
+     "lines": [112, 114],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A typed character code becomes ('teken', char).",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [113]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [113]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [113]}
+     ],
+     "unresolved_calls": [
+      {"expr": "s.toets", "lines": [114], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDatabank",
+   "qualname": "TestDatabank",
+   "lines": [117, 180],
+   "bases": ["TempData"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Database safety.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "pad",
+     "qualname": "TestDatabank.pad",
+     "kind": "method",
+     "lines": [118, 119],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Path of the test database.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["pathlib.Path"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_stabiliteit.py::TestDatabank.test_beschadigd_bestand_krijgt_de_reservekopie",
+       "lines": [132, 135, 136]
+      },
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_beschadigde_json", "lines": [174]},
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_dagkopie_en_opruimen", "lines": [125]},
+      {"caller": "tests/test_stabiliteit.py::TestDatabank.test_kopie_voor_migratie", "lines": [144, 150]},
+      {
+       "caller": "tests/test_stabiliteit.py::TestDatabank.test_vergrendelde_databank_crasht_niet",
+       "lines": [156, 159]
+      }
+     ]
+    },
+    {
+     "name": "test_dagkopie_en_opruimen",
+     "qualname": "TestDatabank.test_dagkopie_en_opruimen",
+     "kind": "method",
+     "lines": [121, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A daily backup is made and old copies are cleaned up.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [124]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [125]},
+      {"target": "tests/test_stabiliteit.py::TestDatabank.pad", "lines": [125]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.sluit",
+       "lines": [126],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".astimezone",
+      ".glob",
+      "datetime.datetime",
+      "datetime.timedelta",
+      "len",
+      "pathlib.Path",
+      "range",
+      "sorted"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_beschadigd_bestand_krijgt_de_reservekopie",
+     "qualname": "TestDatabank.test_beschadigd_bestand_krijgt_de_reservekopie",
+     "kind": "method",
+     "lines": [131, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A damaged database file is replaced by the backup.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [132, 136]},
+      {"target": "tests/test_stabiliteit.py::TestDatabank.pad", "lines": [132, 135, 136]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [138, 139],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [133],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.sluit",
+       "lines": [134, 141],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".glob", ".write_bytes", "list", "pathlib.Path"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kopie_voor_migratie",
+     "qualname": "TestDatabank.test_kopie_voor_migratie",
+     "kind": "method",
+     "lines": [143, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A copy is made before a schema migration.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [150]},
+      {"target": "tests/test_stabiliteit.py::TestDatabank.pad", "lines": [144, 150]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.sluit",
+       "lines": [153],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertTrue",
+      ".close",
+      ".commit",
+      ".execute",
+      ".executescript",
+      ".exists",
+      "len",
+      "pathlib.Path",
+      "sqlite3.connect",
+      "str"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_vergrendelde_databank_crasht_niet",
+     "qualname": "TestDatabank.test_vergrendelde_databank_crasht_niet",
+     "kind": "method",
+     "lines": [155, 171],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A locked database gives no crash (and no lost answer).",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::dag", "lines": [162]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [156]},
+      {"target": "tests/test_stabiliteit.py::TestDatabank.pad", "lines": [156, 159]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.bewaar_antwoord",
+       "lines": [165],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [163, 170],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [157],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [164],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.sluit",
+       "lines": [171],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.telling",
+       "lines": [162],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.telling"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertFalse",
+      ".assertIsNotNone",
+      ".close",
+      ".execute",
+      ".rollback",
+      "sqlite3.connect",
+      "str"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_beschadigde_json",
+     "qualname": "TestDatabank.test_beschadigde_json",
+     "kind": "method",
+     "lines": [173, 180],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Damaged settings JSON falls back to defaults.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [174]},
+      {"target": "tests/test_stabiliteit.py::TestDatabank.pad", "lines": [174]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o._schrijf",
+       "lines": [176, 177],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag._schrijf"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.avatar",
+       "lines": [179],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.instellingen_van",
+       "lines": [178],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [175],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.sluit",
+       "lines": [180],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestVangnet",
+   "qualname": "TestVangnet",
+   "lines": [183, 210],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Safety net.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_fout_in_een_scherm_gaat_terug_naar_het_menu",
+     "qualname": "TestVangnet.test_fout_in_een_scherm_gaat_terug_naar_het_menu",
+     "kind": "method",
+     "lines": [184, 194],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An exception in a screen returns to the menu with a message and an error log entry.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::meldingen", "lines": [191, 192]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [189],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertIn",
+      ".assertTrue",
+      ".ergens",
+      ".opslag",
+      "RuntimeError",
+      "test_schermen.naar_spiekbrief",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_sessie_wordt_gesloten",
+     "qualname": "TestVangnet.test_sessie_wordt_gesloten",
+     "kind": "method",
+     "lines": [196, 204],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A session is closed (stored) even when a screen fails.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [202],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.sessies",
+       "lines": [202],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessies"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [201],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIsNotNone",
+      ".opslag",
+      "RuntimeError",
+      "len",
+      "test_schermen.naar",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_drie_keer_snel_dan_toch_stoppen",
+     "qualname": "TestVangnet.test_drie_keer_snel_dan_toch_stoppen",
+     "kind": "method",
+     "lines": [206, 210],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Three quick errors in a row stop the program (no endless loop).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [210],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertRaises", "RuntimeError", "test_schermen.hm", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestAapjes",
+   "qualname": "TestAapjes",
+   "lines": [213, 289],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Willekeurige toetsen en klikken door de hele app. Er mag nooit een fout komen, en niets mag blijven hangen.",
+   "explanation": "Monkey tests.",
+   "attributes": [
+    {
+     "name": "STAPPEN",
+     "line": 215,
+     "scope": "class",
+     "value_preview": "int(os.environ.get('LEERAVONTUUR_AAP', '700'))"
+    },
+    {
+     "name": "SEEDS",
+     "line": 216,
+     "scope": "class",
+     "value_preview": "range(int(os.environ.get('LEERAVONTUUR_AAP_SEEDS', '12')))"
+    },
+    {"name": "bereikt", "line": 262, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "gebeurtenissen",
+     "qualname": "TestAapjes.gebeurtenissen",
+     "kind": "method",
+     "lines": [218, 236],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A random list of keys and clicks.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choice", ".random", ".randrange", "list", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [277]},
+      {"caller": "tests/test_stabiliteit.py::TestAapjes.test_aapjes", "lines": [243]}
+     ]
+    },
+    {
+     "name": "test_aapjes",
+     "qualname": "TestAapjes.test_aapjes",
+     "kind": "method",
+     "lines": [238, 256],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Random keys and clicks through the whole app for several seeds; no error and nothing hangs.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [245]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [243]},
+      {"target": "tests/test_stabiliteit.py::TestAapjes.gebeurtenissen", "lines": [243]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.start",
+       "lines": [247],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "scherm.tekst",
+       "lines": [251, 253],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [".choice", ".fail", ".opslag", "AssertionError", "random.Random", "type", "unittest.mock.patch.dict"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gerichte_aapjes_in_elke_oefening",
+     "qualname": "TestAapjes.test_gerichte_aapjes_in_elke_oefening",
+     "kind": "method",
+     "lines": [258, 269],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Naar elke oefening (elk onderwerp van het leerplan, vrij oefenen en een reeks) en daar willekeurig drukken en klikken.",
+     "explanation": "The same but aimed at every exercise (free and series).",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [263]},
+      {"target": "tests/test_stabiliteit.py::TestAapjes.gericht", "lines": [267]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [
+      ".assertGreater",
+      "int",
+      "len",
+      "os.environ.get",
+      "random.Random",
+      "range",
+      "set",
+      "unittest.mock.patch.dict"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "gericht",
+     "qualname": "TestAapjes.gericht",
+     "kind": "method",
+     "lines": [271, 289],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "onderwerpen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Runs the aimed monkey run for a list of topics.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [281]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [279]},
+      {"target": "tests/test_stabiliteit.py::TestAapjes.gebeurtenissen", "lines": [277]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app_mod.App(scherm, opslag, kleuren=False).start",
+       "lines": [281],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "scherm.tekst",
+       "lines": [285, 288],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [".fail", ".opslag", "AssertionError", "any", "test_schermen.naar", "type"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_stabiliteit.py::TestAapjes.test_gerichte_aapjes_in_elke_oefening",
+       "lines": [267]
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

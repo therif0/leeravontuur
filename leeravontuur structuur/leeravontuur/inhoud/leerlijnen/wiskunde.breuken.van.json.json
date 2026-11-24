@@ -1,0 +1,71 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.van.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 52,
+ "source_sha256": "5f7fda5f79f7f997d50927b353dbaef7b749b228aadd8bc0afbd20738b4f6530",
+ "purpose": "Learning line for a fraction of a number and multiplying/dividing fractions (years 4-m1).",
+ "details": "From unit fractions of small numbers to fraction × fraction and fraction : fraction. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"$keys": ["soorten", "noemer_max", "stambreuk", "max"], "$count": 4, "$values": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {
+    "soorten": {"$list": 1, "$items": "string"},
+    "noemer_max": "number",
+    "stambreuk": "boolean",
+    "max": "number"
+   },
+   "5": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemer_max": "number",
+    "stambreuk": "boolean",
+    "max": "number"
+   },
+   "6": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "noemer_max": "number",
+    "stambreuk": "boolean",
+    "max": "number"
+   },
+   "m1": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "noemer_max": "number",
+    "stambreuk": "boolean",
+    "max": "number"
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/breuken.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.noemer_max", "explanation": "The largest denominator that may be used in that year."},
+  {"key": "parameters.stambreuk", "explanation": "Whether only unit fractions (1/n) occur."},
+  {"key": "parameters.max", "explanation": "Upper limit for the numbers in the questions."}
+ ]
+}

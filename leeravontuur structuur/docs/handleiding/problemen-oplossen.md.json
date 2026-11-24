@@ -1,0 +1,35 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/problemen-oplossen.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 91,
+ "source_sha256": "b5ab29ff3ffd420ebc13a48fdf48f12752c1026fa130828a1750e1fb7bf39a47",
+ "purpose": "Handbook page for problems: where data is stored, backups and recovery, the double-start warning, error log, forgotten password, a strange screen.",
+ "details": "A support page: a table of data folders per system, daily backups kept for 7 days, what 'Leeravontuur staat al open' means, the friendly error message and the error log (--fouten), --wachtwoord-vergeten, and a table of screen problems with solutions.",
+ "summary": "Troubleshooting: data folder per system, daily backups (7 days) and automatic recovery, the already-open warning, what to do after 'Oei, er ging iets mis' (answers are saved, error log), forgetting the parent password or a child PIN, and fixes for odd screens (terminal too small, etc.).",
+ "headings": [
+  {"level": 1, "text": "Problemen oplossen", "line": 1},
+  {"level": 2, "text": "Waar staan de gegevens?", "line": 8},
+  {"level": 2, "text": "Reservekopieën en automatisch herstel", "line": 33},
+  {"level": 2, "text": "\"Leeravontuur staat al open\"", "line": 44},
+  {"level": 2, "text": "\"Oei, er ging iets mis\"", "line": 57},
+  {"level": 3, "text": "Het foutenlogboek", "line": 62},
+  {"level": 2, "text": "Het wachtwoord van het ouderdeel vergeten", "line": 69},
+  {"level": 2, "text": "Het scherm ziet er raar uit", "line": 75},
+  {"level": 2, "text": "Nog iets anders?", "line": 88}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Startargumenten", "target": "startargumenten.md", "internal": true},
+  {"text": "Zeg het ons", "target": "zeg-het-ons.md", "internal": true},
+  {"text": "het ouderdeel", "target": "ouderdeel.md#rapporten", "internal": true}
+ ],
+ "referenced_by": [
+  "docs/handleiding/README.md",
+  "docs/handleiding/ouderdeel.md",
+  "docs/handleiding/startargumenten.md",
+  "docs/handleiding/zeg-het-ons.md"
+ ],
+ "words": 804
+}

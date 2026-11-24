@@ -1,0 +1,460 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/vraagstukken/zinnen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 819,
+ "source_sha256": "90f4ee0210f5204fd5c30e8290f57f6e4863bb08f891cd78830b55ede5690af0",
+ "purpose": "The wordings of the word-problem machine: the four-step plan and, per calculation structure and variant, the sentence templates, questions, answer sentence and what is asked.",
+ "details": "Loaded by kern/verhaal.py / kern/wiskunde/vraagstukken.py. 'stappenplan' has the four steps (Lees, Plan, Reken, Controle) with their explanation. 'structuren' maps a structure (samen, verschil, groepen, rest, samen_delen, wisselgeld, twee_soorten, per_kg, korting, sparen, recept, breuk_van, omtrek, gemiddelde, snelheid, tegels, schaal, lint, per_stuk, tijdsduur) to its variants; each variant has 'zinnen' (groups of alternative sentences; 'schud' lets the order change), 'vraag' (alternatives), 'antwoord' (the answer sentence with {?}) and 'gevraagd' (what is sought). Placeholders: {a} a given (can be marked), {a ding}, {ding.enk}/{ding.mv}, {de:ding}, {elk:ding}, {een:ding} and *word* for a key word. Variant names are stored in answers (sleutel): never rename.",
+ "keys": ["uitleg", "stappenplan", "structuren"],
+ "shape": {
+  "uitleg": "string",
+  "stappenplan": {
+   "$list": 4,
+   "$items": {"naam": "string", "nr": "number", "uitleg": "string", "vakken": "string"}
+  },
+  "structuren": {
+   "samen": {
+    "samen": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "deel": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "rest": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 2}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "verschil": {
+    "meer": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "erbij": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "minder": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "groepen": {
+    "totaal": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 2}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "per": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "aantal": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "rest": {
+    "volle": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "over": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "nodig": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "samen_delen": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {"$list": 3, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "wisselgeld": {
+    "een": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "meer": {
+     "schud": "boolean",
+     "zinnen": {"$list": 3, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "twee_soorten": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "wissel": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 4,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "per_kg": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "wissel": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "korting": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {"$list": 3, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "alleen": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "sparen": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "recept": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "breuk_van": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "niet": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "omtrek": {
+    "gewoon": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 1,
+      "$items": {"$items": "string", "$list": 2}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "prijs": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "gemiddelde": {
+    "drie": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 1,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "vier": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 1,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "snelheid": {
+    "afstand": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "tijd": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "minuten": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "tegels": {
+    "tegels": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "prijs": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "schaal": {
+    "echt": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "lint": {
+    "stukken": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "over": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "per_stuk": {
+    "een": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 1,
+      "$items": {"$items": "string", "$list": 2}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "drie": {
+     "schud": "boolean",
+     "zinnen": {"$list": 2, "$items": "mixed"},
+     "vraag": {"$list": 2, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   },
+   "tijdsduur": {
+    "duur": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "eind": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "begin": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 2,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    },
+    "twee": {
+     "schud": "boolean",
+     "zinnen": {
+      "$list": 3,
+      "$items": {"$items": "string", "$list": 1}
+     },
+     "vraag": {"$list": 1, "$items": "string"},
+     "antwoord": "string",
+     "gevraagd": "string"
+    }
+   }
+  }
+ },
+ "read_by": [
+  "leeravontuur/kern/taal/nagekeken.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/kern/verhaal.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "The explanation of the placeholders (Dutch)."},
+  {
+   "key": "stappenplan",
+   "explanation": "The four steps: nr, naam, uitleg and the boxes (vakken) belonging to the step."
+  },
+  {
+   "key": "structuren",
+   "explanation": "Per structure and variant the wording data (schud, zinnen, vraag, antwoord, gevraagd)."
+  }
+ ]
+}

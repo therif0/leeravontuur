@@ -1,0 +1,60 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.herkennen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 80,
+ "source_sha256": "a39b66349dd7c463d67bf243c4f4b8e11013d44e9a2404e5781f6f44312cb4a3",
+ "purpose": "Learning line for recognising fractions and shading them on the fraction bar (years 3-6).",
+ "details": "Always aflezen and arceren; the list of denominators grows from 2-10 to 5-20. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "noemers": "string"},
+  "leerlijn": {
+   "3": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 7, "$items": "number"}
+   },
+   "4": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 8, "$items": "number"}
+   },
+   "5": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 11, "$items": "number"}
+   },
+   "6": {
+    "soorten": {"$list": 2, "$items": "string"},
+    "noemers": {"$list": 11, "$items": "number"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/breuken.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  },
+  {"key": "parameters.noemers", "explanation": "The denominators that may be used in that year (list)."}
+ ]
+}

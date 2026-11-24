@@ -1,0 +1,295 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_werkwijze.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 83,
+ "source_sha256": "090f26d50e7645a21c0cb41244d898053885da8cba5b08f8d88e7d0526622fbc",
+ "purpose": "Guards the fixed work method: every calculation topic knows its solution in klad lines, and the tips never give away the answer.",
+ "details": "Generates questions for every topic and school year with fixed seeds and checks the worked solution (Oplossing) against the answer and the tips against leaking it.",
+ "module_docstring": "De vaste werkwijze bewaken: elk onderwerp met klad kent zijn oplossing in klad-regels, en de tips verklappen niets.",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["lees_regel"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["ONDERWERPEN"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "ZADEN", "line": 14, "value_type": "Constant", "value_preview": "30", "explanation": ""},
+  {
+   "name": "MET_KLAD",
+   "line": 16,
+   "value_type": "Set",
+   "value_preview": "{'wiskunde.hoofdrekenen.splitsen', 'wiskunde.hoofdrekenen.plusmin', '…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestWerkwijze",
+   "qualname": "TestWerkwijze",
+   "lines": [37, 79],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Work-method tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elk_rekenonderwerp_heeft_klad",
+     "qualname": "TestWerkwijze.test_elk_rekenonderwerp_heeft_klad",
+     "kind": "method",
+     "lines": [38, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic in MET_KLAD has klad 'ja' or 'verplicht'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_oplossing_klopt_en_eindigt_op_het_antwoord",
+     "qualname": "TestWerkwijze.test_oplossing_klopt_en_eindigt_op_het_antwoord",
+     "kind": "method",
+     "lines": [42, 55],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For every question with a klad, the solution steps are consistent and the last step equals the answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [51, 53]},
+      {"target": "tests/test_werkwijze.py::als_getal", "lines": [54]},
+      {"target": "tests/test_werkwijze.py::vragen", "lines": [44]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.klad_voor",
+       "lines": [45],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.klad_voor",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.klad_voor",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.klad_voor"
+       ],
+       "candidates_count": 4
+      },
+      {"expr": "o.oplossing", "lines": [48], "candidates": [], "candidates_count": 15}
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".subTest", "leeravontuur.kern.onderwerp.ONDERWERPEN.items"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tips_verklappen_het_antwoord_niet",
+     "qualname": "TestWerkwijze.test_tips_verklappen_het_antwoord_niet",
+     "kind": "method",
+     "lines": [57, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No tip text contains the answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [62]},
+      {"target": "tests/test_werkwijze.py::vragen", "lines": [59]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.klad_voor",
+       "lines": [60],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_voor",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.klad_voor",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.klad_voor",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.klad_voor"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "o.tips",
+       "lines": [69],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.tips",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.tips"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertNotRegex",
+      ".subTest",
+      "isinstance",
+      "leeravontuur.kern.onderwerp.ONDERWERPEN.items",
+      "re.escape",
+      "re.search"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_splitsen_vraagt_eerst_een_splitsing",
+     "qualname": "TestWerkwijze.test_splitsen_vraagt_eerst_een_splitsing",
+     "kind": "method",
+     "lines": [73, 79],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For the splitting topic the first solution step is the split.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [78]},
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [78, 79]},
+      {"target": "tests/test_werkwijze.py::vragen", "lines": [75]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.klad_klaar",
+       "lines": [77, 78, 79],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.klad_klaar",
+        "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.klad_klaar"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "o.oplossing", "lines": [79], "candidates": [], "candidates_count": 15}
+     ],
+     "external_calls": [".assertFalse", ".assertTrue", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "vragen",
+   "qualname": "vragen",
+   "kind": "function",
+   "lines": [23, 28],
+   "params": [
+    {"name": "o", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Yields (year, seed, question) for each school year the topic is offered in, with several seeds.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "o.aangeboden",
+     "lines": [25],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "o.maak",
+     "lines": [28],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["random.Random", "range"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_oplossing_klopt_en_eindigt_op_het_antwoord",
+     "lines": [44]
+    },
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_splitsen_vraagt_eerst_een_splitsing",
+     "lines": [75]
+    },
+    {"caller": "tests/test_werkwijze.py::TestWerkwijze.test_tips_verklappen_het_antwoord_niet", "lines": [59]}
+   ]
+  },
+  {
+   "name": "als_getal",
+   "qualname": "als_getal",
+   "kind": "function",
+   "lines": [31, 34],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Converts a value to a Fraction for exact comparison.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction", "isinstance", "str"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_oplossing_klopt_en_eindigt_op_het_antwoord",
+     "lines": [54]
+    }
+   ]
+  }
+ ]
+}

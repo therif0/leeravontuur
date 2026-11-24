@@ -1,0 +1,1460 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_vraagstukken.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 501,
+ "source_sha256": "61a4e9ac7c3da90568afb101cefa4299799bf2081d802c4209be0562fdeb1170",
+ "purpose": "Tests word problems: the story machine, the wrong paths, the klad, the four-step object, the Speurneus and the estimating questions.",
+ "details": "Covers kern/wiskunde/vraagstukken (O = the VRAAGSTUKKEN topic, VS module helpers), kern/verhaal and terminal/vraagstuk objects (VraagstukInvoer, SpeurInvoer, KeuzeInvoer) without a screen: keys in, state out. `maak` builds a problem for a year, structure, variant and seed; `r` formats a number with a comma.",
+ "module_docstring": "Vraagstukken: de verhaalmachine, de foute paden, het klad en het scherm met de 4 stappen.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["punten"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/punten.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["verhaal"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/verhaal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.vraagstuk",
+   "names": ["KeuzeInvoer", "SpeurInvoer", "VraagstukInvoer"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/vraagstuk.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.vraagstuk",
+   "names": ["KOP"],
+   "alias": null,
+   "line": 55,
+   "resolves_to": ["leeravontuur/terminal/vraagstuk.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.vraagstuk",
+   "names": ["KOP"],
+   "alias": null,
+   "line": 299,
+   "resolves_to": ["leeravontuur/terminal/vraagstuk.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["NepScherm"],
+   "alias": null,
+   "line": 404,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["Scherm"],
+   "alias": null,
+   "line": 405,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 406,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["lees_regel"],
+   "alias": null,
+   "line": 449,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "O", "line": 15, "value_type": "Attribute", "value_preview": "VS.VRAAGSTUKKEN", "explanation": ""},
+  {
+   "name": "JAREN",
+   "line": 16,
+   "value_type": "List",
+   "value_preview": "['3', '4', '5', '6', 'm1']",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestVerhaalmachine",
+   "qualname": "TestVerhaalmachine",
+   "lines": [27, 101],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Story machine.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_structuur_in_elk_leerjaar",
+     "qualname": "TestVerhaalmachine.test_elke_structuur_in_elk_leerjaar",
+     "kind": "method",
+     "lines": [28, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every structure of every year builds a consistent problem (answer, steps, givens).",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [40]},
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::mooi", "lines": [50]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [34]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [51], "candidates": [], "candidates_count": 37},
+      {"expr": "O.lees_vraag", "lines": [52], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "O.nakijken",
+       "lines": [52],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {
+       "expr": "O.parameters",
+       "lines": [30],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertGreater",
+      ".assertIn",
+      ".assertIsNone",
+      ".assertIsNotNone",
+      ".assertLessEqual",
+      ".assertNotRegex",
+      ".assertTrue",
+      ".subTest",
+      "len",
+      "range",
+      "set"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_antwoordzin_en_oplossing_passen_in_80_kolommen",
+     "qualname": "TestVerhaalmachine.test_antwoordzin_en_oplossing_passen_in_80_kolommen",
+     "kind": "method",
+     "lines": [54, 64],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The answer sentence and solution lines fit in 80 columns.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [59]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.parameters",
+       "lines": [57],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertLessEqual", ".subTest", "len", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_veel_verschillende_verhalen",
+     "qualname": "TestVerhaalmachine.test_veel_verschillende_verhalen",
+     "kind": "method",
+     "lines": [66, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Many different stories come out of 500 draws.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "O.maak_met", "lines": [69, 71], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "O.parameters",
+       "lines": [67],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertGreater", "len", "random.Random", "range", "re.sub"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhaling_houdt_de_structuur_en_wisselt_de_wereld",
+     "qualname": "TestVerhaalmachine.test_herhaling_houdt_de_structuur_en_wisselt_de_wereld",
+     "kind": "method",
+     "lines": [74, 83],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeating keeps the structure but changes the story world.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [75]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.herhaal_data",
+       "lines": [78],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "O.maak_herhaling",
+       "lines": [78],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "O.onderwerp_van_sleutel", "lines": [82, 83], "candidates": [], "candidates_count": 25}
+     ],
+     "external_calls": [".assertEqual", ".assertGreater", ".assertIsNone", "len", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_meervoud_en_hoofdletters",
+     "qualname": "TestVerhaalmachine.test_meervoud_en_hoofdletters",
+     "kind": "method",
+     "lines": [85, 95],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plurals and capital letters are right in generated sentences.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Gegeven", "lines": [87]},
+      {"target": "leeravontuur/kern/verhaal.py::vul", "lines": [93]},
+      {"target": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [89, 91, 92]},
+      {"target": "leeravontuur/kern/verhaal.py::woord", "lines": [86]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_omtrek_is_nooit_gelijk_aan_de_oppervlakte",
+     "qualname": "TestVerhaalmachine.test_omtrek_is_nooit_gelijk_aan_de_oppervlakte",
+     "kind": "method",
+     "lines": [97, 101],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For rectangles the perimeter never equals the area (so a mix-up is detectable).",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [99]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotEqual", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestFoutePaden",
+   "qualname": "TestFoutePaden",
+   "lines": [104, 175],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Wrong paths.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_wisselgeld",
+     "qualname": "TestFoutePaden.test_wisselgeld",
+     "kind": "method",
+     "lines": [105, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typical mistakes in change problems are diagnosed.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [106]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [109, 110, 111, 112, 113], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_per_kg_omzetten_vergeten",
+     "qualname": "TestFoutePaden.test_per_kg_omzetten_vergeten",
+     "kind": "method",
+     "lines": [115, 120],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forgetting the unit conversion is recognised.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [116]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [118], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_minder_is_hier_optellen",
+     "qualname": "TestFoutePaden.test_minder_is_hier_optellen",
+     "kind": "method",
+     "lines": [122, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The 'minder dan' trap (adding) is recognised.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [123]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [125], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rest_en_naar_boven",
+     "qualname": "TestFoutePaden.test_rest_en_naar_boven",
+     "kind": "method",
+     "lines": [127, 131],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forgetting to round up or taking the quotient is recognised.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [128, 130]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [129, 131], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_korting_procent_als_euro",
+     "qualname": "TestFoutePaden.test_korting_procent_als_euro",
+     "kind": "method",
+     "lines": [133, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Giving the percentage as euros is recognised.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [135]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [138], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual", ".fail", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_overbodig_gegeven",
+     "qualname": "TestFoutePaden.test_overbodig_gegeven",
+     "kind": "method",
+     "lines": [142, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An unneeded given appears with some probability.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [144]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [149], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual", ".fail", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_nieuwe_structuren",
+     "qualname": "TestFoutePaden.test_nieuwe_structuren",
+     "kind": "method",
+     "lines": [153, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "New structures (tiles, perimeter, ...) have their wrong paths.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [154, 157, 160, 162, 164, 167]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.diagnose",
+       "lines": [156, 159, 161, 163, 166, 168],
+       "candidates": [],
+       "candidates_count": 37
+      }
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_codes_hebben_een_omschrijving",
+     "qualname": "TestFoutePaden.test_codes_hebben_een_omschrijving",
+     "kind": "method",
+     "lines": [170, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every thinking-error code has a description.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [173]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.parameters",
+       "lines": [172],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKlad",
+   "qualname": "TestKlad",
+   "lines": [178, 226],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Klad analysis.",
+   "attributes": [
+    {"name": "v", "line": 180, "scope": "instance", "value_preview": null},
+    {"name": "m", "line": 181, "scope": "instance", "value_preview": null},
+    {"name": "st", "line": 184, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestKlad.setUp",
+     "kind": "method",
+     "lines": [179, 184],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds a per-kg change problem and its givens and steps.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [180]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_juist_klad",
+     "qualname": "TestKlad.test_juist_klad",
+     "kind": "method",
+     "lines": [186, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A right klad is judged right and complete.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [187]},
+      {"target": "tests/test_vraagstukken.py::r", "lines": [187, 188, 189]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_denkfout_in_het_klad",
+     "qualname": "TestKlad.test_denkfout_in_het_klad",
+     "kind": "method",
+     "lines": [194, 198],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A thinking error in a klad line is recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [195, 197]},
+      {"target": "tests/test_vraagstukken.py::r", "lines": [195, 197]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rekenfout_in_het_klad",
+     "qualname": "TestKlad.test_rekenfout_in_het_klad",
+     "kind": "method",
+     "lines": [200, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A calculation slip is reported as a slip, not a thinking error.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [201]},
+      {"target": "tests/test_vraagstukken.py::r", "lines": [201, 202]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_juiste_oplossing_is_nooit_een_verzonnen_getal",
+     "qualname": "TestKlad.test_de_juiste_oplossing_is_nooit_een_verzonnen_getal",
+     "kind": "method",
+     "lines": [207, 219],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De herkomstregel: de oplossing van elke structuur in elk leerjaar geeft geen vals alarm.",
+     "explanation": "The model solution never uses a number that is not in the story or a result (no false alarm).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [215, 218]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [212]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "O.parameters",
+       "lines": [210],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIsNone", ".assertNotEqual", ".assertTrue", ".subTest", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_andere_juiste_weg_is_geen_fout",
+     "qualname": "TestKlad.test_een_andere_juiste_weg_is_geen_fout",
+     "kind": "method",
+     "lines": [221, 226],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Another valid way of solving is not marked wrong.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [224]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [222]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIsNone", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWatOverblijft",
+   "qualname": "TestWatOverblijft",
+   "lines": [229, 310],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "samen/rest: een totaal min twee delen (het appelvraagstuk: 4620 appels, 2320 rood, 1680 groen, hoeveel rot?).",
+   "explanation": "'What is left' problems.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_juiste_wegen",
+     "qualname": "TestWatOverblijft.test_de_juiste_wegen",
+     "kind": "method",
+     "lines": [232, 244],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Right ways for 'total minus two parts' problems.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [242]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [234]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", ".assertTrue", ".subTest", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_twee_delen_van_elkaar_aftrekken",
+     "qualname": "TestWatOverblijft.test_de_twee_delen_van_elkaar_aftrekken",
+     "kind": "method",
+     "lines": [246, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Subtracting the two parts from each other is a diagnosed mistake.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [252]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [248]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreater", ".assertIn", ".subTest", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_deel_vergeten",
+     "qualname": "TestWatOverblijft.test_een_deel_vergeten",
+     "kind": "method",
+     "lines": [256, 260],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forgetting one part is diagnosed.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [257]}
+     ],
+     "unresolved_calls": [
+      {"expr": "O.diagnose", "lines": [259, 260], "candidates": [], "candidates_count": 37}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_waar_komt_dit_getal_vandaan",
+     "qualname": "TestWatOverblijft.test_waar_komt_dit_getal_vandaan",
+     "kind": "method",
+     "lines": [262, 281],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het klad van de zoon: een juist antwoord, maar via een verzonnen getal (de 20).",
+     "explanation": "A correct answer via a made-up number (the child's '20') is flagged in the klad.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [271, 274, 279]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [264]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_splitsen_is_geen_verzonnen_getal",
+     "qualname": "TestWatOverblijft.test_splitsen_is_geen_verzonnen_getal",
+     "kind": "method",
+     "lines": [283, 296],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Splitting a number is not a made-up number.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [294]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [284]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIsNone", ".assertTrue", ".subTest", "next", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_antwoordzin_past",
+     "qualname": "TestWatOverblijft.test_de_antwoordzin_past",
+     "kind": "method",
+     "lines": [298, 303],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The answer sentence fits in all years.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [302]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "len", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_alleen_met_een_derde_moment",
+     "qualname": "TestWatOverblijft.test_alleen_met_een_derde_moment",
+     "kind": "method",
+     "lines": [305, 310],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Only worlds with a third item are used for 'what is left'.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [309]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreaterEqual", ".assertTrue", "any", "len", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestPunten",
+   "qualname": "TestPunten",
+   "lines": [313, 322],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Points.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_punten_voor_een_vraagstuk",
+     "qualname": "TestPunten.test_punten_voor_een_vraagstuk",
+     "kind": "method",
+     "lines": [314, 322],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Points for a word problem depend on tips, a first mistake and a good klad.",
+     "calls": [
+      {"target": "leeravontuur/kern/punten.py::voor_antwoord", "lines": [316, 322]}
+     ],
+     "unresolved_calls": [
+      {"expr": "p", "lines": [317, 318, 319, 320, 321], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestInvoer",
+   "qualname": "TestInvoer",
+   "lines": [325, 423],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Het invoer-object zonder scherm: toetsen in, toestand eruit.",
+   "explanation": "The four-step object.",
+   "attributes": [
+    {"name": "v", "line": 329, "scope": "instance", "value_preview": null},
+    {"name": "obj", "line": 330, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestInvoer.setUp",
+     "kind": "method",
+     "lines": [328, 330],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds a problem and its input object.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.__init__", "lines": [330]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [329]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "typ",
+     "qualname": "TestInvoer.typ",
+     "kind": "method",
+     "lines": [332, 336],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Types text into the object key by key.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [335], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_fout_geeft_een_tweede_kans_met_klad",
+       "lines": [347, 355, 356, 357]
+      },
+      {"caller": "tests/test_vraagstukken.py::TestInvoer.test_meteen_juist_antwoorden", "lines": [340]},
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_tab_uit_het_klad_houdt_de_regel",
+       "lines": [419]
+      },
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_tweede_keer_fout_is_definitief",
+       "lines": [364, 368]
+      }
+     ]
+    },
+    {
+     "name": "test_meteen_juist_antwoorden",
+     "qualname": "TestInvoer.test_meteen_juist_antwoorden",
+     "kind": "method",
+     "lines": [338, 343],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Answering right at once is accepted.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::TestInvoer.typ", "lines": [340]},
+      {"target": "tests/test_vraagstukken.py::r", "lines": [340]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [339], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fout_geeft_een_tweede_kans_met_klad",
+     "qualname": "TestInvoer.test_fout_geeft_een_tweede_kans_met_klad",
+     "kind": "method",
+     "lines": [345, 360],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong immediate answer gives one hint and asks for a klad.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::TestInvoer.typ", "lines": [347, 355, 356, 357]},
+      {"target": "tests/test_vraagstukken.py::r", "lines": [347, 355, 356, 357, 360]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [346, 351, 352], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", ".assertTrue", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tweede_keer_fout_is_definitief",
+     "qualname": "TestInvoer.test_tweede_keer_fout_is_definitief",
+     "kind": "method",
+     "lines": [362, 369],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A second wrong answer is final.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::TestInvoer.typ", "lines": [364, 368]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [363, 365, 366, 367], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tips_en_aanduiden",
+     "qualname": "TestInvoer.test_tips_en_aanduiden",
+     "kind": "method",
+     "lines": [371, 385],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Presses F1 five times and checks that exactly four tips are counted and the fifth gives 'Meer tips zijn er niet'; then clicks every needed given (('gegeven', id)) and checks they are all marked; presses ↓ and → to the right 'what is asked' option and Space, and checks gevraagd_eerst is True.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [373, 378, 380, 383, 384], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "ord", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tip_verklapt_de_uitkomst_niet",
+     "qualname": "TestInvoer.test_tip_verklapt_de_uitkomst_niet",
+     "kind": "method",
+     "lines": [387, 390],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No tip contains the answer.",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::r", "lines": [390]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [389], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertNotIn", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_getal_typen_gaat_naar_het_klad",
+     "qualname": "TestInvoer.test_een_getal_typen_gaat_naar_het_klad",
+     "kind": "method",
+     "lines": [392, 394],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typing a digit goes to the klad.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [393], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tijdstip_als_op_een_digitaal_klokje",
+     "qualname": "TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "kind": "method",
+     "lines": [396, 415],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#21: een tijdstip als antwoord staat er als 14:5_ (de : komt vanzelf); een letter kan er niet in.",
+     "explanation": "A clock-time answer shows like 14:5_; letters are refused (#21).",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [408, 412]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [407, 411]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [408, 412]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.__init__", "lines": [399]},
+      {"target": "tests/test_vraagstukken.py::maak", "lines": [398]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.teken", "lines": [408, 412], "candidates": [], "candidates_count": 16},
+      {"expr": "obj.toets", "lines": [400, 402, 410, 414], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "win.tekst",
+       "lines": [409, 413],
+       "candidates": [
+        "leeravontuur/kern/rapporten.py::Periode.tekst",
+        "leeravontuur/kern/taal/werkwoorden.py::WwZin.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Deel.tekst",
+        "leeravontuur/kern/taal/zinnen.py::Zin.tekst",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.tekst"
+       ],
+       "candidates_count": 6
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tab_uit_het_klad_houdt_de_regel",
+     "qualname": "TestInvoer.test_tab_uit_het_klad_houdt_de_regel",
+     "kind": "method",
+     "lines": [417, 423],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#22: een klad-regel zonder Enter en dan Tab (naar Controle): de regel staat in het klad, nagekeken.",
+     "explanation": "Tab from the klad keeps and checks the half-typed line (#22).",
+     "calls": [
+      {"target": "tests/test_vraagstukken.py::TestInvoer.typ", "lines": [419]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.obj.toets", "lines": [420], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSpeurneus",
+   "qualname": "TestSpeurneus",
+   "lines": [426, 472],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Speurneus.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elke_soort_fout",
+     "qualname": "TestSpeurneus.test_elke_soort_fout",
+     "kind": "method",
+     "lines": [427, 446],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All kinds of mistakes appear across years.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "VS.SPEURNEUS.diagnose", "lines": [445], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "VS.SPEURNEUS.maak",
+       "lines": [431],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone", ".assertTrue", ".subTest", "len", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rekenfout_klopt_echt_niet",
+     "qualname": "TestSpeurneus.test_rekenfout_klopt_echt_niet",
+     "kind": "method",
+     "lines": [448, 456],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A calculation-slip line really is wrong when read by the klad reader.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [453, 456]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VS.SPEURNEUS.maak",
+       "lines": [451],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertIs", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_diagnose",
+     "qualname": "TestSpeurneus.test_diagnose",
+     "kind": "method",
+     "lines": [458, 465],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Missing the mistake is diagnosed.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "VS.SPEURNEUS.diagnose", "lines": [461, 463, 465], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "VS.SPEURNEUS.maak",
+       "lines": [459],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "next", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_invoer",
+     "qualname": "TestSpeurneus.test_invoer",
+     "kind": "method",
+     "lines": [467, 472],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The SpeurInvoer accepts the right line number.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.__init__", "lines": [469]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VS.SPEURNEUS.maak",
+       "lines": [468],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "obj.toets", "lines": [470, 471], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone", "next", "ord", "random.Random", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchatten",
+   "qualname": "TestSchatten",
+   "lines": [475, 497],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Estimation.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_schatten",
+     "qualname": "TestSchatten.test_schatten",
+     "kind": "method",
+     "lines": [476, 488],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "schat rounds numbers to sensible estimates.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::schat", "lines": [477, 478, 479]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VS.SCHATTEN.maak",
+       "lines": [482],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".subTest", "decimal.Decimal", "len", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_invoer",
+     "qualname": "TestSchatten.test_invoer",
+     "kind": "method",
+     "lines": [490, 497],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "KeuzeInvoer shows a tip and accepts a choice.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.__init__", "lines": [492]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VS.SCHATTEN.maak",
+       "lines": [491],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "obj.toets", "lines": [493, 495], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "ord", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "maak",
+   "qualname": "maak",
+   "kind": "function",
+   "lines": [19, 20],
+   "params": [
+    {"name": "jaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "structuur", "kind": "positional", "default": null, "annotation": null},
+    {"name": "variant", "kind": "positional", "default": null, "annotation": null},
+    {"name": "zaad", "kind": "positional", "default": "1", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a word problem for a year, structure/variant and seed.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "O.maak_met", "lines": [20], "candidates": [], "candidates_count": 39},
+    {
+     "expr": "O.parameters",
+     "lines": [20],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["random.Random"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_vraagstukken.py::TestFoutePaden.test_codes_hebben_een_omschrijving",
+     "lines": [173]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_korting_procent_als_euro", "lines": [135]},
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_minder_is_hier_optellen", "lines": [123]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestFoutePaden.test_nieuwe_structuren",
+     "lines": [154, 157, 160, 162, 164, 167]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_overbodig_gegeven", "lines": [144]},
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_per_kg_omzetten_vergeten", "lines": [116]},
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_rest_en_naar_boven", "lines": [128, 130]},
+    {"caller": "tests/test_vraagstukken.py::TestFoutePaden.test_wisselgeld", "lines": [106]},
+    {"caller": "tests/test_vraagstukken.py::TestInvoer.setUp", "lines": [329]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "lines": [398]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestKlad.setUp", "lines": [180]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestKlad.test_de_juiste_oplossing_is_nooit_een_verzonnen_getal",
+     "lines": [212]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_een_andere_juiste_weg_is_geen_fout", "lines": [222]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_antwoordzin_en_oplossing_passen_in_80_kolommen",
+     "lines": [59]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_elke_structuur_in_elk_leerjaar",
+     "lines": [34]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_herhaling_houdt_de_structuur_en_wisselt_de_wereld",
+     "lines": [75]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_omtrek_is_nooit_gelijk_aan_de_oppervlakte",
+     "lines": [99]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_alleen_met_een_derde_moment",
+     "lines": [309]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_de_antwoordzin_past", "lines": [302]},
+    {"caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_de_juiste_wegen", "lines": [234]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_de_twee_delen_van_elkaar_aftrekken",
+     "lines": [248]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_een_deel_vergeten", "lines": [257]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_splitsen_is_geen_verzonnen_getal",
+     "lines": [284]
+    },
+    {
+     "caller": "tests/test_vraagstukken.py::TestWatOverblijft.test_waar_komt_dit_getal_vandaan",
+     "lines": [264]
+    }
+   ]
+  },
+  {
+   "name": "r",
+   "qualname": "r",
+   "kind": "function",
+   "lines": [23, 24],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Formats a number as text with a decimal comma.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_fout_geeft_een_tweede_kans_met_klad",
+     "lines": [347, 355, 356, 357, 360]
+    },
+    {"caller": "tests/test_vraagstukken.py::TestInvoer.test_meteen_juist_antwoorden", "lines": [340]},
+    {"caller": "tests/test_vraagstukken.py::TestInvoer.test_tip_verklapt_de_uitkomst_niet", "lines": [390]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_denkfout_in_het_klad", "lines": [195, 197]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_juist_klad", "lines": [187, 188, 189]},
+    {"caller": "tests/test_vraagstukken.py::TestKlad.test_rekenfout_in_het_klad", "lines": [201, 202]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,390 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/venster.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 185,
+ "source_sha256": "99ab9b64ef0a86298cae90f9faf663df2baa3438f3a8bf90e8d18c0c4fded0dd",
+ "purpose": "The terminal's handle on the separate clock window: starts the tkinter process, sends it the clock state and receives clicks, keys and the window position.",
+ "details": "Klokvenster runs `python -m leeravontuur.venster.klokvenster` as a subprocess and talks to it with one JSON object per line over its stdin/stdout. A reader thread (_lees) puts messages from the window in a queue that Scherm.toets drains through volgende(), so clicks and keys in the window act as if they happened in the terminal. If anything fails (no tkinter, no display, process dies) the object records `kapot` and toon() returns False, after which the terminal draws the clock itself: the child never sees an error. F2 (wissel) lets the child bring the clock into the terminal if the window is not visible. The window position is remembered through the bij_plek callback (stored in the settings by the app).",
+ "module_docstring": "Het klokvenster vanuit de terminal: start het tkinter-proces (`venster/klokvenster.py`) en praat ermee.",
+ "imports": [
+  {"module": "atexit", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "json", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {"module": "queue", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {"module": "subprocess", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "threading", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 15, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["foutlog"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/foutlog.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/nepscherm.py", "tests/test_klokvenster.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "START_S",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "6.0",
+   "explanation": "Seconds to wait for the window to start (once per session)."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Klokvenster",
+   "qualname": "Klokvenster",
+   "lines": [22, 185],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The terminal-side controller of the clock window process.",
+   "attributes": [
+    {
+     "name": "OPDRACHT",
+     "line": 23,
+     "scope": "class",
+     "value_preview": "['-m', 'leeravontuur.venster.klokvenster']"
+    },
+    {"name": "in_terminal", "line": 28, "scope": "instance", "value_preview": null},
+    {"name": "proc", "line": 29, "scope": "instance", "value_preview": null},
+    {"name": "kapot", "line": 30, "scope": "instance", "value_preview": null},
+    {"name": "dicht", "line": 31, "scope": "instance", "value_preview": null},
+    {"name": "getekend", "line": 32, "scope": "instance", "value_preview": null},
+    {"name": "zichtbaar", "line": 33, "scope": "instance", "value_preview": null},
+    {"name": "laatste", "line": 34, "scope": "instance", "value_preview": null},
+    {"name": "uit", "line": 35, "scope": "instance", "value_preview": null},
+    {"name": "_klaar", "line": 36, "scope": "instance", "value_preview": null},
+    {"name": "plek", "line": 179, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.zet_klokvenster", "lines": [88]},
+    {"caller": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [127]},
+    {"caller": "tests/test_klokvenster.py::TestBeheerder.test_geen_start", "lines": [171]},
+    {
+     "caller": "tests/test_klokvenster.py::TestBeheerder.test_het_echte_venster_zonder_beeldscherm",
+     "lines": [181]
+    },
+    {"caller": "tests/test_klokvenster.py::TestBeheerder.test_praten_met_het_proces", "lines": [147]},
+    {
+     "caller": "tests/test_klokvenster.py::TestBeheerder.test_proces_stopt_dan_klok_in_de_terminal",
+     "lines": [163]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Klokvenster.__init__",
+     "kind": "method",
+     "lines": [25, 36],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "plek", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "bij_plek", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "plek = waar het kind het venster vorige keer zette (x, y, b, h), bij_plek(plek) = die plek bewaren.",
+     "explanation": "Stores the remembered window position and the save callback; sets the state flags (in_terminal, kapot, dicht, getekend, zichtbaar, laatste) and creates the message queue and the start event.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["queue.Queue", "threading.Event"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.zet_klokvenster", "lines": [88]},
+      {"caller": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.__init__", "lines": [127]},
+      {"caller": "tests/test_klokvenster.py::TestBeheerder.test_geen_start", "lines": [171]},
+      {
+       "caller": "tests/test_klokvenster.py::TestBeheerder.test_het_echte_venster_zonder_beeldscherm",
+       "lines": [181]
+      },
+      {"caller": "tests/test_klokvenster.py::TestBeheerder.test_praten_met_het_proces", "lines": [147]},
+      {
+       "caller": "tests/test_klokvenster.py::TestBeheerder.test_proces_stopt_dan_klok_in_de_terminal",
+       "lines": [163]
+      }
+     ]
+    },
+    {
+     "name": "_start",
+     "qualname": "Klokvenster._start",
+     "kind": "method",
+     "lines": [40, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts the subprocess with the project root on PYTHONPATH and the remembered position in the environment, starts the reader thread, registers stop at exit and waits up to START_S seconds for the 'klaar' message. Returns True when the window is up.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._mislukt", "lines": [50, 55]},
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster.stop", "lines": [54]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "threading.Thread(target=self._lees, daemon=True).start",
+       "lines": [51],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".resolve",
+      ".wait",
+      "atexit.register",
+      "dict",
+      "getattr",
+      "json.dumps",
+      "os.environ.get",
+      "os.pathsep.join",
+      "pathlib.Path",
+      "str",
+      "subprocess.Popen",
+      "threading.Thread"
+     ],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster.toon", "lines": [132]}
+     ]
+    },
+    {
+     "name": "_lees",
+     "qualname": "Klokvenster._lees",
+     "kind": "method",
+     "lines": [58, 82],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reader thread: parses JSON lines from the window; 'klaar' sets the event, 'fout' marks the window as unavailable without logging, anything else goes to the queue. When the pipe ends unexpectedly it marks the window broken and queues a 'dicht' message so the screen redraws with the clock in the terminal.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._mislukt", "lines": [69, 80]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.uit.put",
+       "lines": [72, 81],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".close", ".set", "json.loads", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_mislukt",
+     "qualname": "Klokvenster._mislukt",
+     "kind": "method",
+     "lines": [84, 89],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "reden", "kind": "positional", "default": null, "annotation": null},
+      {"name": "log", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records why the window does not work (once) and writes it to the error log unless told not to. Always returns False.",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [88]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster._lees", "lines": [69, 80]},
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster._start", "lines": [50, 55]},
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster._stuur", "lines": [97]},
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster.stop", "lines": [103]}
+     ]
+    },
+    {
+     "name": "_stuur",
+     "qualname": "Klokvenster._stuur",
+     "kind": "method",
+     "lines": [91, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bericht", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sends one JSON message to the window; on a broken pipe records the failure and returns False.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._mislukt", "lines": [97]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".flush", ".write", "json.dumps"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster.beeld_klaar", "lines": [152]},
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster.toon", "lines": [139]},
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster.wissel", "lines": [167]}
+     ]
+    },
+    {
+     "name": "stop",
+     "qualname": "Klokvenster.stop",
+     "kind": "method",
+     "lines": [99, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stops the window: marks it as closed, sends 'stop', closes stdin, waits up to 1.5 s and kills the process if needed; safe to call twice.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._mislukt", "lines": [103]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".close", ".flush", ".kill", ".poll", ".wait", ".write", "json.dumps", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/venster.py::Klokvenster._start", "lines": [54]}
+     ]
+    },
+    {
+     "name": "toon",
+     "qualname": "Klokvenster.toon",
+     "kind": "method",
+     "lines": [127, 142],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "minuten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "klikbaar", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "juist", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "onder", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "onder_rol", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Zet de klok in het venster. Geeft True als dat lukte (dan toont de terminal alleen een verwijzing).",
+     "explanation": "Shows the clock in the window with the time, question, clickability, the correct hands, verdict and bottom text. Starts the process on first use; sends only when the state changed (and brings the window to the front when it was hidden or the question changed). Returns True when the window shows it, False when the terminal must draw it.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._start", "lines": [132]},
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._stuur", "lines": [139]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nieuw_beeld",
+     "qualname": "Klokvenster.nieuw_beeld",
+     "kind": "method",
+     "lines": [144, 145],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Called at the start of each frame: resets the 'a clock was drawn in this frame' flag.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "beeld_klaar",
+     "qualname": "Klokvenster.beeld_klaar",
+     "kind": "method",
+     "lines": [147, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na het tekenen van een scherm: geen klok meer in beeld? Dan het venster verbergen.",
+     "explanation": "Called after drawing a frame: if no clock was shown, hides the window and forgets the last state.",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._stuur", "lines": [152]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toont",
+     "qualname": "Klokvenster.toont",
+     "kind": "method",
+     "lines": [155, 157],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Staat de klok van dit beeld in het venster? (Dan houdt de terminal zijn tekst links.)",
+     "explanation": "True when this frame's clock is in the window (so the terminal keeps its text to the left).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "wissel",
+     "qualname": "Klokvenster.wissel",
+     "kind": "method",
+     "lines": [159, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "F2 (of een klik op de verwijzing): ziet het kind het venster niet (bv. een terminal op het volle scherm), dan komt de klok in de terminal; nog eens F2 = terug in het venster.",
+     "explanation": "F2: toggles between the clock in the terminal and in the window (hiding the window when moving to the terminal).",
+     "calls": [
+      {"target": "leeravontuur/terminal/venster.py::Klokvenster._stuur", "lines": [167]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "volgende",
+     "qualname": "Klokvenster.volgende",
+     "kind": "method",
+     "lines": [170, 185],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het volgende bericht uit het venster, of None.",
+     "explanation": "Returns the next message from the window or None; a 'dicht' message marks the window closed, a 'plek' message stores the new position and calls the save callback (an error there is logged, never raised).",
+     "calls": [
+      {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [184]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".bij_plek", ".get_nowait"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/nepscherm.py::NepKlokvenster.volgende", "lines": [145]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

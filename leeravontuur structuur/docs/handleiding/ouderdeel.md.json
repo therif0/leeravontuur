@@ -1,0 +1,48 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/handleiding/ouderdeel.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 94,
+ "source_sha256": "d283eb15a28d01b458e54874fd52cd42a00c886420a647f8c30ce68974183e71",
+ "purpose": "Handbook page for parents: password, reports, children settings, points and remarks.",
+ "details": "Covers the password (chosen at first use, hashed, three tries), reports per period with export and calendar, managing a child (name, school year, timer, PIN, stop lock, wipe, export), the points log with bonus points, and the remarks written through 'Zeg het ons'.",
+ "summary": "Explains the parent area behind a password: reports by period with calendar and export, children settings, the points log with bonus points, and the remarks from 'Zeg het ons' (saved in feedback.txt).",
+ "headings": [
+  {"level": 1, "text": "Het ouderdeel", "line": 1},
+  {"level": 2, "text": "Het wachtwoord", "line": 8},
+  {"level": 2, "text": "Rapporten", "line": 32},
+  {"level": 2, "text": "Kinderen", "line": 64},
+  {"level": 2, "text": "Punten", "line": 82},
+  {"level": 2, "text": "Opmerkingen", "line": 89}
+ ],
+ "links": [
+  {"text": "← terug naar de inhoud", "target": "README.md", "internal": true},
+  {"text": "Het ouderwachtwoord", "target": "beelden/ouder-wachtwoord.svg", "internal": true},
+  {"text": "Het ouderdeel", "target": "beelden/ouder-menu.svg", "internal": true},
+  {"text": "Zeg het ons", "target": "zeg-het-ons.md", "internal": true},
+  {"text": "Problemen oplossen", "target": "problemen-oplossen.md#het-foutenlogboek", "internal": true},
+  {"text": "Welke periode?", "target": "beelden/ouder-periode.svg", "internal": true},
+  {"text": "Een rapport", "target": "beelden/ouder-rapport.svg", "internal": true},
+  {"text": "Het rapport per dag", "target": "beelden/ouder-rapport-onderwerpen.svg", "internal": true},
+  {"text": "De kalender", "target": "beelden/ouder-kalender.svg", "internal": true},
+  {"text": "Een rapport exporteren", "target": "beelden/ouder-export.svg", "internal": true},
+  {"text": "De instellingen van een kind", "target": "beelden/ouder-kind.svg", "internal": true},
+  {"text": "niveaus", "target": "README.md#niveaus-makkelijk-tot-heel-moeilijk", "internal": true},
+  {"text": "Snelrekenen", "target": "snelrekenen.md", "internal": true},
+  {"text": "de winkel", "target": "avatar-en-winkel.md#kopen-eerst-even-rekenen", "internal": true},
+  {"text": "Het puntenlogboek", "target": "beelden/ouder-punten.svg", "internal": true},
+  {"text": "Zeg het ons", "target": "zeg-het-ons.md", "internal": true},
+  {"text": "Opmerkingen", "target": "beelden/ouder-opmerkingen.svg", "internal": true}
+ ],
+ "referenced_by": [
+  "docs/handleiding/README.md",
+  "docs/handleiding/avatar-en-winkel.md",
+  "docs/handleiding/opties.md",
+  "docs/handleiding/problemen-oplossen.md",
+  "docs/handleiding/snelrekenen.md",
+  "docs/handleiding/startargumenten.md",
+  "docs/handleiding/zeg-het-ons.md"
+ ],
+ "words": 729
+}

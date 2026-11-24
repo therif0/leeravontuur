@@ -1,0 +1,1523 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/eenheden.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 546,
+ "source_sha256": "4741a97743dd332ee3f4d7fc3e31c6244a7884c39c646e122e7b481a4e48b304",
+ "purpose": "Converting units with the units table (length, mass, capacity, area, volume): the table as data, questions, checking, explanations, thinking errors, the cheat sheet, and the 'Maten' adapter that lets the exercise run in the normal practice screen.",
+ "details": "The table consists of cells (each holds one digit, with a power of ten); length, mass and capacity have one cell per unit, area two (x100 per unit) and volume three (x1000 per unit). Some units are another name for a cell (1 ha = 1 hm2, 1 l = 1 dm3, 1 ml = 1 cm3). The registered skill is OMZETTEN (wiskunde.eenheden.omzetten). It is pure logic: an Omzetting dataclass holds one conversion (kind, from, to, number) with its steps and answer; maak_vraag draws one within the leerlijn's limits (loosening them after 3000 tries), and the table functions compute which cells must be filled. Unlike the other topics it is not an Onderwerp subclass; the Maten class at the end wraps it with the same method names so the Oefenaar, repetition and mixed series treat it like one (since 0.27.0, an Omzetting becomes a Vraag with input kind 'eenheid' or 'tabel', drawn by terminal/tabel.py). Note: maak_vraag uses the global random module, not an injected generator, and the module also registers its thinking-error codes in the shared DENKFOUTEN at import time.",
+ "module_docstring": "Eenheden omzetten met de eenhedentabel: lengte, massa, inhoud, oppervlakte en volume.",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerlijnen"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerlijnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["decimalen", "fmt"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.vaardigheden",
+   "names": ["DENKFOUTEN", "Vaardigheid", "registreer"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/kern/vaardigheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 460,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["lees_getal"],
+   "alias": null,
+   "line": 513,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "docs/tools/scenarios.py",
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/klad.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/reeks.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "leeravontuur/terminal/schermen/eenheden.py",
+  "leeravontuur/terminal/tabel.py",
+  "tests/test_avatar.py",
+  "tests/test_eenheden.py",
+  "tests/test_gemengd.py",
+  "tests/test_herhaling.py",
+  "tests/test_rapporten.py",
+  "tests/test_reeks.py",
+  "tests/test_vakken.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/vaardigheden.py::Vaardigheid", "lines": [19]},
+    {"target": "leeravontuur/kern/vaardigheden.py::registreer", "lines": [19]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::_per_eenheid", "lines": [46, 48]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dict", "leeravontuur.kern.vaardigheden.DENKFOUTEN.update", "list"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "OMZETTEN",
+   "line": 19,
+   "value_type": "Call",
+   "value_preview": "registreer(Vaardigheid('wiskunde.eenheden.omzetten', 'Eenheden omzett…",
+   "explanation": "The registered skill wiskunde.eenheden.omzetten."
+  },
+  {
+   "name": "MASSA",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "('massa', 'lengte', 'inhoud', 'oppervlakte', 'volume')",
+   "explanation": "Kind name 'massa'."
+  },
+  {
+   "name": "LENGTE",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "('massa', 'lengte', 'inhoud', 'oppervlakte', 'volume')",
+   "explanation": "Kind name 'lengte'."
+  },
+  {
+   "name": "INHOUD",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "('massa', 'lengte', 'inhoud', 'oppervlakte', 'volume')",
+   "explanation": "Kind name 'inhoud'."
+  },
+  {
+   "name": "OPPERVLAKTE",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "('massa', 'lengte', 'inhoud', 'oppervlakte', 'volume')",
+   "explanation": "Kind name 'oppervlakte'."
+  },
+  {
+   "name": "VOLUME",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "('massa', 'lengte', 'inhoud', 'oppervlakte', 'volume')",
+   "explanation": "Kind name 'volume'."
+  },
+  {
+   "name": "SOORTEN",
+   "line": 24,
+   "value_type": "List",
+   "value_preview": "[MASSA, LENGTE, INHOUD, OPPERVLAKTE, VOLUME]",
+   "explanation": "All kinds in order."
+  },
+  {
+   "name": "NAMEN",
+   "line": 25,
+   "value_type": "Dict",
+   "value_preview": "{LENGTE: 'Lengte', MASSA: 'Massa', INHOUD: 'Inhoud', OPPERVLAKTE: 'Op…",
+   "explanation": "Display names of the kinds."
+  },
+  {
+   "name": "CW",
+   "line": 26,
+   "value_type": "Constant",
+   "value_preview": "5",
+   "explanation": "Cell width for a table with one cell per unit."
+  },
+  {
+   "name": "TABELLEN",
+   "line": 38,
+   "value_type": "Dict",
+   "value_preview": "{MASSA: [('t', 6, True), ('100kg', 5, False), ('10kg', 4, False), ('k…",
+   "explanation": "The units table per kind as cells (label, power of ten, has a unit) from left to right."
+  },
+  {
+   "name": "VAKJES",
+   "line": 50,
+   "value_type": "Dict",
+   "value_preview": "{OPPERVLAKTE: 2, VOLUME: 3}",
+   "explanation": "Cells per unit for area (2) and volume (3)."
+  },
+  {
+   "name": "ALIASSEN",
+   "line": 52,
+   "value_type": "Dict",
+   "value_preview": "{OPPERVLAKTE: [('ha', 4), ('a', 2), ('ca', 0)], VOLUME: [('hl', 5), (…",
+   "explanation": "Other names of cells (ha, a, ca; hl, dal, l, dl, cl, ml) shown in a second header row."
+  },
+  {
+   "name": "ZELFDE_ALS",
+   "line": 57,
+   "value_type": "Dict",
+   "value_preview": "{'ha': 'hm²', 'a': 'dam²', 'ca': 'm²', 'l': 'dm³', 'ml': 'cm³'}",
+   "explanation": "Which real unit an alias sits exactly on."
+  },
+  {
+   "name": "MACHT_IN",
+   "line": 58,
+   "value_type": "DictComp",
+   "value_preview": "{cat: {**{l: k for l, k, echt in cols if echt}, **dict(ALIASSEN.get(c…",
+   "explanation": "Per kind: unit or alias to its power of ten."
+  },
+  {
+   "name": "EENHEDEN",
+   "line": 60,
+   "value_type": "DictComp",
+   "value_preview": "{cat: list(m) for cat, m in MACHT_IN.items()}",
+   "explanation": "Per kind: the list of unit names."
+  },
+  {
+   "name": "CATEGORIE",
+   "line": 62,
+   "value_type": "Dict",
+   "value_preview": "{}",
+   "explanation": "Unit to the first kind that contains it."
+  },
+  {
+   "name": "MACHT",
+   "line": 66,
+   "value_type": "DictComp",
+   "value_preview": "{u: MACHT_IN[c][u] for u, c in CATEGORIE.items()}",
+   "explanation": "Unit to its power of ten (in its first kind)."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 232,
+   "value_type": "Dict",
+   "value_preview": "{'niet_omgezet': 'het getal overgeschreven zonder om te zetten', 'ver…",
+   "explanation": "Thinking-error codes of unit conversion with descriptions, also merged into the shared registry."
+  }
+ ],
+ "registries": [
+  {
+   "name": "TABELLEN",
+   "line": 38,
+   "description": "The units tables as data per kind; MACHT_IN, EENHEDEN, CATEGORIE and MACHT are derived from it at import time."
+  },
+  {
+   "name": "DENKFOUTEN",
+   "line": 232,
+   "description": "Merged into vaardigheden.DENKFOUTEN at import time (line 238) so reports can name the codes."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Omzetting",
+   "qualname": "Omzetting",
+   "lines": [114, 136],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "One conversion: kind, from unit, to unit and number, with its steps, answer, key and text.",
+   "attributes": [
+    {"name": "cat", "line": 115, "scope": "class", "value_preview": null},
+    {"name": "van", "line": 116, "scope": "class", "value_preview": null},
+    {"name": "naar", "line": 117, "scope": "class", "value_preview": null},
+    {"name": "getal", "line": 118, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "docs/tools/scenarios.py::vul_tabel", "lines": [180]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [346, 359]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief", "lines": [404]},
+    {"caller": "tests/test_avatar.py::TestSchermen.test_perfecte_reeks_met_punten", "lines": [97]},
+    {"caller": "tests/test_eenheden.py::omz", "lines": [10]},
+    {"caller": "tests/test_eenheden.py::omz_in", "lines": [102]},
+    {"caller": "tests/test_herhaling.py::TestSchermen.test_herhalen_en_verder", "lines": [115]},
+    {"caller": "tests/test_herhaling.py::TestSelectie.test_onderwerp_van_sleutel", "lines": [90]}
+   ],
+   "methods": [
+    {
+     "name": "stap",
+     "qualname": "Omzetting.stap",
+     "kind": "property",
+     "lines": [121, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Aantal vakjes naar rechts (> 0) of naar links (< 0) in de tabel.",
+     "explanation": "Number of cells to the right (positive) or left (negative) between the two units.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "antwoord",
+     "qualname": "Omzetting.antwoord",
+     "kind": "property",
+     "lines": [126, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The answer: the number with its comma shifted by `stap`.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".scaleb"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "sleutel",
+     "qualname": "Omzetting.sleutel",
+     "kind": "property",
+     "lines": [130, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Uniek per vraag; later gebruikt om herhaling binnen 30 dagen te vermijden.",
+     "explanation": "Unique key of the question, used to avoid repeats within 30 days.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [132]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tekst",
+     "qualname": "Omzetting.tekst",
+     "kind": "property",
+     "lines": [135, 136],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The question text '3,5 km = ? m'.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [136]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Maten",
+   "qualname": "Maten",
+   "lines": [470, 546],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Maten (de eenheden omzetten) als onderwerp van de Oefenaar: dezelfde namen als een Onderwerp. eenheden = de gekozen eenheden (None = alle eenheden van het leerjaar), tabel = in de eenhedentabel. Een reeks maakt de vragen één voor één (een_…",
+   "explanation": "Adapter that gives unit conversion the same methods as an Onderwerp (id, name, make, repeat, check, explain) so the practice screen, repetition and mixed series can use it.",
+   "attributes": [
+    {"name": "id", "line": 474, "scope": "class", "value_preview": "OMZETTEN.id"},
+    {"name": "naam", "line": 475, "scope": "class", "value_preview": "'Maten'"},
+    {"name": "omschrijving", "line": 476, "scope": "class", "value_preview": "OMZETTEN.omschrijving"},
+    {"name": "lang", "line": 477, "scope": "class", "value_preview": "False"},
+    {"name": "een_voor_een", "line": 478, "scope": "class", "value_preview": "True"},
+    {"name": "vorige", "line": 486, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/reeks.py::<module>", "lines": [86]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.speel_vorm", "lines": [52, 54, 56]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::herhalen", "lines": [139]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::spiekbrief", "lines": [143]},
+    {"caller": "tests/test_vakken.py::vragen", "lines": [27]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Maten.__init__",
+     "kind": "method",
+     "lines": [480, 481],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "eenheden", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "tabel", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the chosen units (None = all of the year), whether it is the table exercise and the previous question.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/reeks.py::<module>", "lines": [86]},
+      {
+       "caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.speel_vorm",
+       "lines": [52, 54, 56]
+      },
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::herhalen", "lines": [139]},
+      {"caller": "leeravontuur/terminal/schermen/eenheden.py::spiekbrief", "lines": [143]},
+      {"caller": "tests/test_vakken.py::vragen", "lines": [27]}
+     ]
+    },
+    {
+     "name": "maak",
+     "qualname": "Maten.maak",
+     "kind": "method",
+     "lines": [483, 487],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes the next conversion question (remembering the previous one to avoid repeats) as a Vraag.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::als_vraag", "lines": [487]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheden_voor", "lines": [484]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [484]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_herhaling",
+     "qualname": "Maten.maak_herhaling",
+     "kind": "method",
+     "lines": [489, 490],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A similar question from repetition data.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::als_vraag", "lines": [490]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_herhaling", "lines": [490]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "alle_onderwerpen",
+     "qualname": "Maten.alle_onderwerpen",
+     "kind": "staticmethod",
+     "lines": [493, 495],
+     "params": [],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "Elk paar van/naar (de gewichten kennen ook de paren die nog niet geoefend werden).",
+     "explanation": "Every from-to pair of units, so the weights also know pairs not practised yet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Maten.onderwerp_van_sleutel",
+     "kind": "staticmethod",
+     "lines": [498, 499],
+     "params": [
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Delegates to the module function.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::onderwerp_van_sleutel", "lines": [499]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp",
+     "qualname": "Maten.onderwerp",
+     "kind": "method",
+     "lines": [501, 502],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The repetition group of a question.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [502]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::onderwerp", "lines": [502]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "herhaal_data",
+     "qualname": "Maten.herhaal_data",
+     "kind": "method",
+     "lines": [504, 505],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The repeat-bin data of a question.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::herhaal_data", "lines": [505]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [505]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nakijken",
+     "qualname": "Maten.nakijken",
+     "kind": "staticmethod",
+     "lines": [508, 509],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gegeven", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Right when the given number equals the answer.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Maten.lees_vraag",
+     "kind": "staticmethod",
+     "lines": [512, 514],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Reads the typed number.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [514]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Maten.diagnose",
+     "kind": "staticmethod",
+     "lines": [517, 518],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gegeven", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The thinking error of a typed number, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [518]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [518]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose_rijen",
+     "qualname": "Maten.diagnose_rijen",
+     "kind": "staticmethod",
+     "lines": [521, 522],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rijen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Always None (no grid rows here).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Maten.uitleg",
+     "kind": "staticmethod",
+     "lines": [525, 526],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The explanation lines of a conversion.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [526]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [526]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg_tabel",
+     "qualname": "Maten.uitleg_tabel",
+     "kind": "staticmethod",
+     "lines": [529, 530],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The in-the-table explanation lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [530]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [530]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verwacht_tekst",
+     "qualname": "Maten.verwacht_tekst",
+     "kind": "staticmethod",
+     "lines": [533, 534],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The correct answer text of a question.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Maten.spiekbrief",
+     "kind": "staticmethod",
+     "lines": [537, 538],
+     "params": [],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The units cheat sheet.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief", "lines": [538]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kop_op_spiekbrief",
+     "qualname": "Maten.kop_op_spiekbrief",
+     "kind": "staticmethod",
+     "lines": [541, 542],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Always None: the cheat sheet opens at the top.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klad_voor",
+     "qualname": "Maten.klad_voor",
+     "kind": "staticmethod",
+     "lines": [545, 546],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Always None: conversions have no klad.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_per_eenheid",
+   "qualname": "_per_eenheid",
+   "kind": "function",
+   "lines": [29, 34],
+   "params": [
+    {"name": "eenheden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vakjes voor eenheden met n vakjes elk: [(\"\", hoog, False) …, (eenheid, macht, True)].",
+   "explanation": "Cells for units that have n cells each: n-1 blank cells then the unit's own cell.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::<module>", "lines": [46, 48]}
+   ]
+  },
+  {
+   "name": "meer_vakjes",
+   "qualname": "meer_vakjes",
+   "kind": "function",
+   "lines": [69, 72],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Geldt hier 'elke eenheid heeft 2 (of 3) vakjes'? Alleen tussen echte eenheden (en ha, l …).",
+   "explanation": "Whether 'every unit has 2 (or 3) cells' applies: only between real units (and ha, l ...) of area or volume.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [255]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [197]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [221]}
+   ]
+  },
+  {
+   "name": "soorten_van",
+   "qualname": "soorten_van",
+   "kind": "function",
+   "lines": [75, 76],
+   "params": [
+    {"name": "eenheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The kinds (length, mass, ...) that contain a given unit (l and dl are also in volume).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "cw",
+   "qualname": "cw",
+   "kind": "function",
+   "lines": [79, 81],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Breedte van een vakje: smaller als er veel vakjes zijn, zodat de tabel in 80 kolommen past.",
+   "explanation": "Cell width: 5, or 3 when there are more than 10 cells, so the table fits in 80 columns.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::kop_tekst", "lines": [377]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_tekst", "lines": [391]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [174]},
+    {"caller": "leeravontuur/terminal/tabel.py::teken_tabel", "lines": [318]}
+   ]
+  },
+  {
+   "name": "kolom",
+   "qualname": "kolom",
+   "kind": "function",
+   "lines": [84, 87],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "eenheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Index van het vakje van een eenheid in de tabel.",
+   "explanation": "Index of the cell of a unit in its table.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::vul_tabel", "lines": [188]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::alias_kop", "lines": [110]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.__init__", "lines": [145]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [124]}
+   ]
+  },
+  {
+   "name": "eenheid_bij",
+   "qualname": "eenheid_bij",
+   "kind": "function",
+   "lines": [90, 94],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "i", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De naam (of namen) van de eenheid bij vakje i, bv. 'hm² = ha', of None als daar geen eenheid hoort.",
+   "explanation": "The unit name(s) at cell i, such as 'hm2 = ha', or None when no unit belongs there.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [211, 214, 242]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [124]}
+   ]
+  },
+  {
+   "name": "koppen",
+   "qualname": "koppen",
+   "kind": "function",
+   "lines": [97, 105],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De kop van de tabel: [(label, eerste vakje, aantal vakjes)]. Lege vakjes horen bij de eenheid rechts.",
+   "explanation": "The header of the table as (label, first cell, number of cells); blank cells join the unit on their right.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::kop_tekst", "lines": [378]},
+    {"caller": "leeravontuur/terminal/tabel.py::teken_tabel", "lines": [322]}
+   ]
+  },
+  {
+   "name": "alias_kop",
+   "qualname": "alias_kop",
+   "kind": "function",
+   "lines": [108, 110],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Tweede kopregel (bv. ha a ca): [(label, vakje)] of [].",
+   "explanation": "The second header row of other names (ha a ca) as (label, cell).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::kolom", "lines": [110]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::kop_tekst", "lines": [382]},
+    {"caller": "leeravontuur/terminal/tabel.py::teken_tabel", "lines": [332]}
+   ]
+  },
+  {
+   "name": "tabel_bereik",
+   "qualname": "tabel_bereik",
+   "kind": "function",
+   "lines": [139, 145],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Laagste en hoogste kolom (macht van 10) die ingevuld moeten worden.",
+   "explanation": "The lowest and highest power of ten that must be filled in for a conversion.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".as_tuple", ".normalize", ".scaleb", "len", "max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [149]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [157]}
+   ]
+  },
+  {
+   "name": "past_in_tabel",
+   "qualname": "past_in_tabel",
+   "kind": "function",
+   "lines": [148, 151],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Whether a conversion fits in the table at all.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_bereik", "lines": [149]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [351]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [218]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_soorten_per_leerjaar", "lines": [146]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [118]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_per_leerjaar", "lines": [77]}
+   ]
+  },
+  {
+   "name": "verwachte_cijfers",
+   "qualname": "verwachte_cijfers",
+   "kind": "function",
+   "lines": [154, 158],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{macht: cijfer} voor elk vakje dat ingevuld moet worden (inclusief nullen).",
+   "explanation": "{power: digit} for every cell that must be filled, including zeros.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_bereik", "lines": [157]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".scaleb", "int", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::vul_tabel", "lines": [182]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::controleer_tabel", "lines": [163]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief", "lines": [428, 430]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [224]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [196]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [119]},
+    {"caller": "tests/test_eenheden.py::TestTabel.test_verwachte_cijfers", "lines": [34, 35, 36]}
+   ]
+  },
+  {
+   "name": "controleer_tabel",
+   "qualname": "controleer_tabel",
+   "kind": "function",
+   "lines": [161, 172],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cellen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Per vakje: True (juist), False (fout) of None (leeg en hoeft niet).",
+   "explanation": "Per cell: True (right), False (wrong) or None (empty and fine); an extra zero at the start or end is allowed.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [163]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken_voor_maat", "lines": [162]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.toets", "lines": [281]},
+    {"caller": "tests/test_eenheden.py::TestTabel.test_controleer_tabel", "lines": [40, 41, 42]}
+   ]
+  },
+  {
+   "name": "aflezen",
+   "qualname": "aflezen",
+   "kind": "function",
+   "lines": [175, 185],
+   "params": [
+    {"name": "cellen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "komma", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leest het getal in de tabel af met de komma achter vakje `komma`. None zonder cijfers.",
+   "explanation": "Reads the number in the table with the comma after a given cell; None when no digits.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "max", "min", "range", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [210]},
+    {"caller": "tests/test_eenheden.py::TestTabel.test_aflezen", "lines": [45, 46, 47, 48, 49]}
+   ]
+  },
+  {
+   "name": "_meervoud",
+   "qualname": "_meervoud",
+   "kind": "function",
+   "lines": [188, 189],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "'plaats' or 'plaatsen'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [249, 265]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [195]}
+   ]
+  },
+  {
+   "name": "regel_uitleg",
+   "qualname": "regel_uitleg",
+   "kind": "function",
+   "lines": [192, 202],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The explanation of a conversion: times or divide by 10^n, comma shifts, plus the 2- or 3-cells-per-unit remark.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::_meervoud", "lines": [195]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::meer_vakjes", "lines": [197]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg_gewoon", "lines": [199, 202]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["abs"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.uitleg", "lines": [526]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [132]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.teken", "lines": [92, 103, 107, 109]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [245]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_soorten_per_leerjaar", "lines": [147]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_per_leerjaar", "lines": [78]}
+   ]
+  },
+  {
+   "name": "regel_uitleg_gewoon",
+   "qualname": "regel_uitleg_gewoon",
+   "kind": "function",
+   "lines": [205, 214],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "n", "kind": "positional", "default": null, "annotation": null},
+    {"name": "f", "kind": "positional", "default": null, "annotation": null},
+    {"name": "pl", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The basic explanation lines (1 from = f to, move the comma n places, the sum).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [210, 214]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [199, 202]}
+   ]
+  },
+  {
+   "name": "tabel_uitleg",
+   "qualname": "tabel_uitleg",
+   "kind": "function",
+   "lines": [217, 228],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "How to do it in the table: comma after the first unit, fill zeros, read with the comma after the second.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [223, 228]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::meer_vakjes", "lines": [221]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [218]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [224]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.uitleg_tabel", "lines": [530]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [133]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.teken", "lines": [103, 109]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_soorten_per_leerjaar", "lines": [148]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_per_leerjaar", "lines": [79]}
+   ]
+  },
+  {
+   "name": "diagnose",
+   "qualname": "diagnose",
+   "kind": "function",
+   "lines": [241, 267],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gegeven", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Herkent typische denkfouten. Geeft (code, uitleg) of None als we het niet weten.",
+   "explanation": "Recognises a number copied unchanged, the comma moved the wrong way, one cell per unit for area/volume, and being k places off.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::_meervoud", "lines": [249, 265]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::meer_vakjes", "lines": [255]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".scaleb", "abs", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.diagnose", "lines": [518]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [129]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.teken", "lines": [106]},
+    {"caller": "tests/test_eenheden.py::TestDiagnose.test_denkfouten", "lines": [55, 56, 57, 58, 59, 60, 61]},
+    {
+     "caller": "tests/test_eenheden.py::TestMeerEenheden.test_diagnose_een_vakje_per_eenheid",
+     "lines": [129, 131]
+    }
+   ]
+  },
+  {
+   "name": "onderwerp",
+   "qualname": "onderwerp",
+   "kind": "function",
+   "lines": [270, 272],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tabel", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het onderwerp van een vraag (voor herhaling en gewichten): bv. 'km>m' of 'km>m|tabel'.",
+   "explanation": "The repetition group of a question, such as 'km>m' (or 'km>m|tabel').",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.onderwerp", "lines": [502]}
+   ]
+  },
+  {
+   "name": "onderwerp_van_sleutel",
+   "qualname": "onderwerp_van_sleutel",
+   "kind": "function",
+   "lines": [275, 280],
+   "params": [
+    {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'wiskunde.eenheden.omzetten:km>m:3,5' -> 'km>m' (of None als het geen omzetting is).",
+   "explanation": "The 'from>to' group from a stored key, or None when it is not a conversion key.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/rapporten.py::herhaal_onderwerp", "lines": [447]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.onderwerp_van_sleutel", "lines": [499]},
+    {"caller": "tests/test_herhaling.py::TestSelectie.test_onderwerp_van_sleutel", "lines": [91, 92]}
+   ]
+  },
+  {
+   "name": "herhaal_data",
+   "qualname": "herhaal_data",
+   "kind": "function",
+   "lines": [283, 285],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tabel", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat de herhaalbak moet onthouden om later een gelijkaardige vraag (met een nieuw getal) te maken.",
+   "explanation": "What the repeat bin must remember to make a similar question later.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data", "lines": [505]}
+   ]
+  },
+  {
+   "name": "maak_herhaling",
+   "qualname": "maak_herhaling",
+   "kind": "function",
+   "lines": [288, 290],
+   "params": [
+    {"name": "data", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A similar question for the same units with a new number.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [289]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling", "lines": [490]},
+    {"caller": "tests/test_rapporten.py::TestLogboek.test_in_de_herhaalbak", "lines": [192]}
+   ]
+  },
+  {
+   "name": "eenheden_voor",
+   "qualname": "eenheden_voor",
+   "kind": "function",
+   "lines": [293, 296],
+   "params": [
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Alle eenheden van de soorten die in dit leerjaar aan bod komen.",
+   "explanation": "All units of the kinds offered in a school year.",
+   "calls": [
+    {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [295]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [159]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak", "lines": [484]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.keuze", "lines": [61]},
+    {
+     "caller": "tests/test_eenheden.py::TestMeerEenheden.test_soorten_per_leerjaar",
+     "lines": [134, 135, 136, 137, 139]
+    }
+   ]
+  },
+  {
+   "name": "_paren",
+   "qualname": "_paren",
+   "kind": "function",
+   "lines": [299, 311],
+   "params": [
+    {"name": "eenheden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cat", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Mogelijke (van, naar, soort): beide eenheden in dezelfde soort. Een eenheid die in twee soorten staat (l, dl …), komt in de soort waar de meeste gekozen eenheden in zitten.",
+   "explanation": "All possible (from, to, kind) pairs among the chosen units of the same kind; a unit in two kinds goes to the kind with most chosen units.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "set", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [324]}
+   ]
+  },
+  {
+   "name": "maak_vraag",
+   "qualname": "maak_vraag",
+   "kind": "function",
+   "lines": [314, 359],
+   "params": [
+    {"name": "eenheden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tabel", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "vorige", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "paar", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "vermijd", "kind": "positional", "default": "()", "annotation": null},
+    {"name": "gewichten", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "cat", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Maakt een willekeurige omzetting tussen twee gekozen eenheden van dezelfde soort.",
+   "explanation": "Draws an Omzetting between two chosen units within the leerlijn limits (digits, decimals, maximums), preferring pairs with few steps, weighted by past mistakes, avoiding recent keys and fitting the table when asked; loosens limits after 3000 tries; falls back to 1 of a random pair.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::decimalen", "lines": [347]},
+    {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [322, 323]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [346, 359]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::_paren", "lines": [324]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag.eenheidstappen", "lines": [334]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [351]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".scaleb",
+    "ValueError",
+    "decimal.Decimal",
+    "random.choice",
+    "random.choices",
+    "random.randint",
+    "range",
+    "tuple"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [159]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak", "lines": [484]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_herhaling", "lines": [289]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_soorten_per_leerjaar", "lines": [142]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_grenzen_4de_leerjaar", "lines": [83]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_niet_twee_keer_na_elkaar", "lines": [91]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_per_leerjaar", "lines": [71]},
+    {"caller": "tests/test_herhaling.py::TestSelectie.test_paar_en_gewichten", "lines": [84, 86]},
+    {"caller": "tests/test_herhaling.py::TestSelectie.test_vermijden", "lines": [78]}
+   ]
+  },
+  {
+   "name": "eenheidstappen",
+   "qualname": "maak_vraag.eenheidstappen",
+   "kind": "nested",
+   "lines": [330, 332],
+   "params": [
+    {"name": "q", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The number of unit steps between two units (cells divided by cells per unit).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["abs"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [334]}
+   ]
+  },
+  {
+   "name": "cel_tekst",
+   "qualname": "cel_tekst",
+   "kind": "function",
+   "lines": [364, 372],
+   "params": [
+    {"name": "cijfer", "kind": "positional", "default": null, "annotation": null},
+    {"name": "komma", "kind": "positional", "default": null, "annotation": null},
+    {"name": "fout", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "breedte", "kind": "positional", "default": "CW", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The text of one table cell: digit centred, a comma on the right edge, a '!' mark for a wrong cell.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_tekst", "lines": [397]},
+    {"caller": "leeravontuur/terminal/tabel.py::teken_tabel", "lines": [353]}
+   ]
+  },
+  {
+   "name": "kop_tekst",
+   "qualname": "kop_tekst",
+   "kind": "function",
+   "lines": [375, 385],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De kopregel(s) van de tabel als tekst (de koppen lopen over al hun vakjes).",
+   "explanation": "The header line(s) of a table as text.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::alias_kop", "lines": [382]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::cw", "lines": [377]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::koppen", "lines": [378]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_tekst", "lines": [394]}
+   ]
+  },
+  {
+   "name": "tabel_tekst",
+   "qualname": "tabel_tekst",
+   "kind": "function",
+   "lines": [388, 399],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cijfers", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "komma", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De tabel als gewone tekstregels.",
+   "explanation": "A whole table as text lines, optionally with a row of digits and a comma.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::cel_tekst", "lines": [397]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::cw", "lines": [391]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::kop_tekst", "lines": [394]}
+   ],
+   "unresolved_calls": [
+    {"expr": "lijn", "lines": [394, 396, 398], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief",
+     "lines": [413, 420, 428, 430, 436, 442, 448]
+    },
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [120, 125]}
+   ]
+  },
+  {
+   "name": "spiekbrief",
+   "qualname": "spiekbrief",
+   "kind": "function",
+   "lines": [402, 452],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Regels (tekst, rol) met de uitleg over de eenhedentabel.",
+   "explanation": "The cheat sheet lines (text, role) with the tables and a worked example.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [404]},
+    {
+     "target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_tekst",
+     "lines": [413, 420, 428, 430, 436, 442, 448]
+    },
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [428, 430]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/handleiding.py::spiekbrief", "lines": [252]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.spiekbrief", "lines": [538]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_spiekbrief_past", "lines": [151, 153]},
+    {"caller": "tests/test_eenheden.py::TestVragenMaken.test_spiekbrief", "lines": [97]}
+   ]
+  },
+  {
+   "name": "als_vraag",
+   "qualname": "als_vraag",
+   "kind": "function",
+   "lines": [457, 462],
+   "params": [
+    {"name": "om", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tabel", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een omzetting als gewone Vraag (zo speelt de Oefenaar ze): invoer \"tabel\" (in de eenhedentabel) of \"eenheid\" (een getal typen). De omzetting zelf zit in data[\"omzetting\"].",
+   "explanation": "Wraps an Omzetting in a normal Vraag with input kind 'tabel' or 'eenheid' and the correct answer text.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [462]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [461]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vraag", "lines": [159]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak", "lines": [487]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling", "lines": [490]}
+   ]
+  },
+  {
+   "name": "omzetting",
+   "qualname": "omzetting",
+   "kind": "function",
+   "lines": [465, 467],
+   "params": [
+    {"name": "v", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De Omzetting van een vraag (een Vraag van als_vraag, of al een Omzetting).",
+   "explanation": "The Omzetting inside a Vraag (or the object itself).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["hasattr"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.diagnose", "lines": [518]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data", "lines": [505]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.onderwerp", "lines": [502]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.uitleg", "lines": [526]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.uitleg_tabel", "lines": [530]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [123]},
+    {"caller": "leeravontuur/terminal/tabel.py::_Maat.__init__", "lines": [32]},
+    {"caller": "tests/test_gemengd.py::TestDeReeks.test_fouten_opnieuw_ook_met_maten", "lines": [112]}
+   ]
+  }
+ ]
+}

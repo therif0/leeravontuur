@@ -1,0 +1,621 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/zinnen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 316,
+ "source_sha256": "b33491408c979f4841d0ca4338876821c73de356b2096aaf77fb15c286e725b5",
+ "purpose": "The data model of a fully analysed Dutch sentence (words with their word class, and the sentence parts) plus the bracket notation to write and check one.",
+ "details": "Every sentence is fully analysed: each word belongs to a sentence part (zinsdeel) except punctuation, and the finite verb (pv) also belongs to the predicate (gezegde, wwg or nwg), as at school. The school year decides which parts are asked; the rest stays grey in the exercise. A sentence is written with brackets: '[o De juf] [pv geeft] [lv een boek].' (word class optional with '/vnw'; the predicate may be in pieces). A sentence with more than one pv (compound, 0.25.1) marks only the pv's and their subject, with '|' between the clauses. lees_haakjes parses the notation and raises ZinFout with a plain-language message; controleer validates an analysis; Zin.haakjes writes it back. No curses.",
+ "module_docstring": "Een zin met zijn ontleding: de woorden (met hun woordsoort) en de zinsdelen (alleen data, geen curses).",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 23, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/taal/nagekeken.py",
+  "leeravontuur/kern/taal/zinnenmachine.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass", "re.compile"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class Zin>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "ZINSDELEN",
+   "line": 27,
+   "value_type": "Dict",
+   "value_preview": "{'pv': 'persoonsvorm', 'o': 'onderwerp', 'wwg': 'werkwoordelijk gezeg…",
+   "explanation": "The sentence parts in step order (pv, o, wwg, nwg, lv, mv, bwb) with their names."
+  },
+  {
+   "name": "GEZEGDE",
+   "line": 36,
+   "value_type": "Tuple",
+   "value_preview": "('wwg', 'nwg')",
+   "explanation": "Labels of the predicate parts, which may be in pieces."
+  },
+  {
+   "name": "WOORDSOORTEN",
+   "line": 37,
+   "value_type": "Dict",
+   "value_preview": "{'zn': 'zelfstandig naamwoord', 'lidw': 'lidwoord', 'bn': 'bijvoeglij…",
+   "explanation": "Word classes with their names."
+  },
+  {
+   "name": "LEESTEKENS",
+   "line": 48,
+   "value_type": "Constant",
+   "value_preview": "'.?!,'",
+   "explanation": "Characters treated as punctuation."
+  },
+  {
+   "name": "LT",
+   "line": 49,
+   "value_type": "Constant",
+   "value_preview": "'lt'",
+   "explanation": "The word class of punctuation."
+  },
+  {
+   "name": "BREEDTE",
+   "line": 136,
+   "value_type": "Constant",
+   "value_preview": "71",
+   "explanation": "Maximum width of a sentence on screen (71)."
+  },
+  {
+   "name": "MAX_PV",
+   "line": 137,
+   "value_type": "Constant",
+   "value_preview": "3",
+   "explanation": "Maximum number of pv's in a compound sentence (3)."
+  },
+  {
+   "name": "_WOORD",
+   "line": 164,
+   "value_type": "Call",
+   "value_preview": "re.compile('[^\\\\s\\\\[\\\\]|]+')",
+   "explanation": "Regex for a plain word outside brackets."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "ZinFout",
+   "qualname": "ZinFout",
+   "lines": [52, 53],
+   "bases": ["ValueError"],
+   "decorators": [],
+   "docstring": "Een zin met haakjes die niet klopt (de melding zegt wat er mis is, in gewone taal).",
+   "explanation": "A bracket sentence that is not valid; its message says what is wrong in plain language.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::_woord", "lines": [186, 188]},
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [205, 208, 213, 216, 229, 250, 254]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Woord",
+   "qualname": "Woord",
+   "lines": [57, 63],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A word with its text and word class (or 'lt' for punctuation, None when unknown).",
+   "attributes": [
+    {"name": "tekst", "line": 58, "scope": "class", "value_preview": null},
+    {"name": "soort", "line": 59, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::_woord", "lines": [183, 189]},
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [246]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin", "lines": [174]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [317]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_hoofdletter", "lines": [187]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [245, 248, 274, 283]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [396]},
+    {
+     "caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld",
+     "lines": [331, 332, 342, 344, 359, 368, 373, 377]
+    },
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::ding_groep", "lines": [121, 123, 127, 129, 131, 132]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [58]}
+   ],
+   "methods": [
+    {
+     "name": "leesteken",
+     "qualname": "Woord.leesteken",
+     "kind": "property",
+     "lines": [62, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "True when the word is a punctuation mark.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Deel",
+   "qualname": "Deel",
+   "lines": [67, 72],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A sentence part: label and the positions of its words (ascending; a predicate may be in pieces).",
+   "attributes": [
+    {"name": "label", "line": 68, "scope": "class", "value_preview": null},
+    {"name": "posities", "line": 69, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [226, 239, 242]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg", "lines": [162]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin", "lines": [179]}
+   ],
+   "methods": [
+    {
+     "name": "tekst",
+     "qualname": "Deel.tekst",
+     "kind": "method",
+     "lines": [71, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The words of this part joined with spaces (a predicate in pieces gives all pieces).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Zin",
+   "qualname": "Zin",
+   "lines": [76, 133],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A fully analysed sentence: words, parts and a data dict about how it was made (verb, tense, number, clause borders ...).",
+   "attributes": [
+    {"name": "woorden", "line": 77, "scope": "class", "value_preview": null},
+    {"name": "delen", "line": 78, "scope": "class", "value_preview": null},
+    {"name": "data", "line": 79, "scope": "class", "value_preview": "field(default_factory=dict)"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [247]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin", "lines": [177, 181]}
+   ],
+   "methods": [
+    {
+     "name": "tekst",
+     "qualname": "Zin.tekst",
+     "kind": "property",
+     "lines": [82, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De zin zoals hij er staat: woorden met een spatie, leestekens tegen het woord ervoor.",
+     "explanation": "The sentence as written: words separated by spaces, punctuation against the previous word.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "deel",
+     "qualname": "Zin.deel",
+     "kind": "method",
+     "lines": [89, 91],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "label", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het (eerste) zinsdeel met dit label, of None.",
+     "explanation": "The first part with this label, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "alle",
+     "qualname": "Zin.alle",
+     "kind": "method",
+     "lines": [93, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "label", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All parts with this label.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/zinnen.py::Zin.samengesteld", "lines": [102]}
+     ]
+    },
+    {
+     "name": "labels",
+     "qualname": "Zin.labels",
+     "kind": "method",
+     "lines": [96, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The set of labels present.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "samengesteld",
+     "qualname": "Zin.samengesteld",
+     "kind": "property",
+     "lines": [100, 102],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Meer dan één pv: dan zijn alleen de pv's en hun onderwerp aangeduid (zie deelzinnen).",
+     "explanation": "True when there is more than one pv.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::Zin.alle", "lines": [102]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "label_van",
+     "qualname": "Zin.label_van",
+     "kind": "method",
+     "lines": [104, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "i", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het zinsdeel van woord i (de pv gaat voor het gezegde), of None.",
+     "explanation": "The part label of word i (pv wins over the predicate), or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "haakjes",
+     "qualname": "Zin.haakjes",
+     "kind": "method",
+     "lines": [109, 133],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De zin terug in haakjes (voor de ouder en de tests). Woorden van hetzelfde zinsdeel na elkaar = één paar.",
+     "explanation": "The sentence written back in bracket notation (consecutive words with the same parts form one pair; '|' where clause borders are).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::_zelfde_deel", "lines": [125]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "list", "range", "sorted", "tuple"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "breedte",
+   "qualname": "breedte",
+   "kind": "function",
+   "lines": [140, 143],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoe breed de zin op het scherm staat: de woorden met 2 spaties ertussen; een leesteken staat tegen het woord.",
+   "explanation": "How wide the sentence is on screen: the words with two spaces between them, punctuation attached to the previous word.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "max", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [228]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak_samengesteld", "lines": [298]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "lines": [252]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "lines": [279]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_machine", "lines": [377]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_een_gewone_zin_verandert_niet",
+     "lines": [390]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::breedte", "lines": [22]}
+   ]
+  },
+  {
+   "name": "deelzinnen",
+   "qualname": "deelzinnen",
+   "kind": "function",
+   "lines": [146, 156],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(positie van de pv, posities van zijn onderwerp of None), …] in de volgorde van de zin. Een grens (`|`) scheidt de deelzinnen; pv's in dezelfde deelzin delen het onderwerp van die deelzin.",
+   "explanation": "For each pv (in order) the positions of the subject of its clause, or None: clause borders ('|') separate clauses; pv's in one clause share its subject.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "zin.alle",
+     "lines": [152, 153],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.alle"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len", "sorted", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::_controleer_samengesteld", "lines": [306]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_diagnose_samengesteld", "lines": [118, 134, 136]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::_pv_van", "lines": [147]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::nakijken_vrij", "lines": [302]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::samenvatting", "lines": [367]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::stappen", "lines": [46]},
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::verwacht", "lines": [64]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "lines": [280]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_haakjes",
+     "lines": [320, 323]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_machine", "lines": [378]}
+   ]
+  },
+  {
+   "name": "_zelfde_deel",
+   "qualname": "_zelfde_deel",
+   "kind": "function",
+   "lines": [159, 161],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "i", "kind": "positional", "default": null, "annotation": null},
+    {"name": "j", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Horen woord i en j bij precies dezelfde zinsdelen (niet twee bwb's na elkaar)?",
+   "explanation": "True when two word positions belong to exactly the same sentence parts (so two adjacent adverbials are not merged).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::Zin.haakjes", "lines": [125]}
+   ]
+  },
+  {
+   "name": "_splits",
+   "qualname": "_splits",
+   "kind": "function",
+   "lines": [167, 178],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'boek.' → ['boek', '.']; leestekens aan het einde van een woord worden een eigen woord.",
+   "explanation": "Splits text into words, turning punctuation at the end of a word into separate words.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [214, 235]}
+   ]
+  },
+  {
+   "name": "_woord",
+   "qualname": "_woord",
+   "kind": "function",
+   "lines": [181, 189],
+   "params": [
+    {"name": "stuk", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soorten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Makes a Woord from a token with an optional '/class' suffix (or the lookup function), raising ZinFout for an unknown class or an empty word; punctuation gets the 'lt' class.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [183, 189]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::ZinFout", "lines": [186, 188]}
+   ],
+   "unresolved_calls": [
+    {"expr": "soorten", "lines": [189], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [221, 236]}
+   ]
+  },
+  {
+   "name": "lees_haakjes",
+   "qualname": "lees_haakjes",
+   "kind": "function",
+   "lines": [192, 255],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soorten", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een zin met haakjes → Zin. soorten(woord) mag de woordsoort geven van een woord zonder /soort. Geeft ZinFout met een uitleg in gewone taal als er iets niet klopt.",
+   "explanation": "Parses a bracket-notation sentence into a Zin: collects words and parts, merges the pieces of a predicate, adds the default 'wwg' when none is written, makes pv and wwg words verbs, records '|' borders, then validates it and raises ZinFout (with an explanation) on problems.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Deel", "lines": [226, 239, 242]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [246]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::Zin", "lines": [247]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::ZinFout", "lines": [205, 208, 213, 216, 229, 250, 254]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::_splits", "lines": [214, 235]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::_woord", "lines": [221, 236]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [252]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".end", ".group", ".match", "all", "len", "list", "sorted", "tuple"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/nagekeken.py::_zin", "lines": [25]},
+    {"caller": "tests/test_taal_scherm.py::vaste_zin", "lines": [30]},
+    {"caller": "tests/test_taal_zinsontleding.py::zin", "lines": [17]}
+   ]
+  },
+  {
+   "name": "controleer",
+   "qualname": "controleer",
+   "kind": "function",
+   "lines": [258, 292],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null},
+    {"name": "volledig", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De fouten in een ontleding (leeg = in orde), in gewone taal. volledig: elk woord hoort bij een zinsdeel.",
+   "explanation": "Lists problems in an analysis in plain language (empty = fine): exactly one pv of one word, at most one subject, wwg or nwg not both, pv inside the predicate, no word in two parts (except the predicate), no punctuation in a part, and when 'volledig' every word in a part. Defers to _controleer_samengesteld when there are several pv's.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::_controleer_samengesteld", "lines": [265]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "zin.alle",
+     "lines": [263, 270],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.alle"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "zin.deel",
+     "lines": [272],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.deel"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["all", "enumerate", "len", "list"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::lees_haakjes", "lines": [252]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [228]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak_samengesteld", "lines": [298]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_elke_zin_is_volledig_ontleed_en_past",
+     "lines": [251]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestNagekekenZinnen.test_zinnen_met_twee_persoonsvormen",
+     "lines": [278]
+    },
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_machine", "lines": [376]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "lines": [105]
+    }
+   ]
+  },
+  {
+   "name": "_controleer_samengesteld",
+   "qualname": "_controleer_samengesteld",
+   "kind": "function",
+   "lines": [295, 316],
+   "params": [
+    {"name": "zin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een zin met meer dan één pv: alleen pv en o, elke pv één woord, en elke deelzin precies één onderwerp.",
+   "explanation": "Validation for a compound sentence: at most MAX_PV pv's of one word each, only pv and o marked, each clause has exactly one subject, no word twice.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::deelzinnen", "lines": [306]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "zin.alle",
+     "lines": [298],
+     "candidates": ["leeravontuur/kern/taal/zinnen.py::Zin.alle"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["any", "len", "list", "set", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [265]}
+   ]
+  }
+ ]
+}

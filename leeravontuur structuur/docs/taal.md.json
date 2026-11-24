@@ -1,0 +1,86 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/taal.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 352,
+ "source_sha256": "f78aa70331f6b78135293224f1a12d6c96c2fca7d403996b6e1658eb8dd575d7",
+ "purpose": "The plan for the Taal subject (design of 7/11/2026): the father's choices, what Flanders expects, the domains, sentence parsing (T1), word kinds (T2), verb spelling (T3) and later parts, colours, code structure, phases and deviations.",
+ "details": "A long plan document with tables of the father's decisions (7/11 and 8/11), the official minimum goals Dutch (in force since 1 September 2025), the six domains with levels per school year, screens drawn in text, thinking steps and errors, the sentence machine, the colours of each sentence part, the phase table (T1.1... with ticks) and sections 'what turned out different than planned' per release (0.25.1, 0.26.0, 0.26.1, 0.26.2), open points and sources. The code that implements it is in kern/taal/*, terminal/zinsdelen.py, terminal/werkwoord.py and inhoud/taal/*.",
+ "summary": "Taal plan. Records the father's choices (Steiner school, Catholic curriculum to stay ahead, abbreviations like 'o'), the Flemish minimum goals, six domains and the levels per year, details of T1 sentence parsing (steps, free colouring, thinking steps/tips, recognised errors, sentence machine and hand-written sentences, points), T2 word kinds, T3 verb spelling, colours per sentence part, how it fits the code, the phase table with ticks and per-release deviations from the plan.",
+ "headings": [
+  {"level": 1, "text": "Taal: het plan (ontwerp, 7/11/2026)", "line": 1},
+  {"level": 2, "text": "Wat de vader koos (7/11)", "line": 6},
+  {
+   "level": 2,
+   "text": "Wat de vader koos (8/11, na de test met zijn zoon en een taaldossier van de leerkracht)",
+   "line": 21
+  },
+  {"level": 2, "text": "Wat Vlaanderen verwacht", "line": 30},
+  {
+   "level": 3,
+   "text": "De officiële doelen per domein (minimumdoelen Nederlands, Bijlage 6 bij het decreet basisonderwijs)",
+   "line": 47
+  },
+  {"level": 2, "text": "De domeinen van Taal (het menu, 6 domeinen)", "line": 60},
+  {
+   "level": 3,
+   "text": "Per leerjaar (Makkelijk = 4de, Normaal = 5de, Moeilijk = 6de, Heel moeilijk = 1ste middelbaar)",
+   "line": 70
+  },
+  {"level": 2, "text": "T1. Zinsontleding (als eerste)", "line": 82},
+  {"level": 3, "text": "Wat het kind ziet: stap voor stap (Makkelijk, Normaal)", "line": 84},
+  {"level": 3, "text": "Vrij kleuren (Tab op Makkelijk en Normaal; altijd op Moeilijk)", "line": 108},
+  {"level": 3, "text": "De denkstappen (de tips met F1, in plaats van een klad)", "line": 118},
+  {"level": 3, "text": "De denkfouten (wat het programma herkent)", "line": 131},
+  {"level": 3, "text": "De zinnen", "line": 145},
+  {"level": 3, "text": "De punten, het rapport, Gemengd oefenen", "line": 176},
+  {"level": 2, "text": "T2. Woordsoorten", "line": 188},
+  {
+   "level": 2,
+   "text": "T3 en verder (alleen de grote lijn; elk krijgt eerst een eigen voorstel)",
+   "line": 198
+  },
+  {
+   "level": 2,
+   "text": "De kleuren (de vader: één kleur per label, de afkorting staat er altijd bij; 8/11: de kleuren van de markeerstiften thuis)",
+   "line": 212
+  },
+  {"level": 2, "text": "Hoe het in de code komt (de bestaande architectuur)", "line": 245},
+  {"level": 2, "text": "De fasen (elke fase: tests, tmux 80×24, melden, wachten op de go)", "line": 265},
+  {"level": 2, "text": "Wat anders werd dan gepland (T1.1–T1.3a)", "line": 280},
+  {"level": 2, "text": "Wat de vader koos (10/11): grotere stukken", "line": 294},
+  {"level": 2, "text": "Wat anders werd dan gepland (T3 deel 3, 0.26.2)", "line": 301},
+  {"level": 2, "text": "Wat anders werd dan gepland (T3 deel 2, 0.26.1)", "line": 310},
+  {"level": 2, "text": "Wat anders werd dan gepland (T3 deel 1, 0.26.0)", "line": 322},
+  {"level": 2, "text": "Wat anders werd dan gepland (T1.3b, 0.25.1)", "line": 336},
+  {"level": 2, "text": "Nog open (bij het verslag van T1.1)", "line": 346},
+  {"level": 2, "text": "Bronnen", "line": 350}
+ ],
+ "links": [
+  {"text": "koers.md", "target": "koers.md", "internal": true},
+  {"text": "onderwijsdoelen.be", "target": "https://onderwijsdoelen.be", "internal": false},
+  {
+   "text": "vlaanderen.be: Nieuwe minimumdoelen basisonderwijs",
+   "target": "https://www.vlaanderen.be/onderwijsprofessionals/lesgeven-en-begeleiden/opleidingsinhouden/opleidingsinhouden-basisonderwijs/nieuwe-minimumdoelen-basisonderwijs",
+   "internal": false
+  }
+ ],
+ "referenced_by": [
+  "CLAUDE.md",
+  "README.md",
+  "docs/architectuur.md",
+  "docs/koers.md",
+  "docs/plan.md",
+  "docs/todo.md",
+  "leeravontuur/kern/taal/__init__.py",
+  "leeravontuur/kern/taal/werkwoorden.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/terminal/curriculum/taal.py",
+  "leeravontuur/terminal/thema.py",
+  "leeravontuur/terminal/werkwoord.py",
+  "leeravontuur/terminal/zinsdelen.py",
+  "werk/schermen-inventaris.md"
+ ],
+ "words": 4298
+}

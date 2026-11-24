@@ -1,0 +1,277 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/avatar.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 148,
+ "source_sha256": "4f28127b32abd36fe7a15505b68ba4b837c36b43e7d205660b08d916b107b941",
+ "purpose": "Builds the avatar: a 16x16 pixel face from layered parts, and the small reactions of the practice buddy.",
+ "details": "The parts (shapes, colours, eyes, ears, nose, mouth expressions, hair, hats, accessories) are pixel-art data in inhoud/avatar/onderdelen.json; this module composes them into a raster of '#rrggbb' or None (transparent) that the terminal draws with half-block characters (terminal/avatar.py). An expression (happy, thinking, ...) picks the mouth and sometimes the eyes so the avatar reacts. It also holds the praise texts, the short 'psst' tips per diagnosis code and the text faces used when there is no room for pixels.",
+ "module_docstring": "De avatar: een blokje van 16x16 pixels, samengesteld uit lagen (vorm, oren, ogen, neus, mond, haar, hoed, accessoire). Geeft gewone kleurdata terug; de terminal (of later een GUI) tekent ze.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 10, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/winkel.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/avatar.py",
+  "leeravontuur/terminal/beta.py",
+  "leeravontuur/terminal/maatje.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/schermen/winkel.py",
+  "tests/test_avatar.py",
+  "tests/test_winkel.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 12,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent / 'inhoud' / 'avatar' / 'onder…",
+   "explanation": "Path of the avatar parts JSON."
+  },
+  {
+   "name": "GROOTTE",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "16",
+   "explanation": "Width and height of the avatar grid."
+  },
+  {
+   "name": "LAGEN",
+   "line": 14,
+   "value_type": "Tuple",
+   "value_preview": "('vorm', 'kleur', 'ogen', 'oren', 'haar', 'hoed', 'accessoire')",
+   "explanation": "Layer order of the avatar config."
+  },
+  {
+   "name": "STANDAARD",
+   "line": 15,
+   "value_type": "Dict",
+   "value_preview": "{'vorm': 'vierkant', 'kleur': 'blauw', 'ogen': 'gewoon', 'oren': 'ron…",
+   "explanation": "Default avatar config (square blue body, normal eyes, round ears, no hair, hat or accessory)."
+  },
+  {
+   "name": "LOF",
+   "line": 115,
+   "value_type": "List",
+   "value_preview": "['Top!', 'Super!', 'Yes!', 'Knap!', 'Goed zo!', 'Prima!']",
+   "explanation": "Praise words for a correct answer."
+  },
+  {
+   "name": "TIPS",
+   "line": 116,
+   "value_type": "Dict",
+   "value_preview": "{'verkeerde_richting': 'Andere kant op!', 'factor_10': 'Tel de kolomm…",
+   "explanation": "Short buddy tip per diagnosis code."
+  },
+  {
+   "name": "TEKSTGEZICHT",
+   "line": 145,
+   "value_type": "Dict",
+   "value_preview": "{'normaal': '[o_o]', 'blij': '[^_^]', 'trots': '[^o^]', 'verrast': '[…",
+   "explanation": "Text faces per expression for when the pixel avatar does not fit."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "onderdelen",
+   "qualname": "onderdelen",
+   "kind": "function",
+   "lines": [20, 21],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=1)"],
+   "docstring": "",
+   "explanation": "Loads and caches the parts JSON.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/avatar.py::geldig", "lines": [33]},
+    {"caller": "leeravontuur/kern/avatar.py::opties", "lines": [26]},
+    {"caller": "leeravontuur/kern/avatar.py::teken", "lines": [69]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [41]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_alle_combinaties", "lines": [23]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_gezicht_op_het_lijf", "lines": [37]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_uitdrukkingen_verschillen", "lines": [52]}
+   ]
+  },
+  {
+   "name": "opties",
+   "qualname": "opties",
+   "kind": "function",
+   "lines": [24, 28],
+   "params": [
+    {"name": "laag", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{sleutel: naam} van alles wat er in een laag bestaat.",
+   "explanation": "Dict key -> display name of everything available in a layer.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [26]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::catalogus", "lines": [44]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [283]},
+    {"caller": "tests/test_winkel.py::TestCatalogus.test_alles_bestaat", "lines": [21]}
+   ]
+  },
+  {
+   "name": "geldig",
+   "qualname": "geldig",
+   "kind": "function",
+   "lines": [31, 42],
+   "params": [
+    {"name": "config", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vult ontbrekende of onbekende onderdelen aan met de standaard.",
+   "explanation": "Completes a stored avatar config: missing or unknown parts fall back to the defaults (hair, hat and accessory default to none).",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [33]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dict"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/avatar.py::teken", "lines": [70]},
+    {"caller": "leeravontuur/kern/winkel.py::draag", "lines": [166]},
+    {"caller": "leeravontuur/terminal/app.py::App.avatar_config", "lines": [129]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_geldig", "lines": [59, 61]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_juist_meteen_in_de_kast", "lines": [69]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kast_en_combinatie", "lines": [141]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kopen_met_juiste_som", "lines": [112]}
+   ]
+  },
+  {
+   "name": "_mix",
+   "qualname": "_mix",
+   "kind": "function",
+   "lines": [45, 52],
+   "params": [
+    {"name": "hexkleur", "kind": "positional", "default": null, "annotation": null},
+    {"name": "factor", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Lichter (factor > 0, naar wit) of donkerder (factor < 0, naar zwart).",
+   "explanation": "Lightens (towards white) or darkens (towards black) a '#rrggbb' colour by a factor.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "round"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/avatar.py::teken", "lines": [72]}
+   ]
+  },
+  {
+   "name": "_plaats",
+   "qualname": "_plaats",
+   "kind": "function",
+   "lines": [55, 64],
+   "params": [
+    {"name": "raster", "kind": "positional", "default": null, "annotation": null},
+    {"name": "patroon", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kleuren", "kind": "positional", "default": null, "annotation": null},
+    {"name": "spiegel", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Draws a pixel pattern into the raster at a position, optionally mirrored, skipping transparent characters and anything outside the grid.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/avatar.py::teken", "lines": [78, 81, 82, 88, 89, 92, 94, 99, 102, 109]}
+   ]
+  },
+  {
+   "name": "teken",
+   "qualname": "teken",
+   "kind": "function",
+   "lines": [67, 110],
+   "params": [
+    {"name": "config", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "uitdrukking", "kind": "positional", "default": "'normaal'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het raster: GROOTTE rijen van GROOTTE kleuren ('#rrggbb' of None = doorzichtig).",
+   "explanation": "Composes the avatar raster: body, ears, eyes, nose, mouth (by expression), then hair, hat and accessory at the anchors of the chosen shape; body shading colours derive from the chosen body colour.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::_mix", "lines": [72]},
+    {"target": "leeravontuur/kern/avatar.py::_plaats", "lines": [78, 81, 82, 88, 89, 92, 94, 99, 102, 109]},
+    {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [70]},
+    {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [69]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["dict", "len", "max", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/avatar.py::teken", "lines": [22]},
+    {"caller": "leeravontuur/terminal/avatar.py::teken_groot", "lines": [40]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_alle_combinaties", "lines": [28]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_uitdrukkingen_verschillen", "lines": [52]}
+   ]
+  },
+  {
+   "name": "reactie",
+   "qualname": "reactie",
+   "kind": "function",
+   "lines": [134, 142],
+   "params": [
+    {"name": "juist", "kind": "positional", "default": null, "annotation": null},
+    {"name": "op_rij", "kind": "positional", "default": "0", "annotation": null},
+    {"name": "diagnose", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "punten", "kind": "positional", "default": "0", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(uitdrukking, kort tekstje) na een antwoord.",
+   "explanation": "Returns (expression, short text) for the buddy after an answer: proud on every 5th correct in a row, happy with a praise word, thinking with a tip for known thinking errors, otherwise encouraging.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["random.choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar._stel_vraag", "lines": [131]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [563]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag_scherm", "lines": [206]},
+    {"caller": "tests/test_avatar.py::TestAvatar.test_reactie", "lines": [64, 65, 66, 67]}
+   ]
+  }
+ ]
+}

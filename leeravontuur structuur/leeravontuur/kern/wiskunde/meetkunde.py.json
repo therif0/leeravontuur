@@ -1,0 +1,1246 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/meetkunde.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 585,
+ "source_sha256": "6e808cf4f8f470b1ab7800498e5ff8a50f81d21bc5ddade22653bfdf955ce4e7",
+ "purpose": "The geometry topics: area and perimeter on the cm2 grid, formulas (also circle and volume), angles, coordinates (the treasure map and the axes system) and scale.",
+ "details": "Five Onderwerp subclasses under a base _Meetkunde. Rooster (the grid topic; not the same as kern/modellen.Rooster, which is the column-arithmetic grid) makes a Figuur of full and half squares (rectangle, L-shape, staircase, triangle) and asks area or perimeter; Formules calculates areas, perimeters and volumes with PI = 3,14 and shows the formula; Hoeken (angle kinds, degrees, the third angle of a triangle, adjacent angles); Coordinaten (a lettered grid or an axes system; read the point or place a cross); Schaal (map scale 1 : n, to real life, to the map, find the scale). Models are the dataclasses of kern/modellen.py (Figuur, Hoek, Kaart). The cheat sheets are two lists, one for area/formulas (shown in the menu under Meten) and one for angles, coordinates and scale. SOORTEN_HOEK and BIJVOEGLIJK are used for the angle kinds.",
+ "module_docstring": "Meetkunde: oppervlakte en omtrek op het cm²-rooster, formules (ook cirkel en volume), hoeken, coördinaten (de schatkaart en het assenstelsel) en schaal.",
+ "imports": [
+  {"module": "hashlib", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["oplossing_van"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["KOLOMLETTERS", "Figuur", "Hoek", "Kaart", "fmt_geheel"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/kern/catalogus.py", "leeravontuur/terminal/curriculum/wiskunde.py", "tests/test_meetkunde.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [580, 581, 582, 583, 584]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [15], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 14,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "PI",
+   "line": 15,
+   "value_type": "Call",
+   "value_preview": "D('3.14')",
+   "explanation": "The value of pi used: 3,14."
+  },
+  {
+   "name": "FIGUREN",
+   "line": 134,
+   "value_type": "Dict",
+   "value_preview": "{'rechthoek_opp': ('rechthoek', 'oppervlakte', 'cm²'), 'rechthoek_omt…",
+   "explanation": "The formula kinds: kind to (shape name, what is asked, unit)."
+  },
+  {
+   "name": "SOORTEN_HOEK",
+   "line": 299,
+   "value_type": "List",
+   "value_preview": "['scherp', 'recht', 'stomp', 'gestrekt', 'vol']",
+   "explanation": "The angle kind words a child may type."
+  },
+  {
+   "name": "BIJVOEGLIJK",
+   "line": 300,
+   "value_type": "Dict",
+   "value_preview": "{'scherp': 'scherpe', 'recht': 'rechte', 'stomp': 'stompe', 'gestrekt…",
+   "explanation": "Angle kind word to its adjective form."
+  },
+  {
+   "name": "SPIEKBRIEF_OPPERVLAKTE",
+   "line": 548,
+   "value_type": "List",
+   "value_preview": "[('OPPERVLAKTE EN OMTREK', 'accent'), (' Oppervlakte = hoeveel vakjes…",
+   "explanation": "The area and formulas cheat sheet."
+  },
+  {
+   "name": "SPIEKBRIEF_MEETKUNDE",
+   "line": 563,
+   "value_type": "List",
+   "value_preview": "[('HOEKEN', 'accent'), (' scherp: kleiner dan 90° recht = 90° stomp: …",
+   "explanation": "The angles, coordinates and scale cheat sheet."
+  },
+  {
+   "name": "ROOSTER",
+   "line": 580,
+   "value_type": "Call",
+   "value_preview": "Rooster()",
+   "explanation": "The one instance of the grid topic."
+  },
+  {
+   "name": "FORMULES",
+   "line": 581,
+   "value_type": "Call",
+   "value_preview": "Formules()",
+   "explanation": "The one instance of the formulas topic."
+  },
+  {
+   "name": "HOEKEN",
+   "line": 582,
+   "value_type": "Call",
+   "value_preview": "Hoeken()",
+   "explanation": "The one instance of the angles topic."
+  },
+  {
+   "name": "COORDINATEN",
+   "line": 583,
+   "value_type": "Call",
+   "value_preview": "Coordinaten()",
+   "explanation": "The one instance of the coordinates topic."
+  },
+  {
+   "name": "SCHAAL",
+   "line": 584,
+   "value_type": "Call",
+   "value_preview": "Schaal()",
+   "explanation": "The one instance of the scale topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 585,
+   "value_type": "List",
+   "value_preview": "[ROOSTER, FORMULES, HOEKEN, COORDINATEN, SCHAAL]",
+   "explanation": "List of the five topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "FIGUREN",
+   "line": 134,
+   "description": "Maps each formula kind to (shape, quantity, unit); Formules.bereken then chooses the right formula through a dict of lambdas keyed by the same kind."
+  },
+  {
+   "name": "ALLE",
+   "line": 585,
+   "description": "The five topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Meetkunde",
+   "qualname": "_Meetkunde",
+   "lines": [18, 29],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the geometry topics.",
+   "attributes": [
+    {"name": "vast", "line": 19, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "_Meetkunde.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [21, 23],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "soort",
+     "qualname": "_Meetkunde.soort",
+     "kind": "method",
+     "lines": [25, 26],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from repetition data or a random one from the leerlijn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.maak_met", "lines": [414]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met", "lines": [159]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Hoeken.maak_met", "lines": [313]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Rooster.maak_met", "lines": [78]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.maak_met", "lines": [474]}
+     ]
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "_Meetkunde.spiekbrief",
+     "kind": "method",
+     "lines": [28, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The geometry cheat sheet (angles, coordinates, scale).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Rooster",
+   "qualname": "Rooster",
+   "lines": [62, 129],
+   "bases": ["_Meetkunde"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.meetkunde.rooster: area and perimeter on the cm2 grid.",
+   "attributes": [
+    {"name": "id", "line": 63, "scope": "class", "value_preview": "'wiskunde.meetkunde.rooster'"},
+    {"name": "naam", "line": 64, "scope": "class", "value_preview": "'Oppervlakte en omtrek'"},
+    {"name": "spiek_kop", "line": 65, "scope": "class", "value_preview": "'OPPERVLAKTE EN OMTREK'"},
+    {
+     "name": "omschrijving",
+     "line": 66,
+     "scope": "class",
+     "value_preview": "'tel de vakjes en de randjes op het rooster'"
+    },
+    {"name": "vast", "line": 67, "scope": "class", "value_preview": "('soort', 'vorm')"},
+    {
+     "name": "denkfouten",
+     "line": 68,
+     "scope": "class",
+     "value_preview": "{'omtrek_oppervlakte': 'omtrek en oppervlakte verwisseld', …"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "Rooster.spiekbrief",
+     "kind": "method",
+     "lines": [73, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The area and perimeter cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Rooster.maak_met",
+     "kind": "method",
+     "lines": [76, 90],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes an area or perimeter question for a figure (a triangle is always area); redraws until area and perimeter differ so a mix-up shows; the key contains a hash of the figure.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [90]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [86, 89]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::_Meetkunde.soort", "lines": [78]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::maak_figuur", "lines": [79, 81]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [89], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "fig.binnenranden",
+       "lines": [88],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.binnenranden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "fig.omtrek",
+       "lines": [80, 88, 89],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.omtrek"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "fig.oppervlakte",
+       "lines": [80, 86],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.oppervlakte"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".choice", ".hexdigest", "hashlib.sha1", "len", "repr", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Rooster.uitleg",
+     "kind": "method",
+     "lines": [92, 101],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For perimeter: count the edges round the outside; for area: count the squares (and halves).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [99]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [99], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Rooster.tip",
+     "kind": "method",
+     "lines": [103, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint per kind (edges round the outside, two halves make one, area is the squares).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Rooster.diagnose",
+     "kind": "method",
+     "lines": [110, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises perimeter and area mixed up, counting inner edges too, counting halves as whole, and forgetting halves.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "fig.omtrek",
+       "lines": [127],
+       "candidates": ["leeravontuur/kern/modellen.py::Figuur.omtrek"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Formules",
+   "qualname": "Formules",
+   "lines": [143, 294],
+   "bases": ["_Meetkunde"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.meetkunde.formules: area, perimeter and volume by formula.",
+   "attributes": [
+    {"name": "id", "line": 144, "scope": "class", "value_preview": "'wiskunde.meetkunde.formules'"},
+    {"name": "naam", "line": 145, "scope": "class", "value_preview": "'Formules'"},
+    {"name": "spiek_kop", "line": 146, "scope": "class", "value_preview": "'FORMULES'"},
+    {
+     "name": "omschrijving",
+     "line": 147,
+     "scope": "class",
+     "value_preview": "'oppervlakte, omtrek en volume uitrekenen'"
+    },
+    {"name": "vast", "line": 148, "scope": "class", "value_preview": "('soort',)"},
+    {
+     "name": "denkfouten",
+     "line": 149,
+     "scope": "class",
+     "value_preview": "{'deel_door_2_vergeten': 'vergeten te delen door 2', 'omtre…"
+    },
+    {"name": "klad", "line": 215, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "Formules.spiekbrief",
+     "kind": "method",
+     "lines": [155, 156],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The area and formulas cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Formules.maak_met",
+     "kind": "method",
+     "lines": [158, 201],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a formula question for one of 11 shapes and kinds (rectangle, square, triangle, parallelogram, trapezium, circle, box, cube) with numbers within the leerlijn's maximum (halves allowed when the leerlijn says so; a circle may give the diameter).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [173, 177, 181, 187, 192, 193, 197]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [200]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.bereken", "lines": [198]},
+      {
+       "target": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met.maat",
+       "lines": [170, 171, 175, 179, 183, 184, 185, 195]
+      },
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::_Meetkunde.soort", "lines": [159]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [189], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", ".random", "int", "max", "min", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maat",
+     "qualname": "Formules.maak_met.maat",
+     "kind": "nested",
+     "lines": [163, 167],
+     "params": [
+      {"name": "laag", "kind": "positional", "default": "2", "annotation": null},
+      {"name": "hoog", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A random measure, sometimes with a half.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [166, 167], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", ".random"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met",
+       "lines": [170, 171, 175, 179, 183, 184, 185, 195]
+      }
+     ]
+    },
+    {
+     "name": "bereken",
+     "qualname": "Formules.bereken",
+     "kind": "staticmethod",
+     "lines": [204, 213],
+     "params": [
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "d", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The exact value of the formula for a kind from the stored measures (using PI = 3,14).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [205], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [
+      {
+       "kind": "subscript-call",
+       "line": 206,
+       "expr": "{'rechthoek_opp': lambda: g['l'] * g['b'], 'rechthoek_omtrek': lambda…"
+      }
+     ],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.diagnose", "lines": [283]},
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met", "lines": [198]}
+     ]
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Formules.oplossing",
+     "kind": "method",
+     "lines": [217, 234],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines (with the radius step when the diameter was given).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [218, 219, 233]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [234]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [219, 233], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Formules.lees",
+     "kind": "method",
+     "lines": [236, 237],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed number.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [237]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Formules.uitleg",
+     "kind": "method",
+     "lines": [239, 263],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The formula in words and with the numbers, with a note why a triangle or trapezium is divided by 2 and how to get the radius.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [240, 241, 258]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [241, 258], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Formules.tip",
+     "kind": "method",
+     "lines": [265, 273],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Radius is half the diameter; the triangle and trapezium formulas; a perimeter is all four sides.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Formules.diagnose",
+     "kind": "method",
+     "lines": [275, 294],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises forgetting to halve, area and perimeter swapped, using only two sides, and radius and diameter mixed up.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.bereken", "lines": [283]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Hoeken",
+   "qualname": "Hoeken",
+   "lines": [303, 379],
+   "bases": ["_Meetkunde"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.meetkunde.hoeken: angles.",
+   "attributes": [
+    {"name": "id", "line": 304, "scope": "class", "value_preview": "'wiskunde.meetkunde.hoeken'"},
+    {"name": "naam", "line": 305, "scope": "class", "value_preview": "'Hoeken'"},
+    {"name": "spiek_kop", "line": 306, "scope": "class", "value_preview": "'HOEKEN'"},
+    {
+     "name": "omschrijving",
+     "line": 307,
+     "scope": "class",
+     "value_preview": "'scherp, recht, stomp; de hoeken van een driehoek'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 308,
+     "scope": "class",
+     "value_preview": "{'stomp_scherp': 'scherp en stomp verwisseld', 'hoekensom':…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Hoeken.maak_met",
+     "kind": "method",
+     "lines": [312, 339],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes one of four angle questions: name the angle from a drawing, name it from degrees, the third angle of a triangle, or the adjacent angle.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Hoek", "lines": [325]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [324, 326, 332, 337]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::_Meetkunde.soort", "lines": [313]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [334, 339], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randrange", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Hoeken.lees_vraag",
+     "kind": "method",
+     "lines": [341, 346],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads an angle word (also with 'hoek' or the adjective form) or a number of degrees.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [346]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["re.sub"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Hoeken.uitleg",
+     "kind": "method",
+     "lines": [348, 359],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Why an angle is acute, right, obtuse, straight or full; or the 180 degrees rules.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [358, 359]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Hoeken.tip",
+     "kind": "method",
+     "lines": [361, 367],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Compare with a right angle; the three angles of a triangle make 180; adjacent angles make 180.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Hoeken.diagnose",
+     "kind": "method",
+     "lines": [369, 379],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises acute and obtuse swapped and wrong angle sums in a triangle or for adjacent angles.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [375, 377], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Coordinaten",
+   "qualname": "Coordinaten",
+   "lines": [400, 456],
+   "bases": ["_Meetkunde"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.meetkunde.coordinaten: treasure map and axes system.",
+   "attributes": [
+    {"name": "id", "line": 401, "scope": "class", "value_preview": "'wiskunde.meetkunde.coordinaten'"},
+    {"name": "naam", "line": 402, "scope": "class", "value_preview": "'Schatkaart'"},
+    {"name": "spiek_kop", "line": 403, "scope": "class", "value_preview": "'COÖRDINATEN'"},
+    {
+     "name": "omschrijving",
+     "line": 404,
+     "scope": "class",
+     "value_preview": "'coördinaten: waar ligt de schat?'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 405,
+     "scope": "class",
+     "value_preview": "{'coord_omgewisseld': 'kolom en rij (x en y) omgewisseld', …"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_kaart",
+     "qualname": "Coordinaten.maak_kaart",
+     "kind": "method",
+     "lines": [408, 411],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes the map: an axes system (the leerlijn's size) or a lettered grid.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Kaart", "lines": [410, 411]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.maak_met", "lines": [415]}
+     ]
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Coordinaten.maak_met",
+     "kind": "method",
+     "lines": [413, 425],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a question to read the coordinate of the treasure or to place a cross at a coordinate.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [423, 425]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.maak_kaart", "lines": [415]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::_Meetkunde.soort", "lines": [414]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "kaart.naam",
+       "lines": [417],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "kaart.xs",
+       "lines": [416],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.xs"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "kaart.ys",
+       "lines": [416],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.ys"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Coordinaten.lees_vraag",
+     "kind": "method",
+     "lines": [427, 429],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a typed point into its name, or None.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::lees_coord", "lines": [428]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "v.model.naam",
+       "lines": [429],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Coordinaten.uitleg",
+     "kind": "method",
+     "lines": [431, 437],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "First the column (letter) then the row, with row 1 at the bottom; or first x then y.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::fmt_geheel", "lines": [434, 435]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Coordinaten.tip",
+     "kind": "method",
+     "lines": [439, 442],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint for the lettered map or the axes system.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Coordinaten.diagnose",
+     "kind": "method",
+     "lines": [444, 456],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises column and row (x and y) swapped and counting rows from the top.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::lees_coord", "lines": [448]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Schaal",
+   "qualname": "Schaal",
+   "lines": [465, 544],
+   "bases": ["_Meetkunde"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.meetkunde.schaal: map scale.",
+   "attributes": [
+    {"name": "id", "line": 466, "scope": "class", "value_preview": "'wiskunde.meetkunde.schaal'"},
+    {"name": "naam", "line": 467, "scope": "class", "value_preview": "'Schaal'"},
+    {"name": "spiek_kop", "line": 468, "scope": "class", "value_preview": "'SCHAAL'"},
+    {
+     "name": "omschrijving",
+     "line": 469,
+     "scope": "class",
+     "value_preview": "'kaart en werkelijkheid: 1 : 1000'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 470,
+     "scope": "class",
+     "value_preview": "{'schaal_niet_omgezet': 'cm niet omgezet naar m of km (of o…"
+    },
+    {"name": "klad", "line": 492, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Schaal.maak_met",
+     "kind": "method",
+     "lines": [473, 490],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a scale question (1 : n): real length from the map, map length from real life, or the scale itself; units in metres or kilometres.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [486, 489]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [481, 485, 488]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::_Meetkunde.soort", "lines": [474]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::schaal_tekst", "lines": [482, 487, 490]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [478, 487, 490], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Schaal.oplossing",
+     "kind": "method",
+     "lines": [494, 503],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines: convert to cm, multiply or divide by the scale.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [498]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [500, 502, 503]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [498], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees",
+     "qualname": "Schaal.lees",
+     "kind": "method",
+     "lines": [505, 508],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a scale such as '1:500' (or just the number).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [508]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Schaal.uitleg",
+     "kind": "method",
+     "lines": [510, 522],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "What the scale means, the conversion to cm, and multiplying or dividing.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [514, 516, 517, 519, 520, 521, 522]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::schaal_tekst", "lines": [516, 522]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [514, 516, 517, 519, 520, 521, 522], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Schaal.tip",
+     "kind": "method",
+     "lines": [524, 525],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "1 : n means 1 cm on the map is n cm in real life.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [525]},
+      {"target": "leeravontuur/kern/wiskunde/meetkunde.py::schaal_tekst", "lines": [525]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [525], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Schaal.diagnose",
+     "kind": "method",
+     "lines": [527, 544],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises not converting cm to m or km, and dividing instead of multiplying (or the other way round).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [531], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "maak_figuur",
+   "qualname": "maak_figuur",
+   "kind": "function",
+   "lines": [34, 59],
+   "params": [
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "p", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een figuur op een rooster van p['rijen'] × p['kolommen'] vakjes.",
+   "explanation": "Makes a Figuur on the leerlijn's grid: rectangle, L-shape (a corner removed), staircase, or a right triangle (full squares plus half squares along the slope).",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Figuur", "lines": [41, 59]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".randint", ".random", "max", "min", "range", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Rooster.maak_met", "lines": [79, 81]}
+   ]
+  },
+  {
+   "name": "lees_coord",
+   "qualname": "lees_coord",
+   "kind": "function",
+   "lines": [384, 397],
+   "params": [
+    {"name": "kaart", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'C4', 'c 4', '(C, 4)' op de schatkaart, '(3, -2)' of '3 -2' in een assenstelsel → (x, y) of None.",
+   "explanation": "Reads 'C4', 'c 4' or '(C, 4)' on the treasure map, or '(3, -2)' or '3 -2' in an axes system, into (x, y), or None when outside the map.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "kaart.xs",
+     "lines": [397],
+     "candidates": ["leeravontuur/kern/modellen.py::Kaart.xs"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "kaart.ys",
+     "lines": [397],
+     "candidates": ["leeravontuur/kern/modellen.py::Kaart.ys"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", "int", "leeravontuur.kern.modellen.KOLOMLETTERS.find", "re.fullmatch"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.diagnose", "lines": [448]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Coordinaten.lees_vraag", "lines": [428]},
+    {"caller": "tests/test_meetkunde.py::TestModellen.test_kaart", "lines": [34, 35, 36, 39, 40, 41]}
+   ]
+  },
+  {
+   "name": "schaal_tekst",
+   "qualname": "schaal_tekst",
+   "kind": "function",
+   "lines": [461, 462],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A scale as '1 : 1000'.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [462]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [462], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.maak_met", "lines": [482, 487, 490]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.tip", "lines": [525]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.uitleg", "lines": [516, 522]}
+   ]
+  }
+ ]
+}

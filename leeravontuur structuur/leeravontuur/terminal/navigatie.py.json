@@ -1,0 +1,477 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/navigatie.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 151,
+ "source_sha256": "23e9f6c00cbc454a2ee855eeb0485d8b411367240fe7ca3213f6fc109f38f44f",
+ "purpose": "The curriculum menus: main menu > subject > domain > topic with a key per topic, and the cheat-sheet menus.",
+ "details": "Everything comes from terminal/curriculum; no names of subjects, domains or topics appear here. A mode is a key on the highlighted topic, never a menu: Enter starts the first mode the topic has, V free practice, S cheat sheet, T 60 s, Z 20 sums, H table exercise; a key that does not apply does nothing. The footer shows only the keys of the highlighted topic and is clickable. After an exercise or cheat sheet you are back on the same topic. The 60-second mode only shows when the parent left the timer visible.",
+ "module_docstring": "De menu's van het leerplan: Vak → Domein → Onderwerp + toets, en de Spiekbrieven.",
+ "imports": [
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["TerugNaar"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "tests/test_stabiliteit.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "_SpiekKeuze",
+   "qualname": "_SpiekKeuze",
+   "lines": [112, 115],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "A menu entry for a domain in the cheat-sheet menu.",
+   "attributes": [
+    {"name": "label", "line": 113, "scope": "class", "value_preview": null},
+    {"name": "uitleg", "line": 114, "scope": "class", "value_preview": null},
+    {"name": "domein", "line": 115, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen", "lines": [125]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "modi_voor",
+   "qualname": "modi_voor",
+   "kind": "function",
+   "lines": [12, 14],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De modi die dit kind nu kan kiezen: 60 seconden alleen als de ouder de timer zichtbaar liet.",
+   "explanation": "The modes this child can choose now (60 seconds only when the timer is visible).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::start", "lines": [38]},
+    {"caller": "leeravontuur/terminal/navigatie.py::toetsen_voor", "lines": [23]}
+   ]
+  },
+  {
+   "name": "enter_modus",
+   "qualname": "enter_modus",
+   "kind": "function",
+   "lines": [17, 18],
+   "params": [
+    {"name": "modi", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The mode Enter starts: the first of the entry modes the topic has.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["iter", "next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::start", "lines": [39]},
+    {"caller": "leeravontuur/terminal/navigatie.py::toetsen_voor", "lines": [24]}
+   ]
+  },
+  {
+   "name": "toetsen_voor",
+   "qualname": "toetsen_voor",
+   "kind": "function",
+   "lines": [21, 30],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(toets, knoptekst)] voor de voetregel: Enter, V, S, T, Z, H (alleen wat dit onderwerp heeft).",
+   "explanation": "[(key, button text)] for the footer: Enter, V, S, T, Z, H (only what the topic has).",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::enter_modus", "lines": [24]},
+    {"target": "leeravontuur/terminal/navigatie.py::modi_voor", "lines": [23]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::domein", "lines": [86]}
+   ]
+  },
+  {
+   "name": "start",
+   "qualname": "start",
+   "kind": "function",
+   "lines": [33, 40],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null},
+    {"name": "toets", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat er gebeurt na een toets op een onderwerp (kr eindigt op het onderwerp).",
+   "explanation": "What happens after a key on a topic: opens the cheat sheet or runs the mode's starter function.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::enter_modus", "lines": [39]},
+    {"target": "leeravontuur/terminal/navigatie.py::modi_voor", "lines": [38]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "onderwerp.spiek.toon",
+     "lines": [36],
+     "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["next"],
+   "dynamic": [
+    {"kind": "subscript-call", "line": 40, "expr": "modi[modus]"}
+   ],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::domein", "lines": [90]}
+   ]
+  },
+  {
+   "name": "kort",
+   "qualname": "kort",
+   "kind": "function",
+   "lines": [43, 47],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "breedte", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Inkorten op een woordgrens (met …) zodat de grijze uitleg niet midden in een woord stopt.",
+   "explanation": "Shortens a text at a word boundary with an ellipsis so the grey explanation does not stop mid-word.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::opties_met_uitleg", "lines": [54]}
+   ]
+  },
+  {
+   "name": "opties_met_uitleg",
+   "qualname": "opties_met_uitleg",
+   "kind": "function",
+   "lines": [50, 54],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "items", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "[(label, uitleg)] met de uitleg ingekort tot wat naast de labels past (zoals Scherm.menu ze zet).",
+   "explanation": "[(label, explanation)] with the explanation shortened to what fits next to the labels.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::kort", "lines": [54]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.s.maat",
+     "lines": [53],
+     "candidates": [
+      "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+      "leeravontuur/terminal/scherm.py::Scherm.maat",
+      "leeravontuur/venster/klokvenster.py::Venster.maat"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": ["len", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_menu", "lines": [62]},
+    {"caller": "leeravontuur/terminal/navigatie.py::domein", "lines": [85]}
+   ]
+  },
+  {
+   "name": "_menu",
+   "qualname": "_menu",
+   "kind": "function",
+   "lines": [57, 69],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "items", "kind": "positional", "default": null, "annotation": null},
+    {"name": "open_item", "kind": "positional", "default": null, "annotation": null},
+    {"name": "grijs", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een gewoon keuzemenu (vak of domein) dat na een keuze op dezelfde plek terugkomt. grijs = {index: melding}.",
+   "explanation": "A plain choice menu (subject or domain) that comes back at the same place after a choice; handles going back through TerugNaar.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::opties_met_uitleg", "lines": [62]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.s.menu",
+     "lines": [62],
+     "candidates": [
+      "leeravontuur/terminal/scherm.py::Scherm.menu",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+     ],
+     "candidates_count": 2
+    },
+    {"expr": "open_item", "lines": [66], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen", "lines": [136]},
+    {"caller": "leeravontuur/terminal/navigatie.py::spiekbrieven", "lines": [103]},
+    {"caller": "leeravontuur/terminal/navigatie.py::vak", "lines": [75]}
+   ]
+  },
+  {
+   "name": "vak",
+   "qualname": "vak",
+   "kind": "function",
+   "lines": [72, 75],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vak_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoofdmenu › Vak: de domeinen. Een domein zonder onderwerpen (nog niet gebouwd) staat er grijs.",
+   "explanation": "Main menu > subject: the domains; a domain without topics is grey with 'komt binnenkort'.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::_menu", "lines": [75]},
+    {"target": "leeravontuur/terminal/navigatie.py::domein", "lines": [75]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [232]},
+    {"caller": "leeravontuur/terminal/app.py::App.kiezen", "lines": [359]}
+   ]
+  },
+  {
+   "name": "domein",
+   "qualname": "domein",
+   "kind": "function",
+   "lines": [78, 93],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vak › Domein: de onderwerpen, met per onderwerp de toetsen in de voetregel.",
+   "explanation": "Subject > domain: the topics, with per-topic keys in the footer.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::opties_met_uitleg", "lines": [85]},
+    {"target": "leeravontuur/terminal/navigatie.py::start", "lines": [90]},
+    {"target": "leeravontuur/terminal/navigatie.py::toetsen_voor", "lines": [86]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.s.menu",
+     "lines": [84],
+     "candidates": [
+      "leeravontuur/terminal/scherm.py::Scherm.menu",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::vak", "lines": [75]}
+   ]
+  },
+  {
+   "name": "spiekbrieven",
+   "qualname": "spiekbrieven",
+   "kind": "function",
+   "lines": [96, 103],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoofdmenu › Spiekbrieven › (Vak ›) Domein › de spiekbrief (#20). \"Welk vak?\" valt weg zolang er één vak is; een domein met één spiekbrief opent die meteen, met meer kies je er nog een (elke titel één keer).",
+   "explanation": "Main menu > cheat sheets: skips 'Welk vak?' when only one subject has cheat sheets.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::_menu", "lines": [103]},
+    {"target": "leeravontuur/terminal/navigatie.py::_spiek_domeinen", "lines": [101, 103]},
+    {"target": "leeravontuur/terminal/navigatie.py::brieven_van", "lines": [99]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["any", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [236]}
+   ]
+  },
+  {
+   "name": "brieven_van",
+   "qualname": "brieven_van",
+   "kind": "function",
+   "lines": [106, 108],
+   "params": [
+    {"name": "domein_", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De spiekbrieven van een domein, elke titel één keer, in de volgorde van de onderwerpen.",
+   "explanation": "The cheat sheets of a domain, each title once, in topic order.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["list"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen", "lines": [121]},
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen.open_domein", "lines": [128]},
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_lijst", "lines": [140]},
+    {"caller": "leeravontuur/terminal/navigatie.py::spiekbrieven", "lines": [99]}
+   ]
+  },
+  {
+   "name": "_spiek_domeinen",
+   "qualname": "_spiek_domeinen",
+   "kind": "function",
+   "lines": [118, 136],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vak_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The domains with cheat sheets of a subject; one domain with one sheet opens at once.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::_SpiekKeuze", "lines": [125]},
+    {"target": "leeravontuur/terminal/navigatie.py::_menu", "lines": [136]},
+    {"target": "leeravontuur/terminal/navigatie.py::_spiek_domeinen.open_domein", "lines": [134]},
+    {"target": "leeravontuur/terminal/navigatie.py::brieven_van", "lines": [121]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::spiekbrieven", "lines": [101, 103]}
+   ]
+  },
+  {
+   "name": "open_domein",
+   "qualname": "_spiek_domeinen.open_domein",
+   "kind": "nested",
+   "lines": [127, 132],
+   "params": [
+    {"name": "keuze", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr_", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opens the cheat sheet of a chosen domain, or the list when there are several.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::_spiek_lijst", "lines": [132]},
+    {"target": "leeravontuur/terminal/navigatie.py::brieven_van", "lines": [128]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "brieven[0].toon",
+     "lines": [130],
+     "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen", "lines": [134]}
+   ]
+  },
+  {
+   "name": "_spiek_lijst",
+   "qualname": "_spiek_lijst",
+   "kind": "function",
+   "lines": [139, 151],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein_", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A menu of the cheat sheets of one domain.",
+   "calls": [
+    {"target": "leeravontuur/terminal/navigatie.py::brieven_van", "lines": [140]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.s.menu",
+     "lines": [144],
+     "candidates": [
+      "leeravontuur/terminal/scherm.py::Scherm.menu",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "brieven[k].toon",
+     "lines": [148],
+     "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.toon"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/navigatie.py::_spiek_domeinen.open_domein", "lines": [132]}
+   ]
+  }
+ ]
+}

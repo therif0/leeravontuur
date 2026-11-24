@@ -1,0 +1,178 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/foutlog.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 54,
+ "source_sha256": "3831a805a9266ea20c6df040fcee04b9de063f30ee15bf90408679219304479b",
+ "purpose": "The error log: unexpected exceptions are written to fouten.log in the data folder so a parent can pass them on.",
+ "details": "Writing to the log must never itself raise (the broad except returns False). The file is kept small: when it passes MAX characters the oldest entries are cut off at an entry boundary. Used by App.oeps in the terminal (the safety net that returns to the main menu) and by the parent area to show or count the entries.",
+ "module_docstring": "Het foutenlogboek: onverwachte fouten komen in `fouten.log` in de datamap, zodat een ouder ze kan doorgeven.",
+ "imports": [
+  {"module": "platform", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "traceback", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur",
+   "names": ["NAAM", "VERSIE"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok", "paden"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py", "leeravontuur/kern/paden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/__main__.py",
+  "leeravontuur/kern/onderwerp.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "leeravontuur/terminal/venster.py",
+  "tests/test_stabiliteit.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "'fouten.log'",
+   "explanation": "File name of the log."
+  },
+  {
+   "name": "MAX",
+   "line": 14,
+   "value_type": "Constant",
+   "value_preview": "200000",
+   "explanation": "Maximum size of the log in characters."
+  },
+  {
+   "name": "SCHEIDING",
+   "line": 15,
+   "value_type": "Constant",
+   "value_preview": "'=== '",
+   "explanation": "Marker that starts every entry; used to split the file."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "pad",
+   "qualname": "pad",
+   "kind": "function",
+   "lines": [18, 19],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Path of fouten.log inside the data folder.",
+   "calls": [
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [19]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [195]},
+    {"caller": "leeravontuur/__main__.py::toon_fouten", "lines": [92]},
+    {"caller": "leeravontuur/kern/foutlog.py::meldingen", "lines": [47]},
+    {"caller": "leeravontuur/kern/foutlog.py::schrijf", "lines": [30]},
+    {"caller": "leeravontuur/terminal/app.py::App.oeps", "lines": [289]}
+   ]
+  },
+  {
+   "name": "schrijf",
+   "qualname": "schrijf",
+   "kind": "function",
+   "lines": [22, 41],
+   "params": [
+    {"name": "waar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "fout", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "extra", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bewaart een melding. waar = waar het gebeurde (bv. de broodkruimel), fout = de exception.",
+   "explanation": "Appends an entry: a header line (time, program name and version, Python and OS versions), 'waar: ...', optional extra text and the formatted traceback of the exception; trims the file to the last MAX characters starting at an entry boundary; returns False instead of raising on any error.",
+   "calls": [
+    {"target": "leeravontuur/kern/foutlog.py::pad", "lines": [30]},
+    {"target": "leeravontuur/kern/klok.py::iso", "lines": [25]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".exists",
+    ".mkdir",
+    ".read_text",
+    ".write_text",
+    "len",
+    "platform.python_version",
+    "platform.release",
+    "platform.system",
+    "traceback.format_exception",
+    "type"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [180]},
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling", "lines": [204]},
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.oplossing_of_niets", "lines": [102]},
+    {"caller": "leeravontuur/terminal/app.py::App.oeps", "lines": [280]},
+    {"caller": "leeravontuur/terminal/venster.py::Klokvenster._mislukt", "lines": [88]},
+    {"caller": "leeravontuur/terminal/venster.py::Klokvenster.volgende", "lines": [184]}
+   ]
+  },
+  {
+   "name": "meldingen",
+   "qualname": "meldingen",
+   "kind": "function",
+   "lines": [44, 50],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Alle bewaarde meldingen (oudste eerst), elk als tekst.",
+   "explanation": "Reads the log and returns all entries (oldest first) as text blocks starting with the separator.",
+   "calls": [
+    {"target": "leeravontuur/kern/foutlog.py::pad", "lines": [47]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".read_text"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::toon_fouten", "lines": [85]},
+    {"caller": "leeravontuur/kern/foutlog.py::aantal", "lines": [54]},
+    {
+     "caller": "tests/test_stabiliteit.py::TestVangnet.test_fout_in_een_scherm_gaat_terug_naar_het_menu",
+     "lines": [191, 192]
+    }
+   ]
+  },
+  {
+   "name": "aantal",
+   "qualname": "aantal",
+   "kind": "function",
+   "lines": [53, 54],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Number of stored entries.",
+   "calls": [
+    {"target": "leeravontuur/kern/foutlog.py::meldingen", "lines": [54]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.fouten_info", "lines": [206]},
+    {"caller": "tests/test_stabiliteit.py::TestGeneratoren.test_herhaling_met_vreemde_data", "lines": [99]}
+   ]
+  }
+ ]
+}

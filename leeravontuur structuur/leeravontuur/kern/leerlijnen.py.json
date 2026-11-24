@@ -1,0 +1,187 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/leerlijnen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 93,
+ "source_sha256": "c20a523d09036e9cb6ff88639b2ae4eb1f4c191c21983428e8e08dcd881de9da",
+ "purpose": "Loads and validates the learning lines: per skill the parameters per school year, from inhoud/leerlijnen/.",
+ "details": "A leerlijn JSON names a skill, lists its parameters with a type, and gives values per school year. A missing year inherits from the nearest lower year (or the first higher one); a year with null means the skill is not offered then. Every load validates the file and raises LeerlijnFout with all problems, so a typo in the data fails loudly in tests rather than for the child. Loaded files are cached.",
+ "module_docstring": "Leerlijnen: per vaardigheid de parameters per leerjaar, als JSON in inhoud/leerlijnen/.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 16, "resolves_to": [], "internal": false},
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 18, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "leeravontuur/kern/onderwerp.py",
+  "leeravontuur/kern/wiskunde/eenheden.py",
+  "tests/test_leerlijnen.py",
+  "tests/test_taal_werkwoorden.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "MAP",
+   "line": 22,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent / 'inhoud' / 'leerlijnen'",
+   "explanation": "Folder inhoud/leerlijnen next to the kern package."
+  },
+  {
+   "name": "TYPES",
+   "line": 24,
+   "value_type": "Dict",
+   "value_preview": "{'int': int, 'getal': (int, float), 'bool': bool, 'tekst': str, 'lijs…",
+   "explanation": "Parameter type names allowed in a leerlijn mapped to Python types."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "LeerlijnFout",
+   "qualname": "LeerlijnFout",
+   "lines": [27, 28],
+   "bases": ["ValueError"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Error for a missing or invalid leerlijn.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/leerlijnen.py::laad", "lines": [69, 72]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "valideer",
+   "qualname": "valideer",
+   "kind": "function",
+   "lines": [31, 60],
+   "params": [
+    {"name": "data", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Geeft een lijst met fouten terug (leeg = in orde).",
+   "explanation": "Checks the structure of a leerlijn dict (required fields, known parameter types, known years, every year has exactly the declared parameters with the right type, no bool where a number is expected) and returns a list of error texts (empty = fine).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/leerlijnen.py::laad", "lines": [70]},
+    {"caller": "tests/test_leerlijnen.py::TestLeerlijnen.test_valideer_vindt_fouten", "lines": [20, 22]}
+   ]
+  },
+  {
+   "name": "laad",
+   "qualname": "laad",
+   "kind": "function",
+   "lines": [64, 73],
+   "params": [
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "Loads and validates inhoud/leerlijnen/<skill>.json (cached); raises LeerlijnFout when it is missing or invalid.",
+   "calls": [
+    {"target": "leeravontuur/kern/leerlijnen.py::LeerlijnFout", "lines": [69, 72]},
+    {"target": "leeravontuur/kern/leerlijnen.py::valideer", "lines": [70]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/handleiding.py::leerlijn_tabel", "lines": [215]},
+    {"caller": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [83]},
+    {"caller": "tests/test_leerlijnen.py::TestLeerlijnen.test_alle_leerlijnen_geldig", "lines": [12]}
+   ]
+  },
+  {
+   "name": "alle",
+   "qualname": "alle",
+   "kind": "function",
+   "lines": [76, 78],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Namen van alle vaardigheden met een leerlijn.",
+   "explanation": "Sorted ids of all skills that have a leerlijn file.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".glob", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_leerlijnen.py::TestLeerlijnen.test_alle_leerlijnen_geldig", "lines": [8]}
+   ]
+  },
+  {
+   "name": "parameters",
+   "qualname": "parameters",
+   "kind": "function",
+   "lines": [81, 93],
+   "params": [
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De parameters van deze vaardigheid voor dit leerjaar, of None als ze er niet aangeboden wordt.",
+   "explanation": "The parameters of a skill for a school year, with the inheritance rule for missing years; None when the skill is not offered in that year.",
+   "calls": [
+    {"target": "leeravontuur/kern/leerlijnen.py::laad", "lines": [83]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["leeravontuur.kern.leerjaren.LEERJAREN.index", "reversed"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.parameters", "lines": [166]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::eenheden_voor", "lines": [295]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [322, 323]},
+    {"caller": "tests/test_leerlijnen.py::TestLeerlijnen.test_alle_leerlijnen_geldig", "lines": [15]},
+    {"caller": "tests/test_leerlijnen.py::TestLeerlijnen.test_overerving", "lines": [31]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestElkOnderwerpInElkLeerjaar.test_de_vragen", "lines": [223]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_stappen_per_leerjaar",
+     "lines": [164, 165, 166, 168]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "lines": [100]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_geen_weggelaten_lv_op_makkelijk_en_normaal",
+     "lines": [141, 142]
+    }
+   ]
+  }
+ ]
+}

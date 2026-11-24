@@ -1,0 +1,431 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_avatar.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 129,
+ "source_sha256": "4639c29f2606afb8784df223ba086083b705d9bc7219d63b9f9f7d9d2590c858",
+ "purpose": "Tests the avatar parts, the points rules and the avatar screens.",
+ "details": "TestAvatar checks every combination of parts draws, face anchors lie on the body, expressions differ, invalid configs are repaired and the buddy reactions; TestPunten checks the points rules (kern/punten) and the effect of a Sessie on the balance; TestSchermen plays a perfect series and the avatar hub on the fake screen.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "itertools", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["punten"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/punten.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {"module": "curses", "names": [], "alias": null, "line": 124, "resolves_to": [], "internal": false},
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm", "naar"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["re.compile", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "KLEUR",
+   "line": 18,
+   "value_type": "Call",
+   "value_preview": "re.compile('#[0-9a-f]{6}')",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestAvatar",
+   "qualname": "TestAvatar",
+   "lines": [21, 67],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Avatar data tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_combinaties",
+     "qualname": "TestAvatar.test_alle_combinaties",
+     "kind": "method",
+     "lines": [22, 33],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws every combination of shape, eyes, ears, hair and accessory without error and with a body of the right size.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [23]},
+      {"target": "leeravontuur/kern/avatar.py::teken", "lines": [28]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", ".fullmatch", "itertools.product", "len", "list"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gezicht_op_het_lijf",
+     "qualname": "TestAvatar.test_gezicht_op_het_lijf",
+     "kind": "method",
+     "lines": [35, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Ogen, neus en mond moeten bij elke vorm op het lijf staan (de ankers kloppen).",
+     "explanation": "For every body shape the eye, nose and mouth anchors fall on body pixels.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [37]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", "enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_uitdrukkingen_verschillen",
+     "qualname": "TestAvatar.test_uitdrukkingen_verschillen",
+     "kind": "method",
+     "lines": [51, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Different expressions draw different pictures.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [52]},
+      {"target": "leeravontuur/kern/avatar.py::teken", "lines": [52]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geldig",
+     "qualname": "TestAvatar.test_geldig",
+     "kind": "method",
+     "lines": [58, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A config with unknown parts is repaired to the defaults for those layers; None gives the default config.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [59, 61]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_reactie",
+     "qualname": "TestAvatar.test_reactie",
+     "kind": "method",
+     "lines": [63, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The buddy reaction: proud after a streak, happy after one correct, and a hint about columns for the 'factor_10' thinking error.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::reactie", "lines": [64, 65, 66, 67]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestPunten",
+   "qualname": "TestPunten",
+   "lines": [70, 91],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Points rule tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_regels",
+     "qualname": "TestPunten.test_regels",
+     "kind": "method",
+     "lines": [71, 79],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "voor_antwoord awards 10 points for a correct answer, 5 for a correct one after a second chance, and 20 for a harder level.",
+     "calls": [
+      {"target": "leeravontuur/kern/punten.py::voor_antwoord", "lines": [72, 73, 74, 75, 76, 77, 78]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_sessie_en_op_rij",
+     "qualname": "TestPunten.test_sessie_en_op_rij",
+     "kind": "method",
+     "lines": [81, 91],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A Sessie stores points per correct answer, tracks the streak and awards bonuses; the balance in storage matches.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [82]},
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [84]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [83],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_log",
+       "lines": [91],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_log"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [90],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [86, 88],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [94, 120],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Avatar screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_perfecte_reeks_met_punten",
+     "qualname": "TestSchermen.test_perfecte_reeks_met_punten",
+     "kind": "method",
+     "lines": [95, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plays a series of ten unit-conversion questions all correct and checks the perfect-series bonus and the points text.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [97]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.punten_saldo",
+       "lines": [105],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [102],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertTrue",
+      ".ergens",
+      ".opslag",
+      "decimal.Decimal",
+      "range",
+      "str",
+      "test_schermen.naar",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_mijn_avatar",
+     "qualname": "TestSchermen.test_mijn_avatar",
+     "kind": "method",
+     "lines": [110, 115],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The 'Mijn avatar' hub shows the shop entry and the points.",
+     "calls": [
+      {"target": "tests/test_avatar.py::curses_rechts", "lines": [111]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [111],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_avatar_uit",
+     "qualname": "TestSchermen.test_avatar_uit",
+     "kind": "method",
+     "lines": [117, 120],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With the avatar switched off no star/points line is shown.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [119],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertFalse", ".ergens", ".opslag"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "curses_rechts",
+   "qualname": "curses_rechts",
+   "kind": "function",
+   "lines": [123, 125],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Returns the curses KEY_RIGHT code (helper so the import is local).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_avatar.py::TestSchermen.test_mijn_avatar", "lines": [111]}
+   ]
+  }
+ ]
+}

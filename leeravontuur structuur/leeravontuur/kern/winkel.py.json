@@ -1,0 +1,535 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/winkel.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 175,
+ "source_sha256": "cf0b978c952179e23657d0823269b089936175adf673a71c4b48d63d0464a60c",
+ "purpose": "The shop: buying avatar items with points, with a small sum at each purchase, plus delivery of 'packages' and wearing items.",
+ "details": "A correct sum gives the item at once. A wrong sum gives one more chance, then a mini-lesson and the item anyway (the points are paid) but with a playful penalty the parent chose: the package arrives only after 10 correct answers, or after 15 minutes of practice, or 5 points shipping cost, or nothing. From the 5th year the sum can include a percentage discount. The catalogue (prices, free items) is data in inhoud/avatar/winkel.json; ownership and delivery state live in Opslag.",
+ "module_docstring": "De winkel: items voor de avatar kopen met punten, met een kleine rekenvraag bij elke aankoop.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py", "leeravontuur/terminal/schermen/winkel.py", "tests/test_winkel.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "dataclasses.dataclass", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 17,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent / 'inhoud' / 'avatar' / 'winke…",
+   "explanation": "Path of the shop catalogue JSON."
+  },
+  {
+   "name": "LAGEN",
+   "line": 18,
+   "value_type": "Dict",
+   "value_preview": "{'vorm': 'Vormen', 'kleur': 'Kleuren', 'ogen': 'Ogen', 'oren': 'Oren'…",
+   "explanation": "Avatar layers and their shop headings."
+  },
+  {
+   "name": "PAKJE_JUIST",
+   "line": 20,
+   "value_type": "Constant",
+   "value_preview": "10",
+   "explanation": "Correct answers needed before a penalty package arrives."
+  },
+  {
+   "name": "PAKJE_MINUTEN",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "15",
+   "explanation": "Minutes of practice needed in the time penalty."
+  },
+  {
+   "name": "VERZENDKOSTEN",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "5",
+   "explanation": "Points charged in the shipping-cost penalty."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Item",
+   "qualname": "Item",
+   "lines": [26, 30],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "",
+   "explanation": "Frozen dataclass of one shop item: layer, key, name and price.",
+   "attributes": [
+    {"name": "laag", "line": 27, "scope": "class", "value_preview": null},
+    {"name": "sleutel", "line": 28, "scope": "class", "value_preview": null},
+    {"name": "naam", "line": 29, "scope": "class", "value_preview": null},
+    {"name": "prijs", "line": 30, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/winkel.py::catalogus", "lines": [46, 48]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Challenge",
+   "qualname": "Challenge",
+   "lines": [70, 74],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "A sum asked at a purchase: question text, correct answer, amount actually paid and the lesson lines for a wrong answer.",
+   "attributes": [
+    {"name": "vraag", "line": 71, "scope": "class", "value_preview": null},
+    {"name": "antwoord", "line": 72, "scope": "class", "value_preview": null},
+    {"name": "betalen", "line": 73, "scope": "class", "value_preview": null},
+    {"name": "lesje", "line": 74, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/winkel.py::challenge", "lines": [102, 109]},
+    {"caller": "leeravontuur/kern/winkel.py::spaar_vraag", "lines": [115]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_ben_je_zeker_en_pakje", "lines": [117]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kopen_met_juiste_som", "lines": [108]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "_data",
+   "qualname": "_data",
+   "kind": "function",
+   "lines": [34, 35],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=1)"],
+   "docstring": "",
+   "explanation": "Loads and caches inhoud/avatar/winkel.json.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::catalogus", "lines": [39]}
+   ]
+  },
+  {
+   "name": "catalogus",
+   "qualname": "catalogus",
+   "kind": "function",
+   "lines": [38, 49],
+   "params": [
+    {"name": "laag", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "All shop items (optionally of one layer) as Item objects: the free ones first per layer, then the priced ones, with names from the avatar parts.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::opties", "lines": [44]},
+    {"target": "leeravontuur/kern/winkel.py::Item", "lines": [46, 48]},
+    {"target": "leeravontuur/kern/winkel.py::_data", "lines": [39]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::in_kast", "lines": [58]},
+    {"caller": "leeravontuur/kern/winkel.py::zoek", "lines": [53]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [134]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.winkel", "lines": [120]},
+    {"caller": "tests/test_winkel.py::TestCatalogus.test_alles_bestaat", "lines": [18, 23]}
+   ]
+  },
+  {
+   "name": "zoek",
+   "qualname": "zoek",
+   "kind": "function",
+   "lines": [52, 53],
+   "params": [
+    {"name": "laag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The Item with this layer and key, or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/winkel.py::catalogus", "lines": [53]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [158]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [59]},
+    {"caller": "tests/test_winkel.py::TestCatalogus.test_alles_bestaat", "lines": [22]},
+    {"caller": "tests/test_winkel.py::TestKopen.setUp", "lines": [57]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kast_en_combinatie", "lines": [137]}
+   ]
+  },
+  {
+   "name": "in_kast",
+   "qualname": "in_kast",
+   "kind": "function",
+   "lines": [56, 60],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{(laag, sleutel)} van alles wat het kind mag dragen (gratis + gekocht en geleverd).",
+   "explanation": "Set of (layer, key) the child may wear: all free items plus bought items that have been delivered.",
+   "calls": [
+    {"target": "leeravontuur/kern/winkel.py::catalogus", "lines": [58]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.bezit",
+     "lines": [59],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bezit"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::draag", "lines": [169]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.combinaties", "lines": [345]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [276]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [208]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [140]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_juist_meteen_in_de_kast", "lines": [67]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_onderweg", "lines": [75, 81]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_verzendkosten", "lines": [93]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_ben_je_zeker_en_pakje", "lines": [123]}
+   ]
+  },
+  {
+   "name": "gekocht",
+   "qualname": "gekocht",
+   "kind": "function",
+   "lines": [63, 64],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Dict (layer, key) -> ownership record of everything the child bought, delivered or not.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.bezit",
+     "lines": [64],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bezit"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [208]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [140]}
+   ]
+  },
+  {
+   "name": "_lesje_aftrekken",
+   "qualname": "_lesje_aftrekken",
+   "kind": "function",
+   "lines": [77, 87],
+   "params": [
+    {"name": "a", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The mini-lesson lines for a subtraction a - b (split b into tens and units when useful, or count back).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::challenge", "lines": [108, 110]}
+   ]
+  },
+  {
+   "name": "challenge",
+   "qualname": "challenge",
+   "kind": "function",
+   "lines": [90, 110],
+   "params": [
+    {"name": "saldo", "kind": "positional", "default": null, "annotation": null},
+    {"name": "prijs", "kind": "positional", "default": null, "annotation": null},
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De rekenvraag als het kind genoeg punten heeft. Hoger leerjaar → soms met korting (procent).",
+   "explanation": "Makes the sum for a purchase from balance and price: from year 5 up, half the time with a discount in percent (only discounts that give a whole number of points); returns a Challenge with the question, the right answer, what is really paid and the lesson.",
+   "calls": [
+    {"target": "leeravontuur/kern/winkel.py::Challenge", "lines": [102, 109]},
+    {"target": "leeravontuur/kern/winkel.py::_lesje_aftrekken", "lines": [108, 110]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", ".random", "leeravontuur.kern.leerjaren.LEERJAREN.index"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [230]},
+    {"caller": "tests/test_winkel.py::TestChallenge.test_aftrekken_in_het_4de", "lines": [30]},
+    {"caller": "tests/test_winkel.py::TestChallenge.test_korting_vanaf_het_5de", "lines": [38]}
+   ]
+  },
+  {
+   "name": "spaar_vraag",
+   "qualname": "spaar_vraag",
+   "kind": "function",
+   "lines": [113, 118],
+   "params": [
+    {"name": "saldo", "kind": "positional", "default": null, "annotation": null},
+    {"name": "prijs", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Als het kind te weinig punten heeft: hoeveel moet je nog sparen?",
+   "explanation": "The question for a child with too few points: how many points still to save, with a short explanation.",
+   "calls": [
+    {"target": "leeravontuur/kern/winkel.py::Challenge", "lines": [115]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [220]},
+    {"caller": "tests/test_winkel.py::TestChallenge.test_sparen", "lines": [48]}
+   ]
+  },
+  {
+   "name": "koop",
+   "qualname": "koop",
+   "kind": "function",
+   "lines": [123, 135],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "item", "kind": "positional", "default": null, "annotation": null},
+    {"name": "betalen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "challenge_juist", "kind": "positional", "default": null, "annotation": null},
+    {"name": "straf", "kind": "positional", "default": "'pakje'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Betaalt en zet het item in de kast (of onderweg). Geeft de levering (None = meteen).",
+   "explanation": "Pays for an item (logs the points), applies the penalty when the sum was wrong (a delivery condition, or extra shipping cost), stores ownership and returns the delivery dict (None = delivered at once).",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.punten_bij",
+     "lines": [125, 133],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.zet_bezit",
+     "lines": [134],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_bezit"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [241]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_juist_meteen_in_de_kast", "lines": [65]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_na_oefentijd", "lines": [84]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_onderweg", "lines": [73]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_verzendkosten", "lines": [91]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kast_en_combinatie", "lines": [137]}
+   ]
+  },
+  {
+   "name": "voortgang",
+   "qualname": "voortgang",
+   "kind": "function",
+   "lines": [138, 144],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "bezit", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(gedaan, nodig, eenheid) voor een pakje dat onderweg is.",
+   "explanation": "(done, needed, unit) for a package still on its way, counting correct answers or minutes practised since the purchase.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.sinds",
+     "lines": [140],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sinds"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["min", "round"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [155]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [60]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [214]}
+   ]
+  },
+  {
+   "name": "onderweg",
+   "qualname": "onderweg",
+   "kind": "function",
+   "lines": [147, 148],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Ownership records of items not yet delivered.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.bezit",
+     "lines": [148],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bezit"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [154]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [58]},
+    {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_ben_je_zeker_en_pakje", "lines": [124]}
+   ]
+  },
+  {
+   "name": "lever_pakjes",
+   "qualname": "lever_pakjes",
+   "kind": "function",
+   "lines": [151, 161],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Levert pakjes waarvoor genoeg geoefend werd. Geeft de items die nu aankomen.",
+   "explanation": "Delivers every package whose condition is met and returns the items that arrive now.",
+   "calls": [
+    {"target": "leeravontuur/kern/winkel.py::onderweg", "lines": [154]},
+    {"target": "leeravontuur/kern/winkel.py::voortgang", "lines": [155]},
+    {"target": "leeravontuur/kern/winkel.py::zoek", "lines": [158]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.lever",
+     "lines": [157],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.lever"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [223]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_na_oefentijd", "lines": [86, 88]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_onderweg", "lines": [78, 80]}
+   ]
+  },
+  {
+   "name": "draag",
+   "qualname": "draag",
+   "kind": "function",
+   "lines": [164, 174],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "laag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Trekt een item aan (alleen als het in de kast zit). None = uittrekken (haar, hoed, accessoire).",
+   "explanation": "Makes the child wear an item (only if it is in the cupboard) or take a layer off (hair, hat, accessory); stores the avatar config; returns whether it worked.",
+   "calls": [
+    {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [166]},
+    {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [169]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.avatar",
+     "lines": [166],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.bewaar_avatar",
+     "lines": [173],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_avatar"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.combinaties", "lines": [348]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [321]},
+    {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [210, 248]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_juist_meteen_in_de_kast", "lines": [68, 70]},
+    {"caller": "tests/test_winkel.py::TestKopen.test_pakje_onderweg", "lines": [76]}
+   ]
+  }
+ ]
+}

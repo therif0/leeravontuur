@@ -1,0 +1,134 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/feedback.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 42,
+ "source_sha256": "af490bf1e10abe211dc6b699f4b50cddc8b72eb0a6f611e2b5318a42c930d287",
+ "purpose": "Stores and reads the remarks of the child or parent ('Zeg het ons') in a plain text file in the data folder.",
+ "details": "Nothing is sent anywhere: remarks go to feedback.txt as tab-separated lines (timestamp, name, where, program version, text) so a parent can pass the file on. Writing must never crash the program, so I/O errors return False or an empty list instead of raising. Used by the terminal feedback screen and by the parent area.",
+ "module_docstring": "Opmerkingen van het kind of de ouder (\"Zeg het ons\"), bewaard in `feedback.txt` in de datamap.",
+ "imports": [
+  {
+   "module": "leeravontuur",
+   "names": ["VERSIE"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok", "paden"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py", "leeravontuur/kern/paden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_ouder.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "BESTAND",
+   "line": 9,
+   "value_type": "Constant",
+   "value_preview": "'feedback.txt'",
+   "explanation": "File name of the remarks file."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "pad",
+   "qualname": "pad",
+   "kind": "function",
+   "lines": [12, 13],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Path of feedback.txt inside the data folder (paden.data_map).",
+   "calls": [
+    {"target": "leeravontuur/kern/paden.py::data_map", "lines": [13]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/feedback.py::bewaar", "lines": [22]},
+    {"caller": "leeravontuur/kern/feedback.py::lees", "lines": [34]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.opmerkingen", "lines": [239]}
+   ]
+  },
+  {
+   "name": "bewaar",
+   "qualname": "bewaar",
+   "kind": "function",
+   "lines": [16, 28],
+   "params": [
+    {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "waar", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bewaart één opmerking. Geeft True als het gelukt is.",
+   "explanation": "Appends one remark (whitespace collapsed) as a tab-separated line with timestamp, name, place in the program and version; returns True on success, False for empty text or an OS error.",
+   "calls": [
+    {"target": "leeravontuur/kern/feedback.py::pad", "lines": [22]},
+    {"target": "leeravontuur/kern/klok.py::iso", "lines": [25]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "p.open",
+     "lines": [24],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.open",
+      "leeravontuur/terminal/schermen/gemengd.py::Gemengd.open",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.open"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".mkdir", ".write"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [211]},
+    {"caller": "leeravontuur/terminal/app.py::App.zeg_het_ons", "lines": [303]}
+   ]
+  },
+  {
+   "name": "lees",
+   "qualname": "lees",
+   "kind": "function",
+   "lines": [31, 42],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Alle opmerkingen, nieuwste eerst: [{tijdstip, naam, waar, versie, tekst}].",
+   "explanation": "Reads all remarks back as dicts (tijdstip, naam, waar, versie, tekst), newest first; lines that do not have exactly 5 fields are skipped, a missing file gives an empty list.",
+   "calls": [
+    {"target": "leeravontuur/kern/feedback.py::pad", "lines": [34]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "dict", "len", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu", "lines": [217]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.opmerkingen", "lines": [237]},
+    {
+     "caller": "tests/test_ouder.py::TestZegHetOns.test_leeg_bewaart_niets_en_stoppen_met_een_cijfer",
+     "lines": [215]
+    },
+    {"caller": "tests/test_ouder.py::TestZegHetOns.test_opmerking_bewaren_en_lezen", "lines": [204]}
+   ]
+  }
+ ]
+}

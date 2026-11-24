@@ -1,0 +1,24 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/voorstel-0.21.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 359,
+ "source_sha256": "790204ca8b33991d6a32f97c667daaa2ff92495cebc99f99ed5e41267ef8fe2a",
+ "purpose": "Mockups (drawings only) for version 0.21: a digital clock answer, the klad staying after checking, shorter route to cheat sheets, opening the cheat sheet from an exercise, place values above the grid, the place-value table after a mistake.",
+ "details": "Each wish shows what it is now, an 80×24 picture, a recommendation and what the father chooses; built afterwards in phases, one wish per phase and one PR each. Wish numbers (#21, #22, #20, #18) match feedback items referenced in code comments.",
+ "summary": "Proposal with 80×24 mockups for wishes #21 (digital clock answer box), #22 (klad stays after checking), #20 (cheat sheets: fewer clicks, and from within an exercise), #18 (place values over the grid) and a note on the place-value table; ends with how the work proceeds.",
+ "headings": [
+  {"level": 1, "text": "Voorstel 0.21: mockups (groep B)", "line": 1},
+  {"level": 2, "text": "1. Een digitaal klokje om op te antwoorden (#21)", "line": 11},
+  {"level": 2, "text": "2. Je klad blijft staan na het nakijken (#22)", "line": 65},
+  {"level": 2, "text": "3a. Spiekbrieven: minder ver klikken (#20)", "line": 105},
+  {"level": 2, "text": "3b. De spiekbrief vanuit de oefening (#20)", "line": 147},
+  {"level": 2, "text": "4. Plaatswaarden boven het rooster (#18)", "line": 218},
+  {"level": 2, "text": "5. De plaatswaarde-tabel na een fout (opmerking bij #20)", "line": 286},
+  {"level": 2, "text": "Hoe het verder gaat", "line": 355}
+ ],
+ "links": [],
+ "referenced_by": [],
+ "words": 1873
+}

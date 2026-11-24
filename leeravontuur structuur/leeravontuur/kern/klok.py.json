@@ -1,0 +1,191 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/klok.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 25,
+ "source_sha256": "fa176383310b8ff5caf2c8392c81b507a3fb0b5180a1fa5e8373a5c0a145ba7a",
+ "purpose": "The program's single source of time, which tests can freeze.",
+ "details": "All code that needs 'now' or today's date goes through this module (a golden rule in CLAUDE.md), so a test can call zet() with a fixed datetime and get reproducible results for streaks, dates in the log, days since last practice and so on.",
+ "module_docstring": "De tijd van het programma. Tests kunnen ze vastzetten met zet().",
+ "imports": [
+  {
+   "module": "datetime",
+   "names": ["datetime"],
+   "alias": null,
+   "line": 3,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [
+  "docs/tools/schermafdrukken.py",
+  "leeravontuur/kern/feedback.py",
+  "leeravontuur/kern/foutlog.py",
+  "leeravontuur/kern/herhaling.py",
+  "leeravontuur/kern/opslag.py",
+  "leeravontuur/kern/overzicht.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/reeks.py",
+  "leeravontuur/kern/selectie.py",
+  "leeravontuur/kern/slot.py",
+  "leeravontuur/kern/snelrekenen.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_herhaling.py",
+  "tests/test_opslag.py",
+  "tests/test_rapporten.py",
+  "tests/test_reeks.py",
+  "tests/test_stabiliteit.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "_vast",
+   "line": 5,
+   "value_type": "Constant",
+   "value_preview": "None",
+   "explanation": "The frozen time, or None when the clock runs normally."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "nu",
+   "qualname": "nu",
+   "kind": "function",
+   "lines": [8, 10],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Nu, in de lokale tijdzone.",
+   "explanation": "The current local, timezone-aware datetime, or the frozen value if zet() was used.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".astimezone", "datetime.datetime.now"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/herhaling.py::_beheersing", "lines": [69]},
+    {"caller": "leeravontuur/kern/herhaling.py::vandaag", "lines": [22]},
+    {"caller": "leeravontuur/kern/klok.py::dag", "lines": [25]},
+    {"caller": "leeravontuur/kern/klok.py::iso", "lines": [20]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag._herstel", "lines": [278, 286]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord", "lines": [442]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_bij", "lines": [520]},
+    {"caller": "leeravontuur/kern/rapporten.py::lees_datum", "lines": [63]},
+    {"caller": "leeravontuur/kern/rapporten.py::periodes", "lines": [50]},
+    {"caller": "leeravontuur/kern/reeks.py::stand", "lines": [76]},
+    {"caller": "leeravontuur/kern/selectie.py::recent_gezien", "lines": [13]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer_alles", "lines": [641]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_periode", "lines": [269]}
+   ]
+  },
+  {
+   "name": "zet",
+   "qualname": "zet",
+   "kind": "function",
+   "lines": [13, 16],
+   "params": [
+    {"name": "tijdstip", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zet de klok vast (voor tests); None maakt ze weer gewoon.",
+   "explanation": "Freezes the clock at the given datetime (for tests); None makes it run normally again.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/schermafdrukken.py::maak_voorbeeld", "lines": [186, 198]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.ga_naar", "lines": [30]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.setUp", "lines": [24]},
+    {"caller": "tests/test_herhaling.py::TestHerhaalbak.tearDown", "lines": [27]},
+    {"caller": "tests/test_herhaling.py::TestSchermen.test_herhalen_en_verder", "lines": [112, 114]},
+    {"caller": "tests/test_opslag.py::TestAntwoorden.tearDown", "lines": [63]},
+    {"caller": "tests/test_opslag.py::TestAntwoorden.test_telling_per_dag", "lines": [71, 73]},
+    {"caller": "tests/test_rapporten.py::TestIndeling.setUp", "lines": [206, 218]},
+    {
+     "caller": "tests/test_rapporten.py::TestIndeling.test_status_een_snelle_ronde_verandert_de_gewone_status_niet",
+     "lines": [291, 296]
+    },
+    {"caller": "tests/test_rapporten.py::TestLogboek.setUp", "lines": [130, 137, 144]},
+    {"caller": "tests/test_rapporten.py::TestRapport.setUp", "lines": [51, 55]},
+    {"caller": "tests/test_rapporten.py::TestRapport.test_vraagstukken", "lines": [71, 79]},
+    {"caller": "tests/test_reeks.py::Basis.geoefend", "lines": [37, 41]},
+    {"caller": "tests/test_reeks.py::Basis.setUp", "lines": [30]},
+    {"caller": "tests/test_reeks.py::Basis.tearDown", "lines": [33]},
+    {"caller": "tests/test_stabiliteit.py::TempData.tearDown", "lines": [47]},
+    {"caller": "tests/test_stabiliteit.py::TestDatabank.test_dagkopie_en_opruimen", "lines": [124]}
+   ]
+  },
+  {
+   "name": "iso",
+   "qualname": "iso",
+   "kind": "function",
+   "lines": [19, 20],
+   "params": [
+    {"name": "tijdstip", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "ISO-8601 string (seconds precision) of the given or current time.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [20]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".isoformat"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/feedback.py::bewaar", "lines": [25]},
+    {"caller": "leeravontuur/kern/foutlog.py::schrijf", "lines": [25]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord", "lines": [447]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_avatar", "lines": [540]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen", "lines": [408]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_outfit", "lines": [577]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.herhaal_zet", "lines": [585]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.nieuw_kind", "lines": [382]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_bij", "lines": [523]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.sluit_sessie", "lines": [438]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.start_sessie", "lines": [434]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_bezit", "lines": [557]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.zet_pincode", "lines": [638]},
+    {"caller": "leeravontuur/kern/slot.py::neem", "lines": [64]}
+   ]
+  },
+  {
+   "name": "dag",
+   "qualname": "dag",
+   "kind": "function",
+   "lines": [23, 25],
+   "params": [
+    {"name": "tijdstip", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De lokale datum als 'JJJJ-MM-DD'.",
+   "explanation": "The local date as 'YYYY-MM-DD' of the given or current time.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [25]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".date", ".isoformat"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord", "lines": [447]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.dagkopie", "lines": [271, 272]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.punten_bij", "lines": [523]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.sluit", "lines": [355]},
+    {"caller": "leeravontuur/kern/overzicht.py::vandaag_regel", "lines": [45]},
+    {"caller": "leeravontuur/kern/snelrekenen.py::beloon", "lines": [55]},
+    {"caller": "leeravontuur/terminal/app.py::App.vandaag", "lines": [106]},
+    {
+     "caller": "tests/test_stabiliteit.py::TestDatabank.test_vergrendelde_databank_crasht_niet",
+     "lines": [162]
+    }
+   ]
+  }
+ ]
+}

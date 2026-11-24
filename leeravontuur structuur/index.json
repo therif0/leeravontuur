@@ -1,0 +1,5742 @@
+{
+ "schema": "leeravontuur-structuur/index/1",
+ "based_on_commit": "6f33a3b",
+ "note": "Every tracked file of the repository (except this folder). 'explained: false' = generated or legal text, listed only.",
+ "counts": {
+  "files": 361,
+  "explained": 227,
+  "not_explained": 134
+ },
+ "files": [
+  {
+   "path": ".gitattributes",
+   "kind": "config",
+   "layer": "root",
+   "lines": 4,
+   "explained": true,
+   "purpose": "Git line-ending rules for the start files.",
+   "counterpart": "leeravontuur structuur/.gitattributes.json"
+  },
+  {
+   "path": ".github/workflows/tests.yml",
+   "kind": "config",
+   "layer": "ci",
+   "lines": 29,
+   "explained": true,
+   "purpose": "GitHub Actions workflow 'tests': runs the test suite on Linux, macOS and Windows with Python 3.10 and 3.14 on every push and pull request.",
+   "counterpart": "leeravontuur structuur/.github/workflows/tests.yml.json"
+  },
+  {
+   "path": ".gitignore",
+   "kind": "config",
+   "layer": "root",
+   "lines": 2,
+   "explained": true,
+   "purpose": "Files git ignores: Python caches.",
+   "counterpart": "leeravontuur structuur/.gitignore.json"
+  },
+  {
+   "path": "CHANGELOG.md",
+   "kind": "markdown",
+   "layer": "root",
+   "lines": 463,
+   "explained": true,
+   "purpose": "The changelog in plain language: what changed per version for the child and the parent, newest first (0.28.0 down to 0.11).",
+   "counterpart": "leeravontuur structuur/CHANGELOG.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "README.md",
+    "docs/handleiding/README.md",
+    "docs/plan.md",
+    "werk/schermen-inventaris.md"
+   ],
+   "words": 6095
+  },
+  {
+   "path": "CLAUDE.md",
+   "kind": "markdown",
+   "layer": "root",
+   "lines": 115,
+   "explained": true,
+   "purpose": "The repository's instructions for whoever works on the code (Claude): goals, architecture rules, the golden rules, testing, how to work with the father, release procedure, handbook rules and where plans live.",
+   "counterpart": "leeravontuur structuur/CLAUDE.md.json",
+   "referenced_by": [
+    "README.md",
+    "docs/architectuur.md",
+    "docs/menu-inventaris.md",
+    "docs/plan.md",
+    "docs/taal.md",
+    "docs/werkwijzen.md",
+    "tests/test_architectuur.py",
+    "tests/test_handleiding.py",
+    "werk/opruimen.md",
+    "werk/schermen-inventaris.md",
+    "werk/schermen.md",
+    "werk/structuur.md"
+   ],
+   "words": 1344
+  },
+  {
+   "path": "LICENSE",
+   "kind": "license",
+   "layer": "root",
+   "lines": 13,
+   "explained": false,
+   "purpose": "The licence text (CC BY-NC-SA 4.0), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "README.md",
+   "kind": "markdown",
+   "layer": "root",
+   "lines": 258,
+   "explained": true,
+   "purpose": "The project README: what Leeravontuur is, what is in it, how to install on Linux, macOS and Windows, start options, the forgotten-password command, where data lives, developer pointers and the licence.",
+   "counterpart": "leeravontuur structuur/README.md.json",
+   "referenced_by": [
+    "CHANGELOG.md",
+    "CLAUDE.md",
+    "docs/handleiding/README.md",
+    "docs/handleiding/avatar-en-winkel.md",
+    "docs/handleiding/herhalen.md",
+    "docs/handleiding/opties.md",
+    "docs/handleiding/ouderdeel.md",
+    "docs/handleiding/problemen-oplossen.md",
+    "docs/handleiding/snelrekenen.md",
+    "docs/handleiding/spiekbrieven.md",
+    "docs/handleiding/startargumenten.md",
+    "docs/handleiding/wiskunde/breuken.md",
+    "docs/handleiding/wiskunde/cijferen.md",
+    "docs/handleiding/wiskunde/eenheden.md",
+    "docs/handleiding/wiskunde/getallen.md",
+    "docs/handleiding/wiskunde/hoofdrekenen.md",
+    "docs/handleiding/wiskunde/meetkunde.md",
+    "docs/handleiding/wiskunde/procenten.md",
+    "docs/handleiding/wiskunde/tijd-geld-snelheid.md",
+    "docs/handleiding/wiskunde/vraagstukken.md",
+    "docs/handleiding/zeg-het-ons.md",
+    "docs/plan.md",
+    "werk/schermen-inventaris.md",
+    "werk/structuur.md"
+   ],
+   "words": 2921
+  },
+  {
+   "path": "docs/architectuur.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 265,
+   "explained": true,
+   "purpose": "The architecture in detail: the long-form rules that CLAUDE.md summarises.",
+   "counterpart": "leeravontuur structuur/docs/architectuur.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "docs/plan.md",
+    "werk/opruimen.md",
+    "werk/schermen-inventaris.md",
+    "werk/schermen.md"
+   ],
+   "words": 3437
+  },
+  {
+   "path": "docs/handleiding/README.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 244,
+   "explained": true,
+   "purpose": "The handbook's front page and table of contents: starting, the main menu, operating with keys and mouse, levels, the fixed work method, free practice, series of 10 and points.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/README.md.json",
+   "referenced_by": [
+    "CHANGELOG.md",
+    "README.md",
+    "docs/handleiding/avatar-en-winkel.md",
+    "docs/handleiding/herhalen.md",
+    "docs/handleiding/opties.md",
+    "docs/handleiding/ouderdeel.md",
+    "docs/handleiding/problemen-oplossen.md",
+    "docs/handleiding/snelrekenen.md",
+    "docs/handleiding/spiekbrieven.md",
+    "docs/handleiding/startargumenten.md",
+    "docs/handleiding/zeg-het-ons.md"
+   ],
+   "words": 1862
+  },
+  {
+   "path": "docs/handleiding/avatar-en-winkel.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 62,
+   "explained": true,
+   "purpose": "Handbook page about the avatar, the shop and the wardrobe.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/avatar-en-winkel.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/ouderdeel.md"
+   ],
+   "words": 484
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-combinaties.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 23,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-gekocht.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 25,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-hoeden.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 166,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-hub.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 365,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-kast.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 346,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-kopen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 151,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/avatar-winkel.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 35,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-domeinen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 39,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-fouten-opnieuw.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 157,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-hoofdmenu.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 174,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-juist.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-kind-kiezen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 27,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-niveau.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 30,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-onderwerpen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 31,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-reeks-rapport.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 43,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-reeks-vraag.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 165,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-start.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 43,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-tip.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-vak.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 23,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-vorm.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 27,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/basis-vraag.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 154,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-arceren-bezig.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 225,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-arceren-juist.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 219,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-arceren.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 163,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-kommagetal.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-optellen-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 159,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-optellen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-van-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 166,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-van.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 181,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-vereenvoudigen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 213,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-vergelijken-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 186,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/breuken-vergelijken.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 154,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/cijferen-optellen-hulp.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 180,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/cijferen-optellen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 178,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/cijferen-staart-bezig.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 169,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/cijferen-staart.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 161,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/cijferen-vermenigvuldigen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 175,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-oppervlakte.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 109,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-soort.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 35,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-spiekbrief.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 34,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-tabel-bezig.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 93,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-tabel-juist.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 98,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-tabel.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 84,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-volume.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 83,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-vorm.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 29,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-vraag.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 155,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/eenheden-zelf.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 37,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-afronden.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 154,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-deelbaarheid.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-lijn-aanduiden.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 194,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-lijn-aflezen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 184,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-lijn-zoom.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 195,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/getallen-plaatswaarde.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 156,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/herhalen-start.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 171,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/hoofdrekenen-dubbel.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/hoofdrekenen-maal10.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 157,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/hoofdrekenen-plusmin-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 161,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/hoofdrekenen-plusmin.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/hoofdrekenen-splitsen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 166,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klok-ascii.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 65,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klok-lezen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 236,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klok-woorden-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 157,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klok-zetten.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 239,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klokvenster-lezen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 95,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klokvenster-scherm.png",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 0,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/klokvenster-zetten.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 98,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-assen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 296,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-driehoek.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 435,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-formules.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 159,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-hoek-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 162,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-hoek.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-kruisje.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 243,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-omtrek-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 453,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-omtrek.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 441,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-schaal.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 161,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-schatkaart.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 234,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/meetkunde-spiekbrief.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 33,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/opties.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 49,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-export.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 21,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-kalender.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 65,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-kind.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 34,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-menu.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 32,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-opmerkingen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 19,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-periode.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 33,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-punten.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 39,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-rapport-onderwerpen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 131,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-rapport.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 138,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/ouder-wachtwoord.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 17,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-korting.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 183,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-omzetten.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 157,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-van-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 180,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-van.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 180,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-veld-bezig.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 275,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-veld-juist.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 256,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/procenten-veld.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 275,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/snelrekenen-bezig.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 151,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/snelrekenen-hoe.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 25,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/snelrekenen-klaar.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 41,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/snelrekenen-menu.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 24,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/spiekbrieven.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 39,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-ascii.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 58,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-blauw-geel.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 251,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-contrast.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 98,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-geen-kleur.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 126,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-kleurenblind.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 227,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-ouder.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 17,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/start-standaard.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 217,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-eindtijd-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-eindtijd.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 161,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-geld-uitleg.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-geld.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 162,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-gemengd-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-gemengd.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/tijd-snelheid.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 161,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-kan.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 185,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-klad.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 196,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-lezen.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 193,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-speurneus.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 182,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-spiekbrief.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 34,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-start.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 189,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-tegels.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 187,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-tijd-fout.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 189,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-tijd.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 191,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-tips.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 203,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-tweede-kans.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 191,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/vraagstukken-uitwerking.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 192,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/werkwijze-klad.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 164,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/werkwijze-tweede-kans.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 166,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/werkwijze-zo-kan-het.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 160,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/zeg-het-ons-bedankt.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 16,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/beelden/zeg-het-ons.svg",
+   "kind": "image",
+   "layer": "docs",
+   "lines": 19,
+   "explained": false,
+   "purpose": "A generated handbook screenshot (made by docs/tools/schermafdrukken.py or klokvenster_foto.py), not explained.",
+   "counterpart": null
+  },
+  {
+   "path": "docs/handleiding/herhalen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 28,
+   "explained": true,
+   "purpose": "Handbook page about the repeat bin (Herhalen).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/herhalen.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md"
+   ],
+   "words": 251
+  },
+  {
+   "path": "docs/handleiding/opties.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 36,
+   "explained": true,
+   "purpose": "Handbook page about the old 'Opties' menu (settings of the active child).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/opties.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/avatar-en-winkel.md",
+    "docs/handleiding/startargumenten.md"
+   ],
+   "words": 359
+  },
+  {
+   "path": "docs/handleiding/ouderdeel.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 94,
+   "explained": true,
+   "purpose": "Handbook page for parents: password, reports, children settings, points and remarks.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/ouderdeel.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/avatar-en-winkel.md",
+    "docs/handleiding/opties.md",
+    "docs/handleiding/problemen-oplossen.md",
+    "docs/handleiding/snelrekenen.md",
+    "docs/handleiding/startargumenten.md",
+    "docs/handleiding/zeg-het-ons.md"
+   ],
+   "words": 729
+  },
+  {
+   "path": "docs/handleiding/problemen-oplossen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 91,
+   "explained": true,
+   "purpose": "Handbook page for problems: where data is stored, backups and recovery, the double-start warning, error log, forgotten password, a strange screen.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/problemen-oplossen.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/ouderdeel.md",
+    "docs/handleiding/startargumenten.md",
+    "docs/handleiding/zeg-het-ons.md"
+   ],
+   "words": 804
+  },
+  {
+   "path": "docs/handleiding/snelrekenen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 49,
+   "explained": true,
+   "purpose": "Handbook page about Snelrekenen (speed arithmetic).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/snelrekenen.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/ouderdeel.md"
+   ],
+   "words": 332
+  },
+  {
+   "path": "docs/handleiding/spiekbrieven.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 25,
+   "explained": true,
+   "purpose": "Handbook page about the cheat sheets (spiekbrieven).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/spiekbrieven.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md"
+   ],
+   "words": 235
+  },
+  {
+   "path": "docs/handleiding/startargumenten.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 84,
+   "explained": true,
+   "purpose": "Handbook page listing all start arguments and environment variables.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/startargumenten.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/opties.md",
+    "docs/handleiding/problemen-oplossen.md"
+   ],
+   "words": 635
+  },
+  {
+   "path": "docs/handleiding/wiskunde/breuken.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 222,
+   "explained": true,
+   "purpose": "Handbook page for the Breuken domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/breuken.md.json",
+   "referenced_by": [],
+   "words": 1435
+  },
+  {
+   "path": "docs/handleiding/wiskunde/cijferen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 157,
+   "explained": true,
+   "purpose": "Handbook page for the Cijferen domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/cijferen.md.json",
+   "referenced_by": [],
+   "words": 1078
+  },
+  {
+   "path": "docs/handleiding/wiskunde/eenheden.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 195,
+   "explained": true,
+   "purpose": "Handbook page for the unit conversion topic.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/eenheden.md.json",
+   "referenced_by": [],
+   "words": 1566
+  },
+  {
+   "path": "docs/handleiding/wiskunde/getallen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 166,
+   "explained": true,
+   "purpose": "Handbook page for the Getallen domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/getallen.md.json",
+   "referenced_by": [],
+   "words": 1063
+  },
+  {
+   "path": "docs/handleiding/wiskunde/hoofdrekenen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 198,
+   "explained": true,
+   "purpose": "Handbook page for the Hoofdrekenen domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/hoofdrekenen.md.json",
+   "referenced_by": [],
+   "words": 1472
+  },
+  {
+   "path": "docs/handleiding/wiskunde/meetkunde.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 207,
+   "explained": true,
+   "purpose": "Handbook page for the Meetkunde domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/meetkunde.md.json",
+   "referenced_by": [],
+   "words": 1438
+  },
+  {
+   "path": "docs/handleiding/wiskunde/procenten.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 151,
+   "explained": true,
+   "purpose": "Handbook page for the Procenten domain (from year 5).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/procenten.md.json",
+   "referenced_by": [],
+   "words": 1009
+  },
+  {
+   "path": "docs/handleiding/wiskunde/tijd-geld-snelheid.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 248,
+   "explained": true,
+   "purpose": "Handbook page for the time, money and speed domain.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/tijd-geld-snelheid.md.json",
+   "referenced_by": [
+    "docs/handleiding/wiskunde/eenheden.md"
+   ],
+   "words": 1868
+  },
+  {
+   "path": "docs/handleiding/wiskunde/vraagstukken.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 326,
+   "explained": true,
+   "purpose": "Handbook page for word problems (the largest handbook page).",
+   "counterpart": "leeravontuur structuur/docs/handleiding/wiskunde/vraagstukken.md.json",
+   "referenced_by": [
+    "docs/handleiding/wiskunde/tijd-geld-snelheid.md"
+   ],
+   "words": 4437
+  },
+  {
+   "path": "docs/handleiding/zeg-het-ons.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 17,
+   "explained": true,
+   "purpose": "Handbook page about 'Zeg het ons', the feedback form.",
+   "counterpart": "leeravontuur structuur/docs/handleiding/zeg-het-ons.md.json",
+   "referenced_by": [
+    "docs/handleiding/README.md",
+    "docs/handleiding/ouderdeel.md",
+    "docs/handleiding/problemen-oplossen.md"
+   ],
+   "words": 133
+  },
+  {
+   "path": "docs/koers.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 45,
+   "explained": true,
+   "purpose": "One-page direction of the project: the goal, the fixed date, the periods, the building blocks and the rule for new ideas.",
+   "counterpart": "leeravontuur structuur/docs/koers.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "docs/plan.md",
+    "docs/taal.md",
+    "docs/todo.md",
+    "werk/opruimen.md",
+    "werk/schermen-inventaris.md",
+    "werk/schermen.md"
+   ],
+   "words": 550
+  },
+  {
+   "path": "docs/leerkracht-coach.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 137,
+   "explained": true,
+   "purpose": "Brainstorm (not scheduled) for a part of the program for coaches and teachers: sharing data, a coach mode, focus plans, diagnosis, own content, assignments and class view.",
+   "counterpart": "leeravontuur structuur/docs/leerkracht-coach.md.json",
+   "referenced_by": [
+    "docs/plan.md"
+   ],
+   "words": 1419
+  },
+  {
+   "path": "docs/menu-inventaris.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 215,
+   "explained": true,
+   "purpose": "Checklist of every menu item of version 0.19.0 with its new place after the menu rebuild (step A), used to make sure nothing was lost.",
+   "counterpart": "leeravontuur structuur/docs/menu-inventaris.md.json",
+   "referenced_by": [],
+   "words": 1864
+  },
+  {
+   "path": "docs/plan.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 715,
+   "explained": true,
+   "purpose": "The long project plan: context, honest assessment, technical choices, domains (rekenen, Taal, Frans), learning process, timer, repeat, accounts and exams, avatar and shop, security, later plans, next-year levels, publishing, the father's decision log and the phase tables.",
+   "counterpart": "leeravontuur structuur/docs/plan.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "README.md",
+    "docs/koers.md",
+    "docs/taal.md",
+    "werk/opruimen.md"
+   ],
+   "words": 8491
+  },
+  {
+   "path": "docs/taal.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 352,
+   "explained": true,
+   "purpose": "The plan for the Taal subject (design of 7/11/2026): the father's choices, what Flanders expects, the domains, sentence parsing (T1), word kinds (T2), verb spelling (T3) and later parts, colours, code structure, phases and deviations.",
+   "counterpart": "leeravontuur structuur/docs/taal.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "README.md",
+    "docs/architectuur.md",
+    "docs/koers.md",
+    "docs/plan.md",
+    "docs/todo.md",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/thema.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "werk/schermen-inventaris.md"
+   ],
+   "words": 4298
+  },
+  {
+   "path": "docs/testlijst.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 225,
+   "explained": true,
+   "purpose": "The parent's test list (about 15 minutes) to go through after each new version: a checklist per area.",
+   "counterpart": "leeravontuur structuur/docs/testlijst.md.json",
+   "referenced_by": [
+    "CHANGELOG.md",
+    "CLAUDE.md",
+    "README.md",
+    "docs/todo.md",
+    "werk/schermen-inventaris.md",
+    "werk/schermen.md"
+   ],
+   "words": 3585
+  },
+  {
+   "path": "docs/todo.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 75,
+   "explained": true,
+   "purpose": "The parked to-do list (state 7/11, version 0.24.0): things for the father, next build steps, parked questions, maths v2 and the plan for the stop lock.",
+   "counterpart": "leeravontuur structuur/docs/todo.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "docs/koers.md",
+    "docs/taal.md"
+   ],
+   "words": 896
+  },
+  {
+   "path": "docs/tools/handleiding.py",
+   "kind": "python",
+   "layer": "docs",
+   "lines": 302,
+   "explained": true,
+   "purpose": "Fills in the automatic parts of the handbook (docs/handleiding/**/*.md): learning-line tables, thinking errors, cheat sheets and start arguments, between <!-- auto:... --> markers.",
+   "counterpart": "leeravontuur structuur/docs/tools/handleiding.py.json",
+   "imports": [
+    "leeravontuur/__main__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ],
+   "imported_by": [],
+   "functions": 10,
+   "classes": 0
+  },
+  {
+   "path": "docs/tools/klokvenster_foto.py",
+   "kind": "python",
+   "layer": "docs",
+   "lines": 60,
+   "explained": true,
+   "purpose": "Makes one real screenshot of the clock window next to a full-screen terminal for the handbook (Linux with Xvfb, openbox, xterm, xdotool and ImageMagick).",
+   "counterpart": "leeravontuur structuur/docs/tools/klokvenster_foto.py.json",
+   "imports": [],
+   "imported_by": [],
+   "functions": 1,
+   "classes": 0
+  },
+  {
+   "path": "docs/tools/scenarios.py",
+   "kind": "python",
+   "layer": "docs",
+   "lines": 1058,
+   "explained": true,
+   "purpose": "The list of screenshots for the handbook: per image the keys the program receives and when to photograph.",
+   "counterpart": "leeravontuur structuur/docs/tools/scenarios.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/venster/klokbeeld.py"
+   ],
+   "imported_by": [],
+   "functions": 96,
+   "classes": 0
+  },
+  {
+   "path": "docs/tools/schermafdrukken.py",
+   "kind": "python",
+   "layer": "docs",
+   "lines": 328,
+   "explained": true,
+   "purpose": "Makes the handbook screenshots: runs the real program in tmux (80×24) with a sample child and a fixed random seed, captures the screen with colours, and writes it as an SVG.",
+   "counterpart": "leeravontuur structuur/docs/tools/schermafdrukken.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/wachtwoord.py"
+   ],
+   "imported_by": [],
+   "functions": 16,
+   "classes": 2
+  },
+  {
+   "path": "docs/voorstel-0.21.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 359,
+   "explained": true,
+   "purpose": "Mockups (drawings only) for version 0.21: a digital clock answer, the klad staying after checking, shorter route to cheat sheets, opening the cheat sheet from an exercise, place values above the grid, the place-value table after a mistake.",
+   "counterpart": "leeravontuur structuur/docs/voorstel-0.21.md.json",
+   "referenced_by": [],
+   "words": 1873
+  },
+  {
+   "path": "docs/voorstel-0.22.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 398,
+   "explained": true,
+   "purpose": "Mockups for version 0.22: the parent's log of answers, multiplication per level, a highlighted worked example, and long division where the child finds the way.",
+   "counterpart": "leeravontuur structuur/docs/voorstel-0.22.md.json",
+   "referenced_by": [],
+   "words": 2190
+  },
+  {
+   "path": "docs/werkwijzen.md",
+   "kind": "markdown",
+   "layer": "docs",
+   "lines": 155,
+   "explained": true,
+   "purpose": "Inventory of the 'ways through the program' (leaving a question, after checking, where you end up, same method everywhere, footers that do not fit, small things) and the plan to fix them in phases.",
+   "counterpart": "leeravontuur structuur/docs/werkwijzen.md.json",
+   "referenced_by": [
+    "docs/todo.md"
+   ],
+   "words": 1667
+  },
+  {
+   "path": "leeravontuur-linux.sh",
+   "kind": "script",
+   "layer": "root",
+   "lines": 4,
+   "explained": true,
+   "purpose": "Double-click / shell starter for Linux.",
+   "counterpart": "leeravontuur structuur/leeravontuur-linux.sh.json"
+  },
+  {
+   "path": "leeravontuur-mac.command",
+   "kind": "script",
+   "layer": "root",
+   "lines": 4,
+   "explained": true,
+   "purpose": "Double-click starter for macOS.",
+   "counterpart": "leeravontuur structuur/leeravontuur-mac.command.json"
+  },
+  {
+   "path": "leeravontuur-win.bat",
+   "kind": "script",
+   "layer": "root",
+   "lines": 11,
+   "explained": true,
+   "purpose": "Double-click starter for Windows.",
+   "counterpart": "leeravontuur structuur/leeravontuur-win.bat.json"
+  },
+  {
+   "path": "leeravontuur.py",
+   "kind": "python",
+   "layer": "root",
+   "lines": 26,
+   "explained": true,
+   "purpose": "The start file: checks the Python version and curses, then calls leeravontuur/__main__.main().",
+   "counterpart": "leeravontuur structuur/leeravontuur.py.json",
+   "imports": [
+    "leeravontuur/__main__.py"
+   ],
+   "imported_by": [],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/__init__.py",
+   "kind": "python",
+   "layer": "package",
+   "lines": 7,
+   "explained": true,
+   "purpose": "The program's identity: name, version, maker, motto and licence.",
+   "counterpart": "leeravontuur structuur/leeravontuur/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/__main__.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/terminal/app.py",
+    "tests/test_starten.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/__main__.py",
+   "kind": "python",
+   "layer": "package",
+   "lines": 203,
+   "explained": true,
+   "purpose": "The program's command-line entry point: parses the start arguments, handles the one-off commands (version, tests, shortcut, forgotten password, error log) and otherwise starts the curses app.",
+   "counterpart": "leeravontuur structuur/leeravontuur/__main__.py.json",
+   "imports": [
+    "leeravontuur/__init__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/slot.py",
+    "leeravontuur/terminal/app.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "leeravontuur.py",
+    "tests/test_handleiding.py"
+   ],
+   "functions": 8,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/inhoud/avatar/onderdelen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 558,
+   "explained": true,
+   "purpose": "The avatar parts as pixel art: palette, body colours, body shapes with anchors, eyes, ears, nose, expressions, hair, hats and accessories.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/avatar/onderdelen.json.json",
+   "read_by": [
+    "leeravontuur/kern/avatar.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/avatar/winkel.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 72,
+   "explained": true,
+   "purpose": "Shop data: which avatar parts are free and what the others cost in points.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/avatar/winkel.json.json",
+   "read_by": [
+    "leeravontuur/kern/winkel.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.naar_vt.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 92,
+   "explained": true,
+   "purpose": "Learning line for 'put the sentence into the past' (weak and strong verbs) in school years 4-6.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.naar_vt.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.tt.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 120,
+   "explained": true,
+   "purpose": "Learning line for present-tense verb spelling (stem, stem + t, whole verb) in years 4 to m1.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.tt.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vd.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 94,
+   "explained": true,
+   "purpose": "Learning line for the past participle (gewerkt, gespeeld, gelopen) in years 4-6.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vd.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vt_sterk.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 83,
+   "explained": true,
+   "purpose": "Learning line for the past tense of strong verbs (liep, gaf, schreef) in years 4-6.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vt_sterk.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vt_zwak.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 77,
+   "explained": true,
+   "purpose": "Learning line for the past tense of weak verbs ('t kofschip) in years 4-6.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.werkwoordspelling.vt_zwak.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/taal.zinsontleding.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 149,
+   "explained": true,
+   "purpose": "Learning line for parsing sentences: which parts, which sentence structures and how many hand-written or two-verb sentences per school year (3-6).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/taal.zinsontleding.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/curriculum/taal.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.gelijkwaardig.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 46,
+   "explained": true,
+   "purpose": "Learning line for equivalent fractions and simplifying (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.gelijkwaardig.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.herkennen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 80,
+   "explained": true,
+   "purpose": "Learning line for recognising fractions and shading them on the fraction bar (years 3-6).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.herkennen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.kommagetal.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 51,
+   "explained": true,
+   "purpose": "Learning line for converting between fractions and decimals (years 4-6).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.kommagetal.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.optellen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 51,
+   "explained": true,
+   "purpose": "Learning line for adding and subtracting fractions (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.optellen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.van.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 52,
+   "explained": true,
+   "purpose": "Learning line for a fraction of a number and multiplying/dividing fractions (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.van.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.breuken.vergelijken.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 40,
+   "explained": true,
+   "purpose": "Learning line for comparing fractions with <, > and = (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.breuken.vergelijken.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/breuken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.aftrekken.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 31,
+   "explained": true,
+   "purpose": "Learning line for column subtraction (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.aftrekken.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/cijferen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.delen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 38,
+   "explained": true,
+   "purpose": "Learning line for long division (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.delen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/cijferen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.optellen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 37,
+   "explained": true,
+   "purpose": "Learning line for column addition (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.optellen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/cijferen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.vermenigvuldigen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 37,
+   "explained": true,
+   "purpose": "Learning line for column multiplication (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.vermenigvuldigen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/cijferen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.geld.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 55,
+   "explained": true,
+   "purpose": "Learning line for money: euro and cent, paying and change (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.geld.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.klok.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 23,
+   "explained": true,
+   "purpose": "Learning line for the clock: reading, setting, words, 24 hours, later and earlier (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.klok.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/klok.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.omzetten.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 101,
+   "explained": true,
+   "purpose": "Learning line for unit conversion with the unit table (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.omzetten.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/vaardigheden.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/app.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.snelheid.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 46,
+   "explained": true,
+   "purpose": "Learning line for distance, time and speed (from year 6).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.snelheid.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.tijd.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 71,
+   "explained": true,
+   "purpose": "Learning line for hours, minutes, seconds and durations (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.tijd.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.getallen.afronden.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 67,
+   "explained": true,
+   "purpose": "Learning line for rounding to a place (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.getallen.afronden.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.getallen.deelbaarheid.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 89,
+   "explained": true,
+   "purpose": "Learning line for divisibility, divisors, multiples, primes, gcd and lcm (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.getallen.deelbaarheid.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.getallen.getallenlijn.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 66,
+   "explained": true,
+   "purpose": "Learning line for the number line: reading, pointing, jumps, negative numbers and thermometer (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.getallen.getallenlijn.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.getallen.plaatswaarde.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 31,
+   "explained": true,
+   "purpose": "Learning line for place value of whole and decimal numbers (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.getallen.plaatswaarde.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.dubbelhelft.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 31,
+   "explained": true,
+   "purpose": "Learning line for doubling and halving (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.dubbelhelft.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.maaldeel10.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 50,
+   "explained": true,
+   "purpose": "Learning line for × and : by 10, 100, 1000 (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.maaldeel10.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.plusmin.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 37,
+   "explained": true,
+   "purpose": "Learning line for mental addition and subtraction (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.plusmin.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.splitsen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 55,
+   "explained": true,
+   "purpose": "Learning line for smart multiplication and division (splitting, compensating) (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.splitsen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.tafels.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 94,
+   "explained": true,
+   "purpose": "Learning line for times and division tables (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.hoofdrekenen.tafels.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.coordinaten.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 52,
+   "explained": true,
+   "purpose": "Learning line for coordinates: treasure map and coordinate system (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.coordinaten.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.formules.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 68,
+   "explained": true,
+   "purpose": "Learning line for area, perimeter and volume formulas (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.formules.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.hoeken.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 63,
+   "explained": true,
+   "purpose": "Learning line for kinds of angle and angles in a triangle (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.hoeken.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.rooster.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 76,
+   "explained": true,
+   "purpose": "Learning line for area and perimeter on the cm² grid (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.rooster.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.schaal.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 44,
+   "explained": true,
+   "purpose": "Learning line for map scales (years 6-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.meetkunde.schaal.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.procenten.honderdveld.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 35,
+   "explained": true,
+   "purpose": "Learning line for percent as 'per hundred' on the hundred-square (years 5-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.procenten.honderdveld.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.procenten.korting.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 27,
+   "explained": true,
+   "purpose": "Learning line for discount, VAT and percentage change (m1 only).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.procenten.korting.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.procenten.omzetten.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 27,
+   "explained": true,
+   "purpose": "Learning line for converting percent, fraction and decimal (years 5-6).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.procenten.omzetten.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.procenten.van.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 67,
+   "explained": true,
+   "purpose": "Learning line for a percentage of a number (years 5-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.procenten.van.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.oplossen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 245,
+   "explained": true,
+   "purpose": "Learning line for word problems in four steps (years 3-m1): which story structures, how big the numbers and how often an unneeded given or an introduction appears.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.oplossen.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.schatten.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 251,
+   "explained": true,
+   "purpose": "Learning line for estimating ('ongeveer') and checking ('kan dat kloppen?') word problems (years 3-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.schatten.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.speurneus.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 244,
+   "explained": true,
+   "purpose": "Learning line for the Speurneus (finding the wrong line in someone's solution) (years 4-m1).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/leerlijnen/wiskunde.vraagstukken.speurneus.json.json",
+   "read_by": [
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/taal/werkwoorden.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 149,
+   "explained": true,
+   "purpose": "All verbs of Werkwoordspelling with every form written out (144 verbs).",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/taal/werkwoorden.json.json",
+   "read_by": [
+    "leeravontuur/kern/taal/werkwoorden.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/taal/woorden.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 202,
+   "explained": true,
+   "purpose": "The word list of the sentence machine: subjects, indirect objects, adjectives, things, verbs of each kind and adverbials.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/taal/woorden.json.json",
+   "read_by": [
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinnenmachine.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/taal/zinnen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 75,
+   "explained": true,
+   "purpose": "Hand-written, fully analysed sentences for the sentence parser (for cases the sentence machine does not make well), including sentences with two finite verbs.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/taal/zinnen.json.json",
+   "read_by": [
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "tests/test_taal_zinsontleding.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/vraagstukken/werelden.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 3662,
+   "explained": true,
+   "purpose": "The worlds of the story machine: names and per world (bakery, building site, farm, library, school trip, market ...) the words and realistic ranges per kind of problem.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/vraagstukken/werelden.json.json",
+   "read_by": [
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/inhoud/vraagstukken/zinnen.json",
+   "kind": "json",
+   "layer": "inhoud",
+   "lines": 819,
+   "explained": true,
+   "purpose": "The wordings of the word-problem machine: the four-step plan and, per calculation structure and variant, the sentence templates, questions, answer sentence and what is asked.",
+   "counterpart": "leeravontuur structuur/leeravontuur/inhoud/vraagstukken/zinnen.json.json",
+   "read_by": [
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "tests/test_taal_zinsontleding.py"
+   ]
+  },
+  {
+   "path": "leeravontuur/kern/__init__.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 5,
+   "explained": true,
+   "purpose": "Package marker of the core layer; its docstring states the rule that nothing in kern may import curses.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/__main__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/selectie.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/slot.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/winkel.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "leeravontuur/terminal/venster.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_avatar.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_eenheden.py",
+    "tests/test_gemengd.py",
+    "tests/test_getallen.py",
+    "tests/test_grootheden.py",
+    "tests/test_handleiding.py",
+    "tests/test_herhaling.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_leerlijnen.py",
+    "tests/test_meetkunde.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_opslag.py",
+    "tests/test_ouder.py",
+    "tests/test_procenten.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_stopslot.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_taal_zinsontleding.py",
+    "tests/test_vakken.py",
+    "tests/test_vraagstukken.py",
+    "tests/test_werkwijze.py",
+    "tests/test_winkel.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/avatar.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 148,
+   "explained": true,
+   "purpose": "Builds the avatar: a 16x16 pixel face from layered parts, and the small reactions of the practice buddy.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/avatar.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/winkel.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "tests/test_avatar.py",
+    "tests/test_winkel.py"
+   ],
+   "functions": 7,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/catalogus.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 16,
+   "explained": true,
+   "purpose": "Imports every subject module so that all skills register themselves, and offers two small name lookups on the registry.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/catalogus.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/kern/vaardigheden.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "tests/test_handleiding.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_rapporten.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_vakken.py",
+    "tests/test_werkwijze.py"
+   ],
+   "functions": 2,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/feedback.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 42,
+   "explained": true,
+   "purpose": "Stores and reads the remarks of the child or parent ('Zeg het ons') in a plain text file in the data folder.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/feedback.py.json",
+   "imports": [
+    "leeravontuur/__init__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/paden.py"
+   ],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_ouder.py"
+   ],
+   "functions": 3,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/foutlog.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 54,
+   "explained": true,
+   "purpose": "The error log: unexpected exceptions are written to fouten.log in the data folder so a parent can pass them on.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/foutlog.py.json",
+   "imports": [
+    "leeravontuur/__init__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/paden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/__main__.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/venster.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/getal.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 106,
+   "explained": true,
+   "purpose": "Reads and shows numbers and fractions the Flemish way, with a comma as decimal sign.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/getal.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/scenarios.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/rooster.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/tabel.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_eenheden.py",
+    "tests/test_gemengd.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_procenten.py",
+    "tests/test_werkwijze.py"
+   ],
+   "functions": 9,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/herhaling.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 84,
+   "explained": true,
+   "purpose": "The repeat bin (Leitner system) and the mastery status per skill.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/herhaling.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py"
+   ],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_gemengd.py",
+    "tests/test_herhaling.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_reeks.py"
+   ],
+   "functions": 8,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/instellingen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 85,
+   "explained": true,
+   "purpose": "The per-child settings (name, year, colours, mouse, locks, mixed-practice choices) and their validation.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/instellingen.py.json",
+   "imports": [
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/paden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "tests/test_cijferen.py",
+    "tests/test_klok.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_opslag.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 3,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/klad.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 604,
+   "explained": true,
+   "purpose": "The scratch pad (klad): reads calculation lines the way the child types them, checks every '=' exactly, and compares the pad with a worked solution and known wrong paths.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/klad.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/kladblad.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_klad.py",
+    "tests/test_vraagstukken.py",
+    "tests/test_werkwijze.py"
+   ],
+   "functions": 28,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/kern/klok.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 25,
+   "explained": true,
+   "purpose": "The program's single source of time, which tests can freeze.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/klok.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/selectie.py",
+    "leeravontuur/kern/slot.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_herhaling.py",
+    "tests/test_opslag.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/leerjaren.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 31,
+   "explained": true,
+   "purpose": "The school years and the relative difficulty levels (Makkelijk, Normaal, Moeilijk, Heel moeilijk).",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/leerjaren.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/punten.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/winkel.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_eenheden.py",
+    "tests/test_getallen.py",
+    "tests/test_grootheden.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_leerlijnen.py",
+    "tests/test_meetkunde.py",
+    "tests/test_procenten.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_taal_zinsontleding.py",
+    "tests/test_vakken.py",
+    "tests/test_werkwijze.py"
+   ],
+   "functions": 2,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/leerlijnen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 93,
+   "explained": true,
+   "purpose": "Loads and validates the learning lines: per skill the parameters per school year, from inhoud/leerlijnen/.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/leerlijnen.py.json",
+   "imports": [
+    "leeravontuur/kern/leerjaren.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "tests/test_leerlijnen.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 4,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/modellen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 384,
+   "explained": true,
+   "purpose": "Plain-data descriptions of the visual models and word-problem structures that the terminal draws (number line, grid, long division, fraction bars, clock, ...).",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/modellen.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_getallen.py",
+    "tests/test_klok.py",
+    "tests/test_meetkunde.py",
+    "tests/test_procenten.py",
+    "tests/test_schermen.py"
+   ],
+   "functions": 27,
+   "classes": 20
+  },
+  {
+   "path": "leeravontuur/kern/onderwerp.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 223,
+   "explained": true,
+   "purpose": "The shared model of an exercise topic: Vraag (a question) and Onderwerp (the base class every topic extends).",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/onderwerp.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/vaardigheden.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "tests/test_beta.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_getallen.py",
+    "tests/test_grootheden.py",
+    "tests/test_handleiding.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_meetkunde.py",
+    "tests/test_procenten.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_werkwijze.py"
+   ],
+   "functions": 28,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/kern/opslag.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 648,
+   "explained": true,
+   "purpose": "The database layer (SQLite): children, settings, sessions, answers, points, avatar, shop, repeat bin, parent secrets, backups and migrations.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/opslag.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/paden.py"
+   ],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/__main__.py",
+    "tests/test_avatar.py",
+    "tests/test_herhaling.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_opslag.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_winkel.py"
+   ],
+   "functions": 62,
+   "classes": 3
+  },
+  {
+   "path": "leeravontuur/kern/overzicht.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 77,
+   "explained": true,
+   "purpose": "Builds the small status lines shown around an exercise (series bar, today's score, repeat bin, per-topic card) as lists of (text, role).",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/overzicht.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/reeks.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/beta.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 7,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/paden.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 45,
+   "explained": true,
+   "purpose": "Decides where the program keeps its data and where exports go, per operating system.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/paden.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/slot.py",
+    "leeravontuur/terminal/schermen/ouder.py"
+   ],
+   "functions": 2,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/punten.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 62,
+   "explained": true,
+   "purpose": "The rules for earning points (and bonuses) for an answer.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/punten.py.json",
+   "imports": [
+    "leeravontuur/kern/leerjaren.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_avatar.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 2,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/rapporten.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 473,
+   "explained": true,
+   "purpose": "Reports for parents: per period, per day, per skill, thinking errors, calendar, CSV/text export, and the parent's log of answers and points.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/rapporten.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/kern/vaardigheden.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py"
+   ],
+   "functions": 34,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/kern/reeks.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 245,
+   "explained": true,
+   "purpose": "A series of questions drawn from several topics: the engine of 'Gemengd oefenen' and, later, exams.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/reeks.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/selectie.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_beta.py",
+    "tests/test_gemengd.py",
+    "tests/test_reeks.py",
+    "tests/test_taal_werkwoorden.py"
+   ],
+   "functions": 15,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/kern/selectie.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 40,
+   "explained": true,
+   "purpose": "Helpers for choosing questions smartly: what was seen recently, which topics need more practice, and a weighted pick.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/selectie.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_herhaling.py"
+   ],
+   "functions": 3,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/sessie.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 81,
+   "explained": true,
+   "purpose": "A practice session: times each question and stores every answer with its points.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/sessie.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/punten.py"
+   ],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/terminal/app.py",
+    "tests/test_avatar.py",
+    "tests/test_gemengd.py",
+    "tests/test_opslag.py",
+    "tests/test_ouder.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py"
+   ],
+   "functions": 8,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/slot.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 77,
+   "explained": true,
+   "purpose": "A lock file that tells a second copy of the program that one is already open.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/slot.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/paden.py"
+   ],
+   "imported_by": [
+    "leeravontuur/__main__.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/snelrekenen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 62,
+   "explained": true,
+   "purpose": "Speed practice: 60 seconds as many as possible, or 20 sums as fast as possible, with records and history.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/snelrekenen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py",
+    "tests/test_hoofdrekenen.py"
+   ],
+   "functions": 6,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/stopslot.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 49,
+   "explained": true,
+   "purpose": "The lock on Stoppen: a parent can make quitting require the parent PIN for a child.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/stopslot.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/wachtwoord.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_ouder.py",
+    "tests/test_stopslot.py"
+   ],
+   "functions": 6,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/taal/__init__.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 1,
+   "explained": true,
+   "purpose": "Package marker for the Dutch-language part of the core.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/taal/nagekeken.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 48,
+   "explained": true,
+   "purpose": "Serves the hand-written, fully analysed sentences from inhoud/taal/zinnen.json for the sentence-analysis exercise.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/nagekeken.py.json",
+   "imports": [
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/zinnen.py",
+    "leeravontuur/kern/taal/zinnenmachine.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 5,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/taal/werkwoorden.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 1023,
+   "explained": true,
+   "purpose": "Verb spelling (werkwoordspelling): the verb list access, the rules, the sentence with a gap, the thinking scheme in steps, checking, thinking errors, hints, explanations, cheat sheets and the five exercise topics.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/werkwoorden.py.json",
+   "imports": [
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "tests/test_taal_werkwoorden.py"
+   ],
+   "functions": 70,
+   "classes": 8
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinnen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 316,
+   "explained": true,
+   "purpose": "The data model of a fully analysed Dutch sentence (words with their word class, and the sentence parts) plus the bracket notation to write and check one.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/zinnen.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinnenmachine.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 17,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinnenmachine.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 402,
+   "explained": true,
+   "purpose": "The sentence machine: a sentence structure times words from the word list gives a fully analysed Dutch sentence.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/zinnenmachine.py.json",
+   "imports": [
+    "leeravontuur/kern/taal/zinnen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 25,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/kern/taal/zinsontleding.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 531,
+   "explained": true,
+   "purpose": "Sentence analysis (zinsontleding) as an exercise: the steps, checking, thinking errors, hints, explanations, free colouring, dividing into parts, the cheat sheet and the Onderwerp that makes the questions.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/taal/zinsontleding.py.json",
+   "imports": [
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinnen.py",
+    "leeravontuur/kern/taal/zinnenmachine.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_zinsontleding.py"
+   ],
+   "functions": 33,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/vaardigheden.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 33,
+   "explained": true,
+   "purpose": "The registry of subjects, skills (Vak > Domein > Vaardigheid) and thinking-error codes.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/vaardigheden.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_rapporten.py"
+   ],
+   "functions": 3,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/verhaal.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 151,
+   "explained": true,
+   "purpose": "Fills sentence templates into pieces of text with markable data and keywords, for word problems.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/verhaal.py.json",
+   "imports": [
+    "leeravontuur/kern/modellen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 8,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/wachtwoord.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 44,
+   "explained": true,
+   "purpose": "Safe storage of passwords and PIN codes with PBKDF2-SHA256 and a random salt.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wachtwoord.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/schermafdrukken.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_ouder.py",
+    "tests/test_rapporten.py",
+    "tests/test_stopslot.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/winkel.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 175,
+   "explained": true,
+   "purpose": "The shop: buying avatar items with points, with a small sum at each purchase, plus delivery of 'packages' and wearing items.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/winkel.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/leerjaren.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "tests/test_winkel.py"
+   ],
+   "functions": 13,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/__init__.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 0,
+   "explained": true,
+   "purpose": "Empty package marker for the mathematics part of the core.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "docs/tools/scenarios.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/tabel.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_avatar.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_eenheden.py",
+    "tests/test_gemengd.py",
+    "tests/test_getallen.py",
+    "tests/test_grootheden.py",
+    "tests/test_herhaling.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_klok.py",
+    "tests/test_meetkunde.py",
+    "tests/test_procenten.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vakken.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/breuken.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 626,
+   "explained": true,
+   "purpose": "The topics of fractions: recognising and shading on the fraction bar, equivalent and simplifying, comparing, adding and subtracting, a fraction of a number (and x and :), and fraction versus decimal.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/breuken.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_breuken.py"
+   ],
+   "functions": 40,
+   "classes": 7
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/cijferen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 511,
+   "explained": true,
+   "purpose": "The topics of column arithmetic: adding, subtracting and multiplying under each other in a grid (with carry rows), and long division step by step.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/cijferen.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/getallen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_cijferen.py"
+   ],
+   "functions": 36,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/eenheden.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 546,
+   "explained": true,
+   "purpose": "Converting units with the units table (length, mass, capacity, area, volume): the table as data, questions, checking, explanations, thinking errors, the cheat sheet, and the 'Maten' adapter that lets the exercise run in the normal practice screen.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/eenheden.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/vaardigheden.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "docs/tools/scenarios.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/tabel.py",
+    "tests/test_avatar.py",
+    "tests/test_eenheden.py",
+    "tests/test_gemengd.py",
+    "tests/test_herhaling.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 53,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/getallen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 409,
+   "explained": true,
+   "purpose": "The topics of the domain 'Getallen': place value, rounding, divisibility (with divisors, multiples, primes, gcd and lcm) and the number line.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/getallen.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "docs/tools/handleiding.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_getallen.py",
+    "tests/test_schermen.py"
+   ],
+   "functions": 25,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/grootheden.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 448,
+   "explained": true,
+   "purpose": "The topics 'Tijd, geld en snelheid' (time, money and speed): quantities that do not (only) work with the units table, plus the readers and writers of durations and clock times.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/grootheden.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ],
+   "imported_by": [
+    "docs/tools/scenarios.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_grootheden.py"
+   ],
+   "functions": 25,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 620,
+   "explained": true,
+   "purpose": "The topics of mental arithmetic: times tables, plus and minus with strategies, x and : by 10/100/1000, doubling and halving, and clever x and : by splitting.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/hoofdrekenen.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "functions": 44,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/klok.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 323,
+   "explained": true,
+   "purpose": "The clock topic: reading and setting an analogue clock, times in Flemish words, the 24-hour notation, and later and earlier.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/klok.py.json",
+   "imports": [
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/grootheden.py"
+   ],
+   "imported_by": [
+    "docs/tools/scenarios.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_klok.py",
+    "tests/test_schermen.py"
+   ],
+   "functions": 19,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/meetkunde.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 585,
+   "explained": true,
+   "purpose": "The geometry topics: area and perimeter on the cm2 grid, formulas (also circle and volume), angles, coordinates (the treasure map and the axes system) and scale.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/meetkunde.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_meetkunde.py"
+   ],
+   "functions": 37,
+   "classes": 6
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/procenten.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 390,
+   "explained": true,
+   "purpose": "The topics of percentages: the hundred-field, percent versus fraction versus decimal, percent of a number (with the percentage strip), and discount, VAT and percentage change.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/procenten.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "tests/test_procenten.py"
+   ],
+   "functions": 25,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/kern/wiskunde/vraagstukken.py",
+   "kind": "python",
+   "layer": "kern",
+   "lines": 1435,
+   "explained": true,
+   "purpose": "The word-problem machine: a calculation structure times a world times a wording times numbers, the automatic wrong paths, the klad check, and the topics Vraagstukken, Speurneus and Schatten.",
+   "counterpart": "leeravontuur structuur/leeravontuur/kern/wiskunde/vraagstukken.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/procenten.py"
+   ],
+   "imported_by": [
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_klok.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 87,
+   "classes": 26
+  },
+  {
+   "path": "leeravontuur/terminal/__init__.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 1,
+   "explained": true,
+   "purpose": "Package marker of the terminal layer (curses display and input).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/navigatie.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "tests/test_architectuur.py",
+    "tests/test_beta.py",
+    "tests/test_breuken.py",
+    "tests/test_getallen.py",
+    "tests/test_invoer_objecten.py",
+    "tests/test_klok.py",
+    "tests/test_meetkunde.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_stopslot.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/app.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 452,
+   "explained": true,
+   "purpose": "The terminal app: the start screen, the main menu, the active child with their settings, the safety net for errors, and the Herhalen menus.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/app.py.json",
+   "imports": [
+    "leeravontuur/__init__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/winkel.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/navigatie.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/schermen/__init__.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "leeravontuur/terminal/venster.py"
+   ],
+   "imported_by": [
+    "leeravontuur/__main__.py",
+    "tests/test_gemengd.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_ouder.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_stopslot.py"
+   ],
+   "functions": 31,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/avatar.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 49,
+   "explained": true,
+   "purpose": "Draws the avatar in the terminal: two pixels per character with half blocks (16 wide, 8 high), or large (32 x 16), or a text face.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/avatar.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/thema.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "tests/test_schermen.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/balk.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 291,
+   "explained": true,
+   "purpose": "Four interactive model input objects: fraction bar (shade pieces), hundred-square (colour cells), treasure map / coordinate grid (place a cross) and analogue clock (set the hands).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/balk.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/invoer.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_klok.py"
+   ],
+   "functions": 31,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/terminal/beta.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 285,
+   "explained": true,
+   "purpose": "The beta screen layout ('schermen 1.0') for Cijferen: an Oefenaar subclass that draws the question, tip and cheat sheet in bordered panels. Only active with LEERAVONTUUR_BETA=1.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/beta.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/indeling.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/vak.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "tests/test_beta.py"
+   ],
+   "functions": 12,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/__init__.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 111,
+   "explained": true,
+   "purpose": "The curriculum as a menu: Subject > Domain > Topic, with the practice forms (modes) per topic. All menus, cheat sheets and the report grouping come from here.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/curriculum/__init__.py.json",
+   "imports": [
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py",
+    "leeravontuur/terminal/navigatie.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_beta.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_rapporten.py",
+    "tests/test_reeks.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_taal_scherm.py"
+   ],
+   "functions": 9,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/modi.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 63,
+   "explained": true,
+   "purpose": "The starters of the practice modes: each is a function f(app, breadcrumb) that opens an existing screen.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/curriculum/modi.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/__init__.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/curriculum/taal.py",
+    "leeravontuur/terminal/curriculum/wiskunde.py"
+   ],
+   "functions": 9,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/taal.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 42,
+   "explained": true,
+   "purpose": "The Taal part of the curriculum: domains and topics in menu order (plan: docs/taal.md).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/curriculum/taal.py.json",
+   "imports": [
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/curriculum/modi.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/curriculum/__init__.py"
+   ],
+   "functions": 1,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/curriculum/wiskunde.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 126,
+   "explained": true,
+   "purpose": "The Wiskunde part of the curriculum: domains and topics in menu order.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/curriculum/wiskunde.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/curriculum/modi.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/curriculum/__init__.py"
+   ],
+   "functions": 3,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/digitaal.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 75,
+   "explained": true,
+   "purpose": "A digital clock display with big 7-segment digits in which a clock time is typed (#21).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/digitaal.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py"
+   ],
+   "functions": 3,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/indeling.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 94,
+   "explained": true,
+   "purpose": "The layout of the panel screens: which panel goes where, by screen size (werk/schermen.md).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/indeling.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/beta.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 6,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/terminal/invoer.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 78,
+   "explained": true,
+   "purpose": "What every input object (grid, fraction bar, sentence parts, word problem ...) can do: get a rectangle and say how big it is.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/invoer.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/rooster.py",
+    "leeravontuur/terminal/stappenhulp.py",
+    "leeravontuur/terminal/tabel.py",
+    "leeravontuur/terminal/vraagstuk.py"
+   ],
+   "functions": 13,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/terminal/kladblad.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 116,
+   "explained": true,
+   "purpose": "The scratch pad as a screen component, the same everywhere (word problems and every calculation exercise of the Oefenaar).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/kladblad.py.json",
+   "imports": [
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "tests/test_klad.py"
+   ],
+   "functions": 8,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/klikzones.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 24,
+   "explained": true,
+   "purpose": "Records where on screen a click does something, so a click gives the same action as the matching key.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/klikzones.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "functions": 4,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/maatje.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 30,
+   "explained": true,
+   "purpose": "Draws the practice buddy (the child's avatar with a face and a short text) at the top right of an exercise screen.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/maatje.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/avatar.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py"
+   ],
+   "functions": 1,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/modellen.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 483,
+   "explained": true,
+   "purpose": "Draws the visual models (number line, fraction bars, groups of dots, hundred-square, percentage strip, cm² figure, treasure map / axes, angle, analogue clock) from the data classes of kern/modellen.py.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/modellen.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/thema.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_breuken.py",
+    "tests/test_getallen.py",
+    "tests/test_klok.py",
+    "tests/test_meetkunde.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 23,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/navigatie.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 151,
+   "explained": true,
+   "purpose": "The curriculum menus: main menu > subject > domain > topic with a key per topic, and the cheat-sheet menus.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/navigatie.py.json",
+   "imports": [
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "functions": 14,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/nepscherm.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 145,
+   "explained": true,
+   "purpose": "A fake curses window to test screens without a real terminal (also in CI on Windows and macOS), plus a fake clock window.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/nepscherm.py.json",
+   "imports": [
+    "leeravontuur/terminal/venster.py"
+   ],
+   "imported_by": [
+    "tests/test_cijferen.py",
+    "tests/test_gemengd.py",
+    "tests/test_klok.py",
+    "tests/test_menu_architecture.py",
+    "tests/test_ouder.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_stopslot.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 18,
+   "classes": 5
+  },
+  {
+   "path": "leeravontuur/terminal/oefenaar.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 870,
+   "explained": true,
+   "purpose": "The one screen that plays every exercise of every topic: read the question, work in the scratch pad (klad), answer, get checked, with series, results, repeat bin and hints.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/oefenaar.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/punten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/selectie.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/digitaal.py",
+    "leeravontuur/terminal/kladblad.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/rooster.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/tabel.py",
+    "leeravontuur/terminal/voortgang.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "leeravontuur/terminal/zinsdelen.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "tests/test_beta.py",
+    "tests/test_invoer_objecten.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vakken.py"
+   ],
+   "functions": 31,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/terminal/rooster.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 350,
+   "explained": true,
+   "purpose": "Input objects for column arithmetic ('rooster') and long division step by step ('staart').",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/rooster.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/terminal/invoer.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_cijferen.py"
+   ],
+   "functions": 25,
+   "classes": 2
+  },
+  {
+   "path": "leeravontuur/terminal/scherm.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 693,
+   "explained": true,
+   "purpose": "The base of every screen: drawing with roles, the title bar with breadcrumb, footer buttons, mouse and keyboard input, and the general screens (menu, tick list, reader, confirm box, text input).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/scherm.py.json",
+   "imports": [
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/klikzones.py",
+    "leeravontuur/terminal/tekens.py",
+    "leeravontuur/terminal/thema.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/kladblad.py",
+    "leeravontuur/terminal/navigatie.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/rooster.py",
+    "leeravontuur/terminal/schermen/eenheden.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py",
+    "leeravontuur/terminal/schermen/winkel.py",
+    "leeravontuur/terminal/tabel.py",
+    "leeravontuur/terminal/vraagstuk.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "tests/test_cijferen.py",
+    "tests/test_klok.py",
+    "tests/test_klokvenster.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 30,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/__init__.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 0,
+   "explained": true,
+   "purpose": "Empty package marker for the screen modules of the terminal layer.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/modi.py",
+    "tests/test_gemengd.py",
+    "tests/test_ouder.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/eenheden.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 143,
+   "explained": true,
+   "purpose": "The Maten (unit conversion) screen: an Oefenaar subclass that adds choosing units yourself, level choice and a result that also counts table mistakes.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/eenheden.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/modi.py"
+   ],
+   "functions": 11,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/gemengd.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 107,
+   "explained": true,
+   "purpose": "Herhalen › Gemengd oefenen: questions from several themes mixed in one series so the child forgets nothing.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/gemengd.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_gemengd.py"
+   ],
+   "functions": 8,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/kinderen.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 84,
+   "explained": true,
+   "purpose": "The 'Wie ben jij?' screens: choose a child, enter a PIN, create a new child.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/kinderen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/wachtwoord.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/schermen/ouder.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py"
+   ],
+   "functions": 4,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/ouder.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 659,
+   "explained": true,
+   "purpose": "The parent area behind a password: reports, calendar, export, answers log, points, managing children, display settings, password and parent PIN.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/ouder.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/paden.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/wachtwoord.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/schermen/gemengd.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/schermen/kinderen.py",
+    "tests/test_ouder.py"
+   ],
+   "functions": 33,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/snelrekenen.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 127,
+   "explained": true,
+   "purpose": "The Snelrekenen (speed arithmetic) screen: a 60-second or 20-sum round with a running clock, records and a history of recent rounds.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/snelrekenen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/maatje.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/curriculum/modi.py",
+    "tests/test_hoofdrekenen.py"
+   ],
+   "functions": 5,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/schermen/winkel.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 348,
+   "explained": true,
+   "purpose": "The 'Mijn avatar' screens: avatar hub, screen colours, the shop (buy items with points after a small calculation), and the wardrobe with saved outfits.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/schermen/winkel.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/winkel.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py"
+   ],
+   "functions": 16,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/stappenhulp.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 48,
+   "explained": true,
+   "purpose": "What input objects with their own steps (Zinsdelen, Werkwoordspelling) share: hints per step, the cheat sheet after the last hint, and the switches the Oefenaar sets from the Hulp object.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/stappenhulp.py.json",
+   "imports": [
+    "leeravontuur/terminal/invoer.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/werkwoord.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "tests/test_invoer_objecten.py"
+   ],
+   "functions": 6,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/tabel.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 367,
+   "explained": true,
+   "purpose": "Input objects for the Maten (unit conversion) topic: type a number ('eenheid') or fill in the unit table and move the comma ('tabel').",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/tabel.py.json",
+   "imports": [
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/invoer.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py"
+   ],
+   "functions": 19,
+   "classes": 3
+  },
+  {
+   "path": "leeravontuur/terminal/tekens.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 42,
+   "explained": true,
+   "purpose": "Fallback to plain ASCII for terminals without UTF-8, replacing every special character by exactly one plain character so the layout stays in place.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/tekens.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/scherm.py",
+    "tests/test_architectuur.py"
+   ],
+   "functions": 3,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/thema.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 220,
+   "explained": true,
+   "purpose": "The colour themes: screens ask for a ROLE (good, wrong, accent ...), never a colour; this file maps roles to curses attributes per theme, and builds avatar pixel colour pairs.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/thema.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/scherm.py",
+    "tests/test_architectuur.py"
+   ],
+   "functions": 10,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/vak.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 72,
+   "explained": true,
+   "purpose": "A bordered panel with a title in the border, like btop: the building block of the new screens (werk/schermen.md).",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/vak.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/beta.py"
+   ],
+   "functions": 5,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/venster.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 185,
+   "explained": true,
+   "purpose": "The terminal's handle on the separate clock window: starts the tkinter process, sends it the clock state and receives clicks, keys and the window position.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/venster.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/foutlog.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "tests/test_klokvenster.py"
+   ],
+   "functions": 12,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/voortgang.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 15,
+   "explained": true,
+   "purpose": "The progress line at the top of a series: 'Vraag 3 van 20', a dot per question, and the points.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/voortgang.py.json",
+   "imports": [],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py"
+   ],
+   "functions": 1,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/terminal/vraagstuk.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 774,
+   "explained": true,
+   "purpose": "Input objects for word problems: the four-step solver (read, plan, calculate in the klad, check), the 'Speurneus' (find the wrong line) and the multiple-choice 'kan dat kloppen' question.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/vraagstuk.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/invoer.py",
+    "leeravontuur/terminal/kladblad.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_vraagstukken.py"
+   ],
+   "functions": 56,
+   "classes": 4
+  },
+  {
+   "path": "leeravontuur/terminal/werkwoord.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 287,
+   "explained": true,
+   "purpose": "The verb-spelling machine input object (Taal › Werkwoordspelling): a sentence with a gap and a step-by-step thinking scheme to find the right verb form.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/werkwoord.py.json",
+   "imports": [
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/stappenhulp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_taal_werkwoorden.py"
+   ],
+   "functions": 15,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/terminal/zinsdelen.py",
+   "kind": "python",
+   "layer": "terminal",
+   "lines": 437,
+   "explained": true,
+   "purpose": "The sentence parser input object (Taal › Zinsdelen): shows a sentence as word blocks and lets the child mark the parts of the sentence step by step or by free colouring.",
+   "counterpart": "leeravontuur structuur/leeravontuur/terminal/zinsdelen.py.json",
+   "imports": [
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/stappenhulp.py"
+   ],
+   "imported_by": [
+    "leeravontuur/terminal/oefenaar.py",
+    "tests/test_taal_scherm.py"
+   ],
+   "functions": 27,
+   "classes": 1
+  },
+  {
+   "path": "leeravontuur/venster/__init__.py",
+   "kind": "python",
+   "layer": "venster",
+   "lines": 1,
+   "explained": true,
+   "purpose": "Package marker for separate-process windows (tkinter), now only the clock window.",
+   "counterpart": "leeravontuur structuur/leeravontuur/venster/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "tests/test_klokvenster.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/venster/klokbeeld.py",
+   "kind": "python",
+   "layer": "venster",
+   "lines": 111,
+   "explained": true,
+   "purpose": "The analogue clock as plain shapes (circles, lines, text) with no tkinter, plus an SVG renderer.",
+   "counterpart": "leeravontuur structuur/leeravontuur/venster/klokbeeld.py.json",
+   "imports": [],
+   "imported_by": [
+    "docs/tools/scenarios.py",
+    "leeravontuur/venster/klokvenster.py",
+    "tests/test_klokvenster.py"
+   ],
+   "functions": 6,
+   "classes": 0
+  },
+  {
+   "path": "leeravontuur/venster/klokvenster.py",
+   "kind": "python",
+   "layer": "venster",
+   "lines": 382,
+   "explained": true,
+   "purpose": "The clock window process: a real analogue clock in its own tkinter window next to the terminal, driven by JSON lines on stdin and answering on stdout.",
+   "counterpart": "leeravontuur structuur/leeravontuur/venster/klokvenster.py.json",
+   "imports": [
+    "leeravontuur/venster/klokbeeld.py"
+   ],
+   "imported_by": [
+    "tests/test_klokvenster.py"
+   ],
+   "functions": 26,
+   "classes": 3
+  },
+  {
+   "path": "oefeningen.py",
+   "kind": "python",
+   "layer": "root",
+   "lines": 8,
+   "explained": true,
+   "purpose": "The old name of the starter, kept so that old shortcuts and habits (`python3 oefeningen.py`) keep working: it runs leeravontuur.py.",
+   "counterpart": "leeravontuur structuur/oefeningen.py.json",
+   "imports": [],
+   "imported_by": [],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "requirements.txt",
+   "kind": "config",
+   "layer": "root",
+   "lines": 2,
+   "explained": true,
+   "purpose": "Dependencies: none on Linux and macOS; on Windows the windows-curses package, which gives Python its curses module.",
+   "counterpart": "leeravontuur structuur/requirements.txt.json"
+  },
+  {
+   "path": "tests/__init__.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 0,
+   "explained": true,
+   "purpose": "Marks the tests folder as a package so that `python -m unittest discover` and relative imports (from .test_stabiliteit import ...) work.",
+   "counterpart": "leeravontuur structuur/tests/__init__.py.json",
+   "imports": [],
+   "imported_by": [
+    "tests/test_stopslot.py"
+   ],
+   "functions": 0,
+   "classes": 0
+  },
+  {
+   "path": "tests/ci.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 30,
+   "explained": true,
+   "purpose": "Test runner for CI: like `python -m unittest discover -s tests`, but failures also appear as GitHub annotations.",
+   "counterpart": "leeravontuur structuur/tests/ci.py.json",
+   "imports": [],
+   "imported_by": [],
+   "functions": 2,
+   "classes": 0
+  },
+  {
+   "path": "tests/test_architectuur.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 71,
+   "explained": true,
+   "purpose": "Guards the architecture rules of CLAUDE.md: kern without curses, tkinter only in venster/, colours only through the theme, ASCII fallbacks.",
+   "counterpart": "leeravontuur structuur/tests/test_architectuur.py.json",
+   "imports": [
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/tekens.py",
+    "leeravontuur/terminal/thema.py"
+   ],
+   "imported_by": [],
+   "functions": 7,
+   "classes": 2
+  },
+  {
+   "path": "tests/test_avatar.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 129,
+   "explained": true,
+   "purpose": "Tests the avatar parts, the points rules and the avatar screens.",
+   "counterpart": "leeravontuur structuur/tests/test_avatar.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/punten.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 11,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_beta.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 101,
+   "explained": true,
+   "purpose": "Tests the beta screen layout for Cijferen (only with LEERAVONTUUR_BETA=1).",
+   "counterpart": "leeravontuur structuur/tests/test_beta.py.json",
+   "imports": [
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/oefenaar.py"
+   ],
+   "imported_by": [],
+   "functions": 9,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_breuken.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 230,
+   "explained": true,
+   "purpose": "Tests the Breuken (fractions) topics: reading typed fractions, generators, thinking errors, the bar model and the screens.",
+   "counterpart": "leeravontuur structuur/tests/test_breuken.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/breuken.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/modellen.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 20,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_cijferen.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 355,
+   "explained": true,
+   "purpose": "Tests Cijferen (column arithmetic): generators, thinking errors, the grid model and object, place values and the screens.",
+   "counterpart": "leeravontuur structuur/tests/test_cijferen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/cijferen.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/rooster.py",
+    "leeravontuur/terminal/scherm.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 32,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_eenheden.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 159,
+   "explained": true,
+   "purpose": "Tests unit conversion: arithmetic, the unit table, diagnosis, question generation and the extra categories.",
+   "counterpart": "leeravontuur structuur/tests/test_eenheden.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py"
+   ],
+   "imported_by": [],
+   "functions": 17,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_gemengd.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 210,
+   "explained": true,
+   "purpose": "Tests Herhalen › Gemengd oefenen: themes, the mixed series with Maten, the result per theme, the parent's control, exam help and a monkey test.",
+   "counterpart": "leeravontuur structuur/tests/test_gemengd.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/schermen/__init__.py",
+    "leeravontuur/terminal/schermen/gemengd.py",
+    "tests/test_ouder.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "imported_by": [],
+   "functions": 16,
+   "classes": 6
+  },
+  {
+   "path": "tests/test_getallen.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 214,
+   "explained": true,
+   "purpose": "Tests the Getallen (numbers) topics: place value, rounding, divisibility, number line; generators, diagnosis, model and screens.",
+   "counterpart": "leeravontuur structuur/tests/test_getallen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/modellen.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 18,
+   "classes": 4
+  },
+  {
+   "path": "tests/test_grootheden.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 163,
+   "explained": true,
+   "purpose": "Tests time, money and speed (grootheden): reading durations and clock times, generators, diagnosis and screens.",
+   "counterpart": "leeravontuur structuur/tests/test_grootheden.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/grootheden.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 14,
+   "classes": 4
+  },
+  {
+   "path": "tests/test_handleiding.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 78,
+   "explained": true,
+   "purpose": "Checks that the handbook follows the program: every topic and start argument is described, links work, automatic parts are up to date.",
+   "counterpart": "leeravontuur structuur/tests/test_handleiding.py.json",
+   "imports": [
+    "leeravontuur/__main__.py",
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [],
+   "functions": 7,
+   "classes": 1
+  },
+  {
+   "path": "tests/test_herhaling.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 133,
+   "explained": true,
+   "purpose": "Tests the repeat bin (Leitner boxes), question selection weights and the repeat screens.",
+   "counterpart": "leeravontuur structuur/tests/test_herhaling.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/selectie.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 13,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_hoofdrekenen.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 193,
+   "explained": true,
+   "purpose": "Tests the Hoofdrekenen (mental arithmetic) topics: generators, thinking errors and screens including Snelrekenen.",
+   "counterpart": "leeravontuur structuur/tests/test_hoofdrekenen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/snelrekenen.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/terminal/schermen/snelrekenen.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 16,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_invoer_objecten.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 41,
+   "explained": true,
+   "purpose": "Guards the rule that an input object declares how the Oefenaar treats it (no per-kind lists in the Oefenaar).",
+   "counterpart": "leeravontuur structuur/tests/test_invoer_objecten.py.json",
+   "imports": [
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/stappenhulp.py"
+   ],
+   "imported_by": [],
+   "functions": 4,
+   "classes": 1
+  },
+  {
+   "path": "tests/test_klad.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 144,
+   "explained": true,
+   "purpose": "Tests the scratch-pad reader: reading calculation rules as a child types them, and checking without giving the answer away.",
+   "counterpart": "leeravontuur structuur/tests/test_klad.py.json",
+   "imports": [
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/terminal/kladblad.py"
+   ],
+   "imported_by": [],
+   "functions": 18,
+   "classes": 2
+  },
+  {
+   "path": "tests/test_klok.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 155,
+   "explained": true,
+   "purpose": "Tests the clock topic: Flemish words, questions per year, thinking errors, the drawn clock and setting the hands.",
+   "counterpart": "leeravontuur structuur/tests/test_klok.py.json",
+   "imports": [
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/balk.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [],
+   "functions": 13,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_klokvenster.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 188,
+   "explained": true,
+   "purpose": "Tests the clock window: clock shapes, window placement, key translation and the talk with the subprocess including fallbacks.",
+   "counterpart": "leeravontuur structuur/tests/test_klokvenster.py.json",
+   "imports": [
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/venster.py",
+    "leeravontuur/venster/__init__.py",
+    "leeravontuur/venster/klokbeeld.py",
+    "leeravontuur/venster/klokvenster.py"
+   ],
+   "imported_by": [],
+   "functions": 17,
+   "classes": 4
+  },
+  {
+   "path": "tests/test_leerlijnen.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 48,
+   "explained": true,
+   "purpose": "Tests the learning-line JSON files and the school-year helpers.",
+   "counterpart": "leeravontuur structuur/tests/test_leerlijnen.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/leerlijnen.py"
+   ],
+   "imported_by": [],
+   "functions": 5,
+   "classes": 2
+  },
+  {
+   "path": "tests/test_meetkunde.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 221,
+   "explained": true,
+   "purpose": "Tests Meetkunde: models (figure, map), the grid pixel drawing, generators, thinking errors and screens.",
+   "counterpart": "leeravontuur structuur/tests/test_meetkunde.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/meetkunde.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/modellen.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 20,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_menu_architecture.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 311,
+   "explained": true,
+   "purpose": "Guards the fixed menu structure: the curriculum (terminal/curriculum) is the only source of the menus.",
+   "counterpart": "leeravontuur structuur/tests/test_menu_architecture.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/vaardigheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/nepscherm.py"
+   ],
+   "imported_by": [],
+   "functions": 27,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_opslag.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 171,
+   "explained": true,
+   "purpose": "Tests storage (kern/opslag.py): schema migrations, children and settings, append-only answers, sessions and opening/fallback.",
+   "counterpart": "leeravontuur structuur/tests/test_opslag.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/sessie.py"
+   ],
+   "imported_by": [],
+   "functions": 17,
+   "classes": 4
+  },
+  {
+   "path": "tests/test_ouder.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 341,
+   "explained": true,
+   "purpose": "Screen tests for the parent area, the PIN, the timer, remarks and the stop lock setup.",
+   "counterpart": "leeravontuur structuur/tests/test_ouder.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/feedback.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/wachtwoord.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/schermen/__init__.py",
+    "leeravontuur/terminal/schermen/ouder.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [
+    "tests/test_gemengd.py",
+    "tests/test_stopslot.py"
+   ],
+   "functions": 38,
+   "classes": 9
+  },
+  {
+   "path": "tests/test_procenten.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 161,
+   "explained": true,
+   "purpose": "Tests the Procenten topics: generators for every year, diagnosis and the screens (hundred-square, percent strip, cheat sheet).",
+   "counterpart": "leeravontuur structuur/tests/test_procenten.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/procenten.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 13,
+   "classes": 3
+  },
+  {
+   "path": "tests/test_rapporten.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 341,
+   "explained": true,
+   "purpose": "Tests passwords, dates and periods, reports, the log for parents (answers, points), the report by curriculum structure and export.",
+   "counterpart": "leeravontuur structuur/tests/test_rapporten.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/vaardigheden.py",
+    "leeravontuur/kern/wachtwoord.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py"
+   ],
+   "imported_by": [],
+   "functions": 26,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_reeks.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 216,
+   "explained": true,
+   "purpose": "Tests kern/reeks.py: the state of a skill, choosing topics for a mixed series, the plan, results per theme and who chooses the themes.",
+   "counterpart": "leeravontuur structuur/tests/test_reeks.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/rapporten.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/sessie.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py"
+   ],
+   "imported_by": [],
+   "functions": 21,
+   "classes": 8
+  },
+  {
+   "path": "tests/test_schermen.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 1082,
+   "explained": true,
+   "purpose": "Screen tests without a real terminal: keys, mouse clicks and the scroll wheel through NepScherm, for most of the program.",
+   "counterpart": "leeravontuur structuur/tests/test_schermen.py.json",
+   "imports": [
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/modellen.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/getallen.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/klok.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/avatar.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/scherm.py"
+   ],
+   "imported_by": [
+    "tests/test_avatar.py",
+    "tests/test_breuken.py",
+    "tests/test_cijferen.py",
+    "tests/test_gemengd.py",
+    "tests/test_getallen.py",
+    "tests/test_grootheden.py",
+    "tests/test_herhaling.py",
+    "tests/test_hoofdrekenen.py",
+    "tests/test_meetkunde.py",
+    "tests/test_ouder.py",
+    "tests/test_procenten.py",
+    "tests/test_stabiliteit.py",
+    "tests/test_stopslot.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py",
+    "tests/test_winkel.py"
+   ],
+   "functions": 107,
+   "classes": 12
+  },
+  {
+   "path": "tests/test_stabiliteit.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 292,
+   "explained": true,
+   "purpose": "Stability tests: no crashes and no lost data (generators, keys, database copies and damage, the safety net, and the monkey test).",
+   "counterpart": "leeravontuur structuur/tests/test_stabiliteit.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/foutlog.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/onderwerp.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/navigatie.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/oefenaar.py",
+    "leeravontuur/terminal/scherm.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [
+    "tests/test_gemengd.py",
+    "tests/test_stopslot.py",
+    "tests/test_taal_scherm.py",
+    "tests/test_taal_werkwoorden.py"
+   ],
+   "functions": 20,
+   "classes": 6
+  },
+  {
+   "path": "tests/test_starten.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 66,
+   "explained": true,
+   "purpose": "Tests starting the program: leeravontuur.py, the old name oefeningen.py and the double-click file per system.",
+   "counterpart": "leeravontuur structuur/tests/test_starten.py.json",
+   "imports": [
+    "leeravontuur/__init__.py"
+   ],
+   "imported_by": [],
+   "functions": 7,
+   "classes": 1
+  },
+  {
+   "path": "tests/test_stopslot.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 210,
+   "explained": true,
+   "purpose": "Tests the stop lock on the child's side: start straight at the child, the lock screen and Ctrl-C handling.",
+   "counterpart": "leeravontuur structuur/tests/test_stopslot.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/stopslot.py",
+    "leeravontuur/kern/wachtwoord.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/app.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "tests/__init__.py",
+    "tests/test_ouder.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "imported_by": [],
+   "functions": 21,
+   "classes": 6
+  },
+  {
+   "path": "tests/test_taal_scherm.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 276,
+   "explained": true,
+   "purpose": "Tests the sentence parser (Zinsdelen) on screen: step by step, Tab, free colouring, dividing, mouse, second chance, two finite verbs.",
+   "counterpart": "leeravontuur structuur/tests/test_taal_scherm.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/zinnen.py",
+    "leeravontuur/kern/taal/zinnenmachine.py",
+    "leeravontuur/kern/taal/zinsontleding.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/curriculum/__init__.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/zinsdelen.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "imported_by": [],
+   "functions": 29,
+   "classes": 5
+  },
+  {
+   "path": "tests/test_taal_werkwoorden.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 671,
+   "explained": true,
+   "purpose": "Tests Werkwoordspelling (Taal T3): the verb list against the rules, the sentence with a gap, the thinking steps, thinking errors, strong verbs and past participle, 'put in the past', and the screen.",
+   "counterpart": "leeravontuur structuur/tests/test_taal_werkwoorden.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/reeks.py",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/werkwoorden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/werkwoord.py",
+    "tests/test_schermen.py",
+    "tests/test_stabiliteit.py"
+   ],
+   "imported_by": [],
+   "functions": 52,
+   "classes": 9
+  },
+  {
+   "path": "tests/test_taal_zinsontleding.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 394,
+   "explained": true,
+   "purpose": "Tests the sentence-parsing core (Taal T1.1): the bracket notation, the word list, the sentence machine, steps and checking, hand-written sentences and sentences with two finite verbs (no screens).",
+   "counterpart": "leeravontuur structuur/tests/test_taal_zinsontleding.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/leerlijnen.py",
+    "leeravontuur/kern/taal/__init__.py",
+    "leeravontuur/kern/taal/nagekeken.py",
+    "leeravontuur/kern/taal/zinnen.py",
+    "leeravontuur/kern/taal/zinnenmachine.py",
+    "leeravontuur/kern/taal/zinsontleding.py"
+   ],
+   "imported_by": [],
+   "functions": 33,
+   "classes": 6
+  },
+  {
+   "path": "tests/test_vakken.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 207,
+   "explained": true,
+   "purpose": "Tests the building blocks of the new screen layout: the layout rectangles, and that every input object and model fits its panel at every screen size.",
+   "counterpart": "leeravontuur structuur/tests/test_vakken.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/overzicht.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/eenheden.py",
+    "leeravontuur/terminal/__init__.py",
+    "leeravontuur/terminal/indeling.py",
+    "leeravontuur/terminal/modellen.py",
+    "leeravontuur/terminal/oefenaar.py"
+   ],
+   "imported_by": [],
+   "functions": 21,
+   "classes": 4
+  },
+  {
+   "path": "tests/test_vraagstukken.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 501,
+   "explained": true,
+   "purpose": "Tests word problems: the story machine, the wrong paths, the klad, the four-step object, the Speurneus and the estimating questions.",
+   "counterpart": "leeravontuur structuur/tests/test_vraagstukken.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/instellingen.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/punten.py",
+    "leeravontuur/kern/verhaal.py",
+    "leeravontuur/kern/wiskunde/__init__.py",
+    "leeravontuur/kern/wiskunde/vraagstukken.py",
+    "leeravontuur/terminal/nepscherm.py",
+    "leeravontuur/terminal/scherm.py",
+    "leeravontuur/terminal/vraagstuk.py"
+   ],
+   "imported_by": [],
+   "functions": 46,
+   "classes": 8
+  },
+  {
+   "path": "tests/test_werkwijze.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 83,
+   "explained": true,
+   "purpose": "Guards the fixed work method: every calculation topic knows its solution in klad lines, and the tips never give away the answer.",
+   "counterpart": "leeravontuur structuur/tests/test_werkwijze.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/catalogus.py",
+    "leeravontuur/kern/getal.py",
+    "leeravontuur/kern/klad.py",
+    "leeravontuur/kern/leerjaren.py",
+    "leeravontuur/kern/onderwerp.py"
+   ],
+   "imported_by": [],
+   "functions": 6,
+   "classes": 1
+  },
+  {
+   "path": "tests/test_winkel.py",
+   "kind": "test",
+   "layer": "tests",
+   "lines": 146,
+   "explained": true,
+   "purpose": "Tests the shop: catalogue, the buying challenge, buying with penalties and the shop screens.",
+   "counterpart": "leeravontuur structuur/tests/test_winkel.py.json",
+   "imports": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/avatar.py",
+    "leeravontuur/kern/opslag.py",
+    "leeravontuur/kern/winkel.py",
+    "tests/test_schermen.py"
+   ],
+   "imported_by": [],
+   "functions": 16,
+   "classes": 4
+  },
+  {
+   "path": "werk/README.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 32,
+   "explained": true,
+   "purpose": "Explains the work-files convention: think first in a markdown file in werk/, build only after the father says 'actie'.",
+   "counterpart": "leeravontuur structuur/werk/README.md.json",
+   "referenced_by": [
+    "CLAUDE.md",
+    "werk/schermen-inventaris.md",
+    "werk/structuur.md"
+   ],
+   "words": 304
+  },
+  {
+   "path": "werk/breuken.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 72,
+   "explained": true,
+   "purpose": "Work file: fractions the way they are written on paper, with understanding instead of a trick (parked until maths v2).",
+   "counterpart": "leeravontuur structuur/werk/breuken.md.json",
+   "referenced_by": [
+    "werk/README.md"
+   ],
+   "words": 790
+  },
+  {
+   "path": "werk/opruimen.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 40,
+   "explained": true,
+   "purpose": "Work file: an audit of what could be simpler in the code, done 16/11/2026 (built).",
+   "counterpart": "leeravontuur structuur/werk/opruimen.md.json",
+   "referenced_by": [
+    "werk/README.md"
+   ],
+   "words": 389
+  },
+  {
+   "path": "werk/schermen-inventaris.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 325,
+   "explained": true,
+   "purpose": "Work file: the inventory (phase 0) of everything the beta screens must change, with checkboxes and the 24 open questions and answers.",
+   "counterpart": "leeravontuur structuur/werk/schermen-inventaris.md.json",
+   "referenced_by": [
+    "docs/architectuur.md",
+    "werk/README.md",
+    "werk/schermen.md"
+   ],
+   "words": 4689
+  },
+  {
+   "path": "werk/schermen.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 273,
+   "explained": true,
+   "purpose": "Work file: 'Schermen 1.0', panels like btop: the proposal, beta for Cijferen, architecture helpers, rollout choices and the phases.",
+   "counterpart": "leeravontuur structuur/werk/schermen.md.json",
+   "referenced_by": [
+    "README.md",
+    "docs/architectuur.md",
+    "leeravontuur/terminal/beta.py",
+    "leeravontuur/terminal/indeling.py",
+    "leeravontuur/terminal/invoer.py",
+    "leeravontuur/terminal/thema.py",
+    "leeravontuur/terminal/vak.py",
+    "tests/test_beta.py",
+    "tests/test_vakken.py",
+    "werk/README.md",
+    "werk/schermen-inventaris.md"
+   ],
+   "words": 2877
+  },
+  {
+   "path": "werk/structuur.md",
+   "kind": "markdown",
+   "layer": "werk",
+   "lines": 54,
+   "explained": true,
+   "purpose": "Work file for this map: why, the choices, the method, phases and limits of 'leeravontuur structuur'.",
+   "counterpart": "leeravontuur structuur/werk/structuur.md.json",
+   "referenced_by": [],
+   "words": 575
+  }
+ ]
+}

@@ -1,0 +1,52 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.procenten.korting.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 27,
+ "source_sha256": "4389b671785529d9169cb887818aed9aa7c44eae49cae1ce91c72e7d57a808e0",
+ "purpose": "Learning line for discount, VAT and percentage change (m1 only).",
+ "details": "Only the last year has content. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": "null",
+   "5": "null",
+   "6": {
+    "soorten": {"$list": 2, "$items": "string"}
+   },
+   "m1": {
+    "soorten": {"$list": 4, "$items": "string"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/procenten.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.soorten",
+   "explanation": "The kinds of question that can occur in that school year (names are those of the topic's question generator; the handbook table translates them)."
+  }
+ ]
+}

@@ -1,0 +1,39 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "CLAUDE.md",
+ "kind": "markdown",
+ "layer": "root",
+ "lines": 115,
+ "source_sha256": "38f8656dc9f4b2b2b57dedee73546b70eb3433f4fc6920a503d3a75e1f0d66df",
+ "purpose": "The repository's instructions for whoever works on the code (Claude): goals, architecture rules, the golden rules, testing, how to work with the father, release procedure, handbook rules and where plans live.",
+ "details": "Dutch. Checked in and loaded automatically at the start of every Claude session. Short on purpose (details moved to docs/architectuur.md on 16/11/2026). Key rules: the father decides everything the child or parent sees; propose first, build after agreement; big changes get an inventory and phased plan with a stop per phase; evidence before 'done' (full suite, tmux 80×24, comparison on a copy of the data); work files in werk/ before building; no merging, tagging or releasing by Claude; Claude answers the father in English but program and docs are Flemish Dutch. Contains one line pointing to the map in 'leeravontuur structuur/'.",
+ "summary": "Project rules: the two goals; the layer diagram (curriculum, terminal, venster, kern, inhoud) and five golden rules; always-rules (no curses in kern, colours via theme roles with symbols, click zones for every control, fixed work method, exact arithmetic with Decimal/Fraction, storage only through opslag, every exercise through a Sessie); menus come from the curriculum, max 10 per menu; platforms and start files; testing with NepScherm and tmux; working agreements with the father; release procedure; handbook project rules; and the plan documents.",
+ "headings": [
+  {"level": 1, "text": "Leeravontuur: afspraken voor wie aan deze code werkt", "line": 1},
+  {"level": 2, "text": "Architectuur (niet doorbreken)", "line": 9},
+  {"level": 2, "text": "Altijd (de details staan in `docs/architectuur.md`)", "line": 26},
+  {"level": 2, "text": "Waar staat wat (`docs/architectuur.md`)", "line": 36},
+  {"level": 2, "text": "Menu's", "line": 43},
+  {"level": 2, "text": "Platformen", "line": 47},
+  {"level": 2, "text": "Testen", "line": 54},
+  {"level": 2, "text": "Werkwijze met Claude (zo werken we samen)", "line": 64},
+  {"level": 2, "text": "Werkwijze (uitbrengen)", "line": 93},
+  {"level": 2, "text": "Plan", "line": 111}
+ ],
+ "links": [],
+ "referenced_by": [
+  "README.md",
+  "docs/architectuur.md",
+  "docs/menu-inventaris.md",
+  "docs/plan.md",
+  "docs/taal.md",
+  "docs/werkwijzen.md",
+  "tests/test_architectuur.py",
+  "tests/test_handleiding.py",
+  "werk/opruimen.md",
+  "werk/schermen-inventaris.md",
+  "werk/schermen.md",
+  "werk/structuur.md"
+ ],
+ "words": 1344
+}

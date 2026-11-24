@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur-linux.sh",
+ "kind": "script",
+ "layer": "root",
+ "lines": 4,
+ "source_sha256": "d6c08ea39a09af056105dbe05efa2a230e56264ac345fd13174470a09e4baa5e",
+ "purpose": "Double-click / shell starter for Linux.",
+ "details": "Changes to its own folder and runs `python3 leeravontuur.py` with the given arguments (exec). LF line endings and the executable bit are required (see .gitattributes and tests/test_starten.py)."
+}

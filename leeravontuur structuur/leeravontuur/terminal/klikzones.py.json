@@ -1,0 +1,117 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/klikzones.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 24,
+ "source_sha256": "1729760896f8a791884d2ea806fbe74d785e965d00be6235d3ad00b7e3321802",
+ "purpose": "Records where on screen a click does something, so a click gives the same action as the matching key.",
+ "details": "Each screen clears the zones, registers a zone while drawing every clickable element, and the main loop turns a mouse click into the action of the zone under it (the last drawn zone wins). This is how mouse and keyboard share one code path (golden rule 3).",
+ "module_docstring": "Klikzones: elk scherm legt tijdens het tekenen vast waar je kunt klikken.",
+ "imports": [],
+ "imported_by": ["leeravontuur/terminal/scherm.py"],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Klikzones",
+   "qualname": "Klikzones",
+   "lines": [8, 24],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The list of click zones of the current screen.",
+   "attributes": [
+    {"name": "zones", "line": 10, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [113]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Klikzones.__init__",
+     "kind": "method",
+     "lines": [9, 10],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts with no zones.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [113]}
+     ]
+    },
+    {
+     "name": "wis",
+     "qualname": "Klikzones.wis",
+     "kind": "method",
+     "lines": [12, 13],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Removes all zones (called when a screen redraws).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "voeg",
+     "qualname": "Klikzones.voeg",
+     "kind": "method",
+     "lines": [15, 17],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hoogte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breedte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actie", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adds a rectangular zone (y, x, height, width) with an action; ignored when it has no size.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zoek",
+     "qualname": "Klikzones.zoek",
+     "kind": "method",
+     "lines": [19, 24],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De actie op deze plek (de laatst getekende zone wint), of None.",
+     "explanation": "The action of the zone under a position (the last drawn wins), or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["reversed"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

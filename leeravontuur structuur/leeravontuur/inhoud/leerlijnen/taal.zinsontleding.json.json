@@ -1,0 +1,125 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/taal.zinsontleding.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 149,
+ "source_sha256": "75ac52ca9bc6ccdb98876aff136d883e7c9de0861d9e3598e893d69290930a9b",
+ "purpose": "Learning line for parsing sentences: which parts, which sentence structures and how many hand-written or two-verb sentences per school year (3-6).",
+ "details": "Year 3-4: pv and o only; year 5: lv and mv; year 6: all parts incl. predicates and adverbials, sentences without lv and sentences with two finite verbs. Dividing the sentence first is only on early years; step-by-step is off in year 6. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 2, "$items": "string"},
+  "parameters": {
+   "$keys": ["delen", "verdelen", "zinsbouw", "tijden", "max_woorden", "stap_voor_stap", "zonder_lv", "nagekeken", "…"],
+   "$count": 11,
+   "$values": "string"
+  },
+  "leerlijn": {
+   "3": {
+    "delen": {"$list": 2, "$items": "string"},
+    "verdelen": "boolean",
+    "zinsbouw": {"$list": 2, "$items": "string"},
+    "tijden": {"$list": 1, "$items": "string"},
+    "max_woorden": "number",
+    "stap_voor_stap": "boolean",
+    "zonder_lv": "boolean",
+    "nagekeken": {"$list": 0},
+    "nagekeken_op_tien": "number",
+    "twee_pv": {"$list": 0},
+    "twee_op_tien": "number"
+   },
+   "4": {
+    "delen": {"$list": 2, "$items": "string"},
+    "verdelen": "boolean",
+    "zinsbouw": {"$list": 3, "$items": "string"},
+    "tijden": {"$list": 2, "$items": "string"},
+    "max_woorden": "number",
+    "stap_voor_stap": "boolean",
+    "zonder_lv": "boolean",
+    "nagekeken": {"$list": 1, "$items": "string"},
+    "nagekeken_op_tien": "number",
+    "twee_pv": {"$list": 0},
+    "twee_op_tien": "number"
+   },
+   "5": {
+    "delen": {"$list": 4, "$items": "string"},
+    "verdelen": "boolean",
+    "zinsbouw": {"$list": 8, "$items": "string"},
+    "tijden": {"$list": 2, "$items": "string"},
+    "max_woorden": "number",
+    "stap_voor_stap": "boolean",
+    "zonder_lv": "boolean",
+    "nagekeken": {"$list": 2, "$items": "string"},
+    "nagekeken_op_tien": "number",
+    "twee_pv": {"$list": 0},
+    "twee_op_tien": "number"
+   },
+   "6": {
+    "delen": {"$list": 7, "$items": "string"},
+    "verdelen": "boolean",
+    "zinsbouw": {"$list": 10, "$items": "string"},
+    "tijden": {"$list": 2, "$items": "string"},
+    "max_woorden": "number",
+    "stap_voor_stap": "boolean",
+    "zonder_lv": "boolean",
+    "nagekeken": {"$list": 2, "$items": "string"},
+    "nagekeken_op_tien": "number",
+    "twee_pv": {"$list": 8, "$items": "string"},
+    "twee_op_tien": "number"
+   }
+  }
+ },
+ "read_by": [
+  "leeravontuur/kern/leerlijnen.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/terminal/curriculum/taal.py"
+ ],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {
+   "key": "parameters.delen",
+   "explanation": "The parts of the sentence the child must find that year (pv, o, then lv, mv; on the hardest level also wwg, nwg, bwb)."
+  },
+  {"key": "parameters.verdelen", "explanation": "Whether the first step is dividing the sentence into parts."},
+  {"key": "parameters.zinsbouw", "explanation": "The sentence structures the sentence machine may build."},
+  {
+   "key": "parameters.tijden",
+   "explanation": "The tenses of the verbs in the sentences (tt = present, vt = past)."
+  },
+  {"key": "parameters.max_woorden", "explanation": "The longest sentence in words."},
+  {
+   "key": "parameters.stap_voor_stap",
+   "explanation": "Whether the step-by-step scheme is the default (false = typing the form directly)."
+  },
+  {"key": "parameters.zonder_lv", "explanation": "Whether sentences without a direct object occur."},
+  {
+   "key": "parameters.nagekeken",
+   "explanation": "The school years of the hand-written, fully analysed sentences that are mixed in."
+  },
+  {
+   "key": "parameters.nagekeken_op_tien",
+   "explanation": "How many of ten questions come from the hand-written list."
+  },
+  {"key": "parameters.twee_pv", "explanation": "The structures of sentences with two finite verbs."},
+  {"key": "parameters.twee_op_tien", "explanation": "How many of ten questions have two finite verbs."}
+ ]
+}

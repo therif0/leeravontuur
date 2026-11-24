@@ -1,0 +1,772 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/winkel.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 348,
+ "source_sha256": "336f2d28e648e7a168b0dec9f1acf661bcfd00c31231e2bd829b1c69c21fdcb9",
+ "purpose": "The 'Mijn avatar' screens: avatar hub, screen colours, the shop (buy items with points after a small calculation), and the wardrobe with saved outfits.",
+ "details": "AvatarSchermen groups four screens that share the app, storage and the child's avatar config. The shop logic (catalogue, prices, delivery 'pakje', penalties, the maths challenge) is in kern/winkel.py (imported as W) and the avatar parts in kern/avatar.py; this file asks, shows and calls those functions. Buying always asks the child to compute the points left (a challenge at the child's school year) with one extra try; a wrong second answer triggers the configured penalty (a delayed package, a time-based delivery, shipping costs or nothing, set in the parent area). Too expensive items give a saving question instead.",
+ "module_docstring": "Mijn avatar, de winkel en de kast (paskamer).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["winkel"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/winkel.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["instellingen"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["STRAFFEN"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/app.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "HOOFD",
+   "line": 13,
+   "value_type": "Constant",
+   "value_preview": "'Leeravontuur'",
+   "explanation": "Name of the root breadcrumb."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "AvatarSchermen",
+   "qualname": "AvatarSchermen",
+   "lines": [16, 348],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Controller of the avatar hub, shop and wardrobe screens.",
+   "attributes": [
+    {"name": "app", "line": 18, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 19, "scope": "instance", "value_preview": null},
+    {"name": "o", "line": 20, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.mijn_avatar", "lines": [327]},
+    {"caller": "leeravontuur/terminal/app.py::App.winkel", "lines": [331]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "AvatarSchermen.__init__",
+     "kind": "method",
+     "lines": [17, 20],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the app, its Scherm and storage.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.mijn_avatar", "lines": [327]},
+      {"caller": "leeravontuur/terminal/app.py::App.winkel", "lines": [331]}
+     ]
+    },
+    {
+     "name": "kind",
+     "qualname": "AvatarSchermen.kind",
+     "kind": "property",
+     "lines": [23, 24],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: the active child.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "saldo",
+     "qualname": "AvatarSchermen.saldo",
+     "kind": "method",
+     "lines": [26, 27],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The child's points balance from storage.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.punten_saldo",
+       "lines": [27],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [54]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [218]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [144]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.status", "lines": [130]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.winkel", "lines": [119]}
+     ]
+    },
+    {
+     "name": "config",
+     "qualname": "AvatarSchermen.config",
+     "kind": "method",
+     "lines": [29, 30],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The avatar configuration currently worn (from the app).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.avatar_config",
+       "lines": [30],
+       "candidates": ["leeravontuur/terminal/app.py::App.avatar_config"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [50]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [277]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [151]},
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.vraag", "lines": [182]}
+     ]
+    },
+    {
+     "name": "melding",
+     "qualname": "AvatarSchermen.melding",
+     "kind": "method",
+     "lines": [32, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gezicht", "kind": "positional", "default": "'blij'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shows a message page (✘ lines in the error role, ✔ in the good role) closed with Enter. The `gezicht` parameter is accepted but not used.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [34],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.combinaties", "lines": [333]},
+      {
+       "caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop",
+       "lines": [211, 215, 225, 228, 262]
+      }
+     ]
+    },
+    {
+     "name": "hub",
+     "qualname": "AvatarSchermen.hub",
+     "kind": "method",
+     "lines": [38, 82],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Mijn avatar': draws the big avatar with a face the child can cycle (←→ or click), name and points, packages that are on the way with a progress bar, and the entries W (shop), K (wardrobe), L (screen colours).",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::onderdelen", "lines": [41]},
+      {"target": "leeravontuur/kern/winkel.py::onderweg", "lines": [58]},
+      {"target": "leeravontuur/kern/winkel.py::voortgang", "lines": [60]},
+      {"target": "leeravontuur/kern/winkel.py::zoek", "lines": [59]},
+      {"target": "leeravontuur/terminal/avatar.py::teken_groot", "lines": [50]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.config", "lines": [50]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [80]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.saldo", "lines": [54]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.schermkleuren", "lines": [82]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.winkel", "lines": [78]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [48],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [49],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [53, 54, 55, 56, 61, 62, 64, 66, 68],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [46],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [70], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [51, 65, 67, 69],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["len", "list", "max", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "schermkleuren",
+     "qualname": "AvatarSchermen.schermkleuren",
+     "kind": "method",
+     "lines": [84, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De kleuren van het hele scherm (de thema's, ook kleurenblind en hoog contrast). Een keuze geldt meteen, zodat het kind het ziet; Esc = klaar. Bewaard per kind, zoals vroeger bij Opties.",
+     "explanation": "Menu of colour themes (including colour-blind and high contrast) with a sample line; a choice applies and is stored at once; Esc leaves.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "app.bewaar",
+       "lines": [110],
+       "candidates": ["leeravontuur/terminal/app.py::App.bewaar", "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.menu",
+       "lines": [103],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.pas_toe",
+       "lines": [109],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.pas_toe"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate", "list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [82]}
+     ]
+    },
+    {
+     "name": "voorbeeld",
+     "qualname": "AvatarSchermen.schermkleuren.voorbeeld",
+     "kind": "nested",
+     "lines": [91, 99],
+     "params": [],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the sample line (juist, fout, good field, wrong field, cursor) in the current theme.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.maat",
+       "lines": [92],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.put",
+       "lines": [94, 95, 96, 97, 98, 99],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "winkel",
+     "qualname": "AvatarSchermen.winkel",
+     "kind": "method",
+     "lines": [114, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De winkel; ook rechtstreeks vanuit het hoofdmenu (dan met kr = [Leeravontuur, Winkel]).",
+     "explanation": "Menu of the shop layers (with item counts), each opening its shelf (rek). Also reachable from the main menu with another breadcrumb.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::catalogus", "lines": [120]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [123]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.saldo", "lines": [119]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [119],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len", "list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [78]}
+     ]
+    },
+    {
+     "name": "status",
+     "qualname": "AvatarSchermen.status",
+     "kind": "method",
+     "lines": [125, 130],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kast", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bezit", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Status text and role of an item for the shelf: '✔ in je kast', 'pakje onderweg' or the price (accent when affordable).",
+     "calls": [
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.saldo", "lines": [130]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [147]}
+     ]
+    },
+    {
+     "name": "rek",
+     "qualname": "AvatarSchermen.rek",
+     "kind": "method",
+     "lines": [132, 170],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "laag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "One shelf: list of items with status and a preview of the avatar wearing the selected item; ↑↓/jk/Tab/wheel move; Enter or a second click buys or puts on.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::catalogus", "lines": [134]},
+      {"target": "leeravontuur/kern/winkel.py::gekocht", "lines": [140]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [140]},
+      {"target": "leeravontuur/terminal/avatar.py::teken", "lines": [152]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.config", "lines": [151]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [158, 168]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.saldo", "lines": [144]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.status", "lines": [147]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [141],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.maat",
+       "lines": [143],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [142],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [144, 148, 149, 153],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [138],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [154], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [150],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["dict", "enumerate", "isinstance", "len", "ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.winkel", "lines": [123]}
+     ]
+    },
+    {
+     "name": "vraag",
+     "qualname": "AvatarSchermen.vraag",
+     "kind": "method",
+     "lines": [172, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gezicht", "kind": "positional", "default": "'denken'", "annotation": null},
+      {"name": "extra", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een rekenvraag met een antwoordvak (alleen cijfers). Geeft het getal of None (Esc).",
+     "explanation": "A calculation question with a digits-only answer box beside the avatar, optional lines above. Returns the number or None on Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/avatar.py::teken", "lines": [182]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.config", "lines": [182]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [193, 196, 199],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.maat",
+       "lines": [181],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.maat",
+        "leeravontuur/terminal/scherm.py::Scherm.maat",
+        "leeravontuur/venster/klokvenster.py::Venster.maat"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [180],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [185, 189, 191],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [178],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [192],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "s.toets", "lines": [194], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": ["chr", "int", "isinstance", "len", "ord", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.koop", "lines": [221, 231, 236]}
+     ]
+    },
+    {
+     "name": "koop",
+     "qualname": "AvatarSchermen.koop",
+     "kind": "method",
+     "lines": [207, 262],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "item", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Buy flow: an owned item is put on; an item on its way shows the remaining progress; too expensive gives a saving question with a lesson; otherwise a challenge about the remaining points (a second chance after a wrong answer), then W.koop with the penalty setting, and the result screen (put it on now, or the lesson and the delivery or cost consequence).",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::challenge", "lines": [230]},
+      {"target": "leeravontuur/kern/winkel.py::draag", "lines": [210, 248]},
+      {"target": "leeravontuur/kern/winkel.py::gekocht", "lines": [208]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [208]},
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [241]},
+      {"target": "leeravontuur/kern/winkel.py::spaar_vraag", "lines": [220]},
+      {"target": "leeravontuur/kern/winkel.py::voortgang", "lines": [214]},
+      {
+       "target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.melding",
+       "lines": [211, 215, 225, 228, 262]
+      },
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.saldo", "lines": [218]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.vraag", "lines": [221, 231, 236]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.menu",
+       "lines": [245],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.rek", "lines": [158, 168]}
+     ]
+    },
+    {
+     "name": "kast",
+     "qualname": "AvatarSchermen.kast",
+     "kind": "method",
+     "lines": [266, 321],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The wardrobe: one row per avatar layer with ◀ item ▶ and the number of choices, a big avatar; arrows or clicks change items, B saves the combination under a name, C opens saved combinations.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::opties", "lines": [283]},
+      {"target": "leeravontuur/kern/winkel.py::draag", "lines": [321]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [276]},
+      {"target": "leeravontuur/terminal/avatar.py::teken_groot", "lines": [291]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.combinaties", "lines": [314]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.config", "lines": [277]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.keuzes", "lines": [284, 319]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [278],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.invoer",
+       "lines": [310],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.invoer"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [279],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [280, 285, 286, 287],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [274],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {"expr": "s.toets", "lines": [292], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "s.zones.voeg",
+       "lines": [288, 289, 290],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "self.o.bewaar_outfit",
+       "lines": [312],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_outfit"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "list", "ord"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.hub", "lines": [80]}
+     ]
+    },
+    {
+     "name": "keuzes",
+     "qualname": "AvatarSchermen.keuzes",
+     "kind": "staticmethod",
+     "lines": [324, 328],
+     "params": [
+      {"name": "laag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kast", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "The options for a layer: items in the wardrobe for that layer, with 'nothing' first when the layer may be empty.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["sorted"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [284, 319]}
+     ]
+    },
+    {
+     "name": "combinaties",
+     "qualname": "AvatarSchermen.combinaties",
+     "kind": "method",
+     "lines": [330, 348],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Menu of saved outfits: choose one to wear (only items still owned), or throw one away.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::draag", "lines": [348]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [345]},
+      {"target": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.melding", "lines": [333]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.outfits",
+       "lines": [331],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.outfits"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.verwijder_outfit",
+       "lines": [343],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.verwijder_outfit"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.menu",
+       "lines": [336, 341],
+       "candidates": [
+        "leeravontuur/terminal/scherm.py::Scherm.menu",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.menu"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kast", "lines": [314]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

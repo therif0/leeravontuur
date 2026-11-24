@@ -1,0 +1,26 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/README.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 32,
+ "source_sha256": "901ff1cd71406b9779eb0e8105144edf6f24e8287cd9db6821cf4539111bb2ce",
+ "purpose": "Explains the work-files convention: think first in a markdown file in werk/, build only after the father says 'actie'.",
+ "details": "Agreed with the father on 12/11/2026. One file per feature or update with a status line on top (idea, in discussion, ready for action, built (version), parked), the why with an example, choices, phases. Includes an overview table of the files and what must not go here (code, tests and documents for the child or parent).",
+ "summary": "How work files work: one file per function or update in werk/, with status, reasons, questions, choices and phases; building starts only after the father says 'actie'; code, tests and user-facing documents do not belong here; an overview table lists the files and their status.",
+ "headings": [
+  {"level": 1, "text": "Werkbestanden: eerst denken, dan bouwen", "line": 1},
+  {"level": 2, "text": "Zo werken we", "line": 5},
+  {"level": 2, "text": "Elk bestand heeft", "line": 15},
+  {"level": 2, "text": "Wat hier niet komt", "line": 22},
+  {"level": 2, "text": "Overzicht", "line": 26}
+ ],
+ "links": [
+  {"text": "breuken.md", "target": "breuken.md", "internal": true},
+  {"text": "opruimen.md", "target": "opruimen.md", "internal": true},
+  {"text": "schermen.md", "target": "schermen.md", "internal": true},
+  {"text": "schermen-inventaris.md", "target": "schermen-inventaris.md", "internal": true}
+ ],
+ "referenced_by": ["CLAUDE.md", "werk/schermen-inventaris.md", "werk/structuur.md"],
+ "words": 304
+}

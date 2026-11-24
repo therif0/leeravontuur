@@ -1,0 +1,81 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/paden.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 45,
+ "source_sha256": "ff194daa4890bae9c9d1009836d4acdc396ff5ce3d8e8ef06bc2e6b775ac2682",
+ "purpose": "Decides where the program keeps its data and where exports go, per operating system.",
+ "details": "data_map() holds the database, backups, the error log and the remarks file; the environment variable LEERAVONTUUR_DATA overrides it (used by tests and by the father to test on a copy of real data). documenten_map() is where exports are written and can be overridden with LEERAVONTUUR_DOCUMENTEN. Neither creates the folder.",
+ "module_docstring": "Waar het programma zijn gegevens bewaart, per besturingssysteem.",
+ "imports": [
+  {"module": "os", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 5, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [
+  "leeravontuur/kern/feedback.py",
+  "leeravontuur/kern/foutlog.py",
+  "leeravontuur/kern/instellingen.py",
+  "leeravontuur/kern/opslag.py",
+  "leeravontuur/kern/slot.py",
+  "leeravontuur/terminal/schermen/ouder.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "data_map",
+   "qualname": "data_map",
+   "kind": "function",
+   "lines": [8, 19],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De map voor instellingen en (later) de databank. LEERAVONTUUR_DATA gaat voor (handig voor tests).",
+   "explanation": "Data folder: LEERAVONTUUR_DATA if set; otherwise %APPDATA%/Leeravontuur on Windows, ~/Library/Application Support/Leeravontuur on macOS, and $XDG_DATA_HOME or ~/.local/share/leeravontuur elsewhere.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["os.environ.get", "pathlib.Path", "pathlib.Path.home", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/feedback.py::pad", "lines": [13]},
+    {"caller": "leeravontuur/kern/foutlog.py::pad", "lines": [19]},
+    {"caller": "leeravontuur/kern/instellingen.py::pad", "lines": [76]},
+    {"caller": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [220]},
+    {"caller": "leeravontuur/kern/slot.py::bezet", "lines": [48]},
+    {"caller": "leeravontuur/kern/slot.py::geef_vrij", "lines": [71]},
+    {"caller": "leeravontuur/kern/slot.py::neem", "lines": [61]}
+   ]
+  },
+  {
+   "name": "documenten_map",
+   "qualname": "documenten_map",
+   "kind": "function",
+   "lines": [22, 45],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Waar exports komen: de map Documenten van de gebruiker (+ submap Leeravontuur).",
+   "explanation": "Folder for exports: LEERAVONTUUR_DOCUMENTEN if set; else the user's Documents folder (on Linux read from ~/.config/user-dirs.dirs, falling back to Documents or Documenten) plus a 'Leeravontuur' subfolder, or ~/Leeravontuur when none exists.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".is_dir",
+    ".read_text",
+    "os.environ.get",
+    "pathlib.Path",
+    "pathlib.Path.home",
+    "str",
+    "sys.platform.startswith"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer", "lines": [309]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.exporteer_alles", "lines": [642, 643]}
+   ]
+  }
+ ]
+}

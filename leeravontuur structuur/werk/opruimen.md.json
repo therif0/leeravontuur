@@ -1,0 +1,20 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/opruimen.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 40,
+ "source_sha256": "74889757856a09a95769336b865c94a6fab3e969827d39ef4832d67002568366",
+ "purpose": "Work file: an audit of what could be simpler in the code, done 16/11/2026 (built).",
+ "details": "Lists the six unused definitions that were removed, the CLAUDE.md shortening (304 to about 110 lines, details to docs/architectuur.md), the audit findings with recommendations (duplicate tip code in zinsdelen/werkwoord, three places to register an input object, an always-empty BINNENKORT, an unused onregelmatig key, plan.md length), the phases (A: StappenHulp and the two attributes on input objects; B: leerlijn keys and plan.md) and what turned out differently.",
+ "summary": "Cleanup audit: six dead definitions removed (verified by running the suite without them), CLAUDE.md shortened, findings with recommendations (shared tip code → terminal/stappenhulp.py, input objects declare geen_tweede_kans and vraag_is_zin, leave CU.BINNENKORT, remove unused onregelmatig keys, shorten plan.md), things that look dead but are not (getattr(self, '_' + soort) in vraagstukken), the phases, and deviations.",
+ "headings": [
+  {"level": 1, "text": "Opruimen: wat eenvoudiger kan", "line": 1},
+  {"level": 2, "text": "Gedaan (branch `opruimen`)", "line": 6},
+  {"level": 2, "text": "Wat de audit vond (met de aanbeveling)", "line": 12},
+  {"level": 2, "text": "Fasen", "line": 31}
+ ],
+ "links": [],
+ "referenced_by": ["werk/README.md"],
+ "words": 389
+}

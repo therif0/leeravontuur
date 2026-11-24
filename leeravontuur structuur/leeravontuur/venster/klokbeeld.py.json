@@ -1,0 +1,185 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/venster/klokbeeld.py",
+ "kind": "python",
+ "layer": "venster",
+ "lines": 111,
+ "source_sha256": "0db111f38db7a7cd0fb35bb5f6a420ad6e617fc61e3730ccf3865136a13c19d2",
+ "purpose": "The analogue clock as plain shapes (circles, lines, text) with no tkinter, plus an SVG renderer.",
+ "details": "vormen() turns a time in minutes into a list of shape dicts (soort cirkel/lijn/tekst) inside a square of `maat` points: dial, 60 ticks, hour numbers 1-12, optional small minute numbers, an optional dashed green 'correct' pair of hands, the hour and minute hands (hour hand short and thick, minute hand long and thin, blue and orange so that colour-blind people can tell them apart) and the axle. The tkinter window (klokvenster.py) draws these shapes on a canvas; naar_svg() writes them as an SVG for the handbook screenshots; tests use them to check the hands. No tkinter import here, so it works everywhere.",
+ "module_docstring": "De wijzerklok als vormen (alleen data): cirkels, lijnen en tekst in een vak van `maat` × `maat` punten.",
+ "imports": [
+  {"module": "html", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["docs/tools/scenarios.py", "leeravontuur/venster/klokvenster.py", "tests/test_klokvenster.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "KLEUR",
+   "line": 12,
+   "value_type": "Dict",
+   "value_preview": "{'plaat': '#fffdf5', 'ring': '#334155', 'streep': '#475569', 'fijn': …",
+   "explanation": "The colour palette of the clock window and SVGs (dial, ring, ticks, numbers, hour hand blue, minute hand orange, correct/wrong green/red, background)."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "hoeken",
+   "qualname": "hoeken",
+   "kind": "function",
+   "lines": [19, 22],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(uurhoek, minuuthoek) in graden, met de klok mee vanaf 12.",
+   "explanation": "Returns (hour angle, minute angle) in degrees clockwise from 12 for a time in minutes (modulo 12 hours; the hour hand moves with the minutes).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["divmod", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokbeeld.py::_wijzers", "lines": [63]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_wijzers_op_de_juiste_plek", "lines": [40]}
+   ]
+  },
+  {
+   "name": "punt",
+   "qualname": "punt",
+   "kind": "function",
+   "lines": [25, 27],
+   "params": [
+    {"name": "cx", "kind": "positional", "default": null, "annotation": null},
+    {"name": "cy", "kind": "positional", "default": null, "annotation": null},
+    {"name": "straal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "hoek", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Point at a radius and angle (degrees clockwise from 12) around a centre.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["math.cos", "math.radians", "math.sin"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokbeeld.py::_wijzers", "lines": [66, 67]},
+    {"caller": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [41, 42, 46, 51]}
+   ]
+  },
+  {
+   "name": "vormen",
+   "qualname": "vormen",
+   "kind": "function",
+   "lines": [30, 59],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null},
+    {"name": "maat", "kind": "positional", "default": "320", "annotation": null},
+    {"name": "juist", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "minuutcijfers", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De klok op `minuten` (na middernacht; een wijzerklok toont 12 uur).",
+   "explanation": "Builds the list of shapes of the clock at the given time: dial circle (ring coloured green or red for a verdict), ticks, numbers, optional dashed 'juist' hands when the correct time differs, the real hands and the axle.",
+   "calls": [
+    {"target": "leeravontuur/venster/klokbeeld.py::_wijzers", "lines": [55, 56]},
+    {"target": "leeravontuur/venster/klokbeeld.py::punt", "lines": [41, 42, 46, 51]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["int", "range", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [594, 595]},
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.teken", "lines": [273]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_alle_cijfers_en_minuten", "lines": [48]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_svg", "lines": [60]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_wijzers_op_de_juiste_plek", "lines": [39]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_zo_moest_het", "lines": [53, 54, 57]}
+   ]
+  },
+  {
+   "name": "_wijzers",
+   "qualname": "_wijzers",
+   "kind": "function",
+   "lines": [62, 71],
+   "params": [
+    {"name": "c", "kind": "positional", "default": null, "annotation": null},
+    {"name": "r", "kind": "positional", "default": null, "annotation": null},
+    {"name": "maat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null},
+    {"name": "schaduw", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds the two hands (hour and minute) as line shapes; as a 'shadow' (the correct time) they are green, dashed, thinner and not rounded.",
+   "calls": [
+    {"target": "leeravontuur/venster/klokbeeld.py::hoeken", "lines": [63]},
+    {"target": "leeravontuur/venster/klokbeeld.py::punt", "lines": [66, 67]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [55, 56]}
+   ]
+  },
+  {
+   "name": "naar_svg",
+   "qualname": "naar_svg",
+   "kind": "function",
+   "lines": [74, 105],
+   "params": [
+    {"name": "lijst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "maat", "kind": "positional", "default": "320", "annotation": null},
+    {"name": "boven", "kind": "positional", "default": "()", "annotation": null},
+    {"name": "onder", "kind": "positional", "default": "()", "annotation": null},
+    {"name": "titel", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De vormen als SVG (voor de handleiding), zoals in het klokvenster: boven de klok de vraag, eronder de uitslag. boven en onder zijn tekstregels: [(tekst, kleur-sleutel)].",
+   "explanation": "Renders shapes as an SVG document with lines of text above (the question) and below (the verdict) the clock, for the handbook.",
+   "calls": [
+    {"target": "leeravontuur/venster/klokbeeld.py::_svg_tekst", "lines": [85, 103]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "html.escape", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [600]},
+    {"caller": "tests/test_klokvenster.py::TestKlokbeeld.test_svg", "lines": [60]}
+   ]
+  },
+  {
+   "name": "_svg_tekst",
+   "qualname": "_svg_tekst",
+   "kind": "function",
+   "lines": [108, 111],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kleur", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vet", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "One centred SVG text line with an optional bold weight and a colour looked up in KLEUR.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["html.escape"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokbeeld.py::naar_svg", "lines": [85, 103]}
+   ]
+  }
+ ]
+}

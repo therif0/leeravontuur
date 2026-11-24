@@ -1,0 +1,431 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/getal.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 106,
+ "source_sha256": "b8abd1c5ed05e3fc766907ec404d4886ab4b358df284942c3021237db072952d",
+ "purpose": "Reads and shows numbers and fractions the Flemish way, with a comma as decimal sign.",
+ "details": "Everything the child types as a number or fraction goes through lees_getal or lees_breuk, and everything shown goes through fmt, fmt_groot or fmt_breuk, so the decimal comma, the minus sign U+2212 and thousands handling are decided in one place. Exact arithmetic only: Decimal and Fraction, never float (CLAUDE.md). GetypteBreuk keeps the form the child typed (4/6 is not 2/3), which matters for 'simplify' questions.",
+ "module_docstring": "Getallen lezen en tonen zoals in Vlaanderen: met een komma.",
+ "imports": [
+  {"module": "math", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [
+  "docs/tools/scenarios.py",
+  "leeravontuur/kern/klad.py",
+  "leeravontuur/kern/onderwerp.py",
+  "leeravontuur/kern/wiskunde/breuken.py",
+  "leeravontuur/kern/wiskunde/cijferen.py",
+  "leeravontuur/kern/wiskunde/eenheden.py",
+  "leeravontuur/kern/wiskunde/getallen.py",
+  "leeravontuur/kern/wiskunde/grootheden.py",
+  "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+  "leeravontuur/kern/wiskunde/meetkunde.py",
+  "leeravontuur/kern/wiskunde/procenten.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/balk.py",
+  "leeravontuur/terminal/modellen.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/rooster.py",
+  "leeravontuur/terminal/schermen/eenheden.py",
+  "leeravontuur/terminal/tabel.py",
+  "tests/test_breuken.py",
+  "tests/test_cijferen.py",
+  "tests/test_eenheden.py",
+  "tests/test_gemengd.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_procenten.py",
+  "tests/test_werkwijze.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.dataclass"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "GetypteBreuk",
+   "qualname": "GetypteBreuk",
+   "lines": [56, 77],
+   "bases": [],
+   "decorators": ["dataclass(frozen=True)"],
+   "docstring": "Een breuk zoals het kind ze typte: de vorm blijft bewaard (4/6 is niet 2/3 voor 'vereenvoudig').",
+   "explanation": "Frozen dataclass for a typed fraction: whole part, numerator, denominator and sign, so the form is preserved.",
+   "attributes": [
+    {"name": "geheel", "line": 58, "scope": "class", "value_preview": null},
+    {"name": "teller", "line": 59, "scope": "class", "value_preview": null},
+    {"name": "noemer", "line": 60, "scope": "class", "value_preview": null},
+    {"name": "negatief", "line": 61, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/getal.py::lees_breuk", "lines": [89, 93]},
+    {"caller": "leeravontuur/terminal/balk.py::BalkInvoer.toets", "lines": [70]},
+    {"caller": "tests/test_breuken.py::TestLezen.test_lees_breuk", "lines": [29]}
+   ],
+   "methods": [
+    {
+     "name": "waarde",
+     "qualname": "GetypteBreuk.waarde",
+     "kind": "property",
+     "lines": [64, 66],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "The exact value as a Fraction (whole part plus teller/noemer, negated when negative).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["fractions.Fraction"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "eenvoudigst",
+     "qualname": "GetypteBreuk.eenvoudigst",
+     "kind": "property",
+     "lines": [69, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Is dit de eenvoudigste vorm (teller en noemer hebben geen gemeenschappelijke deler)?",
+     "explanation": "True when the typed fraction is already in simplest form (gcd of teller and noemer is 1, or the teller is 0).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["math.gcd"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__str__",
+     "qualname": "GetypteBreuk.__str__",
+     "kind": "method",
+     "lines": [73, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Text of the fraction as typed: optional minus, whole part, then teller/noemer.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "decimalen",
+   "qualname": "decimalen",
+   "kind": "function",
+   "lines": [10, 11],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Number of digits after the decimal point of a Decimal, ignoring trailing zeros.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".as_tuple", ".normalize", "max"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [347]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10.maak_met", "lines": [293]}
+   ]
+  },
+  {
+   "name": "fmt",
+   "qualname": "fmt",
+   "kind": "function",
+   "lines": [14, 18],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Decimal -> tekst met komma, zonder wetenschappelijke notatie (negatief met het minteken −).",
+   "explanation": "Decimal to text with a decimal comma, never scientific notation; negatives get the minus sign U+2212.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".normalize", "abs", "decimal.Decimal", "format"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::vul_tabel", "lines": [190]},
+    {"caller": "leeravontuur/kern/getal.py::fmt_groot", "lines": [43]},
+    {"caller": "leeravontuur/kern/klad.py::_tekst", "lines": [530]},
+    {"caller": "leeravontuur/kern/onderwerp.py::Vraag.verwacht", "lines": [56]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.maak_met", "lines": [585, 586]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.uitleg", "lines": [598, 599]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.maak_met", "lines": [210, 211]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Aftrekken.uitleg", "lines": [226]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.maak_met", "lines": [477, 480]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.uitleg", "lines": [493, 494, 495]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Optellen.maak_met", "lines": [119, 120]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Vermenigvuldigen.maak_met", "lines": [297, 301, 304]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.sleutel", "lines": [132]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.tekst", "lines": [136]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::als_vraag", "lines": [462]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg_gewoon", "lines": [210, 214]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [223, 228]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.maak_met", "lines": [123]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.uitleg", "lines": [223]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/getallen.py::GetallenlijnOnderwerp.maak_met",
+     "lines": [294, 302, 316, 325]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/getallen.py::GetallenlijnOnderwerp.uitleg",
+     "lines": [332, 333, 335, 338, 339, 340, 345, 346, 349]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.maak_met", "lines": [62, 65, 71]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.oplossing", "lines": [299, 301, 303, 305, 306]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.maak_met", "lines": [349, 363, 366]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.oplossing", "lines": [388, 390]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.uitleg", "lines": [374, 375, 376, 377]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.maak_met", "lines": [390, 391]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.oplossing",
+     "lines": [368, 369, 370, 376, 378, 379]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.uitleg",
+     "lines": [401, 402, 408, 409, 410]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10.maak_met", "lines": [297, 298]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10.uitleg", "lines": [326, 327, 329]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.diagnose", "lines": [242]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.maak_met", "lines": [190]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.oplossing",
+     "lines": [151, 152, 153, 154, 158]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.uitleg",
+     "lines": [210, 211, 213, 214, 220, 221, 222]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.diagnose",
+     "lines": [558, 559, 561, 565, 567, 568, 574]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.klad_klaar", "lines": [548, 549]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.maak_met", "lines": [470]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing",
+     "lines": [490, 491, 492, 493, 494, 495, 498, 499, 500, 502, 505, 506, 507, 508, 509]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.tip", "lines": [515, 517, 519, 520, 521]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_f", "lines": [18]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.maak_met",
+     "lines": [173, 177, 181, 187, 192, 193, 197]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.oplossing", "lines": [218, 219, 233]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.uitleg", "lines": [240, 241, 258]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Hoeken.uitleg", "lines": [358, 359]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Rooster.uitleg", "lines": [99]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.maak_met", "lines": [486, 489]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.oplossing", "lines": [498]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.tip", "lines": [525]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.uitleg",
+     "lines": [514, 516, 517, 519, 520, 521, 522]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::schaal_tekst", "lines": [462]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.maak_met", "lines": [323]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.oplossing", "lines": [349, 352, 353, 354]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.uitleg", "lines": [332, 336]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Omzetten.maak_met", "lines": [174, 180, 181]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Omzetten.uitleg", "lines": [186, 189, 193, 195, 196]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.maak_met", "lines": [235, 236]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.oplossing", "lines": [256]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.uitleg", "lines": [246]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Veld.diagnose", "lines": [150]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/procenten.py::deel_regels",
+     "lines": [47, 49, 51, 53, 55, 57, 59, 60]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/procenten.py::deel_uitleg",
+     "lines": [66, 68, 70, 72, 74, 76, 78, 80, 81]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [21]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst", "lines": [175, 180]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [164]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Snelheid.bouw", "lines": [627]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1167]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [1030]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [994]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [96]},
+    {"caller": "leeravontuur/terminal/modellen.py::teken_getallenlijn", "lines": [52]},
+    {"caller": "leeravontuur/terminal/modellen.py::teken_model", "lines": [142]},
+    {"caller": "leeravontuur/terminal/modellen.py::teken_strook", "lines": [188, 196, 199]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [309, 501]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [124, 128]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.teken", "lines": [83, 105]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [177, 230, 246]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_omzettingen", "lines": [114]},
+    {"caller": "tests/test_eenheden.py::TestRekenen.test_omzettingen", "lines": [20]},
+    {"caller": "tests/test_gemengd.py::antwoord", "lines": [40]},
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_splitsen_vraagt_eerst_een_splitsing",
+     "lines": [78]
+    },
+    {"caller": "tests/test_werkwijze.py::TestWerkwijze.test_tips_verklappen_het_antwoord_niet", "lines": [62]}
+   ]
+  },
+  {
+   "name": "lees_getal",
+   "qualname": "lees_getal",
+   "kind": "function",
+   "lines": [21, 38],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leest wat het kind typte. '3,5' en '0.25' zijn kommagetallen, '3.500' is 3500.",
+   "explanation": "Parses what the child typed: a trailing unit is ignored; '3,5' and '0.25' are decimals, '3.500' means 3500 (dots as thousands separators); returns a Decimal or None when it is not a number.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal", "re.fullmatch", "re.sub"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_getal", "lines": [159]},
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.lees", "lines": [208]},
+    {"caller": "leeravontuur/kern/wiskunde/cijferen.py::Delen.lees", "lines": [488]},
+    {"caller": "leeravontuur/kern/wiskunde/eenheden.py::Maten.lees_vraag", "lines": [514]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::_Grootheid.lees", "lines": [87]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.lees", "lines": [237]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Hoeken.lees_vraag", "lines": [346]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.lees", "lines": [508]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::_Procenten.lees", "lines": [98]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::lees_antwoord", "lines": [1018, 1020]},
+    {"caller": "leeravontuur/terminal/rooster.py::RoosterInvoer.toets", "lines": [175]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.fout_regels", "lines": [129]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.teken", "lines": [106]},
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.toets", "lines": [122]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.toets", "lines": [273]},
+    {"caller": "tests/test_cijferen.py::TestGeneratoren.controleer_rooster", "lines": [48]},
+    {"caller": "tests/test_cijferen.py::TestGeneratoren.controleer_staart", "lines": [74]},
+    {"caller": "tests/test_eenheden.py::TestRekenen.test_lees_getal", "lines": [23, 24, 25, 26, 27, 29]},
+    {"caller": "tests/test_hoofdrekenen.py::TestDiagnose.test_negatief_lezen", "lines": [100, 101, 102]}
+   ]
+  },
+  {
+   "name": "fmt_groot",
+   "qualname": "fmt_groot",
+   "kind": "function",
+   "lines": [41, 52],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zoals fmt, maar met spaties tussen de duizendtallen: 47352 -> '47 352'.",
+   "explanation": "Like fmt but with spaces between thousands: 47352 becomes '47 352'.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [43]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.maak_met", "lines": [123]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Afronden.uitleg", "lines": [132]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.maak_met", "lines": [194]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Deelbaarheid.uitleg", "lines": [223]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.maak_met", "lines": [63, 66]},
+    {"caller": "leeravontuur/kern/wiskunde/getallen.py::Plaatswaarde.uitleg", "lines": [78, 82, 84]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.reken_tekst.getal", "lines": [164]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Schaal.bouw", "lines": [691, 694]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_getal", "lines": [1167]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::tekst_getal", "lines": [96]}
+   ]
+  },
+  {
+   "name": "lees_breuk",
+   "qualname": "lees_breuk",
+   "kind": "function",
+   "lines": [80, 93],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'3/4', '7', '1 3/4' (gemengd), '-2/5' → GetypteBreuk, anders None.",
+   "explanation": "Parses '3/4', '7', '1 3/4' (mixed) or '-2/5' (':' also accepted as slash) into a GetypteBreuk, or None (also when the denominator is 0).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::GetypteBreuk", "lines": [89, 93]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".group", "int", "re.fullmatch"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Onderwerp.lees_vraag", "lines": [219]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_niet_vereenvoudigd", "lines": [113, 116]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_tellers_en_noemers", "lines": [106, 107]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_vergelijken_en_van", "lines": [132]},
+    {"caller": "tests/test_breuken.py::TestDiagnose.test_waarde_telt_bij_herkennen", "lines": [120, 121, 123]},
+    {"caller": "tests/test_breuken.py::TestLezen.test_lees_breuk", "lines": [29, 30, 31, 32, 33, 35]},
+    {"caller": "tests/test_procenten.py::TestDiagnose.test_veld_en_omzetten", "lines": [106, 107]}
+   ]
+  },
+  {
+   "name": "fmt_breuk",
+   "qualname": "fmt_breuk",
+   "kind": "function",
+   "lines": [96, 106],
+   "params": [
+    {"name": "f", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gemengd", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Fraction → '3/4', '5' of (gemengd) '1 3/4'. Negatief met −.",
+   "explanation": "Fraction to text '3/4', '5' or (mixed=True and above 1) '1 3/4', with the minus sign U+2212 for negatives.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["abs", "divmod", "fractions.Fraction", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/onderwerp.py::Vraag.verwacht", "lines": [54]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [27]},
+    {"caller": "tests/test_breuken.py::TestLezen.test_lees_breuk", "lines": [36, 37]}
+   ]
+  }
+ ]
+}

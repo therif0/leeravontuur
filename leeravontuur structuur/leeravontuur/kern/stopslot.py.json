@@ -1,0 +1,289 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/stopslot.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 49,
+ "source_sha256": "a41953429accf5484ef3fe7f034c8ee0592631199554edc78482699e9d5df78b",
+ "purpose": "The lock on Stoppen: a parent can make quitting require the parent PIN for a child.",
+ "details": "With the lock on, the program starts straight at that child and quitting needs the 4-digit parent PIN (stored through Opslag.ouder_pin). Without a parent PIN no lock applies, so nobody can ever be locked in. The PIN uses a lower PBKDF2 iteration count than passwords because 4 digits are easy to guess anyway and checking quickly matters here. Used by App.start and the parent screens in the terminal.",
+ "module_docstring": "Het slot op Stoppen: de ouder zet het per kind aan (Ouders › Kinderen › kind › Stoppen op slot).",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["wachtwoord"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/wachtwoord.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_ouder.py",
+  "tests/test_stopslot.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "PIN_ITERATIES",
+   "line": 9,
+   "value_type": "Constant",
+   "value_preview": "100000",
+   "explanation": "PBKDF2 iterations used for the 4-digit parent PIN."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "heeft_slot",
+   "qualname": "heeft_slot",
+   "kind": "function",
+   "lines": [12, 19],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "True als Stoppen voor dit kind op slot staat (en er een ouderpin is om het te openen).",
+   "explanation": "True when a parent PIN exists and this child's settings have stoppen_slot on; False on any error (for example a child just deleted).",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.instellingen_van",
+     "lines": [17],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.ouder_pin",
+     "lines": [14],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/stopslot.py::vergrendeld_kind", "lines": [25]},
+    {"caller": "leeravontuur/terminal/app.py::App.hoofdmenu", "lines": [249]},
+    {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [170]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kies_kind", "lines": [163]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kind_beheren", "lines": [493]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.stoppen_op_slot", "lines": [628]},
+    {
+     "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+     "lines": [300]
+    },
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_geen_slot_zonder_ouderpin", "lines": [264, 267]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_uitzetten_en_pin_weghalen", "lines": [323, 324]},
+    {
+     "caller": "tests/test_stopslot.py::TestOuderOpentHetSlot.test_met_ouder_slot_af_dan_een_gewone_start",
+     "lines": [135]
+    },
+    {
+     "caller": "tests/test_stopslot.py::TestSlotscherm.test_esc_vraagt_de_ouderpin_en_juist_is_het_titelscherm",
+     "lines": [88]
+    }
+   ]
+  },
+  {
+   "name": "vergrendeld_kind",
+   "qualname": "vergrendeld_kind",
+   "kind": "function",
+   "lines": [22, 27],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het kind waarmee het programma meteen start, of None: het laatst gekozen kind met een slot, anders het eerste met een slot.",
+   "explanation": "The child the program should start with: the last chosen child that has a lock, else the first one with a lock, else None.",
+   "calls": [
+    {"target": "leeravontuur/kern/stopslot.py::heeft_slot", "lines": [25]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.algemeen",
+     "lines": [26],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.kinderen",
+     "lines": [25],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.kinderen",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.start", "lines": [156]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_geen_slot_zonder_ouderpin", "lines": [265, 268]},
+    {
+     "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_het_laatst_gekozen_kind_met_slot",
+     "lines": [279, 281, 283]
+    }
+   ]
+  },
+  {
+   "name": "pin_ok",
+   "qualname": "pin_ok",
+   "kind": "function",
+   "lines": [30, 32],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "pin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "True when a PIN is stored and the given PIN matches it.",
+   "calls": [
+    {"target": "leeravontuur/kern/wachtwoord.py::controleer", "lines": [32]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.ouder_pin",
+     "lines": [31],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_pin"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["bool"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.slotscherm", "lines": [268]},
+    {
+     "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_aanzetten_vraagt_eerst_een_ouderpin",
+     "lines": [299]
+    },
+    {
+     "caller": "tests/test_ouder.py::TestStoppenOpSlot.test_geen_slot_zonder_ouderpin",
+     "lines": [269, 270, 271]
+    },
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_ouderpin_kiezen_en_wijzigen", "lines": [337]}
+   ]
+  },
+  {
+   "name": "zet_pin",
+   "qualname": "zet_pin",
+   "kind": "function",
+   "lines": [35, 36],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "pin", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Stores the parent PIN hashed with PIN_ITERATIONS.",
+   "calls": [
+    {"target": "leeravontuur/kern/wachtwoord.py::maak", "lines": [36]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.zet_ouder_pin",
+     "lines": [36],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_pin"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.nieuwe_ouderpin", "lines": [147]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_geen_slot_zonder_ouderpin", "lines": [266]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_het_laatst_gekozen_kind_met_slot", "lines": [276]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_uitzetten_en_pin_weghalen", "lines": [317]},
+    {"caller": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [41]},
+    {"caller": "tests/test_stopslot.py::TestStartMetSlot.test_zonder_slot_een_gewone_start", "lines": [75]}
+   ]
+  },
+  {
+   "name": "zet_slot",
+   "qualname": "zet_slot",
+   "kind": "function",
+   "lines": [39, 42],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "aan", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Turns the lock on or off in one child's settings.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.bewaar_instellingen",
+     "lines": [42],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.instellingen_van",
+     "lines": [40],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["bool"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/stopslot.py::zet_alle_sloten_af", "lines": [49]},
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.stoppen_op_slot", "lines": [629, 636]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_uitzetten_en_pin_weghalen", "lines": [319]},
+    {"caller": "tests/test_stopslot.py::SlotBasis.met_slot", "lines": [43]},
+    {"caller": "tests/test_stopslot.py::TestAapjesMetSlot.test_aapjes_met_slot", "lines": [189]}
+   ]
+  },
+  {
+   "name": "zet_alle_sloten_af",
+   "qualname": "zet_alle_sloten_af",
+   "kind": "function",
+   "lines": [45, 49],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Bij het weghalen van de ouderpin: geen slot zonder pin.",
+   "explanation": "Turns off every child's lock (used when the parent PIN is removed).",
+   "calls": [
+    {"target": "leeravontuur/kern/stopslot.py::zet_slot", "lines": [49]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.instellingen_van",
+     "lines": [48],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.kinderen",
+     "lines": [47],
+     "candidates": [
+      "leeravontuur/kern/opslag.py::Opslag.kinderen",
+      "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.wachtwoord_en_pin", "lines": [124]},
+    {"caller": "tests/test_ouder.py::TestStoppenOpSlot.test_het_laatst_gekozen_kind_met_slot", "lines": [282]}
+   ]
+  }
+ ]
+}

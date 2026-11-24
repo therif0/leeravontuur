@@ -1,0 +1,28 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/__init__.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 1,
+ "source_sha256": "370f137f4c98d4228d80f251b9f87d73773f67dabb47fe80542bd8e2f2cfb740",
+ "purpose": "Package marker for the Dutch-language part of the core.",
+ "details": "Only a docstring: Taal (Dutch) covers sentences, sentence analysis (zinsontleding) and verb spelling, without curses. The plan is in docs/taal.md.",
+ "module_docstring": "Taal (Nederlands): zinnen, zinsontleding, later woordsoorten en werkwoordspelling. Zonder curses (zie docs/taal.md).",
+ "imports": [],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/taal/nagekeken.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "leeravontuur/terminal/curriculum/taal.py",
+  "leeravontuur/terminal/werkwoord.py",
+  "leeravontuur/terminal/zinsdelen.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_werkwoorden.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "module_calls": [],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

@@ -1,0 +1,685 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/tabel.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 367,
+ "source_sha256": "041a3398eedf2d026bbd9a24770288ab0eb06cc032ad15ccd61a2ddbb9bce5d9",
+ "purpose": "Input objects for the Maten (unit conversion) topic: type a number ('eenheid') or fill in the unit table and move the comma ('tabel').",
+ "details": "EenheidInvoer ('eenheid') and TabelInvoer ('tabel') both derive from _Maat and set eigen_scherm = True: they draw the whole screen under the progress strip themselves, and the Oefenaar's _stel_vraag_scherm runs them (it draws progress and buddy, checks, stores and awards points). The conversion data and checking come from kern/wiskunde/eenheden.py (E.omzetting, E.TABELLEN, E.controleer_tabel, E.diagnose ...). Extra protocol on top of the normal input object: teken(s, goed), toets(k), nagekeken(...) called by the Oefenaar after checking, and the flags lof, springt, maatje_ruim, denkt, volgende, hulp_gebruikt, wil_spiekbrief, extra, uitslag. The typing direction of the table is a stored child setting (inst.typrichting). teken_tabel is the shared table renderer.",
+ "module_docstring": "Maten (eenheden omzetten) als invoer-objecten voor terminal/oefenaar.py: een getal typen (\"eenheid\") of de eenhedentabel invullen (\"tabel\").",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.invoer",
+   "names": ["Plaats"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/invoer.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "HULP"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "TABEL_X",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "(12, 7)",
+   "explanation": "Offset where the table starts on the normal screen."
+  },
+  {
+   "name": "TABEL_Y",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "(12, 7)",
+   "explanation": "Row offset where the table starts."
+  },
+  {
+   "name": "INVOER",
+   "line": 367,
+   "value_type": "Dict",
+   "value_preview": "{'eenheid': EenheidInvoer, 'tabel': TabelInvoer}",
+   "explanation": "See registries."
+  }
+ ],
+ "registries": [
+  {
+   "name": "INVOER",
+   "line": 367,
+   "description": "Maps answer types 'eenheid' and 'tabel' to EenheidInvoer and TabelInvoer; merged into terminal/oefenaar.py's INVOER."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Maat",
+   "qualname": "_Maat",
+   "lines": [23, 58],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class for the two Maten input objects: draws the whole screen, keeps the verdict data the Oefenaar passes back, measures its own height.",
+   "attributes": [
+    {"name": "y0", "line": 24, "scope": "class", "value_preview": "0"},
+    {"name": "eigen_scherm", "line": 25, "scope": "class", "value_preview": "True"},
+    {"name": "geen_tweede_kans", "line": 26, "scope": "class", "value_preview": "True"},
+    {"name": "vraag_is_zin", "line": 27, "scope": "class", "value_preview": "True"},
+    {"name": "volgende", "line": 28, "scope": "class", "value_preview": "'volgende vraag'"},
+    {"name": "lof", "line": 29, "scope": "class", "value_preview": "True"},
+    {"name": "springt", "line": 29, "scope": "class", "value_preview": "True"},
+    {"name": "maatje_ruim", "line": 29, "scope": "class", "value_preview": "True"},
+    {"name": "app", "line": 33, "scope": "instance", "value_preview": null},
+    {"name": "vrij", "line": 34, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 35, "scope": "instance", "value_preview": null},
+    {"name": "hulp_gebruikt", "line": 36, "scope": "instance", "value_preview": null},
+    {"name": "wil_spiekbrief", "line": 36, "scope": "instance", "value_preview": null},
+    {"name": "goed", "line": 38, "scope": "instance", "value_preview": null},
+    {"name": "d", "line": 38, "scope": "instance", "value_preview": null},
+    {"name": "tijd", "line": 39, "scope": "instance", "value_preview": null},
+    {"name": "punten", "line": 39, "scope": "instance", "value_preview": null},
+    {"name": "lof_tekst", "line": 39, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 40, "scope": "instance", "value_preview": null},
+    {"name": "y0", "line": 51, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.__init__", "lines": [66]},
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.__init__", "lines": [142]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "_Maat.__init__",
+     "kind": "method",
+     "lines": [31, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the question and topic and builds the conversion (E.omzetting); initialises flags (no app yet, free practice off, no tip used, no extra data) and the texts the Oefenaar later fills in.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::omzetting", "lines": [32]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/tabel.py::EenheidInvoer.__init__", "lines": [66]},
+      {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.__init__", "lines": [142]}
+     ]
+    },
+    {
+     "name": "denkt",
+     "qualname": "_Maat.denkt",
+     "kind": "property",
+     "lines": [43, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: whether the buddy should look 'thinking' (False here; EenheidInvoer returns whether a tip is open).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nagekeken",
+     "qualname": "_Maat.nagekeken",
+     "kind": "method",
+     "lines": [46, 47],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "d", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tijd", "kind": "positional", "default": null, "annotation": null},
+      {"name": "punten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "lof", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitleg_na", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Called by the Oefenaar after checking: stores the verdict, diagnosis, time text, points text, praise and whether the explanation may be shown.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "plaats",
+     "qualname": "_Maat.plaats",
+     "kind": "method",
+     "lines": [49, 51],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breed", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": "0", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Positions the object like Plaats.plaats and also remembers the top row y0.",
+     "calls": [
+      {"target": "leeravontuur/terminal/invoer.py::Plaats.plaats", "lines": [50]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_voor_maat",
+     "qualname": "_Maat.teken_voor_maat",
+     "kind": "method",
+     "lines": [53, 54],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Used for measuring the height; draws exactly like teken (TabelInvoer extends it to compute verdicts first).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "self.teken", "lines": [54], "candidates": [], "candidates_count": 16}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "_Maat.hoogte",
+     "kind": "method",
+     "lines": [56, 58],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Gemeten: tot de onderste rij die het object tekent, vanaf y0.",
+     "explanation": "Height measured by drawing the object to a measuring screen (meet) and taking the lowest row used, relative to y0.",
+     "calls": [
+      {"target": "leeravontuur/terminal/invoer.py::Plaats.meet", "lines": [58]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["max"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "EenheidInvoer",
+   "qualname": "EenheidInvoer",
+   "lines": [61, 132],
+   "bases": ["_Maat"],
+   "decorators": [],
+   "docstring": "Een getal typen: 3 km = [ ] m.",
+   "explanation": "Typing a converted number: '3 km = [ ] m'.",
+   "attributes": [
+    {"name": "x0", "line": 63, "scope": "class", "value_preview": "6"},
+    {"name": "s", "line": 80, "scope": "instance", "value_preview": null},
+    {"name": "wil_spiekbrief", "line": 118, "scope": "instance", "value_preview": null},
+    {"name": "tip", "line": 120, "scope": "instance", "value_preview": null},
+    {"name": "hulp_gebruikt", "line": 120, "scope": "instance", "value_preview": null},
+    {"name": "buf", "line": 130, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 131, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "EenheidInvoer.__init__",
+     "kind": "method",
+     "lines": [65, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts with an empty typed answer and no tip.",
+     "calls": [
+      {"target": "leeravontuur/terminal/tabel.py::_Maat.__init__", "lines": [66]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "denkt",
+     "qualname": "EenheidInvoer.denkt",
+     "kind": "property",
+     "lines": [70, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: True while a tip is shown.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "EenheidInvoer.knoppen",
+     "kind": "method",
+     "lines": [73, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Enter and Esc; F1 (tip, then cheat sheet) only in free practice.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "EenheidInvoer.teken",
+     "kind": "method",
+     "lines": [79, 114],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws 'n unit = [answer box] unit'; while working the message, the tip with the cheat-sheet hint and the comma hint; after checking the verdict, time and points and the explanation of the rule and table (more explanation in free practice).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [83, 105]},
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [106]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [106]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [92, 103, 107, 109]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [103, 109]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [95, 97, 100],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.put",
+       "lines": [84, 88, 90, 92, 93, 94, 98, 102, 105, 113],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [87],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "EenheidInvoer.toets",
+     "kind": "method",
+     "lines": [116, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "F1 shows the tip, then asks for the cheat sheet; Enter reads the number (message when empty or unreadable) and returns (typed text, number); any other key edits the answer box.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [122]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.bewerk",
+       "lines": [130],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.bewerk", "leeravontuur/terminal/scherm.py::Scherm.bewerk"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TabelInvoer",
+   "qualname": "TabelInvoer",
+   "lines": [135, 311],
+   "bases": ["_Maat"],
+   "decorators": [],
+   "docstring": "De eenhedentabel: cijfers in de vakjes, de komma verzetten, dan het antwoord aflezen.",
+   "explanation": "Filling in the unit table and moving the comma, then reading off the answer.",
+   "attributes": [
+    {"name": "x0", "line": 137, "scope": "class", "value_preview": "4"},
+    {"name": "volgende", "line": 138, "scope": "class", "value_preview": "'volgende oefening'"},
+    {"name": "lof", "line": 139, "scope": "class", "value_preview": "False"},
+    {"name": "springt", "line": 139, "scope": "class", "value_preview": "False"},
+    {"name": "maatje_ruim", "line": 139, "scope": "class", "value_preview": "False"},
+    {"name": "n", "line": 144, "scope": "instance", "value_preview": null},
+    {"name": "net_getypt", "line": 148, "scope": "instance", "value_preview": null},
+    {"name": "tabel_ok", "line": 149, "scope": "instance", "value_preview": null},
+    {"name": "oordeel", "line": 162, "scope": "instance", "value_preview": null},
+    {"name": "eigen_komma", "line": 163, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 171, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 251, "scope": "instance", "value_preview": null},
+    {"name": "pos", "line": 265, "scope": "instance", "value_preview": null},
+    {"name": "laatste_cel", "line": 310, "scope": "instance", "value_preview": null},
+    {"name": "extra", "line": 285, "scope": "instance", "value_preview": null},
+    {"name": "uitslag", "line": 287, "scope": "instance", "value_preview": null},
+    {"name": "antw", "line": 308, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "TabelInvoer.__init__",
+     "kind": "method",
+     "lines": [141, 149],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets up the table state for the unit category: one cell per unit column, the start and target comma columns, answer text, cursor position, the child's own comma and verdicts.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::kolom", "lines": [145]},
+      {"target": "leeravontuur/terminal/tabel.py::_Maat.__init__", "lines": [142]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "buf",
+     "qualname": "TabelInvoer.buf",
+     "kind": "property",
+     "lines": [152, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: the typed answer text (used by the Oefenaar as the stored answer).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "randtekst",
+     "qualname": "TabelInvoer.randtekst",
+     "kind": "method",
+     "lines": [155, 157],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Text for the panel border: 'typrichting →' or '←' from the stored setting.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_voor_maat",
+     "qualname": "TabelInvoer.teken_voor_maat",
+     "kind": "method",
+     "lines": [159, 164],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na het nakijken: met een fout in de tabel en de komma op een verkeerde plaats (de langste regels).",
+     "explanation": "After checking computes the verdict of every cell and the child's comma position before drawing, so the 'Juist' row and error marks are right.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::controleer_tabel", "lines": [162]},
+      {"target": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [164]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "TabelInvoer.knoppen",
+     "kind": "method",
+     "lines": [166, 168],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: Tab, ←, comma, ↓ (to the answer), Enter, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "TabelInvoer.teken",
+     "kind": "method",
+     "lines": [170, 247],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "goed", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the sum '12 km = ? m', hints and the typing direction (clickable to flip), the table with a 'Jij' row (and 'Juist' row after checking), the answer box, what the child's comma would read, and after checking the verdict lines (table and comma right, wrong cells, comma not moved or in the wrong place) and the rule explanation.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [177, 230, 246]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::aflezen", "lines": [210]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::cw", "lines": [174]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheid_bij", "lines": [211, 214, 242]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [245]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [196]},
+      {"target": "leeravontuur/terminal/tabel.py::teken_tabel", "lines": [199]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.cursor",
+       "lines": [221, 223, 225],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.put",
+       "lines": [178, 183, 184, 186, 189, 190, 191, 201, 207, 218, 219, 228, 230, 233, 236, 239, 242, 245, 246],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [206],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [192],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["all", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken_voor_maat", "lines": [164]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "TabelInvoer.toets",
+     "kind": "method",
+     "lines": [249, 311],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clicks select a cell, toggle a comma or flip the typing direction; Tab/→ and Shift-Tab/← move; ↓ goes to the answer box, ↑ back; Enter checks (messages when the answer is empty or no number), computes verdicts, fills `extra` and `uitslag`, and returns (text, number); r flips the direction; digits fill cells and advance; Backspace/Delete/Space clear; ',' or '.' sets or removes the comma; in the answer box keys edit the text.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [273]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::controleer_tabel", "lines": [281]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.app.bewaar",
+       "lines": [260, 291],
+       "candidates": ["leeravontuur/terminal/app.py::App.bewaar", "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.s.bewerk",
+       "lines": [308],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.bewerk", "leeravontuur/terminal/scherm.py::Scherm.bewerk"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["all", "isinstance", "max", "min", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "teken_tabel",
+   "qualname": "teken_tabel",
+   "kind": "function",
+   "lines": [314, 364],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "x", "kind": "positional", "default": null, "annotation": null},
+    {"name": "v", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rijen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "actief", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "klikbaar", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De eenhedentabel: koppen (met de aliassen ha, l … op een tweede kopregel) en een rij per (label, cellen, komma, oordeel, eigen komma, kommafout). Geeft de rij onder de tabel.",
+   "explanation": "Draws the unit table: a header per unit (with aliases like ha, l on a second header row), and one row per entry of `rijen` (label, cells, comma position, per-cell verdicts, own comma, comma-error flag). Colours cells by cursor/right/wrong, shows commas, and registers click zones for cells and commas when clickable. Returns the row under the table.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::alias_kop", "lines": [332]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::cel_tekst", "lines": [353]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::cw", "lines": [318]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::koppen", "lines": [322]}
+   ],
+   "unresolved_calls": [
+    {"expr": "lijn", "lines": [320, 341, 363], "candidates": [], "candidates_count": 0},
+    {
+     "expr": "s.put",
+     "lines": [320, 321, 327, 328, 331, 337, 338, 341, 342, 343, 353, 355, 357, 358, 363],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "s.zones.voeg",
+     "lines": [360, 361],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": ["bool", "dict", "enumerate", "len", "max", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/tabel.py::TabelInvoer.teken", "lines": [199]}
+   ]
+  }
+ ]
+}

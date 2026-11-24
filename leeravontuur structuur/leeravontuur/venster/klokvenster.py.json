@@ -1,0 +1,780 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/venster/klokvenster.py",
+ "kind": "python",
+ "layer": "venster",
+ "lines": 382,
+ "source_sha256": "043f1f5bda149e106b9fc1fb50ea1596f0dc983f72d8a6e89e9d897c10a0ce68",
+ "purpose": "The clock window process: a real analogue clock in its own tkinter window next to the terminal, driven by JSON lines on stdin and answering on stdout.",
+ "details": "Run as `python -m leeravontuur.venster.klokvenster` by terminal/venster.py (Klokvenster). It never runs inside the curses process, so tkinter and curses cannot disturb each other and a window problem cannot freeze the program. Protocol: stdin takes {doe: toon|verberg|stop, ...}, stdout sends {klaar} or {fout} at start, {toets}, {klik: [dx, dy]} (where the minute hand should point), {plek: [x, y, w, h]} (the user moved the window) and {dicht}. The window stays on top while a clock is shown, does not take the keyboard from the terminal (WS_EX_NOACTIVATE on Windows, a utility window on Linux), is placed next to the terminal or top right, at most a quarter of the screen wide, and remembers a position the user chose (LEERAVONTUUR_KLOKPLEK). The shapes come from klokbeeld.vormen. The window-geometry helpers (maat_voor, kies_plek, monitor_van, lees_geometrie) are pure functions that tests call directly.",
+ "module_docstring": "Het klokvenster: een echte wijzerklok in een eigen venster (tkinter), naast de terminal.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 21, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 22, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 23, "resolves_to": [], "internal": false},
+  {"module": "queue", "names": [], "alias": null, "line": 24, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 25, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 26, "resolves_to": [], "internal": false},
+  {"module": "threading", "names": [], "alias": null, "line": 27, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.venster.klokbeeld",
+   "names": ["KLEUR", "vormen"],
+   "alias": null,
+   "line": 29,
+   "resolves_to": ["leeravontuur/venster/klokbeeld.py"],
+   "internal": true
+  },
+  {"module": "ctypes", "names": [], "alias": null, "line": 115, "resolves_to": [], "internal": false},
+  {
+   "module": "ctypes",
+   "names": ["wintypes"],
+   "alias": null,
+   "line": 116,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "tkinter", "names": [], "alias": "tk", "line": 354, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["tests/test_klokvenster.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/venster/klokvenster.py::main", "lines": [382]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["sys.exit"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "TITEL",
+   "line": 31,
+   "value_type": "Constant",
+   "value_preview": "'Leeravontuur · de klok'",
+   "explanation": "Window title."
+  },
+  {
+   "name": "TOETSEN",
+   "line": 32,
+   "value_type": "Dict",
+   "value_preview": "{'Return': 'Enter', 'KP_Enter': 'Enter', 'Escape': 'Escape', 'Left': …",
+   "explanation": "Tk key names forwarded to the program as plain names (Enter, Escape, arrows, BackSpace, Tab, F1)."
+  },
+  {
+   "name": "MARGE",
+   "line": 34,
+   "value_type": "Constant",
+   "value_preview": "16",
+   "explanation": "Margin to screen edges."
+  },
+  {
+   "name": "BREED",
+   "line": 35,
+   "value_type": "Tuple",
+   "value_preview": "(320, 220)",
+   "explanation": "Maximum window width."
+  },
+  {
+   "name": "MIN_BREED",
+   "line": 35,
+   "value_type": "Tuple",
+   "value_preview": "(320, 220)",
+   "explanation": "Minimum window width."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Windows",
+   "qualname": "Windows",
+   "lines": [111, 157],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Wat tkinter op Windows niet zelf kan: weten waar de terminal staat, en tonen zonder de toetsen af te nemen.",
+   "explanation": "Windows-only helper for things tkinter cannot do: find the terminal window, the work area, and show without taking keyboard focus.",
+   "attributes": [
+    {"name": "user32", "line": 118, "scope": "instance", "value_preview": null},
+    {"name": "terminal", "line": 119, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.__init__", "lines": [164]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Windows.__init__",
+     "kind": "method",
+     "lines": [114, 119],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Loads ctypes/wintypes, the user32 library and remembers the foreground window at start (the child's terminal).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".GetForegroundWindow"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.__init__", "lines": [164]}
+     ]
+    },
+    {
+     "name": "_rect",
+     "qualname": "Windows._rect",
+     "kind": "method",
+     "lines": [121, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "hwnd", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Window rectangle (left, top, right, bottom) of a handle, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".GetWindowRect", ".RECT", ".byref"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Windows.terminal_plek", "lines": [147]}
+     ]
+    },
+    {
+     "name": "werk",
+     "qualname": "Windows.werk",
+     "kind": "method",
+     "lines": [127, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het werkgebied (zonder taakbalk) van de monitor waar de terminal staat.",
+     "explanation": "The work area (without taskbar) of the monitor where the terminal is, or of the main screen.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Windows.werk.MONITORINFO", "lines": [136]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".GetMonitorInfoW", ".MonitorFromWindow", ".RECT", ".SystemParametersInfoW", ".byref", ".sizeof"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "terminal_plek",
+     "qualname": "Windows.terminal_plek",
+     "kind": "method",
+     "lines": [146, 147],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Where the terminal window is.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Windows._rect", "lines": [147]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "geen_focus",
+     "qualname": "Windows.geen_focus",
+     "kind": "method",
+     "lines": [149, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "root", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het venster neemt nooit de toetsen over (WS_EX_NOACTIVATE); klikken op de wijzers werkt wel.",
+     "explanation": "Gives the window the WS_EX_NOACTIVATE style so it never takes the keyboard (clicks on the hands still work).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".GetWindowLongW", ".SetWindowLongW", ".wm_frame", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "terug_naar_terminal",
+     "qualname": "Windows.terug_naar_terminal",
+     "kind": "method",
+     "lines": [155, 157],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Puts the terminal back in the foreground after the clock window was raised.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".SetForegroundWindow"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "MONITORINFO",
+   "qualname": "Windows.werk.MONITORINFO",
+   "lines": [131, 132],
+   "bases": ["c.Structure"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "ctypes structure for the Windows MONITORINFO call (size, monitor rectangle, work rectangle, flags), defined inside Windows.werk.",
+   "attributes": [
+    {
+     "name": "_fields_",
+     "line": 132,
+     "scope": "class",
+     "value_preview": "[('cbSize', w.DWORD), ('rcMonitor', w.RECT), ('rcWork', w.R…"
+    }
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Windows.werk", "lines": [136]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Venster",
+   "qualname": "Venster",
+   "lines": [160, 349],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The clock window: a Tk root with labels and a canvas, driven by commands from the program.",
+   "attributes": [
+    {"name": "tk", "line": 162, "scope": "instance", "value_preview": null},
+    {"name": "root", "line": 167, "scope": "instance", "value_preview": null},
+    {"name": "geplaatst", "line": 175, "scope": "instance", "value_preview": null},
+    {"name": "eigen", "line": 176, "scope": "instance", "value_preview": null},
+    {"name": "stand", "line": 177, "scope": "instance", "value_preview": null},
+    {"name": "laatste_minuut", "line": 178, "scope": "instance", "value_preview": null},
+    {"name": "vraag", "line": 179, "scope": "instance", "value_preview": null},
+    {"name": "doek", "line": 182, "scope": "instance", "value_preview": null},
+    {"name": "onder", "line": 184, "scope": "instance", "value_preview": null},
+    {"name": "win", "line": 164, "scope": "instance", "value_preview": null},
+    {"name": "bewaard", "line": 172, "scope": "instance", "value_preview": null},
+    {"name": "_wacht", "line": 245, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::main", "lines": [359]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Venster.__init__",
+     "kind": "method",
+     "lines": [161, 205],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tk", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds the Tk window: title, a question label, a canvas for the clock and a verdict label; reads the saved position from the environment; binds keys, mouse clicks/drags, configure and close; on Linux makes it a utility window; hides it at the start and (on Windows) removes its focus.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.teken", "lines": [192]},
+      {"target": "leeravontuur/venster/klokvenster.py::Windows.__init__", "lines": [164]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.geen_focus",
+       "lines": [203],
+       "candidates": ["leeravontuur/venster/klokvenster.py::Windows.geen_focus"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".bind",
+      ".configure",
+      ".minsize",
+      ".pack",
+      ".protocol",
+      ".update_idletasks",
+      ".withdraw",
+      ".wm_attributes",
+      ".wm_focusmodel",
+      "int",
+      "json.loads",
+      "os.environ.get",
+      "sys.platform.startswith",
+      "tk.Canvas",
+      "tk.Label",
+      "tk.Tk"
+     ],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::main", "lines": [359]}
+     ]
+    },
+    {
+     "name": "werkgebied",
+     "qualname": "Venster.werkgebied",
+     "kind": "method",
+     "lines": [209, 224],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The usable screen area: on Windows the terminal's monitor work area, elsewhere the monitor where the mouse is (with room for a macOS menu bar).",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::monitor_van", "lines": [224]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.werk",
+       "lines": [212],
+       "candidates": ["leeravontuur/venster/klokvenster.py::Windows.werk"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".winfo_pointerxy", ".winfo_screenheight", ".winfo_screenwidth"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.plaats", "lines": [233]}
+     ]
+    },
+    {
+     "name": "plaats",
+     "qualname": "Venster.plaats",
+     "kind": "method",
+     "lines": [226, 237],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Places the window with kies_plek (saved position, next to the terminal, or top right) and adjusts the text wrapping.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.werkgebied", "lines": [233]},
+      {"target": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [233]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.terminal_plek",
+       "lines": [230],
+       "candidates": ["leeravontuur/venster/klokvenster.py::Windows.terminal_plek"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".configure", ".geometry"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.doe", "lines": [302]}
+     ]
+    },
+    {
+     "name": "verplaatst",
+     "qualname": "Venster.verplaatst",
+     "kind": "method",
+     "lines": [239, 245],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "e", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Het kind of de ouder sleepte het venster ergens anders heen: dat onthouden (even wachten tot het stil staat).",
+     "explanation": "On window moves, waits 700 ms until it is still, then saves the position.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".after", ".after_cancel", ".state", "getattr"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar_plek",
+     "qualname": "Venster.bewaar_plek",
+     "kind": "method",
+     "lines": [247, 260],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Saves a position the user chose (ignores positions within 40 px of where the program put it) and tells the program with {plek}.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::lees_geometrie", "lines": [250]},
+      {"target": "leeravontuur/venster/klokvenster.py::zeg", "lines": [260]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".configure", ".wm_geometry", "abs", "all", "list", "zip"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maat",
+     "qualname": "Venster.maat",
+     "kind": "method",
+     "lines": [264, 265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Size of the square the clock is drawn in (the smaller canvas side, at least 120).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".winfo_height", ".winfo_width", "max", "min"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.klik", "lines": [336]},
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.teken", "lines": [270]}
+     ]
+    },
+    {
+     "name": "teken",
+     "qualname": "Venster.teken",
+     "kind": "method",
+     "lines": [267, 286],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the clock from the current state: shapes from klokbeeld.vormen as canvas ovals, lines and text, and updates the question and verdict labels.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [273]},
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.maat", "lines": [270]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [
+      ".configure",
+      ".create_line",
+      ".create_oval",
+      ".create_text",
+      ".delete",
+      ".winfo_height",
+      ".winfo_width",
+      "leeravontuur.venster.klokbeeld.KLEUR.get",
+      "max",
+      "round"
+     ],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.__init__", "lines": [192]},
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.doe", "lines": [308]}
+     ]
+    },
+    {
+     "name": "doe",
+     "qualname": "Venster.doe",
+     "kind": "method",
+     "lines": [290, 309],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "b", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Handles one command: 'stop' closes the window (returns False), 'verberg' hides, 'toon' stores the state, places and shows the window when hidden (or raises it when asked) and redraws.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.bovenop", "lines": [305, 307]},
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.plaats", "lines": [302]},
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.teken", "lines": [308]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".deiconify", ".destroy", ".state", ".withdraw"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bovenop",
+     "qualname": "Venster.bovenop",
+     "kind": "method",
+     "lines": [311, 322],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Bovenop blijven zolang er een klok in beeld is: zo verdwijnt het niet achter de terminal.",
+     "explanation": "Keeps the window on top and, on Windows, returns the keyboard to the terminal after 50 ms.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".after", ".attributes", ".lift"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/venster/klokvenster.py::Venster.doe", "lines": [305, 307]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "Venster.toets",
+     "kind": "method",
+     "lines": [326, 331],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "e", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Forwards a key pressed in the window to the program: special keys by name, printable characters as they are.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::zeg", "lines": [329, 331]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klik",
+     "qualname": "Venster.klik",
+     "kind": "method",
+     "lines": [333, 345],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "e", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click or drag on the dial (only when clickable): computes the offset from the centre and sends {klik: [dx, dy]} when the minute hand would jump to another minute.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::Venster.maat", "lines": [336]},
+      {"target": "leeravontuur/venster/klokvenster.py::zeg", "lines": [345]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".winfo_height", ".winfo_width", "math.atan2", "math.degrees", "math.hypot", "round"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "dicht",
+     "qualname": "Venster.dicht",
+     "kind": "method",
+     "lines": [347, 349],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The user closed the window: hides it and tells the program with {dicht}.",
+     "calls": [
+      {"target": "leeravontuur/venster/klokvenster.py::zeg", "lines": [349]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".withdraw"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "zeg",
+   "qualname": "zeg",
+   "kind": "function",
+   "lines": [38, 43],
+   "params": [
+    {"name": "bericht", "kind": "kwarg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Writes one JSON message line to stdout (the program); exits quietly when the program has gone.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["SystemExit", "json.dumps", "sys.stdout.flush", "sys.stdout.write"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.bewaar_plek", "lines": [260]},
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.dicht", "lines": [349]},
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.klik", "lines": [345]},
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.toets", "lines": [329, 331]},
+    {"caller": "leeravontuur/venster/klokvenster.py::main", "lines": [356, 361, 375]}
+   ]
+  },
+  {
+   "name": "lees",
+   "qualname": "lees",
+   "kind": "function",
+   "lines": [46, 53],
+   "params": [
+    {"name": "binnen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leest de opdrachten (in een eigen draad, want tkinter kan niet op een pijp wachten op Windows).",
+   "explanation": "Thread: reads command lines from stdin into a queue (tkinter cannot wait on a pipe on Windows) and queues a 'stop' at the end.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "binnen.put",
+     "lines": [50, 53],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["json.loads"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "maat_voor",
+   "qualname": "maat_voor",
+   "kind": "function",
+   "lines": [56, 60],
+   "params": [
+    {"name": "werk", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(breedte, hoogte) van het venster: hoogstens een kwart van het scherm breed.",
+   "explanation": "The window size for a work area: at most a quarter of the screen width (between 220 and 320), height up to 1.3 times the width within the screen.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::kies_plek", "lines": [75]}
+   ]
+  },
+  {
+   "name": "kies_plek",
+   "qualname": "kies_plek",
+   "kind": "function",
+   "lines": [63, 84],
+   "params": [
+    {"name": "werk", "kind": "positional", "default": null, "annotation": null},
+    {"name": "terminal", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "bewaard", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Waar het venster komt: (x, y, breedte, hoogte). werk = het bruikbare deel van het scherm (x0, y0, x1, y1), terminal = waar de terminal staat (als we dat weten), bewaard = een plek die het kind zelf koos.",
+   "explanation": "Decides where the window goes: the saved position if it is fully on screen; else right of the terminal, else left of it, else top right of the work area. Returns (x, y, width, height).",
+   "calls": [
+    {"target": "leeravontuur/venster/klokvenster.py::maat_voor", "lines": [75]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["int", "max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.plaats", "lines": [233]},
+    {"caller": "tests/test_klokvenster.py::TestPlek.test_bewaarde_plek", "lines": [89, 92]},
+    {"caller": "tests/test_klokvenster.py::TestPlek.test_meer_monitors", "lines": [105]},
+    {"caller": "tests/test_klokvenster.py::TestPlek.test_naast_de_terminal", "lines": [79, 82, 84]},
+    {"caller": "tests/test_klokvenster.py::TestPlek.test_rechtsboven_nooit_over_de_tekst", "lines": [71]}
+   ]
+  },
+  {
+   "name": "monitor_van",
+   "qualname": "monitor_van",
+   "kind": "function",
+   "lines": [87, 99],
+   "params": [
+    {"name": "scherm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "punt", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Met meer monitors ziet tkinter één breed scherm. Welk stuk is de monitor waar `punt` (bv. de muis) staat? Is het scherm veel breder dan hoog, dan schatten we het aantal monitors (naast elkaar, 16:9 of 16:10). Geeft (x0, y0, x1, y1) van die…",
+   "explanation": "With a very wide screen (several monitors side by side) estimates the monitor under a point (the mouse) and returns its area; otherwise the whole screen.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "max", "min", "round"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.werkgebied", "lines": [224]},
+    {
+     "caller": "tests/test_klokvenster.py::TestPlek.test_meer_monitors",
+     "lines": [96, 97, 99, 100, 102, 103, 105]
+    }
+   ]
+  },
+  {
+   "name": "lees_geometrie",
+   "qualname": "lees_geometrie",
+   "kind": "function",
+   "lines": [102, 108],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'320x416+1030+16' (zoals tkinter het geeft en terug wil) → (x, y, breedte, hoogte), of None.",
+   "explanation": "Parses a tkinter geometry string like '320x416+1030+16' to (x, y, width, height), or None.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".groups", "int", "re.fullmatch", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::Venster.bewaar_plek", "lines": [250]},
+    {"caller": "tests/test_klokvenster.py::TestPlek.test_geometrie", "lines": [109, 110, 111]}
+   ]
+  },
+  {
+   "name": "main",
+   "qualname": "main",
+   "kind": "function",
+   "lines": [352, 378],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Entry point: imports tkinter (reports {fout} when missing), builds the window (reports {fout} when there is no display), starts the stdin reader thread, announces {klaar}, polls the command queue every 30 ms and runs the Tk main loop.",
+   "calls": [
+    {"target": "leeravontuur/venster/klokvenster.py::Venster.__init__", "lines": [359]},
+    {"target": "leeravontuur/venster/klokvenster.py::zeg", "lines": [356, 361, 375]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "threading.Thread(target=lees, args=(binnen,), daemon=True).…",
+     "lines": [364],
+     "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [".after", ".mainloop", "queue.Queue", "threading.Thread"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/venster/klokvenster.py::<module>", "lines": [382]}
+   ]
+  },
+  {
+   "name": "pomp",
+   "qualname": "main.pomp",
+   "kind": "nested",
+   "lines": [366, 373],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Polls the queue: handles each command; stops when 'stop' is handled; reschedules itself.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "venster.doe",
+     "lines": [369],
+     "candidates": ["leeravontuur/venster/klokvenster.py::Venster.doe"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".after", ".get_nowait"],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

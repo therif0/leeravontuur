@@ -1,0 +1,32 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/testlijst.md",
+ "kind": "markdown",
+ "layer": "docs",
+ "lines": 225,
+ "source_sha256": "b7cf904591209c48ac7d3d19f5be5280945274c156348fc1424f4322425791d4",
+ "purpose": "The parent's test list (about 15 minutes) to go through after each new version: a checklist per area.",
+ "details": "Sections: start and child, menus, one exercise per domain (with exact keys), Taal and Werkwoordspelling, series/repeat/points, avatar and shop, parent area, special modes (colour-blind, ASCII), stopping and coming back, and what to do if something is wrong (--fouten). The father works through it on a copy of the data; remarks go to feedback.txt.",
+ "summary": "Checklist for the parent after each release: start and choose a child, menus, one exercise per maths domain, Taal and verb spelling, series and repeat bin, avatar/shop, parent area, special display modes, stopping with Esc, and how to report problems.",
+ "headings": [
+  {"level": 1, "text": "Testlijst voor de ouder (± 15 minuten)", "line": 1},
+  {"level": 2, "text": "1. Starten en kind", "line": 6},
+  {"level": 2, "text": "2. De menu's", "line": 13},
+  {
+   "level": 2,
+   "text": "3. Eén oefening per domein (telkens: **Wiskunde › domein › onderwerp**, **V** = vrij oefenen, *Normaal*)",
+   "line": 31
+  },
+  {"level": 2, "text": "3b. Taal (nieuw, 0.25.0)", "line": 95},
+  {"level": 2, "text": "3c. Taal › Werkwoordspelling (nieuw, 0.26.0)", "line": 118},
+  {"level": 2, "text": "4. Reeks, herhalen en punten", "line": 145},
+  {"level": 2, "text": "5. Avatar en winkel", "line": 168},
+  {"level": 2, "text": "6. Ouderdeel", "line": 173},
+  {"level": 2, "text": "7. Speciale standen", "line": 199},
+  {"level": 2, "text": "8. Stoppen en terugkomen", "line": 207},
+  {"level": 2, "text": "Iets klopt niet?", "line": 223}
+ ],
+ "links": [],
+ "referenced_by": ["CHANGELOG.md", "CLAUDE.md", "README.md", "docs/todo.md", "werk/schermen-inventaris.md", "werk/schermen.md"],
+ "words": 3585
+}

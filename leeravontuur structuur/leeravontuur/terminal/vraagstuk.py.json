@@ -1,0 +1,1676 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/vraagstuk.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 774,
+ "source_sha256": "6c2e2f113176baf18b443f78e7e3fe3661e8895570885bf3b6b5bc805ceff194",
+ "purpose": "Input objects for word problems: the four-step solver (read, plan, calculate in the klad, check), the 'Speurneus' (find the wrong line) and the multiple-choice 'kan dat kloppen' question.",
+ "details": "Three input-object classes plug into terminal/oefenaar.py through the INVOER table: VraagstukInvoer ('vraagstuk'), SpeurInvoer ('speur') and KeuzeInvoer ('keuze'). All draw their own question text (eigen_tekst), handle F1 themselves (eigen_tip) and have no generic second chance (geen_tweede_kans); VraagstukInvoer gives its own single second chance at the answer step. The story, the model and the checking logic live in kern (kern/verhaal.py, kern/wiskunde/vraagstukken.py); this file only draws the story in a frame with clickable numbers, runs the four steps (LEES, PLAN, REKEN, CONTROLE), and collects what the Oefenaar stores with the answer (`extra`: tips, klad lines, first wrong answer, which givens were marked). The Oefenaar reads these objects through duck typing (attributes such as melding, fouten, uitleg_na, extra, hint, cursor_pos), so those names must stay.",
+ "module_docstring": "Een vraagstuk oplossen in 4 stappen: Lees (gegeven en gevraagd), Plan, Reken (klad) en Controle (antwoord).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 11, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["verhaal"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/verhaal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["vraagstukken"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/vraagstukken.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["klok_cijfers"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.invoer",
+   "names": ["Plaats"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/invoer.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.kladblad",
+   "names": ["LEEG_ENTER", "Kladblad"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/terminal/kladblad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "HULP", "teken_van"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "tests/test_vraagstukken.py"],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["range", "set"], "dynamic": []}
+ ],
+ "constants": [
+  {
+   "name": "TAB",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "9",
+   "explanation": "Key code of Tab."
+  },
+  {
+   "name": "X",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "2",
+   "explanation": "Left margin of the objects."
+  },
+  {
+   "name": "KOP",
+   "line": 23,
+   "value_type": "Constant",
+   "value_preview": "15",
+   "explanation": "Column where the content of a step begins."
+  },
+  {
+   "name": "LEES",
+   "line": 24,
+   "value_type": "Call",
+   "value_preview": "range(4)",
+   "explanation": "Step number 0 (read)."
+  },
+  {
+   "name": "PLAN",
+   "line": 24,
+   "value_type": "Call",
+   "value_preview": "range(4)",
+   "explanation": "Step number 1 (plan)."
+  },
+  {
+   "name": "REKEN",
+   "line": 24,
+   "value_type": "Call",
+   "value_preview": "range(4)",
+   "explanation": "Step number 2 (calculate in the klad)."
+  },
+  {
+   "name": "CONTROLE",
+   "line": 24,
+   "value_type": "Call",
+   "value_preview": "range(4)",
+   "explanation": "Step number 3 (check the answer)."
+  },
+  {
+   "name": "OPWOORD",
+   "line": 25,
+   "value_type": "Dict",
+   "value_preview": "{'+': 'optellen', '−': 'aftrekken', '×': 'vermenigvuldigen', ':': 'de…",
+   "explanation": "Operation symbol to a word, used in tip 3 ('Daarna: delen, ...')."
+  },
+  {
+   "name": "PLAN_TOETS",
+   "line": 27,
+   "value_type": "Dict",
+   "value_preview": "{'+': '+', '-': '−', '−': '−', 'x': '×', 'X': '×', '*': '×', ':': ':'…",
+   "explanation": "Typed key to plan operation (x becomes ×, o means omzetten)."
+  },
+  {
+   "name": "ANTW_TEKENS",
+   "line": 28,
+   "value_type": "Call",
+   "value_preview": "set('0123456789,.€ -:umin')",
+   "explanation": "Characters allowed in the answer box (digits, comma, dot, €, minus, colon, and the letters of 'u min')."
+  },
+  {
+   "name": "MAX_KLAD",
+   "line": 29,
+   "value_type": "Constant",
+   "value_preview": "8",
+   "explanation": "Maximum height of the klad."
+  },
+  {
+   "name": "NAAST_MAATJE",
+   "line": 30,
+   "value_type": "Tuple",
+   "value_preview": "(58, 9)",
+   "explanation": "Maximum line width in rows where the buddy stands at the right (58)."
+  },
+  {
+   "name": "MAATJE_ONDER",
+   "line": 30,
+   "value_type": "Tuple",
+   "value_preview": "(58, 9)",
+   "explanation": "Row up to which the buddy occupies the right side (9)."
+  },
+  {
+   "name": "INVOER",
+   "line": 543,
+   "value_type": "Dict",
+   "value_preview": "{'vraagstuk': VraagstukInvoer}",
+   "explanation": "See registries."
+  }
+ ],
+ "registries": [
+  {
+   "name": "INVOER",
+   "line": 543,
+   "description": "Maps the answer types 'vraagstuk', 'speur' and 'keuze' to VraagstukInvoer, SpeurInvoer and KeuzeInvoer (the last two added by INVOER.update at the end of the file). Merged into terminal/oefenaar.py's INVOER, where INVOER[v.invoer](v, o) builds the object."
+  }
+ ],
+ "classes": [
+  {
+   "name": "VraagstukInvoer",
+   "qualname": "VraagstukInvoer",
+   "lines": [33, 540],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The four-step word-problem solver (Lees, Plan, Reken, Controle) with its own tips, one second chance at the answer, and rich data about how the child worked. Created by Oefenaar for answer type 'vraagstuk'.",
+   "attributes": [
+    {"name": "x0", "line": 34, "scope": "class", "value_preview": "X"},
+    {"name": "eigen_tekst", "line": 46, "scope": "class", "value_preview": "True"},
+    {"name": "eigen_tip", "line": 47, "scope": "class", "value_preview": "True"},
+    {"name": "geen_tweede_kans", "line": 48, "scope": "class", "value_preview": "True"},
+    {"name": "extra", "line": 540, "scope": "class", "value_preview": "None"},
+    {"name": "lijnen", "line": 52, "scope": "instance", "value_preview": null},
+    {"name": "ids", "line": 53, "scope": "instance", "value_preview": null},
+    {"name": "kb", "line": 62, "scope": "instance", "value_preview": null},
+    {"name": "eerste", "line": 65, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 68, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 69, "scope": "instance", "value_preview": null},
+    {"name": "cursor_pos", "line": 106, "scope": "instance", "value_preview": null},
+    {"name": "fase", "line": 283, "scope": "instance", "value_preview": null},
+    {"name": "onder", "line": 284, "scope": "instance", "value_preview": null},
+    {"name": "cur", "line": 320, "scope": "instance", "value_preview": null},
+    {"name": "optie", "line": 325, "scope": "instance", "value_preview": null},
+    {"name": "gevraagd", "line": 327, "scope": "instance", "value_preview": null},
+    {"name": "plan", "line": 335, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 383, "scope": "instance", "value_preview": null},
+    {"name": "gevraagd_eerst", "line": 402, "scope": "instance", "value_preview": null},
+    {"name": "antw", "line": 428, "scope": "instance", "value_preview": null},
+    {"name": "extra", "line": 470, "scope": "instance", "value_preview": null},
+    {"name": "diagnose", "line": 467, "scope": "instance", "value_preview": null},
+    {"name": "tips", "line": 500, "scope": "instance", "value_preview": null},
+    {"name": "tiptekst", "line": 498, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_vraagstukken.py::TestInvoer.setUp", "lines": [330]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "lines": [399]
+    }
+   ],
+   "methods": [
+    {
+     "name": "x_stap",
+     "qualname": "VraagstukInvoer.x_stap",
+     "kind": "property",
+     "lines": [37, 39],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Waar de inhoud van een stap begint.",
+     "explanation": "Column where the content of a step starts (a fixed offset from the left edge).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rechter",
+     "qualname": "VraagstukInvoer.rechter",
+     "kind": "property",
+     "lines": [42, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De rechterkant: in een vak die van het vak, anders kolom 78 (zoals vroeger).",
+     "explanation": "Right edge of the drawing area: the panel's edge when drawn inside a bordered panel (in_vak), else column 78.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__init__",
+     "qualname": "VraagstukInvoer.__init__",
+     "kind": "method",
+     "lines": [50, 69],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Takes the question and topic; wraps the story into lines; collects the ids of all clickable givens in reading order; starts in step LEES with an empty plan, a fresh Kladblad, no tips and no first wrong answer.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [52]},
+      {"target": "leeravontuur/terminal/kladblad.py::Kladblad.__init__", "lines": [62]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_vraagstukken.py::TestInvoer.setUp", "lines": [330]},
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+       "lines": [399]
+      }
+     ]
+    },
+    {
+     "name": "klad",
+     "qualname": "VraagstukInvoer.klad",
+     "kind": "property",
+     "lines": [72, 73],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: the lines of the klad (delegates to the Kladblad).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "buf",
+     "qualname": "VraagstukInvoer.buf",
+     "kind": "property",
+     "lines": [76, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property (getter and setter): the klad's current typing buffer; the setter lets the Oefenaar clear or set it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "buf",
+     "qualname": "VraagstukInvoer.buf",
+     "kind": "property",
+     "lines": [80, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["buf.setter"],
+     "docstring": "",
+     "explanation": "Property (getter and setter): the klad's current typing buffer; the setter lets the Oefenaar clear or set it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "verhaal_h",
+     "qualname": "VraagstukInvoer.verhaal_h",
+     "kind": "method",
+     "lines": [84, 85],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height of the story frame (lines plus the two border rows).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.hoogte", "lines": [92, 93]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klad_h", "lines": [88]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken", "lines": [108]}
+     ]
+    },
+    {
+     "name": "klad_h",
+     "qualname": "VraagstukInvoer.klad_h",
+     "kind": "method",
+     "lines": [87, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height of the klad: what is left of 16 rows after the story, between 2 and MAX_KLAD.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.verhaal_h", "lines": [88]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.hoogte", "lines": [93]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_stappen", "lines": [201]}
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "VraagstukInvoer.hoogte",
+     "kind": "method",
+     "lines": [90, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Total height of the object: story + step rows + klad while working; after checking, story + the solution rows + the 'Kan dat?' lines.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controle_regels", "lines": [92]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klad_h", "lines": [93]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.verhaal_h", "lines": [92, 93]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "VraagstukInvoer.knoppen",
+     "kind": "method",
+     "lines": [95, 101],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The key buttons for the bottom bar: Tab (next step), Space (select / choose, only in step 1), F1 (tip with the remaining count, or 'spiekbrief' once all tips are used), Enter, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["max", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "VraagstukInvoer.teken",
+     "kind": "method",
+     "lines": [104, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the story and then either the four steps (while working, also setting the hint line) or the worked solution (after checking). Resets cursor_pos each time.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.hint_tekst", "lines": [111]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_stappen", "lines": [110]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_uitwerking", "lines": [113]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_verhaal", "lines": [107]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.verhaal_h", "lines": [108]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_verhaal",
+     "qualname": "VraagstukInvoer.teken_verhaal",
+     "kind": "method",
+     "lines": [115, 143],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bezig", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the story frame word by word. Each given (number with an id) gets a colour by state: cursor, marked right (needed) or wrong (not needed), after the first tip highlighted as needed/not needed; while working each given has a click zone ('gegeven', id).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [117, 121, 122, 140, 143],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [137],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken", "lines": [107]}
+     ]
+    },
+    {
+     "name": "kop",
+     "qualname": "VraagstukInvoer.kop",
+     "kind": "method",
+     "lines": [145, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "fase", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws a step heading ('▸1 Lees' ...) with the active one in the accent role and a click zone ('fase', n).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [149],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [150],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_stappen",
+       "lines": [155, 185, 200, 207]
+      }
+     ]
+    },
+    {
+     "name": "teken_stappen",
+     "qualname": "VraagstukInvoer.teken_stappen",
+     "kind": "method",
+     "lines": [152, 221],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the four steps: 1 Lees (marked givens, the 'Gevraagd' chooser with ◂ ▸ arrows), 2 Plan (chosen operations with clickable [+] [−] [×] [:] [omzetten] [⌫] buttons in the plan step), 3 Reken (the klad), 4 Controle (the answer sentence with the answer box; a clock answer is shown as hh:mm), and the current tip below. Sets cursor_pos for the active step.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_cijfers", "lines": [212]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klad_h", "lines": [201]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.kop", "lines": [155, 185, 200, 207]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [156, 159, 164, 166, 169, 173, 174, 175, 181, 182, 188, 190, 192, 196, 209, 215, 221],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [214],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [167, 176, 177, 178, 197],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      },
+      {"expr": "self.kb.teken", "lines": [202], "candidates": [], "candidates_count": 16}
+     ],
+     "external_calls": ["enumerate", "getattr", "len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken", "lines": [110]}
+     ]
+    },
+    {
+     "name": "teken_uitwerking",
+     "qualname": "VraagstukInvoer.teken_uitwerking",
+     "kind": "method",
+     "lines": [223, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "r", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the result after checking: needed givens (and one unneeded one), the question, the solution lines with the reason for each, the answer sentence, and the 'Kan dat?' reasonableness check.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::antwoordzin", "lines": [252]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controle_regels", "lines": [253]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [227, 233, 236, 238, 240, 242, 243, 244, 246, 249, 251, 252, 254],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["enumerate", "len", "min"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken", "lines": [113]}
+     ]
+    },
+    {
+     "name": "controle_regels",
+     "qualname": "VraagstukInvoer.controle_regels",
+     "kind": "method",
+     "lines": [256, 260],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "'Kan dat? …' onder het antwoord, over hoogstens 2 regels.",
+     "explanation": "The 'Kan dat? ...' reasonableness text under the answer, wrapped to at most two lines; empty when the problem has no check.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.hoogte", "lines": [92]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken_uitwerking", "lines": [253]}
+     ]
+    },
+    {
+     "name": "hint_tekst",
+     "qualname": "VraagstukInvoer.hint_tekst",
+     "kind": "method",
+     "lines": [262, 275],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The grey hint line for the current step (what keys do what); the answer step's hint depends on the answer type (number, time, duration).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["getattr"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.teken", "lines": [111]}
+     ]
+    },
+    {
+     "name": "ga",
+     "qualname": "VraagstukInvoer.ga",
+     "kind": "method",
+     "lines": [278, 284],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "fase", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves to another step (modulo 4). Leaving the klad first finishes a half-typed klad line (rond_af) and copies its message. Leaving step 1 resets the 'on the Gevraagd row' flag.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.kb.rond_af",
+       "lines": [280],
+       "candidates": ["leeravontuur/terminal/kladblad.py::Kladblad.rond_af"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controleer", "lines": [459, 462]},
+      {
+       "caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klik",
+       "lines": [316, 318, 323, 329, 333, 339]
+      },
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [293, 296, 301, 304]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_lees", "lines": [346, 374]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_plan", "lines": [415]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_reken", "lines": [421]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "VraagstukInvoer.toets",
+     "kind": "method",
+     "lines": [286, 311],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key entry: tuple = a click (klik); F1 = next tip; Tab / Shift-Tab = next / previous step; 'a' in steps 1-2 jumps to the answer; typing a digit in step 1-2 jumps to the klad; otherwise passes the key to the handler of the current step. Returns None until an answer is submitted, then (typed answer, number).",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [298]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga", "lines": [293, 296, 301, 304]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klik", "lines": [288]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_antwoord", "lines": [311]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_lees", "lines": [306]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_plan", "lines": [308]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_reken", "lines": [310]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.volgende_tip", "lines": [290]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["getattr", "isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klik",
+     "qualname": "VraagstukInvoer.klik",
+     "kind": "method",
+     "lines": [313, 341],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Handles a click action: choose a step, mark a given, change/choose the 'Gevraagd' option, add or remove a plan operation, or restore a klad line. Returns None.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.duid_aan", "lines": [321]},
+      {
+       "target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga",
+       "lines": [316, 318, 323, 329, 333, 339]
+      },
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.kies_gevraagd", "lines": [331]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.kb.haal_terug",
+       "lines": [340],
+       "candidates": ["leeravontuur/terminal/kladblad.py::Kladblad.haal_terug"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [288]}
+     ]
+    },
+    {
+     "name": "toets_lees",
+     "qualname": "VraagstukInvoer.toets_lees",
+     "kind": "method",
+     "lines": [343, 375],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ch", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Step 1 keys: ↓/↑ switch between the givens row and the 'Gevraagd' row, ←/→ move over the givens or the options, Space marks or chooses, Enter chooses or goes to step 2.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.duid_aan", "lines": [365]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga", "lines": [346, 374]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.kies_gevraagd", "lines": [363, 370]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [306]}
+     ]
+    },
+    {
+     "name": "duid_aan",
+     "qualname": "VraagstukInvoer.duid_aan",
+     "kind": "method",
+     "lines": [377, 393],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Marks or unmarks the given under the cursor and sets the message: right (needed) or 'you don't need this'; when all needed givens are marked and nothing is chosen yet it suggests choosing what is asked.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["all"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klik", "lines": [321]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_lees", "lines": [365]}
+     ]
+    },
+    {
+     "name": "kies_gevraagd",
+     "qualname": "VraagstukInvoer.kies_gevraagd",
+     "kind": "method",
+     "lines": [395, 407],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses the option under the cursor as what is asked; remembers whether the first choice was right (gevraagd_eerst) and sets a right or wrong message; a wrong choice must be redone.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.klik", "lines": [331]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_lees", "lines": [363, 370]}
+     ]
+    },
+    {
+     "name": "toets_plan",
+     "qualname": "VraagstukInvoer.toets_plan",
+     "kind": "method",
+     "lines": [409, 416],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ch", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Step 2 keys: Backspace removes the last operation, +, -, x, :, o add an operation (at most 5), Enter goes to the klad.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga", "lines": [415]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [308]}
+     ]
+    },
+    {
+     "name": "toets_reken",
+     "qualname": "VraagstukInvoer.toets_reken",
+     "kind": "method",
+     "lines": [418, 424],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ch", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Step 3 keys: passes the key to the Kladblad; an empty Enter moves to the answer step; a klad message is copied to the melding.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga", "lines": [421]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.kb.toets", "lines": [420], "candidates": [], "candidates_count": 17}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [310]}
+     ]
+    },
+    {
+     "name": "toets_antwoord",
+     "qualname": "VraagstukInvoer.toets_antwoord",
+     "kind": "method",
+     "lines": [426, 437],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ch", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Step 4 keys: Backspace, Enter (check) and typing digits and a few symbols (at most 10 characters); for clock answers only characters that can still become a valid time.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_cijfers", "lines": [433]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controleer", "lines": [431]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["getattr", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [311]}
+     ]
+    },
+    {
+     "name": "controleer",
+     "qualname": "VraagstukInvoer.controleer",
+     "kind": "method",
+     "lines": [440, 475],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Checks the answer: empty or unreadable gives a message; the topic's nakijken decides; the klad is analysed with kern's vraagstukken.analyseer_klad. A wrong first attempt gives one hint (with the klad advice, going back to step 1 or 3) and clears the answer; otherwise it stores the diagnosis and the `extra` dict (tips, first wrong answer, klad, klad_ok, marked givens, plan, first klad error), builds uitleg_na, and returns (answer, number).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [451]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.ga", "lines": [459, 462]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.maak_uitleg", "lines": [474]}
+     ],
+     "unresolved_calls": [
+      {"expr": "self.o.diagnose", "lines": [455, 467], "candidates": [], "candidates_count": 37},
+      {"expr": "self.o.lees_vraag", "lines": [444], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "self.o.nakijken",
+       "lines": [450],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      }
+     ],
+     "external_calls": ["bool", "getattr", "list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets_antwoord", "lines": [431]}
+     ]
+    },
+    {
+     "name": "maak_uitleg",
+     "qualname": "VraagstukInvoer.maak_uitleg",
+     "kind": "method",
+     "lines": [477, 493],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "juist", "kind": "positional", "default": null, "annotation": null},
+      {"name": "klad_ok", "kind": "positional", "default": null, "annotation": null},
+      {"name": "analyse", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds the after-check explanation: praise or remarks about the klad, a note about the first wrong answer, or the first klad error, then 'Waarom?' lines for up to three steps.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.controleer", "lines": [474]}
+     ]
+    },
+    {
+     "name": "volgende_tip",
+     "qualname": "VraagstukInvoer.volgende_tip",
+     "kind": "method",
+     "lines": [496, 524],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Gives tip 1 to 4 (highlights the givens; says what is asked; the first step's hint and the order of operations; then a klad-based tip); after four a message that there are no more. Appends 'Nog eens F1: je spiekbrief' when it fits in two lines.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [511]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["all", "len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [290]}
+     ]
+    },
+    {
+     "name": "tips_op",
+     "qualname": "VraagstukInvoer.tips_op",
+     "kind": "property",
+     "lines": [527, 529],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Alle tips gegeven: de Oefenaar opent dan bij ? de spiekbrief (#20).",
+     "explanation": "Property: True once all four tips are given; the Oefenaar then opens the cheat sheet on the next F1.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief_bekeken",
+     "qualname": "VraagstukInvoer.spiekbrief_bekeken",
+     "kind": "method",
+     "lines": [531, 532],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Counts viewing the cheat sheet as one more tip (for the points).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hulp",
+     "qualname": "VraagstukInvoer.hulp",
+     "kind": "method",
+     "lines": [534, 535],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The current tip text (the Oefenaar calls this for any input object).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "VraagstukInvoer.rijen",
+     "kind": "method",
+     "lines": [537, 538],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list: this object has no rows for diagnose_rijen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "_MetTip",
+   "qualname": "_MetTip",
+   "lines": [566, 589],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shared base of the two choice objects: remembers whether the one tip was shown and draws it. The leading underscore means 'not for use outside this file'.",
+   "attributes": [
+    {"name": "x0", "line": 567, "scope": "class", "value_preview": "X"},
+    {"name": "eigen_tekst", "line": 569, "scope": "class", "value_preview": "True"},
+    {"name": "eigen_tip", "line": 570, "scope": "class", "value_preview": "True"},
+    {"name": "tip_aan", "line": 571, "scope": "class", "value_preview": "False"},
+    {"name": "extra", "line": 589, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "tips_op",
+     "qualname": "_MetTip.tips_op",
+     "kind": "property",
+     "lines": [574, 576],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "De tip is gegeven: de Oefenaar opent dan bij ? de spiekbrief (#20).",
+     "explanation": "Property: True once the tip was shown (the next F1 opens the cheat sheet).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief_bekeken",
+     "qualname": "_MetTip.spiekbrief_bekeken",
+     "kind": "method",
+     "lines": [578, 579],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Does nothing: the tip already counted.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip_h",
+     "qualname": "_MetTip.tip_h",
+     "kind": "method",
+     "lines": [581, 582],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height of the tip line: 1 when shown, else 0.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.hoogte", "lines": [717]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.hoogte", "lines": [608]}
+     ]
+    },
+    {
+     "name": "teken_tip",
+     "qualname": "_MetTip.teken_tip",
+     "kind": "method",
+     "lines": [584, 586],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws 'Tip: ...' (the topic's tip for this question, cut to 76 characters) in the accent role.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [586],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {"expr": "self.o.tip", "lines": [586], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.teken", "lines": [740]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.teken", "lines": [642]}
+     ]
+    },
+    {
+     "name": "bewaar",
+     "qualname": "_MetTip.bewaar",
+     "kind": "method",
+     "lines": [588, 589],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Sets `extra` to {'tips': 1} when a tip was used, else None; called when the answer is given.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.klaar", "lines": [764]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.klaar", "lines": [691]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "SpeurInvoer",
+   "qualname": "SpeurInvoer",
+   "lines": [592, 698],
+   "bases": ["_MetTip"],
+   "decorators": [],
+   "docstring": "Kies de foute regel (of 'alles is juist'), en dan waarom (a, b of c).",
+   "explanation": "'Speurneus': pick the wrong line of someone else's solution (or 'everything is right'), then say why (a, b or c). Created for answer type 'speur'.",
+   "attributes": [
+    {"name": "geen_tweede_kans", "line": 594, "scope": "class", "value_preview": "True"},
+    {"name": "lijnen", "line": 598, "scope": "instance", "value_preview": null},
+    {"name": "n", "line": 599, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 604, "scope": "instance", "value_preview": null},
+    {"name": "tip_aan", "line": 646, "scope": "instance", "value_preview": null},
+    {"name": "reden", "line": 669, "scope": "instance", "value_preview": null},
+    {"name": "sel", "line": 650, "scope": "instance", "value_preview": null},
+    {"name": "regel", "line": 676, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 690, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_vraagstukken.py::TestSpeurneus.test_invoer", "lines": [469]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "SpeurInvoer.__init__",
+     "kind": "method",
+     "lines": [596, 604],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Takes the question and topic; wraps the story, remembers the number of solution lines, starts with line 1 selected and no choice made; sets the first hint line.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [598]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_vraagstukken.py::TestSpeurneus.test_invoer", "lines": [469]}
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "SpeurInvoer.hoogte",
+     "kind": "method",
+     "lines": [606, 608],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height: story, heading, solution lines, plus the extra rows of the 'alles is juist' option or the three reasons, plus the tip.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.tip_h", "lines": [608]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "SpeurInvoer.knoppen",
+     "kind": "method",
+     "lines": [610, 612],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom bar buttons: arrows, Enter, F1 (tip or cheat sheet), Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "SpeurInvoer.teken",
+     "kind": "method",
+     "lines": [614, 642],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the story, '<name> solved it like this. Is there a mistake?', the numbered solution lines (each clickable), the option 'Alles is juist!', and when a line is chosen the three reasons a) b) c); after checking marks the wrong line with ✘ and the child's choice with ?.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.teken_tip", "lines": [642]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::teken_kader", "lines": [616]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [617, 628, 633, 636, 638],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [630, 634, 639],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "SpeurInvoer.toets",
+     "kind": "method",
+     "lines": [644, 677],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Keys: F1 shows the tip; clicks on a line or reason; ↑/↓ and digits choose a line (0 = all correct); Enter confirms; once a line is chosen ↑/↓, a/b/c and Enter choose the reason and Backspace goes back to choose another line.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [656]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.kies_regel", "lines": [651, 664, 666]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.klaar", "lines": [654, 672, 674]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int", "isinstance", "len", "list", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_regel",
+     "qualname": "SpeurInvoer.kies_regel",
+     "kind": "method",
+     "lines": [679, 685],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Confirms the selected line: 'all correct' finishes at once, otherwise it opens the reasons and changes the hint.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.klaar", "lines": [681]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.toets", "lines": [651, 664, 666]}
+     ]
+    },
+    {
+     "name": "klaar",
+     "qualname": "SpeurInvoer.klaar",
+     "kind": "method",
+     "lines": [687, 692],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Finishes: builds the answer code ('0' or '<line><letter>') and a readable text, sets the explanation and `extra`, and returns (text, code) to the Oefenaar.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar", "lines": [691]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.kies_regel", "lines": [681]},
+      {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.toets", "lines": [654, 672, 674]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "SpeurInvoer.hulp",
+     "kind": "method",
+     "lines": [694, 695],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [695], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "SpeurInvoer.rijen",
+     "kind": "method",
+     "lines": [697, 698],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list (no rows).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "KeuzeInvoer",
+   "qualname": "KeuzeInvoer",
+   "lines": [701, 771],
+   "bases": ["_MetTip"],
+   "decorators": [],
+   "docstring": "Een vraag bij een verhaal met 2 of 3 keuzes (a, b, c): typen, ↑↓ en Enter, of klikken.",
+   "explanation": "A story with a question and two or three options (a, b, c), used for estimating and 'can that be right?' questions. Created for answer type 'keuze'.",
+   "attributes": [
+    {"name": "geen_tweede_kans", "line": 703, "scope": "class", "value_preview": "True"},
+    {"name": "lijnen", "line": 707, "scope": "instance", "value_preview": null},
+    {"name": "vraag", "line": 708, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 714, "scope": "instance", "value_preview": null},
+    {"name": "tip_aan", "line": 744, "scope": "instance", "value_preview": null},
+    {"name": "sel", "line": 753, "scope": "instance", "value_preview": null},
+    {"name": "gekozen", "line": 762, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 763, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_vraagstukken.py::TestSchatten.test_invoer", "lines": [492]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "KeuzeInvoer.__init__",
+     "kind": "method",
+     "lines": [705, 714],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Takes the question and topic; wraps the story and the question (at most 3 lines, beside the buddy); starts with option a selected; the hint lists the letters.",
+     "calls": [
+      {"target": "leeravontuur/kern/verhaal.py::regels", "lines": [707]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_vraagstukken.py::TestSchatten.test_invoer", "lines": [492]}
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "KeuzeInvoer.hoogte",
+     "kind": "method",
+     "lines": [716, 717],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height: story, question lines, the options, plus the tip.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.tip_h", "lines": [717]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "KeuzeInvoer.knoppen",
+     "kind": "method",
+     "lines": [719, 721],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom bar buttons: arrows, Enter, F1 (tip or cheat sheet), Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "KeuzeInvoer.teken",
+     "kind": "method",
+     "lines": [723, 740],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the story, the question and the options a) b) c) (each clickable); after checking marks the right option ✔ and a wrong choice ✘.",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.teken_tip", "lines": [740]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::teken_kader", "lines": [725]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [727, 736],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [738],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "KeuzeInvoer.toets",
+     "kind": "method",
+     "lines": [742, 759],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Keys: F1 tip; a click on an option answers at once; ↑/↓ move; a, b, c answer at once; Enter answers the selected option.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [751]},
+      {"target": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.klaar", "lines": [749, 756, 758]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klaar",
+     "qualname": "KeuzeInvoer.klaar",
+     "kind": "method",
+     "lines": [761, 765],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Finishes: stores the chosen option, the explanation lines and `extra`, and returns (readable choice, letter).",
+     "calls": [
+      {"target": "leeravontuur/terminal/vraagstuk.py::_MetTip.bewaar", "lines": [764]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.toets", "lines": [749, 756, 758]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "KeuzeInvoer.hulp",
+     "kind": "method",
+     "lines": [767, 768],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [768], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "KeuzeInvoer.rijen",
+     "kind": "method",
+     "lines": [770, 771],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list (no rows).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "teken_kader",
+   "qualname": "teken_kader",
+   "kind": "function",
+   "lines": [548, 563],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null},
+    {"name": "y", "kind": "positional", "default": null, "annotation": null},
+    {"name": "lijnen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "sleutels", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "titel", "kind": "positional", "default": "'Het verhaal'", "annotation": null},
+    {"name": "x0", "kind": "positional", "default": "X", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het verhaal in een kader (zonder aanduiden). Geeft de hoogte.",
+   "explanation": "Draws a story (list of wrapped lines of words) inside a box titled 'Het verhaal' (or another title), at row y and column x0; returns the height used. With sleutels=True the key words are drawn in the accent role.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "s.put",
+     "lines": [551, 554, 555, 559, 562],
+     "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["enumerate", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.teken", "lines": [725]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.teken", "lines": [616]}
+   ]
+  }
+ ]
+}

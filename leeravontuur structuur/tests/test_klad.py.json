@@ -1,0 +1,466 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_klad.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 144,
+ "source_sha256": "f83fc2f2ad47e6dde99454406eb1983e6f97e4a92280eeaec10ee4af31e7469b",
+ "purpose": "Tests the scratch-pad reader: reading calculation rules as a child types them, and checking without giving the answer away.",
+ "details": "lees_regel (kern/klad) parses a typed line into links with operators and operands and says whether it is right. TestNooitEenCrash is the golden-rule-5 test (typing anything never crashes); TestLezen covers notations (x, *, ×; comma and dot; brackets and priority; unit conversion; thousands; clock times; percent and fraction of; remainder; rounding; labels; chains) and that messages never reveal the answer.",
+ "module_docstring": "Het kladblad: rekenregels lezen zoals een kind ze typt, en nakijken zonder het antwoord te verklappen.",
+ "imports": [
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["DEEL", "MAAL", "MIN", "VAN", "lees_regel"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 19, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal.kladblad",
+   "names": ["KLAD_TEKENS"],
+   "alias": null,
+   "line": 20,
+   "resolves_to": ["leeravontuur/terminal/kladblad.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestNooitEenCrash",
+   "qualname": "TestNooitEenCrash",
+   "lines": [9, 26],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Wat het kind ook typt in het klad (elk teken dat het klad toelaat), het lezen crasht nooit.",
+   "explanation": "Robustness of the klad reader.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_kwadraat_los_achter_een_getal",
+     "qualname": "TestNooitEenCrash.test_kwadraat_los_achter_een_getal",
+     "kind": "method",
+     "lines": [12, 16],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A stray superscript like '2²=4' is unreadable but never crashes (it counts as a digit for isdigit).",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [15, 16]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_willekeurige_regels",
+     "qualname": "TestNooitEenCrash.test_willekeurige_regels",
+     "kind": "method",
+     "lines": [18, 26],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Random strings of the allowed klad characters never crash the reader.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [26]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".choice", ".randint", ".subTest", "random.Random", "range", "sorted"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestLezen",
+   "qualname": "TestLezen",
+   "lines": [29, 140],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Klad reading tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "juist",
+     "qualname": "TestLezen.juist",
+     "kind": "method",
+     "lines": [30, 33],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Helper: reads a line and asserts it is correct; returns the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [31]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_klad.py::TestLezen.test_afronden", "lines": [100, 101]},
+      {"caller": "tests/test_klad.py::TestLezen.test_duizendtallen_met_een_spatie", "lines": [74, 75, 76]},
+      {"caller": "tests/test_klad.py::TestLezen.test_haakjes_en_volgorde", "lines": [58, 59]},
+      {"caller": "tests/test_klad.py::TestLezen.test_ketting", "lines": [113]},
+      {"caller": "tests/test_klad.py::TestLezen.test_kloktijden", "lines": [79, 80, 81, 82, 83, 84, 87]},
+      {"caller": "tests/test_klad.py::TestLezen.test_kommagetallen_en_punt", "lines": [53, 54, 55]},
+      {"caller": "tests/test_klad.py::TestLezen.test_label_en_woorden", "lines": [106, 108, 109, 110]},
+      {
+       "caller": "tests/test_klad.py::TestLezen.test_maal_en_delen_zonder_speciale_tekens",
+       "lines": [42, 46, 48, 49, 50]
+      },
+      {"caller": "tests/test_klad.py::TestLezen.test_omzetten", "lines": [63, 65, 66, 67, 68, 69, 70]},
+      {"caller": "tests/test_klad.py::TestLezen.test_procent_en_breuk_van", "lines": [90, 92]},
+      {"caller": "tests/test_klad.py::TestLezen.test_rest", "lines": [95, 96]}
+     ]
+    },
+    {
+     "name": "fout",
+     "qualname": "TestLezen.fout",
+     "kind": "method",
+     "lines": [35, 38],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Helper: reads a line and asserts it is wrong; returns the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [36]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIs"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_klad.py::TestLezen.test_afronden", "lines": [102, 103]},
+      {"caller": "tests/test_klad.py::TestLezen.test_haakjes_en_volgorde", "lines": [60]},
+      {"caller": "tests/test_klad.py::TestLezen.test_kloktijden", "lines": [85, 86]},
+      {
+       "caller": "tests/test_klad.py::TestLezen.test_meldingen_verklappen_niets",
+       "lines": [119, 122, 123, 124]
+      },
+      {"caller": "tests/test_klad.py::TestLezen.test_omzetten", "lines": [71]},
+      {"caller": "tests/test_klad.py::TestLezen.test_rest", "lines": [97]}
+     ]
+    },
+    {
+     "name": "test_maal_en_delen_zonder_speciale_tekens",
+     "qualname": "TestLezen.test_maal_en_delen_zonder_speciale_tekens",
+     "kind": "method",
+     "lines": [40, 50],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "x, X, * and × all read as multiplication and are shown as ×.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [42, 46, 48, 49, 50]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "fractions.Fraction"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kommagetallen_en_punt",
+     "qualname": "TestLezen.test_kommagetallen_en_punt",
+     "kind": "method",
+     "lines": [52, 55],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Decimal comma and dot are both read; the neat form uses the comma; a dot thousands separator is handled.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [53, 54, 55]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_haakjes_en_volgorde",
+     "qualname": "TestLezen.test_haakjes_en_volgorde",
+     "kind": "method",
+     "lines": [57, 60],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Brackets and order of operations are respected.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [60]},
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [58, 59]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_omzetten",
+     "qualname": "TestLezen.test_omzetten",
+     "kind": "method",
+     "lines": [62, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Unit conversions are read as 'omzet' links.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [71]},
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [63, 65, 66, 67, 68, 69, 70]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_duizendtallen_met_een_spatie",
+     "qualname": "TestLezen.test_duizendtallen_met_een_spatie",
+     "kind": "method",
+     "lines": [73, 76],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Numbers with a space as thousands separator are read.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [74, 75, 76]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kloktijden",
+     "qualname": "TestLezen.test_kloktijden",
+     "kind": "method",
+     "lines": [78, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clock-time arithmetic is read ('8.45 u + 15 min = 9.00 u').",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [85, 86]},
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [79, 80, 81, 82, 83, 84, 87]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_procent_en_breuk_van",
+     "qualname": "TestLezen.test_procent_en_breuk_van",
+     "kind": "method",
+     "lines": [89, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'25 % van 80' and '3/4 van 24' are read as 'van' operations.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [90, 92]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rest",
+     "qualname": "TestLezen.test_rest",
+     "kind": "method",
+     "lines": [94, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A division with 'rest' is checked.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [97]},
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [95, 96]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_afronden",
+     "qualname": "TestLezen.test_afronden",
+     "kind": "method",
+     "lines": [99, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A rounded result counts as correct when it matches the rounding.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [102, 103]},
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [100, 101]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_label_en_woorden",
+     "qualname": "TestLezen.test_label_en_woorden",
+     "kind": "method",
+     "lines": [105, 110],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A label before the line ('kersen:' or 'prijs =') is split off.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [106, 108, 109, 110]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ketting",
+     "qualname": "TestLezen.test_ketting",
+     "kind": "method",
+     "lines": [112, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chaining several calculations on one line is flagged with a 'new line' message.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.juist", "lines": [113]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_meldingen_verklappen_niets",
+     "qualname": "TestLezen.test_meldingen_verklappen_niets",
+     "kind": "method",
+     "lines": [118, 124],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Wrong-line messages hint ('komma') but never contain the right result.",
+     "calls": [
+      {"target": "tests/test_klad.py::TestLezen.fout", "lines": [119, 122, 123, 124]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_onvolledig_of_onleesbaar",
+     "qualname": "TestLezen.test_onvolledig_of_onleesbaar",
+     "kind": "method",
+     "lines": [126, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An incomplete line gives no verdict and asks for the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [127, 130, 132, 134]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_uitkomst_en_operanden",
+     "qualname": "TestLezen.test_uitkomst_en_operanden",
+     "kind": "method",
+     "lines": [136, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The reader exposes operations, operands (as Fractions) and the result.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [137, 140]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "fractions.Fraction"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

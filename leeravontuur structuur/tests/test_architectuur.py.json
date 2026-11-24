@@ -1,0 +1,214 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_architectuur.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 71,
+ "source_sha256": "d81f2120bc7dba2c8c595702a2c62ebf4b63ebe01daec515f78a516ba411b698",
+ "purpose": "Guards the architecture rules of CLAUDE.md: kern without curses, tkinter only in venster/, colours only through the theme, ASCII fallbacks.",
+ "details": "Scans the source text of the package: no curses import in kern, tkinter imports only in the venster layer, no colour calls outside terminal/thema.py, and checks theme palettes and the ASCII replacement table. These are the tests that turn the golden rules into red builds.",
+ "module_docstring": "Bewaakt de afspraken uit CLAUDE.md: kern zonder curses, kleuren alleen via het thema.",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["tekens", "thema"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/tekens.py", "leeravontuur/terminal/thema.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PAKKET",
+   "line": 9,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent / 'leeravontuur'",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestArchitectuur",
+   "qualname": "TestArchitectuur",
+   "lines": [12, 38],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Layer rules.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_kern_zonder_curses",
+     "qualname": "TestArchitectuur.test_kern_zonder_curses",
+     "kind": "method",
+     "lines": [13, 17],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No file in leeravontuur/kern imports curses.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotRegex", ".read_text", ".rglob", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tkinter_alleen_in_een_eigen_venster",
+     "qualname": "TestArchitectuur.test_tkinter_alleen_in_een_eigen_venster",
+     "kind": "method",
+     "lines": [19, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "tkinter draait in een eigen proces (venster/); de terminal start het alleen, de kern kent het niet.",
+     "explanation": "tkinter is imported only in the venster layer; the terminal starts it as a process and the kern does not know it.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotRegex", ".read_text", ".rglob", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kleuren_alleen_in_thema",
+     "qualname": "TestArchitectuur.test_kleuren_alleen_in_thema",
+     "kind": "method",
+     "lines": [31, 38],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Files in terminal/ (except thema.py) do not use curses colour calls directly.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertIsNone", ".read_text", ".rglob", ".subTest", "re.search"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestThemas",
+   "qualname": "TestThemas",
+   "lines": [41, 67],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Theme and character tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elk_palet_heeft_alle_kleurrollen",
+     "qualname": "TestThemas.test_elk_palet_heeft_alle_kleurrollen",
+     "kind": "method",
+     "lines": [42, 46],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every palette defines every colour role (except the roles without colour).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".subTest", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_kleur_alle_rollen",
+     "qualname": "TestThemas.test_zonder_kleur_alle_rollen",
+     "kind": "method",
+     "lines": [48, 51],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With colours off, every role still gets an attribute.",
+     "calls": [
+      {"target": "leeravontuur/terminal/thema.py::maak", "lines": [49]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ascii_een_op_een",
+     "qualname": "TestThemas.test_ascii_een_op_een",
+     "kind": "method",
+     "lines": [53, 56],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Each ASCII replacement is a single ASCII character.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLess", "len", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_speciaal_teken_heeft_een_ascii_vervanging",
+     "qualname": "TestThemas.test_elk_speciaal_teken_heeft_een_ascii_vervanging",
+     "kind": "method",
+     "lines": [58, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Alle niet-ASCII-tekens in de code en de inhoud worden in ASCII-modus 1 gewoon teken (geen '?').",
+     "explanation": "Every non-ASCII character in the code and JSON data has a one-character ASCII replacement (no '?').",
+     "calls": [
+      {"target": "leeravontuur/terminal/tekens.py::naar_ascii", "lines": [65]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [
+      ".assertEqual",
+      ".assertNotEqual",
+      ".read_text",
+      ".resolve",
+      ".rglob",
+      "len",
+      "ord",
+      "pathlib.Path",
+      "set",
+      "sorted"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

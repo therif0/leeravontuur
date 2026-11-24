@@ -1,0 +1,656 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_vakken.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 207,
+ "source_sha256": "7db83f08b4023d8fc8cdaaaa54e598fbc1d769ae419664bba63c398da5ddd005",
+ "purpose": "Tests the building blocks of the new screen layout: the layout rectangles, and that every input object and model fits its panel at every screen size.",
+ "details": "TestIndeling tests terminal/indeling.py; TestPast draws every topic's question with an Opnemer (a recording fake screen) at 80×24, 120×40 and 240×67 and checks the drawing stays inside the panel; TestOverzicht tests kern/overzicht lines.",
+ "module_docstring": "De bouwstenen van de schermen 1.0 (werk/schermen.md, fase 2): de indeling, en elk invoer-object en elk model past in zijn vak, op elke grootte (80×24, 120×40 en 240×67: de tty van de zoon).",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["overzicht"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/overzicht.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.leerjaren",
+   "names": ["LEERJAREN"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["indeling"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/indeling.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["INVOER"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "tests/test_vakken.py::vragen", "lines": [33]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["range", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "GROOTTES",
+   "line": 15,
+   "value_type": "List",
+   "value_preview": "[(24, 80), (30, 100), (40, 120), (67, 240)]",
+   "explanation": ""
+  },
+  {"name": "ZADEN", "line": 16, "value_type": "Call", "value_preview": "range(6)", "explanation": ""},
+  {"name": "VRAGEN", "line": 33, "value_type": "Call", "value_preview": "vragen()", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Opnemer",
+   "qualname": "Opnemer",
+   "lines": [36, 63],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Een nepscherm dat onthoudt waar er getekend werd.",
+   "explanation": "A recording fake screen.",
+   "attributes": [
+    {"name": "puts", "line": 40, "scope": "instance", "value_preview": null},
+    {"name": "zones", "line": 41, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_vakken.py::TestPast.test_elk_invoer_object_past_in_zijn_vak", "lines": [148]},
+    {"caller": "tests/test_vakken.py::TestPast.test_elk_model_past_in_het_vak", "lines": [183]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Opnemer.__init__",
+     "kind": "method",
+     "lines": [39, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts an empty list of drawn items.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_vakken.py::TestPast.test_elk_invoer_object_past_in_zijn_vak", "lines": [148]},
+      {"caller": "tests/test_vakken.py::TestPast.test_elk_model_past_in_het_vak", "lines": [183]}
+     ]
+    },
+    {
+     "name": "put",
+     "qualname": "Opnemer.put",
+     "kind": "method",
+     "lines": [43, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records a text drawn at (row, start column, end column).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tekstvak",
+     "qualname": "Opnemer.tekstvak",
+     "kind": "method",
+     "lines": [47, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breedte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actie", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records an input box.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "voeg",
+     "qualname": "Opnemer.voeg",
+     "kind": "method",
+     "lines": [50, 51],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignores click zones.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "cursor",
+     "qualname": "Opnemer.cursor",
+     "kind": "method",
+     "lines": [53, 54],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "_", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ignores the cursor.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewerk",
+     "qualname": "Opnemer.bewerk",
+     "kind": "method",
+     "lines": [56, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "buf", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "a", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the buffer unchanged.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maat",
+     "qualname": "Opnemer.maat",
+     "kind": "method",
+     "lines": [59, 60],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Always the 80×24 size.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "__getattr__",
+     "qualname": "Opnemer.__getattr__",
+     "kind": "method",
+     "lines": [62, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "naam", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Raises AttributeError for anything else, so a missing method fails the test.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["AttributeError"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestIndeling",
+   "qualname": "TestIndeling",
+   "lines": [66, 115],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Layout tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_elk_vak_binnen_het_scherm_en_niets_overlapt",
+     "qualname": "TestIndeling.test_elk_vak_binnen_het_scherm_en_niets_overlapt",
+     "kind": "method",
+     "lines": [67, 82],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For all sizes, with and without buddy, all panels lie inside the screen and none overlap.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [71]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertGreaterEqual", ".assertLessEqual", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_groeit_tot_120_bij_40_en_staat_dan_in_het_midden",
+     "qualname": "TestIndeling.test_groeit_tot_120_bij_40_en_staat_dan_in_het_midden",
+     "kind": "method",
+     "lines": [84, 89],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The block grows up to 120×40 and then stays centred on bigger screens.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::Rechthoek", "lines": [85, 86]},
+      {"target": "leeravontuur/terminal/indeling.py::blok", "lines": [85, 86, 87]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_reeks_een_vak_vanaf_30_rijen",
+     "qualname": "TestIndeling.test_reeks_een_vak_vanaf_30_rijen",
+     "kind": "method",
+     "lines": [91, 95],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The series line is a panel only from 30 rows.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [92, 93, 94, 95]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klokvenster_open_geen_maatje_maar_de_kolom_blijft_vrij",
+     "qualname": "TestIndeling.test_klokvenster_open_geen_maatje_maar_de_kolom_blijft_vrij",
+     "kind": "method",
+     "lines": [97, 100],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With the clock window open there is no buddy but the column stays free.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [98]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klad_alleen_als_er_plaats_is",
+     "qualname": "TestIndeling.test_klad_alleen_als_er_plaats_is",
+     "kind": "method",
+     "lines": [102, 106],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The klad panel appears only when there is room.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [103, 104]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verdeel_tip_en_spiekbrief",
+     "qualname": "TestIndeling.test_verdeel_tip_en_spiekbrief",
+     "kind": "method",
+     "lines": [108, 115],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The left column is split between question, tip and cheat sheet.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [109, 114]},
+      {"target": "leeravontuur/terminal/indeling.py::verdeel", "lines": [110, 113, 115]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestPast",
+   "qualname": "TestPast",
+   "lines": [118, 189],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Fit tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "plaats",
+     "qualname": "TestPast.plaats",
+     "kind": "method",
+     "lines": [119, 128],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "obj", "kind": "positional", "default": null, "annotation": null},
+      {"name": "h", "kind": "positional", "default": null, "annotation": null},
+      {"name": "w", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Zoals de beta: links in het vak Vraag, en de volle breedte (zonder maatje) als het te breed is.",
+     "explanation": "Places an object in the left panel, or full width without the buddy when it is too wide.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [121, 125]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "obj.breedte",
+       "lines": [124],
+       "candidates": ["leeravontuur/terminal/invoer.py::Plaats.breedte"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "obj.plaats",
+       "lines": [123, 127],
+       "candidates": [
+        "leeravontuur/kern/modellen.py::Rooster.plaats",
+        "leeravontuur/terminal/invoer.py::Plaats.plaats",
+        "leeravontuur/terminal/tabel.py::_Maat.plaats",
+        "leeravontuur/venster/klokvenster.py::Venster.plaats"
+       ],
+       "candidates_count": 4
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_vakken.py::TestPast.test_cijferen_past_met_de_vraag_de_tip_en_de_rand",
+       "lines": [172]
+      },
+      {"caller": "tests/test_vakken.py::TestPast.test_elk_invoer_object_past_in_zijn_vak", "lines": [144]}
+     ]
+    },
+    {
+     "name": "test_elk_invoer_object_past_in_zijn_vak",
+     "qualname": "TestPast.test_elk_invoer_object_past_in_zijn_vak",
+     "kind": "method",
+     "lines": [130, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Wat het object echt tekent, blijft binnen de breedte van het vak, tijdens de vraag en na het nakijken; en het past in de hoogte van de kolom (de objecten met een eigen scherm, Maten: tijdens de vraag; de uitleg na het nakijken komt in fase…",
+     "explanation": "Every input object draws within the panel width and height, before and after checking, at every size.",
+     "calls": [
+      {"target": "tests/test_vakken.py::Opnemer.__init__", "lines": [148]},
+      {"target": "tests/test_vakken.py::TestPast.plaats", "lines": [144]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.hoogte", "lines": [158], "candidates": [], "candidates_count": 12},
+      {
+       "expr": "obj.meet",
+       "lines": [150],
+       "candidates": ["leeravontuur/terminal/invoer.py::Plaats.meet"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "obj.teken_voor_maat",
+       "lines": [152],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::Plaats.teken_voor_maat",
+        "leeravontuur/terminal/tabel.py::_Maat.teken_voor_maat",
+        "leeravontuur/terminal/tabel.py::TabelInvoer.teken_voor_maat"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [".assertGreaterEqual", ".assertLessEqual", ".subTest", "getattr", "hasattr", "max", "min", "set"],
+     "dynamic": [
+      {"kind": "subscript-call", "line": 140, "expr": "INVOER[v.invoer]"}
+     ],
+     "called_by": []
+    },
+    {
+     "name": "test_cijferen_past_met_de_vraag_de_tip_en_de_rand",
+     "qualname": "TestPast.test_cijferen_past_met_de_vraag_de_tip_en_de_rand",
+     "kind": "method",
+     "lines": [162, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De beta (rooster en staartdeling): de band, het object, de melding en het vak Tip passen ook in de hoogte.",
+     "explanation": "The beta Cijferen layout (band, object, message, Tip panel) fits the height.",
+     "calls": [
+      {"target": "tests/test_vakken.py::TestPast.plaats", "lines": [172]}
+     ],
+     "unresolved_calls": [
+      {"expr": "obj.hoogte", "lines": [173], "candidates": [], "candidates_count": 12}
+     ],
+     "external_calls": [".assertLessEqual", ".subTest", "hasattr"],
+     "dynamic": [
+      {"kind": "subscript-call", "line": 168, "expr": "INVOER[v.invoer]"}
+     ],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_model_past_in_het_vak",
+     "qualname": "TestPast.test_elk_model_past_in_het_vak",
+     "kind": "method",
+     "lines": [177, 189],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every visual model fits in the panel at every size.",
+     "calls": [
+      {"target": "leeravontuur/terminal/indeling.py::oefenscherm", "lines": [181]},
+      {"target": "leeravontuur/terminal/modellen.py::teken_model", "lines": [184]},
+      {"target": "tests/test_vakken.py::Opnemer.__init__", "lines": [183]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreaterEqual", ".assertLessEqual", ".subTest", "getattr", "id", "max", "min", "type"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestOverzicht",
+   "qualname": "TestOverzicht",
+   "lines": [192, 203],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Series line tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_reeks_regel",
+     "qualname": "TestOverzicht.test_reeks_regel",
+     "kind": "method",
+     "lines": [193, 199],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The series line shows ✔✘◉○ symbols, the question number, the score and points.",
+     "calls": [
+      {"target": "leeravontuur/kern/overzicht.py::reeks_regel", "lines": [194, 198, 199]},
+      {"target": "leeravontuur/kern/overzicht.py::tekst", "lines": [195, 198, 199]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_teken_met_een_symbool",
+     "qualname": "TestOverzicht.test_elk_teken_met_een_symbool",
+     "kind": "method",
+     "lines": [201, 203],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Juist en fout hebben ook een symbool (er is een kleurenblind thema).",
+     "explanation": "Right and wrong have symbols too (for the colour-blind theme).",
+     "calls": [
+      {"target": "leeravontuur/kern/overzicht.py::bolletjes", "lines": [203]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "vragen",
+   "qualname": "vragen",
+   "kind": "function",
+   "lines": [19, 30],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een paar vragen van elk onderwerp in elk leerjaar (en Maten: gewoon en in de tabel).",
+   "explanation": "A few questions of every topic in every year (Maten also in table form).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Maten.__init__", "lines": [27]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "m.maak",
+     "lines": [29],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "o.aangeboden",
+     "lines": [24],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "o.maak",
+     "lines": [25],
+     "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.maak", "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": ["random.Random", "random.seed"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_vakken.py::<module>", "lines": [33]}
+   ]
+  }
+ ]
+}

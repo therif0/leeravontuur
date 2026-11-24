@@ -1,0 +1,1280 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 620,
+ "source_sha256": "7fe8cfa243b142c9b70d276ef13050906c4fb80f472f33f601ca71d66ce38e42",
+ "purpose": "The topics of mental arithmetic: times tables, plus and minus with strategies, x and : by 10/100/1000, doubling and halving, and clever x and : by splitting.",
+ "details": "Five Onderwerp subclasses, one shared cheat sheet (SPIEKBRIEF, returned by each topic's spiekbrief method). Each question carries a strategy that the explanation shows step by step (compensate, split, double ...). Tafels (with extension 7 x 80, division and negatives), PlusMin (compensate near-round numbers or split the second number; the klad is on), MaalDeel10 (the comma shifts), DubbelHelft (double and half by splitting) and Splitsen (91 : 7 as 70 : 7 + 21 : 7, or 99 x 6 by compensating; the klad is required and klad_klaar checks that a split is visible). The topics give worked solutions (oplossing) as klad lines with known wrong paths. The kinds of this file (TAFELS, PLUSMIN, DUBBELHELFT) are also the sources of the speed-practice questions (kern/snelrekenen.py). Note: _plaats ignores its first parameter.",
+ "module_docstring": "Hoofdrekenen: tafels, optellen en aftrekken, × en : met 10/100/1000, verdubbelen en halveren, slim × en : (splitsen).",
+ "imports": [
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["decimalen", "fmt"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["DEEL", "MAAL", "MIN", "PLUS", "fout_pad", "oplossing_van", "stap"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Oplossing"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/kern/snelrekenen.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [615, 616, 617, 618, 619]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 14,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 581,
+   "value_type": "List",
+   "value_preview": "[('Slimme trucjes voor hoofdrekenen', 'accent'), ('', ''), ('COMPENSE…",
+   "explanation": "The shared cheat sheet."
+  },
+  {
+   "name": "TAFELS",
+   "line": 615,
+   "value_type": "Call",
+   "value_preview": "Tafels()",
+   "explanation": "The one instance of the tables topic."
+  },
+  {
+   "name": "PLUSMIN",
+   "line": 616,
+   "value_type": "Call",
+   "value_preview": "PlusMin()",
+   "explanation": "The one instance of the plus-minus topic."
+  },
+  {
+   "name": "MAALDEEL10",
+   "line": 617,
+   "value_type": "Call",
+   "value_preview": "MaalDeel10()",
+   "explanation": "The one instance of the x and : by 10 topic."
+  },
+  {
+   "name": "DUBBELHELFT",
+   "line": 618,
+   "value_type": "Call",
+   "value_preview": "DubbelHelft()",
+   "explanation": "The one instance of the double-and-half topic."
+  },
+  {
+   "name": "SPLITSEN",
+   "line": 619,
+   "value_type": "Call",
+   "value_preview": "Splitsen()",
+   "explanation": "The one instance of the splitting topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 620,
+   "value_type": "List",
+   "value_preview": "[TAFELS, PLUSMIN, MAALDEEL10, DUBBELHELFT, SPLITSEN]",
+   "explanation": "List of the five topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 620,
+   "description": "The five topic instances; instantiating them registers the skills. TAFELS, PLUSMIN and DUBBELHELFT are also named in kern/snelrekenen.SOORTEN, which picks one at random and calls its maak method."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Tafels",
+   "qualname": "Tafels",
+   "lines": [27, 126],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.hoofdrekenen.tafels: multiplication and division tables.",
+   "attributes": [
+    {"name": "id", "line": 28, "scope": "class", "value_preview": "'wiskunde.hoofdrekenen.tafels'"},
+    {"name": "naam", "line": 29, "scope": "class", "value_preview": "'Maal- en deeltafels'"},
+    {"name": "spiek_kop", "line": 30, "scope": "class", "value_preview": "'TAFELS'"},
+    {
+     "name": "omschrijving",
+     "line": 31,
+     "scope": "class",
+     "value_preview": "'de tafels van vermenigvuldiging en de deeltafels'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 32,
+     "scope": "class",
+     "value_preview": "{'plus_ipv_maal': 'opgeteld in plaats van vermenigvuldigd',…"
+    },
+    {"name": "vast", "line": 35, "scope": "class", "value_preview": "('tafel',)"},
+    {"name": "klad", "line": 36, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "klad_voor",
+     "qualname": "Tafels.klad_voor",
+     "kind": "method",
+     "lines": [38, 40],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The klad is only on for extended tables like 7 x 80 (positive, multiples of ten, no division); a plain table is from memory.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Tafels.oplossing",
+     "kind": "method",
+     "lines": [42, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution of an extended table: the table fact, then times 10.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [44]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Tafels.maak_met",
+     "kind": "method",
+     "lines": [46, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a table question: a table from the leerlijn, a factor, sometimes a multiple of ten, sometimes division, sometimes a negative number; the order of factors is random.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [60, 63]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_f", "lines": [60, 63]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [60, 63], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Tafels.kies_onderwerp",
+     "kind": "method",
+     "lines": [65, 68],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses a table, weighted by how often it went wrong.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choices"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Tafels.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [70, 72],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The group 'tafel N' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Tafels.uitleg",
+     "kind": "method",
+     "lines": [74, 104],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A strategy per case: extended multiples, x 9 as x 10 minus one, x 5 as half of x 10, doubling for 2, 4, 8, the neighbour table, and the sign rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_f", "lines": [80, 81, 101]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["abs", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Tafels.tip",
+     "kind": "method",
+     "lines": [106, 108],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Use a table you know; for division think 'which number times ...'.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Tafels.diagnose",
+     "kind": "method",
+     "lines": [110, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises adding instead of multiplying, a neighbour in the table, and multiplying instead of dividing.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_f", "lines": [120]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Tafels.spiekbrief",
+     "kind": "method",
+     "lines": [125, 126],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain (the same list in every topic of this file).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "PlusMin",
+   "qualname": "PlusMin",
+   "lines": [131, 252],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.hoofdrekenen.plusmin: mental plus and minus with strategies.",
+   "attributes": [
+    {"name": "id", "line": 132, "scope": "class", "value_preview": "'wiskunde.hoofdrekenen.plusmin'"},
+    {"name": "naam", "line": 133, "scope": "class", "value_preview": "'Optellen en aftrekken'"},
+    {
+     "name": "spiek_kop",
+     "line": 134,
+     "scope": "class",
+     "value_preview": "'COMPENSEREN (een getal dat bijna rond is)'"
+    },
+    {
+     "name": "omschrijving",
+     "line": 135,
+     "scope": "class",
+     "value_preview": "'uit het hoofd optellen en aftrekken met strategieën'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 136,
+     "scope": "class",
+     "value_preview": "{'compenseren_verkeerd': 'bij compenseren de verkeerde kant…"
+    },
+    {"name": "vast", "line": 139, "scope": "class", "value_preview": "('op', 'strategie')"},
+    {"name": "klad", "line": 140, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "oplossing",
+     "qualname": "PlusMin.oplossing",
+     "kind": "method",
+     "lines": [142, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution: for compensating, round and then correct (with the wrong-direction path); for splitting, one step per place part.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [151, 152, 153, 154, 158]},
+      {"target": "leeravontuur/kern/klad.py::fout_pad", "lines": [151]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [153, 160]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_splits", "lines": [156]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [144, 146], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "PlusMin.maak_met",
+     "kind": "method",
+     "lines": [162, 191],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a plus or minus question with the strategy compensate (a number just below a round one) or split, scaled for decimals, sometimes negative or ending below zero.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [190]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [190]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [187], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".random", "len", "max", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "PlusMin.kies_onderwerp",
+     "kind": "method",
+     "lines": [193, 197],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses operation and strategy, weighted by past mistakes.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choices"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "PlusMin.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [199, 201],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The group such as 'plus compenseren' from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "PlusMin.uitleg",
+     "kind": "method",
+     "lines": [203, 225],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Explains compensating (round then correct) or splitting (part by part), and the number line below zero.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [210, 211, 213, 214, 220, 221, 222]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_splits", "lines": [216]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [205, 208], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "PlusMin.tip",
+     "kind": "method",
+     "lines": [227, 230],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Make a round number first and correct afterwards, or split the second number into hundreds, tens and units.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "PlusMin.diagnose",
+     "kind": "method",
+     "lines": [232, 249],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises compensating in the wrong direction, the wrong operation, and being exactly 10, 100 or 1000 off (forgot to carry).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [242]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_plaats", "lines": [248]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [236, 238], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "PlusMin.spiekbrief",
+     "kind": "method",
+     "lines": [251, 252],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain (the same list in every topic of this file).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "MaalDeel10",
+   "qualname": "MaalDeel10",
+   "lines": [274, 349],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.hoofdrekenen.maaldeel10: x and : by 10, 100, 1000.",
+   "attributes": [
+    {"name": "id", "line": 275, "scope": "class", "value_preview": "'wiskunde.hoofdrekenen.maaldeel10'"},
+    {"name": "naam", "line": 276, "scope": "class", "value_preview": "'× en : met 10, 100, 1000'"},
+    {"name": "spiek_kop", "line": 277, "scope": "class", "value_preview": "'× EN : MET 10, 100, 1000'"},
+    {
+     "name": "omschrijving",
+     "line": 278,
+     "scope": "class",
+     "value_preview": "'vermenigvuldigen en delen met 10, 100, 1000 (de komma vers…"
+    },
+    {
+     "name": "denkfouten",
+     "line": 279,
+     "scope": "class",
+     "value_preview": "{'verkeerde_richting_10': 'de komma de verkeerde kant op ge…"
+    },
+    {"name": "vast", "line": 281, "scope": "class", "value_preview": "('op', 'm')"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "MaalDeel10.maak_met",
+     "kind": "method",
+     "lines": [283, 301],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a multiplication or division by 10, 100, 1000 (or 0,1 ...) with a number whose result fits the leerlijn's decimals (up to 200 tries, then a fixed question).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::decimalen", "lines": [293]},
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [297, 298]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [298, 300]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [284, 286, 289, 300], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".normalize", ".randint", ".scaleb", ".to_integral_value", "max", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "MaalDeel10.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [303, 310],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The group such as 'x 100' from a stored key (the operator may itself be a colon).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_stappen",
+     "qualname": "MaalDeel10._stappen",
+     "kind": "method",
+     "lines": [312, 316],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "m", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "How many places the comma moves and whether the factor is large (power of ten above 1).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [313], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".as_tuple", ".normalize", "int", "len", "str"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10.uitleg", "lines": [321]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "MaalDeel10.uitleg",
+     "kind": "method",
+     "lines": [318, 330],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The comma moves n places right or left, with a note that dividing by a small factor equals multiplying by a large one.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [326, 327, 329]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::MaalDeel10._stappen", "lines": [321]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [320, 329], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "MaalDeel10.tip",
+     "kind": "method",
+     "lines": [332, 333],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Count the zeros: that is how many places the comma moves.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "MaalDeel10.diagnose",
+     "kind": "method",
+     "lines": [335, 346],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises moving the comma in the wrong direction and being a few places off.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [339], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".scaleb", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "MaalDeel10.spiekbrief",
+     "kind": "method",
+     "lines": [348, 349],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain (the same list in every topic of this file).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "DubbelHelft",
+   "qualname": "DubbelHelft",
+   "lines": [354, 426],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.hoofdrekenen.dubbelhelft: doubling and halving.",
+   "attributes": [
+    {"name": "id", "line": 355, "scope": "class", "value_preview": "'wiskunde.hoofdrekenen.dubbelhelft'"},
+    {"name": "naam", "line": 356, "scope": "class", "value_preview": "'Verdubbelen en halveren'"},
+    {"name": "spiek_kop", "line": 357, "scope": "class", "value_preview": "'VERDUBBELEN EN HALVEREN'"},
+    {
+     "name": "omschrijving",
+     "line": 358,
+     "scope": "class",
+     "value_preview": "'het dubbel en de helft uit het hoofd'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 359,
+     "scope": "class",
+     "value_preview": "{'helft_dubbel': 'het dubbel en de helft verwisseld', 'dubb…"
+    },
+    {"name": "vast", "line": 360, "scope": "class", "value_preview": "('soort',)"},
+    {"name": "klad", "line": 361, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "oplossing",
+     "qualname": "DubbelHelft.oplossing",
+     "kind": "method",
+     "lines": [363, 379],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution: double each place part and add, or halve a tens part and a rest.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [368, 369, 370, 376, 378, 379]},
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [368, 369, 376, 378]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_splits", "lines": [366]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [364, 377], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["int", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "DubbelHelft.maak_met",
+     "kind": "method",
+     "lines": [381, 391],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes 'the double of ...' or 'half of ...' (halves are made even when there are no decimals).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [390, 391]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [391]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [385], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".normalize", ".randint", ".random", "max", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "DubbelHelft.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [393, 395],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The kind (dubbel or helft) from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "DubbelHelft.uitleg",
+     "kind": "method",
+     "lines": [397, 410],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Split and double each part, or split into easily halved parts.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [401, 402, 408, 409, 410]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_splits", "lines": [400]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [398, 408, 409], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "DubbelHelft.tip",
+     "kind": "method",
+     "lines": [412, 413],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Split the number into pieces you can double or halve easily.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "DubbelHelft.diagnose",
+     "kind": "method",
+     "lines": [415, 423],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises swapping double and half, and being exactly 10 or 100 off.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [418], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "DubbelHelft.spiekbrief",
+     "kind": "method",
+     "lines": [425, 426],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain (the same list in every topic of this file).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Splitsen",
+   "qualname": "Splitsen",
+   "lines": [431, 578],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13. Het klad is verplicht: het gaat om de aanpak, niet alleen de uitkomst.",
+   "explanation": "Topic wiskunde.hoofdrekenen.splitsen: clever x and : by splitting or compensating (klad required).",
+   "attributes": [
+    {"name": "id", "line": 433, "scope": "class", "value_preview": "'wiskunde.hoofdrekenen.splitsen'"},
+    {"name": "naam", "line": 434, "scope": "class", "value_preview": "'Slim × en : (splitsen)'"},
+    {"name": "spiek_kop", "line": 435, "scope": "class", "value_preview": "'SPLITSEN'"},
+    {
+     "name": "omschrijving",
+     "line": 436,
+     "scope": "class",
+     "value_preview": "'× en : met splitsen in handige stukken, en compenseren (99…"
+    },
+    {
+     "name": "denkfouten",
+     "line": 437,
+     "scope": "class",
+     "value_preview": "{'split_deel_vergeten': 'bij splitsen een stuk vergeten', '…"
+    },
+    {"name": "klad", "line": 441, "scope": "class", "value_preview": "'verplicht'"},
+    {"name": "vast", "line": 442, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Splitsen.maak_met",
+     "kind": "method",
+     "lines": [444, 471],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes one of three kinds: divide by splitting (a table with a zero plus the rest), multiply by compensating (99 x 6), multiply by splitting (also with a decimal comma).",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [470]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [470]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::_splits", "lines": [468]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "D",
+       "lines": [453, 454, 457, 458, 459, 462, 464, 466],
+       "candidates": [],
+       "candidates_count": 0
+      }
+     ],
+     "external_calls": [".choice", ".randint", ".random", "max", "min", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Splitsen.kies_onderwerp",
+     "kind": "method",
+     "lines": [473, 475],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses a kind, weighted by past mistakes.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choices"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Splitsen.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [477, 479],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_getallen",
+     "qualname": "Splitsen._getallen",
+     "kind": "staticmethod",
+     "lines": [482, 484],
+     "params": [
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "",
+     "explanation": "Unpacks the kind, number, factor and split parts from the question data.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [484], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.diagnose", "lines": [554]},
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.klad_klaar", "lines": [530]},
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [487]},
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.tip", "lines": [513]}
+     ]
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Splitsen.oplossing",
+     "kind": "method",
+     "lines": [486, 510],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The one-line worked solution for each kind, with its explanation and the known wrong paths (a piece forgotten or not multiplied or divided, compensating the wrong way).",
+     "calls": [
+      {
+       "target": "leeravontuur/kern/getal.py::fmt",
+       "lines": [490, 491, 492, 493, 494, 495, 498, 499, 500, 502, 505, 506, 507, 508, 509]
+      },
+      {"target": "leeravontuur/kern/klad.py::fout_pad", "lines": [494, 501, 508]},
+      {"target": "leeravontuur/kern/klad.py::stap", "lines": [510]},
+      {"target": "leeravontuur/kern/modellen.py::Oplossing", "lines": [510]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen._getallen", "lines": [487]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.tip", "lines": [510]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "sum"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.uitleg", "lines": [524]}
+     ]
+    },
+    {
+     "name": "tip",
+     "qualname": "Splitsen.tip",
+     "kind": "method",
+     "lines": [512, 521],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint per kind about how to split or compensate.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [515, 517, 519, 520, 521]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen._getallen", "lines": [513]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".to_integral_value"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [510]}
+     ]
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Splitsen.uitleg",
+     "kind": "method",
+     "lines": [523, 525],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked line and its reason.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [524]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klad_klaar",
+     "qualname": "Splitsen.klad_klaar",
+     "kind": "method",
+     "lines": [527, 549],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Is er een splitsing (of compensatie) te zien? Elke splitsing telt (49 + 42 net zo goed als 70 + 21); een rekenfout erin mag: dan kijkt het nakijken (met een tweede kans) het antwoord gewoon na.",
+     "explanation": "Checks the klad shows a split or compensation: a line with two operations of the kind involving the factor, or at least two piece lines (one for compensating); a calculation mistake inside is allowed.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [548, 549]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen._getallen", "lines": [530]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["fractions.Fraction"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Splitsen.diagnose",
+     "kind": "method",
+     "lines": [551, 575],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises a forgotten piece, a piece not divided or multiplied, and compensating in the wrong direction or with too little.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [558, 559, 561, 565, 567, 568, 574]},
+      {"target": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen._getallen", "lines": [554]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Splitsen.spiekbrief",
+     "kind": "method",
+     "lines": [577, 578],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The shared cheat sheet of the domain (the same list in every topic of this file).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_f",
+   "qualname": "_f",
+   "kind": "function",
+   "lines": [17, 18],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A number as Flemish text (via fmt).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [18]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [18], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.diagnose", "lines": [120]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.maak_met", "lines": [60, 63]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.uitleg", "lines": [80, 81, 101]}
+   ]
+  },
+  {
+   "name": "_plaats",
+   "qualname": "_plaats",
+   "kind": "function",
+   "lines": [21, 22],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null},
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The place name for a power k (tientallen, honderdtallen, duizendtallen, or 'cijfers'); the first parameter is not used.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.diagnose", "lines": [248]}
+   ]
+  },
+  {
+   "name": "_splits",
+   "qualname": "_splits",
+   "kind": "function",
+   "lines": [255, 269],
+   "params": [
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "345 -> [300, 40, 5]; 4,75 -> [4, 0,7, 0,05] (zonder nullen).",
+   "explanation": "Splits a number into its non-zero place parts: 345 into [300, 40, 5], 4,75 into [4, 0,7, 0,05]; keeps the sign; [0] for zero.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [257, 265, 268, 269], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [".normalize", "abs", "enumerate", "format", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.oplossing", "lines": [366]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.uitleg", "lines": [400]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.oplossing", "lines": [156]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.uitleg", "lines": [216]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.maak_met", "lines": [468]}
+   ]
+  }
+ ]
+}

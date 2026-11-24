@@ -1,0 +1,590 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/klok.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 323,
+ "source_sha256": "28997e585c80f58f9e550eda93cd7abd97a083ae0f921f61027b38877e2a2909",
+ "purpose": "The clock topic: reading and setting an analogue clock, times in Flemish words, the 24-hour notation, and later and earlier.",
+ "details": "A time is everywhere a number of minutes after midnight (0 to 1439), as in grootheden.py; an analogue clock shows only 12 hours, so 3.15 and 15.15 count as equal there (nakijken compares modulo 720, except for 24-hour and later/earlier questions). Helpers write times as Flemish words (woorden, e.g. 'vijf voor half vier') and read them back (lees_woorden), name the part of the day (dagdeel), and describe how to read the long hand (lange_wijzer). The one topic Klok makes seven kinds: lezen (read the clock; clock window or drawn clock), woorden_naar and naar_woorden, zetten (set the hands; input kind 'wijzers'), 24uur, later and vroeger. The klad is on only for later, earlier and 24 hours. The window and drawing of the clock are in venster/klokbeeld.py, venster/klokvenster.py and terminal/modellen.py.",
+ "module_docstring": "De klok: een wijzerklok lezen en zetten, tijden in Vlaamse woorden, de 24-uursnotatie, later en vroeger.",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["oplossing_van"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Wijzerklok"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["duur_tekst", "klok_tekst", "lees_klok"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "docs/tools/scenarios.py",
+  "leeravontuur/kern/catalogus.py",
+  "leeravontuur/terminal/curriculum/wiskunde.py",
+  "tests/test_klok.py",
+  "tests/test_schermen.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [323]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "D",
+   "line": 15,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "GETALLEN",
+   "line": 16,
+   "value_type": "List",
+   "value_preview": "['twaalf', 'een', 'twee', 'drie', 'vier', 'vijf', 'zes', 'zeven', 'ac…",
+   "explanation": "Number words twaalf to twaalf for the hours of a clock."
+  },
+  {
+   "name": "WOORD",
+   "line": 17,
+   "value_type": "BinOp",
+   "value_preview": "{w: i for i, w in enumerate(GETALLEN) if i} | {'één': 1, 'twintig': 2…",
+   "explanation": "Words to numbers (een, twee, ..., een, twintig, kwart)."
+  },
+  {
+   "name": "DAGDELEN",
+   "line": 18,
+   "value_type": "List",
+   "value_preview": "[(0, 6, \"'s nachts\"), (6, 12, \"'s morgens\"), (12, 18, \"'s middags\"), …",
+   "explanation": "Parts of the day with their hour ranges."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 82,
+   "value_type": "List",
+   "value_preview": "[('DE WIJZERKLOK', 'accent'), (' De korte wijzer = het uur. De lange …",
+   "explanation": "The clock cheat sheet."
+  },
+  {
+   "name": "KLOK",
+   "line": 323,
+   "value_type": "Call",
+   "value_preview": "Klok()",
+   "explanation": "The one instance of the clock topic."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Klok",
+   "qualname": "Klok",
+   "lines": [125, 320],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.eenheden.klok: reading, setting, words, 24 hours, later and earlier.",
+   "attributes": [
+    {"name": "id", "line": 126, "scope": "class", "value_preview": "'wiskunde.eenheden.klok'"},
+    {"name": "naam", "line": 127, "scope": "class", "value_preview": "'De klok'"},
+    {
+     "name": "omschrijving",
+     "line": 128,
+     "scope": "class",
+     "value_preview": "'de wijzerklok lezen en zetten, tijden in woorden, 24 uur, …"
+    },
+    {
+     "name": "denkfouten",
+     "line": 129,
+     "scope": "class",
+     "value_preview": "{'klok_wijzers': 'uurwijzer en minutenwijzer verwisseld', '…"
+    },
+    {"name": "vast", "line": 136, "scope": "class", "value_preview": "('soort',)"},
+    {"name": "klad", "line": 195, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "Klok.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [138, 140],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies_onderwerp",
+     "qualname": "Klok.kies_onderwerp",
+     "kind": "method",
+     "lines": [142, 144],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "gewichten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Chooses a kind, weighted by past mistakes.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choices"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "maak_met",
+     "qualname": "Klok.maak_met",
+     "kind": "method",
+     "lines": [146, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a question of one of the kinds: read the clock, words to digits, digits to words, set the hands, 24-hour notation, later or earlier (sometimes over midnight).",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Wijzerklok", "lines": [156, 165, 173, 181, 192]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [155, 160, 164, 172, 178, 190]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [191]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [181, 191, 192]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::dagdeel", "lines": [177]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [156, 161, 164, 170, 173]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [160, 165, 169]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [155, 161, 165, 172, 179, 191], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".random", ".randrange", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "klad_voor",
+     "qualname": "Klok.klad_voor",
+     "kind": "method",
+     "lines": [197, 199],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Rekenen met de klok krijgt een klad; de klok lezen, zetten of in woorden niet.",
+     "explanation": "The klad is on for later, earlier and 24-hour questions only.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Klok.oplossing",
+     "kind": "method",
+     "lines": [201, 216],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines (add 12 hours; or count in steps to the full hour for later and earlier).",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [204, 209, 211, 214, 216]},
+      {
+       "target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst",
+       "lines": [204, 209, 210, 211, 214, 215, 216]
+      },
+      {"target": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [204]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lees_vraag",
+     "qualname": "Klok.lees_vraag",
+     "kind": "method",
+     "lines": [218, 223],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads the answer as words, set hands (a number from the clock input) or a typed clock time.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [222, 223]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [220]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nakijken",
+     "qualname": "Klok.nakijken",
+     "kind": "method",
+     "lines": [225, 233],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Right when equal modulo 12 hours (an analogue clock shows 12 hours); exact for 24-hour questions; later and earlier also accept a before-13:00 answer written on the 12-hour clock.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [232, 233], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.diagnose", "lines": [236]}
+     ]
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Klok.diagnose",
+     "kind": "method",
+     "lines": [235, 276],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises swapped hands, 'half four' read as 4.30, the next hour taken, 24-hour notation mistakes, later and earlier swapped, a forgotten extra hour and counting with 100 minutes per hour.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken", "lines": [236]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::dagdeel", "lines": [263]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [248, 253]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::uur12", "lines": [245, 250, 252, 257, 258, 259, 263]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [253]}
+     ],
+     "unresolved_calls": [
+      {"expr": "kl", "lines": [271], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Klok.uitleg",
+     "kind": "method",
+     "lines": [278, 301],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per kind: reading the hands, the words, adding 12, or counting in steps to the full hour.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [295, 296, 300, 301]},
+      {
+       "target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst",
+       "lines": [289, 294, 295, 296, 299, 300, 301]
+      },
+      {"target": "leeravontuur/kern/wiskunde/klok.py::dagdeel", "lines": [288]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [284, 286]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::lange_wijzer", "lines": [283]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::uur12", "lines": [283, 288]},
+      {"target": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [284, 286]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["divmod", "int"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Klok.tip",
+     "kind": "method",
+     "lines": [303, 311],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint per kind (first the short hand, 'half four is half an hour before four', add 12 after noon, count in steps).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "spiekbrief",
+     "qualname": "Klok.spiekbrief",
+     "kind": "method",
+     "lines": [313, 314],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The clock cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kop_op_spiekbrief",
+     "qualname": "Klok.kop_op_spiekbrief",
+     "kind": "method",
+     "lines": [316, 320],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat-sheet heading for the question kind.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "uur12",
+   "qualname": "uur12",
+   "kind": "function",
+   "lines": [21, 23],
+   "params": [
+    {"name": "uur", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "0..23 → 1..12.",
+   "explanation": "An hour 0-23 as 1-12.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/klok.py::Klok.diagnose",
+     "lines": [245, 250, 252, 257, 258, 259, 263]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [283, 288]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::klok12", "lines": [109]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [57, 59, 61, 63, 68]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::woorden", "lines": [30, 32]}
+   ]
+  },
+  {
+   "name": "woorden",
+   "qualname": "woorden",
+   "kind": "function",
+   "lines": [26, 36],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een tijdstip in Vlaamse woorden, zoals je het op een wijzerklok leest: 205 → 'vijf voor half vier'. Alleen voor veelvouden van 5 minuten; anders bv. 'drie uur zeventien' (met cijfers: '3 uur 17').",
+   "explanation": "A time in Flemish words as read from an analogue clock (205 gives 'vijf voor half vier'); for minutes not a multiple of 5 a form like '3 uur 17'.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/klok.py::uur12", "lines": [30, 32]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["divmod", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.diagnose", "lines": [253]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [160, 165, 169]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [284, 286]},
+    {"caller": "tests/test_klok.py::TestWoorden.test_heen_en_terug", "lines": [28]},
+    {"caller": "tests/test_klok.py::TestWoorden.test_vlaamse_woorden", "lines": [31, 32, 33, 34, 35]},
+    {"caller": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [459]}
+   ]
+  },
+  {
+   "name": "_getal",
+   "qualname": "_getal",
+   "kind": "function",
+   "lines": [39, 42],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A word or digit string as a number (een, twee, ... kwart, twintig), or None.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [57, 59, 61, 63, 68]}
+   ]
+  },
+  {
+   "name": "lees_woorden",
+   "qualname": "lees_woorden",
+   "kind": "function",
+   "lines": [45, 74],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'vijf voor half vier', '5 voor half 4', 'kwart over drie', 'drie uur', 'twintig over drie' → minuten (0 … 719), of None. Ook een tijd in cijfers ('3.25') mag.",
+   "explanation": "Reads 'vijf voor half vier', '5 voor half 4', 'kwart over drie', 'drie uur', or a time in digits into minutes modulo 12 hours, or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [53]},
+    {"target": "leeravontuur/kern/wiskunde/klok.py::_getal", "lines": [57, 59, 61, 63, 68]},
+    {"target": "leeravontuur/kern/wiskunde/klok.py::uur12", "lines": [57, 59, 61, 63, 68]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["all", "int", "len", "re.sub"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [584]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.lees_vraag", "lines": [220]},
+    {"caller": "tests/test_klok.py::TestWoorden.test_andere_schrijfwijzen", "lines": [40, 42]},
+    {"caller": "tests/test_klok.py::TestWoorden.test_heen_en_terug", "lines": [28]}
+   ]
+  },
+  {
+   "name": "dagdeel",
+   "qualname": "dagdeel",
+   "kind": "function",
+   "lines": [77, 79],
+   "params": [
+    {"name": "minuten", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The part of the day of a time ('s nachts, 's morgens, 's middags, 's avonds).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["int", "next"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.diagnose", "lines": [263]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [177]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [288]}
+   ]
+  },
+  {
+   "name": "klok12",
+   "qualname": "klok12",
+   "kind": "function",
+   "lines": [106, 109],
+   "params": [
+    {"name": "t", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een tijd op de wijzerklok: 12 uur in plaats van 0 uur (0.55 → 12.55 u).",
+   "explanation": "A time as shown on a 12-hour clock (0.55 shows as 12.55 u).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/klok.py::uur12", "lines": [109]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["divmod", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.diagnose", "lines": [248, 253]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.maak_met", "lines": [156, 161, 164, 170, 173]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.oplossing", "lines": [204]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [284, 286]},
+    {"caller": "tests/test_schermen.py::TestKlok.vaste_vraag", "lines": [459]}
+   ]
+  },
+  {
+   "name": "lange_wijzer",
+   "qualname": "lange_wijzer",
+   "kind": "function",
+   "lines": [112, 122],
+   "params": [
+    {"name": "m", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoe je de minuten afleest: per 5 tellen, en dan de streepjes erbij.",
+   "explanation": "How to read the minutes from the long hand: count per 5, then the extra marks.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.uitleg", "lines": [283]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,532 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/werkwoord.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 287,
+ "source_sha256": "049dc73d888d331ac8d8ba9fd805721966c3a90ebd8051e062c491bc19356143",
+ "purpose": "The verb-spelling machine input object (Taal › Werkwoordspelling): a sentence with a gap and a step-by-step thinking scheme to find the right verb form.",
+ "details": "WerkwoordInvoer plugs into terminal/oefenaar.py through INVOER['werkwoord'] and builds on StappenHulp. The steps (who does it, singular/plural, stem, 't kofschip rule, finite verb, weak/strong, finally the form) are data from kern/taal/werkwoorden.stappen: a choice (digit, arrows+Enter, click), a typed word, or pointing at a word of the sentence. Tab toggles between all steps and typing the form at once (always the latter on Moeilijk). A wrong step gives an explanation that fits the error and a second chance; afterwards the right answer. The final typed form is returned as the answer; a mistake in an earlier step counts as 'with a second chance' (repeat bin). Checking is done in kern (W.nakijken_stap, W.nakijken, W.diagnose_stap).",
+ "module_docstring": "De werkwoordmachine: een zin met een gat, het denkschema in stappen (Taal › Werkwoordspelling, docs/taal.md). Een invoer-object voor terminal/oefenaar.py, zoals de zinsontleder (eigen_tekst, eigen_tip, extra, uitleg_na).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["werkwoorden"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/werkwoorden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "HULP", "teken_van"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.stappenhulp",
+   "names": ["StappenHulp"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/terminal/stappenhulp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "tests/test_taal_werkwoorden.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "TAB",
+   "line": 20,
+   "value_type": "Constant",
+   "value_preview": "9",
+   "explanation": "Key code of Tab."
+  },
+  {
+   "name": "RIJ",
+   "line": 21,
+   "value_type": "Constant",
+   "value_preview": "6",
+   "explanation": "Rows between the assignment and the sentence."
+  },
+  {
+   "name": "OPDRACHT_BREED",
+   "line": 22,
+   "value_type": "Constant",
+   "value_preview": "56",
+   "explanation": "Maximum width of the assignment text."
+  },
+  {
+   "name": "MAX_WOORD",
+   "line": 23,
+   "value_type": "Constant",
+   "value_preview": "16",
+   "explanation": "Maximum number of letters that can be typed."
+  },
+  {
+   "name": "NAAM",
+   "line": 285,
+   "value_type": "Dict",
+   "value_preview": "{'wie': 'wie het doet', 'getal': 'één of meer', 'stam': 'de stam', 'r…",
+   "explanation": "Step name → how it is called in the text 'Juist, met een tweede kans bij: ...'."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "WerkwoordInvoer",
+   "qualname": "WerkwoordInvoer",
+   "lines": [26, 281],
+   "bases": ["StappenHulp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The input object for the verb-spelling steps, one instance per question. Built on StappenHulp.",
+   "attributes": [
+    {"name": "alle", "line": 30, "scope": "instance", "value_preview": null},
+    {"name": "kan_wisselen", "line": 31, "scope": "instance", "value_preview": null},
+    {"name": "direct", "line": 32, "scope": "instance", "value_preview": null},
+    {"name": "stappen", "line": 33, "scope": "instance", "value_preview": null},
+    {"name": "woorden", "line": 35, "scope": "instance", "value_preview": null},
+    {"name": "gedaan", "line": 36, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 42, "scope": "instance", "value_preview": null},
+    {"name": "getypt", "line": 43, "scope": "instance", "value_preview": null},
+    {"name": "cursor_pos", "line": 68, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 215, "scope": "instance", "value_preview": null},
+    {"name": "buf", "line": 209, "scope": "instance", "value_preview": null},
+    {"name": "keuze", "line": 158, "scope": "instance", "value_preview": null},
+    {"name": "stap", "line": 225, "scope": "instance", "value_preview": null},
+    {"name": "eerste_fout", "line": 243, "scope": "instance", "value_preview": null},
+    {"name": "diagnose", "line": 245, "scope": "instance", "value_preview": null},
+    {"name": "melding_rol", "line": 248, "scope": "instance", "value_preview": null},
+    {"name": "extra", "line": 272, "scope": "instance", "value_preview": null},
+    {"name": "uitleg_na", "line": 280, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_taal_werkwoorden.py::TestZonderHulp.test_een_fout_is_fout", "lines": [635]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "WerkwoordInvoer.__init__",
+     "kind": "method",
+     "lines": [28, 43],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds the steps from the question's sentence (full scheme, or only the form when typing directly), the words of the present-tense sentence for 'zet in de verleden tijd' questions, and all state for found steps, attempts, failures and the typed form. Initialises the shared help state.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [30, 33]},
+      {"target": "leeravontuur/terminal/stappenhulp.py::StappenHulp.begin_hulp", "lines": [38]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_taal_werkwoorden.py::TestZonderHulp.test_een_fout_is_fout", "lines": [635]}
+     ]
+    },
+    {
+     "name": "nu",
+     "qualname": "WerkwoordInvoer.nu",
+     "kind": "property",
+     "lines": [47, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "",
+     "explanation": "Property: the current step (clamped to the last one).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "min"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "WerkwoordInvoer.hoogte",
+     "kind": "method",
+     "lines": [51, 52],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height in rows (short after checking).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "WerkwoordInvoer.knoppen",
+     "kind": "method",
+     "lines": [54, 64],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons by step kind (choice, word pick, type), plus F1, Tab (when switching is possible) and Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "WerkwoordInvoer.teken",
+     "kind": "method",
+     "lines": [67, 103],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "After checking: the sentence with the right form. While working: the step heading, the sentence with a gap or typed form, the options or the stem box, the 't kofschip row, the summary of steps done, the tip, and sets the hint line and cursor position.",
+     "calls": [
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken_bron", "lines": [81]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken_gevonden", "lines": [99]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken_kofschip", "lines": [98]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken_zin", "lines": [72, 84, 86]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [70, 76, 78, 83, 90, 93, 101],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [95],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [91],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["any", "enumerate", "len", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken_zin",
+     "qualname": "WerkwoordInvoer.teken_zin",
+     "kind": "method",
+     "lines": [105, 126],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vak", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De zin (rij y): vak = None (het gat ___), of de tekst in het vak (bij het typen en na het nakijken).",
+     "explanation": "Draws the sentence with a gap, an input box with the typed form, or (after checking) the right form with a capital when the sentence starts with it; adds the rest of the sentence and the infinitive in brackets.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [109, 112, 121, 124, 126],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [116],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len", "max"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken", "lines": [72, 84, 86]}
+     ]
+    },
+    {
+     "name": "teken_bron",
+     "qualname": "WerkwoordInvoer.teken_bron",
+     "kind": "method",
+     "lines": [128, 137],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De zin in de tegenwoordige tijd, woord per woord: de cursor bij het zoeken van de pv; is de pv gevonden, dan staat ze in de kleur van de pv (zoals bij Zinsdelen).",
+     "explanation": "Draws the present-tense sentence word by word for the 'find the finite verb' step: cursor on the word being chosen, and the found verb in the pv colour.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [134],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.zones.voeg",
+       "lines": [136],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken", "lines": [81]}
+     ]
+    },
+    {
+     "name": "teken_kofschip",
+     "qualname": "WerkwoordInvoer.teken_kofschip",
+     "kind": "method",
+     "lines": [139, 146],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "'t kofschip, letter per letter; de letter van dit werkwoord licht op zodra die stap klaar is.",
+     "explanation": "Draws the letters of 't kofschip; the letter of this verb lights up once that step is done.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [145],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["bool", "len", "next"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken", "lines": [98]}
+     ]
+    },
+    {
+     "name": "teken_gevonden",
+     "qualname": "WerkwoordInvoer.teken_gevonden",
+     "kind": "method",
+     "lines": [148, 151],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws a ✔ line summarising the steps already solved (not in direct mode).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [151],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.teken", "lines": [99]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "WerkwoordInvoer.toets",
+     "kind": "method",
+     "lines": [154, 216],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key entry: clicks on options or words answer at once; F1 tip; Tab switches mode; for a word step ←/→ and Enter; for a choice step arrows, digits (and j/n for 't kofschip) and Enter; otherwise typing letters (apostrophe and hyphen allowed, at most 16) with Backspace and Enter.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [192, 211]},
+      {
+       "target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies",
+       "lines": [159, 162, 178, 190, 195, 198, 207]
+      },
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.volgende_tip", "lines": [165]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.wissel", "lines": [169]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int", "isinstance", "len", "max", "min"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "wissel",
+     "qualname": "WerkwoordInvoer.wissel",
+     "kind": "method",
+     "lines": [218, 229],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Tab: van de stappen naar meteen typen en terug. Wat al gevonden was, blijft staan.",
+     "explanation": "Tab: switches between the step scheme and typing the form directly; steps already done stay done; clears tip state.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [222]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len", "next"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.toets", "lines": [169]}
+     ]
+    },
+    {
+     "name": "kies",
+     "qualname": "WerkwoordInvoer.kies",
+     "kind": "method",
+     "lines": [232, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "antwoord", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Checks an answer for the current step via kern. Correct: moves on (or finishes at the last 'vorm' step). Wrong: records the attempt and diagnosis; the first time gives a tailored hint and stays; the second time shows the step's explanation and moves on (or finishes for the form).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [240]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::kort", "lines": [237, 253]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken", "lines": [234]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken_stap", "lines": [234]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.klaar", "lines": [236, 251]},
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.volgende", "lines": [239, 255]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.toets",
+       "lines": [159, 162, 178, 190, 195, 198, 207]
+      }
+     ]
+    },
+    {
+     "name": "volgende",
+     "qualname": "WerkwoordInvoer.volgende",
+     "kind": "method",
+     "lines": [257, 261],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves to the next step and resets the choice, the typed word and the tip.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [239, 255]}
+     ]
+    },
+    {
+     "name": "volgende_tip",
+     "qualname": "WerkwoordInvoer.volgende_tip",
+     "kind": "method",
+     "lines": [264, 265],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Gives the next tip of the current step (via StappenHulp.geef_tip).",
+     "calls": [
+      {"target": "leeravontuur/terminal/stappenhulp.py::StappenHulp.geef_tip", "lines": [265]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.toets", "lines": [165]}
+     ]
+    },
+    {
+     "name": "klaar",
+     "qualname": "WerkwoordInvoer.klaar",
+     "kind": "method",
+     "lines": [268, 281],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getypt", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ends the question: checks the typed form, builds `extra` (tips, first wrong step, failed steps, direct mode) and the after-check explanation (headline plus the kern explanation). Returns the typed form as typed answer and number.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken", "lines": [270]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [280]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["list"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.kies", "lines": [236, 251]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

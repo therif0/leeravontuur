@@ -1,0 +1,113 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/leerjaren.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 31,
+ "source_sha256": "5be6348b24b5ffc33d5b14b3b5799d4ea806bc1221140530caa1c583d6b3a144",
+ "purpose": "The school years and the relative difficulty levels (Makkelijk, Normaal, Moeilijk, Heel moeilijk).",
+ "details": "Levels are relative to the child's own year: Makkelijk = one year lower, Heel moeilijk = two higher, so when the child moves up a year everything shifts along and mostly only leerlijn data must be added (CLAUDE.md). Years are the strings 3, 4, 5, 6, m1, m2.",
+ "module_docstring": "Leerjaren en niveaus.",
+ "imports": [],
+ "imported_by": [
+  "docs/tools/handleiding.py",
+  "leeravontuur/kern/instellingen.py",
+  "leeravontuur/kern/leerlijnen.py",
+  "leeravontuur/kern/onderwerp.py",
+  "leeravontuur/kern/punten.py",
+  "leeravontuur/kern/rapporten.py",
+  "leeravontuur/kern/winkel.py",
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/schermen/eenheden.py",
+  "leeravontuur/terminal/schermen/kinderen.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "tests/test_breuken.py",
+  "tests/test_cijferen.py",
+  "tests/test_eenheden.py",
+  "tests/test_getallen.py",
+  "tests/test_grootheden.py",
+  "tests/test_hoofdrekenen.py",
+  "tests/test_leerlijnen.py",
+  "tests/test_meetkunde.py",
+  "tests/test_procenten.py",
+  "tests/test_reeks.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_taal_zinsontleding.py",
+  "tests/test_vakken.py",
+  "tests/test_werkwijze.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "LEERJAREN",
+   "line": 7,
+   "value_type": "List",
+   "value_preview": "['3', '4', '5', '6', 'm1', 'm2']",
+   "explanation": "Ordered list of all supported years."
+  },
+  {
+   "name": "NAMEN",
+   "line": 9,
+   "value_type": "Dict",
+   "value_preview": "{'3': '3de leerjaar', '4': '4de leerjaar', '5': '5de leerjaar', '6': …",
+   "explanation": "Display names of the years."
+  },
+  {
+   "name": "NIVEAUS",
+   "line": 19,
+   "value_type": "List",
+   "value_preview": "[('Makkelijk', -1), ('Normaal', 0), ('Moeilijk', 1), ('Heel moeilijk'…",
+   "explanation": "(name, offset in years) for each difficulty level."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "leerjaar_voor_niveau",
+   "qualname": "leerjaar_voor_niveau",
+   "kind": "function",
+   "lines": [22, 25],
+   "params": [
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null},
+    {"name": "niveau", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Welk leerjaar hoort bij dit niveau? Blijft binnen de leerjaren die bestaan.",
+   "explanation": "Maps the child's year plus a level index to the year whose leerlijn parameters apply, clamped to the first and last known year.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "max", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.kies_niveau", "lines": [95]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.start", "lines": [110]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.keuze", "lines": [59]},
+    {"caller": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.kies_niveau", "lines": [68]}
+   ]
+  },
+  {
+   "name": "volgend",
+   "qualname": "volgend",
+   "kind": "function",
+   "lines": [28, 31],
+   "params": [
+    {"name": "leerjaar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het leerjaar na dit leerjaar (blijft op het laatste staan).",
+   "explanation": "The year after the given one; stays on the last year.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "min"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_leerlijnen.py::TestLeerjaren.test_volgend", "lines": [43, 44]}
+   ]
+  }
+ ]
+}

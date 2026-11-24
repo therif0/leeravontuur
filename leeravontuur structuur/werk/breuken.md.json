@@ -1,0 +1,22 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "werk/breuken.md",
+ "kind": "markdown",
+ "layer": "werk",
+ "lines": 72,
+ "source_sha256": "6cac7f4ff54a2654fca89b15fec0a5df43ff5d973d39f4afdd55fe4505fb2e46",
+ "purpose": "Work file: fractions the way they are written on paper, with understanding instead of a trick (parked until maths v2).",
+ "details": "Status: parked because maths is frozen (the father, 12/11/2026). Part A (stacked fractions in question, answer and explanation; answer in two boxes) and part B (two new thinking errors for subtraction: plus/minus swapped, and reversed) were chosen; part C (learning to see fractions, brainstorm) is not chosen. Triggered by a school worksheet where 2/3 − 1/9 was solved as 6/9 + 1/9.",
+ "summary": "Plan for fractions: A) show fractions stacked (numerator, line, denominator) and let the answer be typed in two boxes; B) two new subtraction errors (sign mixed up, operands reversed); C) a brainstorm to make fractions visible. All parked until maths v2.",
+ "headings": [
+  {"level": 1, "text": "Breuken: zoals op papier, en begrijpen in plaats van een truc", "line": 1},
+  {"level": 2, "text": "Waarom (12/11/2026)", "line": 6},
+  {"level": 2, "text": "A. Breuken zoals op papier (gekozen 12/11)", "line": 18},
+  {"level": 2, "text": "B. Twee nieuwe denkfouten bij aftrekken (gekozen 12/11)", "line": 34},
+  {"level": 2, "text": "C. Breuken leren zien (brainstorm, niets gekozen)", "line": 40},
+  {"level": 2, "text": "Fasen", "line": 71}
+ ],
+ "links": [],
+ "referenced_by": ["werk/README.md"],
+ "words": 790
+}

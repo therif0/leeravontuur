@@ -1,0 +1,124 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/selectie.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 40,
+ "source_sha256": "a4626cd5321561131c915455b2c4f03f8743f74acf5461607b2aa125e385002f",
+ "purpose": "Helpers for choosing questions smartly: what was seen recently, which topics need more practice, and a weighted pick.",
+ "details": "Part of how a series avoids repeating questions (recent_gezien feeds the 'avoid' set of Onderwerp.maak) and favours weak topics (gewichten). Note: kies() is currently not called anywhere in the project.",
+ "module_docstring": "Slimme keuze van vragen: meer oefenen op wat moeilijk is, niets herhalen wat recent al kwam.",
+ "imports": [
+  {"module": "random", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["timedelta"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["klok"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/kern/reeks.py", "leeravontuur/terminal/oefenaar.py", "tests/test_herhaling.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "NIET_HERHALEN_DAGEN",
+   "line": 8,
+   "value_type": "Constant",
+   "value_preview": "30",
+   "explanation": "Default number of days within which a question is not repeated."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "recent_gezien",
+   "qualname": "recent_gezien",
+   "kind": "function",
+   "lines": [11, 14],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "dagen", "kind": "positional", "default": "NIET_HERHALEN_DAGEN", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vraagsleutels van de laatste `dagen` dagen: die proberen we niet opnieuw te geven.",
+   "explanation": "Question keys the child already saw in the last `dagen` days (default 30) for one skill, asked from the storage; these are avoided when making new questions.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::nu", "lines": [13]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.gezien_sleutels",
+     "lines": [14],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.gezien_sleutels"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".date", ".isoformat", "datetime.timedelta"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::maak_vragen", "lines": [168]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.nieuwe_vragen", "lines": [682]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.vrij_oefenen", "lines": [790]}
+   ]
+  },
+  {
+   "name": "gewichten",
+   "qualname": "gewichten",
+   "kind": "function",
+   "lines": [17, 33],
+   "params": [
+    {"name": "antwoorden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp_van", "kind": "positional", "default": null, "annotation": null},
+    {"name": "alle_onderwerpen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Gewicht per onderwerp: wat vaak fout gaat, komt vaker; wat nog nooit kwam, iets vaker.",
+   "explanation": "Weight per topic from recent answers: 1.5 for a topic never answered, else 1 + 3 x (fraction wrong), so topics that go wrong come up more often.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "onderwerp_van", "lines": [24], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/reeks.py::_gewichten", "lines": [149, 152]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar.gewichten", "lines": [653, 655]},
+    {"caller": "tests/test_herhaling.py::TestSelectie.test_gewichten", "lines": [70]}
+   ]
+  },
+  {
+   "name": "kies",
+   "qualname": "kies",
+   "kind": "function",
+   "lines": [36, 40],
+   "params": [
+    {"name": "items", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gewicht", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Willekeurig item, eventueel gewogen (gewicht: dict item -> getal).",
+   "explanation": "Random choice from a list, weighted by a dict item -> weight when one is given (default weight 1).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["random.choice", "random.choices"],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

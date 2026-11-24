@@ -1,0 +1,279 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/schermen/snelrekenen.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 127,
+ "source_sha256": "4b0af6c472a9fe4ef0ac0b2bf1d08e2a3bb9b54fe45f8ed9022eaccfd15e3f16",
+ "purpose": "The Snelrekenen (speed arithmetic) screen: a 60-second or 20-sum round with a running clock, records and a history of recent rounds.",
+ "details": "Snelrekenen.ronde wraps one round: it plays (speel), catches the TerugNaar of a confirmed stop via the breadcrumb so that the result is shown first, stores bonuses (kern/snelrekenen.beloon) and shows the result with records and the last rounds (uitslag), then re-raises. speel runs inside Scherm.bewaak with `ronde=True` so that the 'Wil je stoppen?' dialog pauses the clock. The question source and the records come from kern/snelrekenen.py; `klok` is a class attribute (time.monotonic) so tests can replace the clock.",
+ "module_docstring": "Snelrekenen: een klok die meeloopt, records en een verloop over de dagen.",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["snelrekenen"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/snelrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["maatje"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/maatje.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["BACKSPACE", "ENTER", "ESC", "NIETS", "TerugNaar", "teken_van"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/curriculum/modi.py", "tests/test_hoofdrekenen.py"],
+ "module_calls": [
+  {
+   "scope": "<class Snelrekenen>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["staticmethod"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Snelrekenen",
+   "qualname": "Snelrekenen",
+   "lines": [11, 126],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Controller of the Snelrekenen screens, created per visit.",
+   "attributes": [
+    {"name": "klok", "line": 12, "scope": "class", "value_preview": "staticmethod(time.monotonic)"},
+    {"name": "app", "line": 15, "scope": "instance", "value_preview": null},
+    {"name": "s", "line": 16, "scope": "instance", "value_preview": null},
+    {"name": "o", "line": 17, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/curriculum/modi.py::_snel", "lines": [35]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Snelrekenen.__init__",
+     "kind": "method",
+     "lines": [14, 17],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the app, its Scherm and its storage.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/curriculum/modi.py::_snel", "lines": [35]}
+     ]
+    },
+    {
+     "name": "ronde",
+     "qualname": "Snelrekenen.ronde",
+     "kind": "method",
+     "lines": [19, 35],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een ronde van 60 seconden of 20 sommen. Esc of de broodkruimel vragen eerst \"Wil je stoppen?\" (de klok staat dan stil, Scherm.bewaak, #33); na Ja komt eerst de uitslag (met de bonus), ook via de broodkruimel.",
+     "explanation": "Plays one round of the given kind and mode ('snel60' = 60 seconds, 'snel20' = 20 sums), then (if anything was answered) awards bonuses and shows the result. A confirmed stop via the breadcrumb still shows the result before going on.",
+     "calls": [
+      {"target": "leeravontuur/kern/snelrekenen.py::beloon", "lines": [32]},
+      {"target": "leeravontuur/kern/snelrekenen.py::record", "lines": [22]},
+      {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [29]},
+      {"target": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel", "lines": [25]},
+      {"target": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.uitslag", "lines": [33]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.sessie_overzicht",
+       "lines": [29],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessie_overzicht"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.s.cursor",
+       "lines": [28],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "speel",
+     "qualname": "Snelrekenen.speel",
+     "kind": "method",
+     "lines": [37, 104],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The round: a time or sum counter, juist/fout counts, the question with an answer box, buddy; reads keys with a 200 ms timeout so the clock keeps running; Enter checks and stores the answer in the Sessie, shows the last verdict and makes the next question; Esc ends the round (already confirmed by the guard); only digits, comma and minus are typed.",
+     "calls": [
+      {"target": "leeravontuur/kern/snelrekenen.py::vaardigheid", "lines": [51]},
+      {"target": "leeravontuur/kern/snelrekenen.py::vraag", "lines": [54, 97]},
+      {"target": "leeravontuur/terminal/maatje.py::teken", "lines": [80]},
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [103, 104]}
+     ],
+     "unresolved_calls": [
+      {"expr": "o.lees", "lines": [88], "candidates": [], "candidates_count": 10},
+      {
+       "expr": "s.bewaak",
+       "lines": [52],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.bewaak"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.cursor",
+       "lines": [81],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.cursor", "leeravontuur/terminal/scherm.py::Scherm.cursor"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.nieuw",
+       "lines": [65],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.nieuw"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.put",
+       "lines": [69, 74, 75, 76, 79],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "s.te_klein",
+       "lines": [63],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.te_klein"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "s.tekstvak",
+       "lines": [78],
+       "candidates": [
+        "leeravontuur/terminal/invoer.py::_Meetvlak.tekstvak",
+        "leeravontuur/terminal/scherm.py::Scherm.tekstvak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "s.toets", "lines": [82], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "self.app.sessie",
+       "lines": [51],
+       "candidates": ["leeravontuur/terminal/app.py::App.sessie"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [90],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [55, 98],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".klok", "int", "isinstance", "len", "max", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde", "lines": [25]}
+     ]
+    },
+    {
+     "name": "pauze",
+     "qualname": "Snelrekenen.speel.pauze",
+     "kind": "nested",
+     "lines": [47, 49],
+     "params": [
+      {"name": "seconden", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Moves the start time forward so time spent in the 'Wil je stoppen?' dialog does not count.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitslag",
+     "qualname": "Snelrekenen.uitslag",
+     "kind": "method",
+     "lines": [106, 126],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kr", "kind": "positional", "default": null, "annotation": null},
+      {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+      {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ronde", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vorig_record", "kind": "positional", "default": null, "annotation": null},
+      {"name": "bonussen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shows the round's result: correct count, time (if the timer is visible), bonus lines, the previous record, and a bar per recent round.",
+     "calls": [
+      {"target": "leeravontuur/kern/snelrekenen.py::verloop", "lines": [120]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.s.lezer",
+       "lines": [126],
+       "candidates": ["leeravontuur/terminal/scherm.py::Scherm.lezer"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["any", "max", "round"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde", "lines": [33]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

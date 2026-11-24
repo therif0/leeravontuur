@@ -1,0 +1,342 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/__main__.py",
+ "kind": "python",
+ "layer": "package",
+ "lines": 203,
+ "source_sha256": "a9bb77f12e5ff5647dc7792493ef3cae6a93c6e96cf8e37ce5a52b3788917da0",
+ "purpose": "The program's command-line entry point: parses the start arguments, handles the one-off commands (version, tests, shortcut, forgotten password, error log) and otherwise starts the curses app.",
+ "details": "main() is called by leeravontuur.py (and `python -m leeravontuur`). Order: version/tests/shortcut/forgotten-password/error-log commands return early; --debug and LEERAVONTUUR_ZAAD (a fixed random seed for handbook screenshots) set the environment; then it imports curses and the App, builds a 'voorrang' dict from the display arguments (they win over stored settings but are not stored), checks the lock file kern/slot (a second copy asks for confirmation), opens storage, sets the locale and runs curses.wrapper(draai) so that App.start runs. A last-resort handler writes unexpected exceptions to the error log (kern/foutlog) instead of showing Python errors to the child; afterwards it closes the clock window, builds the goodbye (with the child's name and today's score) and closes storage. ESCDELAY=25 is set at import time so Esc reacts at once. Exit code 1 when the app crashed.",
+ "module_docstring": "Leeravontuur starten: python3 leeravontuur.py (of python3 -m leeravontuur).",
+ "imports": [
+  {"module": "argparse", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "shutil", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur",
+   "names": ["LICENTIE", "MAKER", "MOTTO", "NAAM", "VERSIE"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 68,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["foutlog"],
+   "alias": null,
+   "line": 84,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/foutlog.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": [], "alias": null, "line": 98, "resolves_to": [], "internal": false},
+  {"module": "curses", "names": [], "alias": null, "line": 127, "resolves_to": [], "internal": false},
+  {"module": "locale", "names": [], "alias": null, "line": 128, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["foutlog"],
+   "alias": null,
+   "line": 130,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/foutlog.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 131,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 132,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["slot"],
+   "alias": null,
+   "line": 149,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/slot.py"],
+   "internal": true
+  },
+  {"module": "random", "names": [], "alias": null, "line": 124, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": ["docs/tools/handleiding.py", "leeravontuur.py", "tests/test_handleiding.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/__main__.py::main", "lines": [203]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["os.environ.setdefault", "sys.exit"],
+   "dynamic": []
+  }
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "maak_parser",
+   "qualname": "maak_parser",
+   "kind": "function",
+   "lines": [14, 34],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds the argparse parser with all start arguments (colour-blind, contrast, no colour, ascii, no mouse, no clock window, --ouder, --wachtwoord-vergeten, --snelkoppeling, --fouten, --debug, --test, --versie).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".add_argument", "argparse.ArgumentParser"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/handleiding.py::argumenten", "lines": [260]},
+    {"caller": "leeravontuur/__main__.py::lees_argumenten", "lines": [38]},
+    {"caller": "tests/test_handleiding.py::TestHandleiding.test_elk_startargument_staat_erin", "lines": [56]}
+   ]
+  },
+  {
+   "name": "lees_argumenten",
+   "qualname": "lees_argumenten",
+   "kind": "function",
+   "lines": [37, 38],
+   "params": [
+    {"name": "argv", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Parses an argument list with the parser.",
+   "calls": [
+    {"target": "leeravontuur/__main__.py::maak_parser", "lines": [38]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".parse_args"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [109]}
+   ]
+  },
+  {
+   "name": "snelkoppeling",
+   "qualname": "snelkoppeling",
+   "kind": "function",
+   "lines": [41, 64],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Linux only: makes the starter executable and writes a .desktop menu entry (using konsole when available), removing the old 'eenheden-oefenen' entry. Returns an exit code.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".chmod",
+    ".exists",
+    ".mkdir",
+    ".resolve",
+    ".stat",
+    ".unlink",
+    ".write_text",
+    "pathlib.Path",
+    "pathlib.Path.home",
+    "print",
+    "shutil.which",
+    "sys.platform.startswith"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [116]}
+   ]
+  },
+  {
+   "name": "wachtwoord_vergeten",
+   "qualname": "wachtwoord_vergeten",
+   "kind": "function",
+   "lines": [67, 80],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Wipes the parent password after the user types JA (children's data stays). Returns an exit code.",
+   "calls": [
+    {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [69]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.ouder_wachtwoord",
+     "lines": [70],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.ouder_wachtwoord"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.sluit",
+     "lines": [78],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+     "candidates_count": 2
+    },
+    {
+     "expr": "opslag.zet_ouder_wachtwoord",
+     "lines": [77],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_ouder_wachtwoord"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["input", "print"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [118]}
+   ]
+  },
+  {
+   "name": "toon_fouten",
+   "qualname": "toon_fouten",
+   "kind": "function",
+   "lines": [83, 94],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Prints the last three entries of the error log and the log's path.",
+   "calls": [
+    {"target": "leeravontuur/kern/foutlog.py::meldingen", "lines": [85]},
+    {"target": "leeravontuur/kern/foutlog.py::pad", "lines": [92]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "print"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [120]}
+   ]
+  },
+  {
+   "name": "draai_tests",
+   "qualname": "draai_tests",
+   "kind": "function",
+   "lines": [97, 105],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Runs the unittest suite in the tests folder (if present) and returns 0 on success.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [
+    ".is_dir",
+    ".resolve",
+    ".run",
+    ".wasSuccessful",
+    "pathlib.Path",
+    "print",
+    "str",
+    "unittest.TextTestRunner",
+    "unittest.defaultTestLoader.discover"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/__main__.py::main", "lines": [114]}
+   ]
+  },
+  {
+   "name": "main",
+   "qualname": "main",
+   "kind": "function",
+   "lines": [108, 199],
+   "params": [
+    {"name": "argv", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The whole start-up sequence described above. Returns the process exit code.",
+   "calls": [
+    {"target": "leeravontuur/__main__.py::draai_tests", "lines": [114]},
+    {"target": "leeravontuur/__main__.py::lees_argumenten", "lines": [109]},
+    {"target": "leeravontuur/__main__.py::snelkoppeling", "lines": [116]},
+    {"target": "leeravontuur/__main__.py::toon_fouten", "lines": [120]},
+    {"target": "leeravontuur/__main__.py::wachtwoord_vergeten", "lines": [118]},
+    {"target": "leeravontuur/kern/foutlog.py::pad", "lines": [195]},
+    {"target": "leeravontuur/kern/foutlog.py::schrijf", "lines": [180]},
+    {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [161]},
+    {"target": "leeravontuur/kern/slot.py::bezet", "lines": [150]},
+    {"target": "leeravontuur/kern/slot.py::neem", "lines": [160]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.vandaag",
+     "lines": [188],
+     "candidates": ["leeravontuur/terminal/app.py::App.vandaag"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "app.zet_klokvenster",
+     "lines": [184],
+     "candidates": ["leeravontuur/terminal/app.py::App.zet_klokvenster"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.sluit",
+     "lines": [191],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [
+    "curses.wrapper",
+    "input",
+    "locale.setlocale",
+    "os.environ.get",
+    "print",
+    "random.seed",
+    "sys.stdin.isatty"
+   ],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur.py::<module>", "lines": [26]},
+    {"caller": "leeravontuur/__main__.py::<module>", "lines": [203]}
+   ]
+  },
+  {
+   "name": "draai",
+   "qualname": "main.draai",
+   "kind": "nested",
+   "lines": [168, 170],
+   "params": [
+    {"name": "win", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The function given to curses.wrapper: builds the App with the screen, storage and display overrides, remembers it in a holder (for the goodbye) and starts it (straight into the parent area with --ouder).",
+   "calls": [
+    {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [169]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.start",
+     "lines": [170],
+     "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

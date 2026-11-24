@@ -1,0 +1,905 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/balk.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 291,
+ "source_sha256": "77d952935549b1546a2168eb5b8f958e951d4330bfab305e7e79057ddaae1f8b",
+ "purpose": "Four interactive model input objects: fraction bar (shade pieces), hundred-square (colour cells), treasure map / coordinate grid (place a cross) and analogue clock (set the hands).",
+ "details": "BalkInvoer ('balk'), VeldInvoer ('veld'), CoordInvoer ('coord') and KlokInvoer ('wijzers') follow the same input-object protocol as terminal/rooster.py: hoogte, knoppen, teken, toets (returns None until the answer is submitted, then (text, number)), hulp, rijen, plus attributes melding, melding_rol, fouten, diagnose, cursor_pos, hint (and optionally naast). Drawing is delegated to terminal/modellen.py (teken_balk, teken_veld, teken_kaart, teken_klok), whose click callbacks create the click actions ('stuk', 'vak', 'rij', 'punt', 'wijzer') that toets handles. The data models (Breukbalk, Wijzerklok, kaart) come from kern/modellen.py. The table INVOER at the bottom is merged into terminal/oefenaar.py's INVOER.",
+ "module_docstring": "Interactieve modellen als invoer-objecten voor terminal/oefenaar.py (zelfde vorm als terminal/rooster.py): de breukbalk (arceren, noemer kiezen, vereenvoudigen), het honderdveld (vakjes kleuren), de schatkaart (een kruisje zetten) en de wi…",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "math", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["GetypteBreuk"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "dataclasses",
+   "names": ["replace"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Breukbalk", "Wijzerklok"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["klok_tekst"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["modellen"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.invoer",
+   "names": ["Plaats"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/terminal/invoer.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.scherm",
+   "names": ["ENTER", "ESC", "HULP"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/scherm.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/oefenaar.py", "tests/test_klok.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "NOEMER_MAX",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "20",
+   "explanation": "Largest denominator the child can pick for a bar."
+  },
+  {
+   "name": "HINT",
+   "line": 230,
+   "value_type": "Constant",
+   "value_preview": "'←→ 1 min · ↑↓ 5 min · + − 1 uur · klik of sleep de lange wijzer · En…",
+   "explanation": "Hint line for the clock drawn in the terminal."
+  },
+  {
+   "name": "HINT_VENSTER",
+   "line": 231,
+   "value_type": "Constant",
+   "value_preview": "'Sleep de lange wijzer, of ←→ ↑↓ + −. Enter = klaar'",
+   "explanation": "Hint line when the clock is in the clock window."
+  },
+  {
+   "name": "INVOER",
+   "line": 291,
+   "value_type": "Dict",
+   "value_preview": "{'balk': BalkInvoer, 'veld': VeldInvoer, 'coord': CoordInvoer, 'wijze…",
+   "explanation": "See registries."
+  }
+ ],
+ "registries": [
+  {
+   "name": "INVOER",
+   "line": 291,
+   "description": "Maps answer types 'balk', 'veld', 'coord' and 'wijzers' to BalkInvoer, VeldInvoer, CoordInvoer and KlokInvoer; merged into terminal/oefenaar.py's INVOER."
+  }
+ ],
+ "classes": [
+  {
+   "name": "BalkInvoer",
+   "qualname": "BalkInvoer",
+   "lines": [22, 102],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Fraction bar input: shade pieces, optionally choose the denominator or simplify.",
+   "attributes": [
+    {"name": "x0", "line": 23, "scope": "class", "value_preview": "8"},
+    {"name": "noemer", "line": 27, "scope": "instance", "value_preview": null},
+    {"name": "gearceerd", "line": 28, "scope": "instance", "value_preview": null},
+    {"name": "cursor", "line": 29, "scope": "instance", "value_preview": null},
+    {"name": "vast", "line": 30, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 33, "scope": "instance", "value_preview": null},
+    {"name": "melding", "line": 71, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "BalkInvoer.__init__",
+     "kind": "method",
+     "lines": [25, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts from the question's bar: its denominator and shaded pieces, cursor at the first piece; the denominator is fixed when the question says so. Sets the hint accordingly.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["bool", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "BalkInvoer.hoogte",
+     "kind": "method",
+     "lines": [36, 37],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Fixed height of 5 rows.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "BalkInvoer.knoppen",
+     "kind": "method",
+     "lines": [39, 44],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: with a fixed denominator only shading, Enter, F1, Esc; otherwise also ↑↓ for the denominator and 'v' to simplify.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "BalkInvoer.teken",
+     "kind": "method",
+     "lines": [46, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the bar below the buddy with a click action per piece, the shaded count over the denominator, and while working a ▲ under the cursor piece and the text 'n stukken'.",
+     "calls": [
+      {"target": "leeravontuur/terminal/modellen.py::stuk_grenzen", "lines": [55]},
+      {"target": "leeravontuur/terminal/modellen.py::teken_balk", "lines": [49]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [53, 56, 57],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "BalkInvoer.toets",
+     "kind": "method",
+     "lines": [59, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on a piece selects and toggles it; Enter submits 'teller/noemer' as a GetypteBreuk (needs at least one piece shaded); ←/→ move; Space toggles; ↑/↓ change the denominator (1..20, dropping shaded pieces beyond it) unless fixed; 'v' simplifies via Breukbalk.vereenvoudig and says so.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::GetypteBreuk", "lines": [70]},
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [85]},
+      {"target": "leeravontuur/terminal/balk.py::BalkInvoer.wissel", "lines": [63, 77]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "Breukbalk(self.noemer, set(range(len(self.gearceerd)))).ver…",
+       "lines": [85],
+       "candidates": ["leeravontuur/kern/modellen.py::Breukbalk.vereenvoudig"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["isinstance", "len", "max", "min", "ord", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "wissel",
+     "qualname": "BalkInvoer.wissel",
+     "kind": "method",
+     "lines": [95, 96],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Toggles the shading of the piece under the cursor.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/balk.py::BalkInvoer.toets", "lines": [63, 77]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "BalkInvoer.hulp",
+     "kind": "method",
+     "lines": [98, 99],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question (the Oefenaar calls hulp(o) for every input object).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [99], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "BalkInvoer.rijen",
+     "kind": "method",
+     "lines": [101, 102],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list: no rows for diagnose_rijen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "VeldInvoer",
+   "qualname": "VeldInvoer",
+   "lines": [105, 166],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "Het honderdveld: vakjes kleuren met de pijltjes en spatie, een hele rij met r, of met de muis.",
+   "explanation": "Hundred-square input: colour cells, whole rows or single cells.",
+   "attributes": [
+    {"name": "x0", "line": 107, "scope": "class", "value_preview": "8"},
+    {"name": "gekleurd", "line": 111, "scope": "instance", "value_preview": null},
+    {"name": "cursor", "line": 112, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 115, "scope": "instance", "value_preview": null},
+    {"name": "naast", "line": 116, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "VeldInvoer.__init__",
+     "kind": "method",
+     "lines": [109, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts from the question's hundred-square with its coloured cells; cursor at cell 0; sets the hint and the feedback position (right of the grid).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "VeldInvoer.hoogte",
+     "kind": "method",
+     "lines": [118, 119],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Fixed height of 10 rows.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "VeldInvoer.knoppen",
+     "kind": "method",
+     "lines": [121, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: Space (colour), r (whole row), Enter, F1, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "VeldInvoer.teken",
+     "kind": "method",
+     "lines": [125, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the 10×10 grid with click actions per cell and per row arrow, and the count 'n van de 100 = n %'.",
+     "calls": [
+      {"target": "leeravontuur/terminal/modellen.py::teken_veld", "lines": [128]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [131, 132],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "VeldInvoer.toets",
+     "kind": "method",
+     "lines": [134, 155],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Click on a cell toggles it; click on a row arrow toggles the whole row; Enter submits the count as a percentage (Decimal); arrows move the cursor within the grid; Space toggles; r toggles the row.",
+     "calls": [
+      {"target": "leeravontuur/terminal/balk.py::VeldInvoer.rij", "lines": [141, 154]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["decimal.Decimal", "divmod", "isinstance", "len", "max", "min", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rij",
+     "qualname": "VeldInvoer.rij",
+     "kind": "method",
+     "lines": [157, 160],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Kleur de rij van de cursor helemaal (of maak ze leeg als ze al vol is).",
+     "explanation": "Colours the whole row of the cursor, or clears it when it is already full.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["range", "set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/balk.py::VeldInvoer.toets", "lines": [141, 154]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "VeldInvoer.hulp",
+     "kind": "method",
+     "lines": [162, 163],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question (the Oefenaar calls hulp(o) for every input object).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [163], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "VeldInvoer.rijen",
+     "kind": "method",
+     "lines": [165, 166],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list: no rows for diagnose_rijen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "CoordInvoer",
+   "qualname": "CoordInvoer",
+   "lines": [169, 227],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "De schatkaart of het assenstelsel: zet een kruisje met de pijltjes en Enter, of met een klik.",
+   "explanation": "Treasure-map / coordinate-system input: place a cross.",
+   "attributes": [
+    {"name": "x0", "line": 171, "scope": "class", "value_preview": "8"},
+    {"name": "kaart", "line": 175, "scope": "instance", "value_preview": null},
+    {"name": "cursor", "line": 177, "scope": "instance", "value_preview": null},
+    {"name": "gekozen", "line": 178, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 181, "scope": "instance", "value_preview": null},
+    {"name": "naast", "line": 182, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "CoordInvoer.__init__",
+     "kind": "method",
+     "lines": [173, 182],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Takes the question's map (kern model), puts the cursor in the middle of the grid, sets the hint and the feedback position.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.kaart.xs",
+       "lines": [176],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.xs"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.kaart.ys",
+       "lines": [176],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.ys"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hoogte",
+     "qualname": "CoordInvoer.hoogte",
+     "kind": "method",
+     "lines": [184, 185],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Height: the number of y-rows plus one.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.kaart.ys",
+       "lines": [185],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.ys"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "CoordInvoer.knoppen",
+     "kind": "method",
+     "lines": [187, 188],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: arrows, Enter ('hier!'), F1, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "CoordInvoer.teken",
+     "kind": "method",
+     "lines": [190, 200],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the map with the cursor; after checking adds the right point (if the child missed) and marks the chosen one ✔ or ✘; while working shows 'Jij: <name of the cursor position>'.",
+     "calls": [
+      {"target": "leeravontuur/terminal/modellen.py::teken_kaart", "lines": [197]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "s.put",
+       "lines": [200],
+       "candidates": ["leeravontuur/terminal/invoer.py::_Meetvlak.put", "leeravontuur/terminal/scherm.py::Scherm.put"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.kaart.naam",
+       "lines": [200],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.kaart.xs",
+       "lines": [200],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.xs"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["dataclasses.replace", "dict", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "CoordInvoer.toets",
+     "kind": "method",
+     "lines": [202, 216],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click on a point chooses it at once; Enter chooses the cursor position; arrows move the cursor within the grid.",
+     "calls": [
+      {"target": "leeravontuur/terminal/balk.py::CoordInvoer.kies", "lines": [206, 209]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.kaart.xs",
+       "lines": [210],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.xs"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.kaart.ys",
+       "lines": [210],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.ys"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["isinstance", "max", "min"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "kies",
+     "qualname": "CoordInvoer.kies",
+     "kind": "method",
+     "lines": [218, 221],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Records the chosen point and returns its name as typed answer and as the number to check.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.kaart.naam",
+       "lines": [220],
+       "candidates": ["leeravontuur/kern/modellen.py::Kaart.naam"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/balk.py::CoordInvoer.toets", "lines": [206, 209]}
+     ]
+    },
+    {
+     "name": "hulp",
+     "qualname": "CoordInvoer.hulp",
+     "kind": "method",
+     "lines": [223, 224],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question (the Oefenaar calls hulp(o) for every input object).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [224], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "CoordInvoer.rijen",
+     "kind": "method",
+     "lines": [226, 227],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list: no rows for diagnose_rijen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "KlokInvoer",
+   "qualname": "KlokInvoer",
+   "lines": [234, 288],
+   "bases": ["Plaats"],
+   "decorators": [],
+   "docstring": "De wijzers van een klok zetten: ←→ per minuut, ↑↓ per 5 minuten, + en − per uur, of klik waar de lange wijzer moet staan. De uurwijzer draait mee, zoals op een echte klok.",
+   "explanation": "Analogue clock input: set the hands.",
+   "attributes": [
+    {"name": "x0", "line": 237, "scope": "class", "value_preview": "8"},
+    {"name": "t", "line": 241, "scope": "instance", "value_preview": null},
+    {"name": "hint", "line": 244, "scope": "instance", "value_preview": null},
+    {"name": "naast", "line": 245, "scope": "instance", "value_preview": null},
+    {"name": "h", "line": 246, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "tests/test_klok.py::TestWijzersZetten.test_toetsen_en_klikken", "lines": [126]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "KlokInvoer.__init__",
+     "kind": "method",
+     "lines": [239, 246],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Takes the start time of the clock in minutes modulo 12 hours; sets the hint, the feedback position and the height.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["int"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_klok.py::TestWijzersZetten.test_toetsen_en_klikken", "lines": [126]}
+     ]
+    },
+    {
+     "name": "hoogte",
+     "qualname": "KlokInvoer.hoogte",
+     "kind": "method",
+     "lines": [248, 249],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "nagekeken", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The current height (smaller when the clock is shown in the separate clock window).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "knoppen",
+     "qualname": "KlokInvoer.knoppen",
+     "kind": "method",
+     "lines": [251, 253],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Bottom-bar buttons: arrows, Enter, F1, Esc.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "teken",
+     "qualname": "KlokInvoer.teken",
+     "kind": "method",
+     "lines": [255, 261],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitslag", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "hulp", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws the analogue clock at the current time; after checking marks right/wrong and shows the right time; adapts height, feedback position and hint when the clock is drawn in the clock window.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Wijzerklok", "lines": [256]},
+      {"target": "leeravontuur/terminal/modellen.py::teken_klok", "lines": [256]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "toets",
+     "qualname": "KlokInvoer.toets",
+     "kind": "method",
+     "lines": [263, 282],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A click or drag at an offset from the centre sets the minute hand from the angle (the hour follows when passing 12); ←/→ ±1 min, ↑/↓ ±5 min, + / − ±1 hour; Enter submits the time text and minutes as a Decimal.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [281]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["decimal.Decimal", "isinstance", "math.atan2", "math.degrees", "ord", "round"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "hulp",
+     "qualname": "KlokInvoer.hulp",
+     "kind": "method",
+     "lines": [284, 285],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The topic's tip for this question (the Oefenaar calls hulp(o) for every input object).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.tip", "lines": [285], "candidates": [], "candidates_count": 36}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "rijen",
+     "qualname": "KlokInvoer.rijen",
+     "kind": "method",
+     "lines": [287, 288],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns an empty list: no rows for diagnose_rijen.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

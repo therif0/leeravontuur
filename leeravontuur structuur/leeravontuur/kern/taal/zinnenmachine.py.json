@@ -1,0 +1,888 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/taal/zinnenmachine.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 402,
+ "source_sha256": "ab7687bfaddc224d6b84eedb08f8c9aa91d4232d63e9e9dbf22f7d3aef41c3fb",
+ "purpose": "The sentence machine: a sentence structure times words from the word list gives a fully analysed Dutch sentence.",
+ "details": "As with word problems, the structure (a code from the leerlijn, such as o_pv_lv or bwb_pv_o_mv_lv) says which parts exist and in which order; the word list (inhoud/taal/woorden.json) supplies the words, so the machine knows both the sentence parts and the word classes. The finite verb agrees with the subject (singular/plural) and the tense; the object fits the verb (read a book, eat an apple). Eleven simple structures (including inversion, a question, a perfect tense with an auxiliary, a predicate with a linking verb, and 'aan/voor' indirect objects) and five compound ones with two pv's (en, shared subject, dat, terwijl, and terwijl fronted). A Bouwer builds the sentence piece by piece; choices that do not fit raise Opnieuw and are retried (up to 200 or 400 times) until the sentence is valid and fits the screen width.",
+ "module_docstring": "De zinnenmachine: een zinsbouw × woorden uit de woordenlijst (inhoud/taal/woorden.json) = een volledig ontlede zin.",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 22, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 23, "resolves_to": [], "internal": false},
+  {
+   "module": "functools",
+   "names": ["lru_cache"],
+   "alias": null,
+   "line": 24,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 25, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.taal.zinnen",
+   "names": ["BREEDTE", "Deel", "LT", "Woord", "Zin", "breedte", "controleer"],
+   "alias": null,
+   "line": 27,
+   "resolves_to": ["leeravontuur/kern/taal/zinnen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/taal/nagekeken.py",
+  "leeravontuur/kern/taal/zinsontleding.py",
+  "tests/test_taal_scherm.py",
+  "tests/test_taal_zinsontleding.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "functools.lru_cache", "pathlib.Path"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PAD",
+   "line": 29,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent.parent / 'inhoud' / 'taal' / '…",
+   "explanation": "Path of the word list JSON."
+  },
+  {
+   "name": "ZINSBOUW",
+   "line": 31,
+   "value_type": "Tuple",
+   "value_preview": "('o_pv', 'o_pv_lv', 'o_pv_mv_lv', 'bwb_pv_o_lv', 'bwb_pv_o_mv_lv', 'v…",
+   "explanation": "The simple structure codes."
+  },
+  {
+   "name": "SAMENGESTELD",
+   "line": 39,
+   "value_type": "Tuple",
+   "value_preview": "('twee_en', 'twee_samen', 'twee_dat', 'twee_terwijl', 'twee_terwijl_v…",
+   "explanation": "The compound structure codes (two pv's)."
+  },
+  {
+   "name": "KORT",
+   "line": 40,
+   "value_type": "Tuple",
+   "value_preview": "('vallen', 'vertrekken', 'vinden')",
+   "explanation": "Verbs that take only a moment, so not used after 'terwijl'."
+  },
+  {
+   "name": "TELWOORDEN",
+   "line": 41,
+   "value_type": "Tuple",
+   "value_preview": "('twee', 'drie', 'vier', 'vijf')",
+   "explanation": "Numerals used in noun phrases."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ZINSBOUW",
+   "line": 31,
+   "description": "The structure codes the leerlijn may name; _maak reads the code's parts (split at underscores) to decide the order of the parts."
+  },
+  {
+   "name": "SAMENGESTELD",
+   "line": 39,
+   "description": "The compound structure codes, handled one by one inside _maak_samengesteld."
+  }
+ ],
+ "classes": [
+  {
+   "name": "Opnieuw",
+   "qualname": "Opnieuw",
+   "lines": [44, 45],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "Deze keuze past niet (bv. een werkwoord zonder meewerkend voorwerp): opnieuw proberen.",
+   "explanation": "Raised when a choice does not fit (for example a verb without an indirect object); the caller tries again.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [309, 316]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [256, 258, 273]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [327, 340, 354]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Bouwer",
+   "qualname": "Bouwer",
+   "lines": [146, 181],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Bouwt een zin stuk per stuk: elk stuk = woorden + de labels van het zinsdeel.",
+   "explanation": "Builds a sentence piece by piece: words plus the labels of the part each piece forms.",
+   "attributes": [
+    {"name": "woorden", "line": 154, "scope": "instance", "value_preview": null},
+    {"name": "gezegde", "line": 157, "scope": "instance", "value_preview": null},
+    {"name": "nwg", "line": 160, "scope": "instance", "value_preview": null},
+    {"name": "grenzen", "line": 171, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [259]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [394]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [321]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Bouwer.__init__",
+     "kind": "method",
+     "lines": [149, 150],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts an empty builder (words, parts, predicate positions).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [259]},
+      {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [394]},
+      {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [321]}
+     ]
+    },
+    {
+     "name": "voeg",
+     "qualname": "Bouwer.voeg",
+     "kind": "method",
+     "lines": [152, 163],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "woorden", "kind": "positional", "default": null, "annotation": null},
+      {"name": "labels", "kind": "vararg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Adds words as a sentence part with one or more labels (a predicate label collects positions separately); returns the positions.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::Deel", "lines": [162]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len", "list", "range", "tuple"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "los",
+     "qualname": "Bouwer.los",
+     "kind": "method",
+     "lines": [165, 167],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "woorden", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Woorden zonder zinsdeel (in een zin met twee pv's is alleen pv en o aangeduid).",
+     "explanation": "Adds words that belong to no marked part (compound sentences mark only pv and o).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "grens",
+     "qualname": "Bouwer.grens",
+     "kind": "method",
+     "lines": [169, 171],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hier begint een nieuwe deelzin.",
+     "explanation": "Marks that a new clause begins here.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["getattr", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "zin",
+     "qualname": "Bouwer.zin",
+     "kind": "method",
+     "lines": [173, 181],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "leesteken", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Ends the sentence with a punctuation mark and returns the Zin: for compound sentences with clause borders, otherwise with a wwg or nwg predicate covering the collected positions; records the first word in the data.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/zinnen.py::Deel", "lines": [179]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [174]},
+      {"target": "leeravontuur/kern/taal/zinnen.py::Zin", "lines": [177, 181]},
+      {"target": "leeravontuur/kern/taal/zinnenmachine.py::_hoofdletter", "lines": [177, 181]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["getattr", "len", "list", "sorted", "tuple"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "lijst",
+   "qualname": "lijst",
+   "kind": "function",
+   "lines": [49, 50],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "Loads and caches the word list JSON.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".read_text", "json.loads"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [311]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [244]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [387]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [336, 337]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::ding_groep", "lines": [117]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::kies_bwb", "lines": [209]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::kies_o", "lines": [201]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::kies_ww", "lines": [193]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [137]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::mv_groep", "lines": [214]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::woordsoorten", "lines": [64]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestWoordenlijst.test_de_lijst_klopt", "lines": [69]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestWoordenlijst.test_meewerkend_voorwerp_begint_niet_met_een_naam",
+     "lines": [93]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_de_pv_past_bij_het_onderwerp_en_de_tijd",
+     "lines": [113]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_geen_weggelaten_lv_op_makkelijk_en_normaal",
+     "lines": [139]
+    }
+   ]
+  },
+  {
+   "name": "groep",
+   "qualname": "groep",
+   "kind": "function",
+   "lines": [53, 59],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'de/lidw juf/zn' → [Woord('de', 'lidw'), Woord('juf', 'zn')].",
+   "explanation": "Parses 'de/lidw juf/zn' into Woord objects with their classes.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [58]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [314]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [395, 397]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [338]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::kies_bwb", "lines": [210]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::kies_o", "lines": [204]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [140]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::mv_groep", "lines": [214]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::woordsoorten", "lines": [72, 75]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestWoordenlijst.test_de_lijst_klopt", "lines": [88]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestWoordenlijst.test_meewerkend_voorwerp_begint_niet_met_een_naam",
+     "lines": [94]
+    }
+   ]
+  },
+  {
+   "name": "woordsoorten",
+   "qualname": "woordsoorten",
+   "kind": "function",
+   "lines": [62, 100],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "{woord (kleine letters): woordsoort} uit de woordenlijst (voor zinnen met haakjes zonder /soort).",
+   "explanation": "Builds {lowercase word: word class} from the whole word list (subjects, objects, nouns, adjectives, verb forms, articles, numerals, prepositions, conjunctions), used to classify bracket sentences without '/class'.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [72, 75]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [64]},
+    {
+     "target": "leeravontuur/kern/taal/zinnenmachine.py::woordsoorten.zet",
+     "lines": [73, 76, 79, 81, 83, 84, 87, 90, 92, 94, 97, 99]
+    }
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_soorten", "lines": [110]}
+   ]
+  },
+  {
+   "name": "zet",
+   "qualname": "woordsoorten.zet",
+   "kind": "nested",
+   "lines": [67, 68],
+   "params": [
+    {"name": "woord", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Records a word's class if it is not recorded yet.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/taal/zinnenmachine.py::woordsoorten",
+     "lines": [73, 76, 79, 81, 83, 84, 87, 90, 92, 94, 97, 99]
+    }
+   ]
+  },
+  {
+   "name": "soort_van",
+   "qualname": "soort_van",
+   "kind": "function",
+   "lines": [103, 105],
+   "params": [
+    {"name": "woord", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De woordsoort van een woord volgens de woordenlijst (hoofdletters maken niet uit), of None.",
+   "explanation": "The word class of a word according to the list (case-insensitive), or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_soorten", "lines": [105]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_soorten",
+   "qualname": "_soorten",
+   "kind": "function",
+   "lines": [109, 110],
+   "params": [],
+   "returns": null,
+   "decorators": ["lru_cache(maxsize=None)"],
+   "docstring": "",
+   "explanation": "Cached result of woordsoorten().",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::woordsoorten", "lines": [110]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::soort_van", "lines": [105]}
+   ]
+  },
+  {
+   "name": "ding_groep",
+   "qualname": "ding_groep",
+   "kind": "function",
+   "lines": [115, 132],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "meervoud_mag", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een lijdend voorwerp met een ding: een boek, het dikke boek, twee nieuwe fietsen …",
+   "explanation": "A noun phrase for an object: 'een boek', 'het dikke boek', 'een dik boek', or a numeral plus plural ('twee nieuwe fietsen'), with the correct adjective ending for het-words.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [121, 123, 127, 129, 131, 132]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [117]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", ".random"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [141]}
+   ]
+  },
+  {
+   "name": "lv_groep",
+   "qualname": "lv_groep",
+   "kind": "function",
+   "lines": [135, 141],
+   "params": [
+    {"name": "ww", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(woorden, wie?) voor het lijdend voorwerp van dit werkwoord.",
+   "explanation": "(words, is-a-person) for the direct object of a verb: a person from the list or a thing of the verb's category.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::ding_groep", "lines": [141]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [140]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [137]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [313]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [252]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [333]}
+   ]
+  },
+  {
+   "name": "_hoofdletter",
+   "qualname": "_hoofdletter",
+   "kind": "function",
+   "lines": [184, 187],
+   "params": [
+    {"name": "woorden", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het eerste woord met een hoofdletter; namen houden hun hoofdletter.",
+   "explanation": "Capitalises the first word of the sentence (names keep their capital).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [187]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin", "lines": [177, 181]}
+   ]
+  },
+  {
+   "name": "kies_ww",
+   "qualname": "kies_ww",
+   "kind": "function",
+   "lines": [190, 196],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "nodig_lv", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "nodig_mv", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "zonder_lv", "kind": "positional", "default": "False", "annotation": null},
+    {"name": "lv_weglaten", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een werkwoord dat bij de zinsbouw past. zonder_lv = een zin zonder lijdend voorwerp; lv_weglaten = dan mag ook een werkwoord dat gewoonlijk een lv heeft (\"Oma eet.\"): alleen op Moeilijk en hoger (de vader, 7/11).",
+   "explanation": "Picks a verb that fits the structure: needs a direct object or not (rarely a verb that usually has one but may omit it, only when allowed), needs an indirect object or not.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [193]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [307]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [240]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [325]}
+   ]
+  },
+  {
+   "name": "kies_o",
+   "qualname": "kies_o",
+   "kind": "function",
+   "lines": [199, 204],
+   "params": [
+    {"name": "ww", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(woorden, getal) van een onderwerp dat bij het werkwoord past.",
+   "explanation": "Picks a subject (words and number) that fits the verb's allowed subject kinds.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [204]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [201]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [241]}
+   ]
+  },
+  {
+   "name": "kies_bwb",
+   "qualname": "kies_bwb",
+   "kind": "function",
+   "lines": [207, 210],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": null, "annotation": null},
+    {"name": "plek", "kind": "positional", "default": "'voor'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een bijwoordelijke bepaling die bij de tijd past (gisteren + vt, morgen + tt …).",
+   "explanation": "Picks an adverbial that fits the tense and the wanted place (front, back or either).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [210]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [209]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [261, 281]}
+   ]
+  },
+  {
+   "name": "mv_groep",
+   "qualname": "mv_groep",
+   "kind": "function",
+   "lines": [213, 214],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A random indirect-object phrase.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [214]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [214]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [254]}
+   ]
+  },
+  {
+   "name": "maak",
+   "qualname": "maak",
+   "kind": "function",
+   "lines": [217, 230],
+   "params": [
+    {"name": "zinsbouw", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null},
+    {"name": "tijden", "kind": "positional", "default": "('tt', 'vt')", "annotation": null},
+    {"name": "max_woorden", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "lv_weglaten", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een volledig ontlede Zin met deze zinsbouw. Probeert opnieuw als een keuze niet past, de zin te breed is voor het scherm of meer woorden heeft dan max_woorden (de leerlijn; zonder het leesteken).",
+   "explanation": "Makes one fully analysed Zin for a structure code, retrying up to 200 times when a choice does not fit, the sentence is invalid, too wide for the screen or has more words than the leerlijn allows; raises RuntimeError if nothing is found.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [228]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [228]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [224]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", "RuntimeError", "ValueError", "list", "range", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_zin", "lines": [493]},
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_tips_zeggen_het_antwoord_niet",
+     "lines": [201]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_de_uitleg_en_de_vraag_van_school",
+     "lines": [218]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestStappenEnNakijken.test_stappen_per_leerjaar",
+     "lines": [163, 167]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_bijvoeglijk_naamwoord_met_of_zonder_e",
+     "lines": [128]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_de_pv_past_bij_het_onderwerp_en_de_tijd",
+     "lines": [116, 120]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_elke_zinsbouw_in_elk_leerjaar",
+     "lines": [103]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_geen_weggelaten_lv_op_makkelijk_en_normaal",
+     "lines": [145, 149]
+    },
+    {
+     "caller": "tests/test_taal_zinsontleding.py::TestZinnenmachine.test_tijd_en_bepaling_passen",
+     "lines": [154]
+    }
+   ]
+  },
+  {
+   "name": "_maak",
+   "qualname": "_maak",
+   "kind": "function",
+   "lines": [233, 284],
+   "params": [
+    {"name": "zinsbouw", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": null, "annotation": null},
+    {"name": "lv_weglaten", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a simple sentence for a structure: chooses verb, subject, tense forms (including the auxiliary for perfect structures), objects and adverbials, avoids identical phrases, and assembles it with a Bouwer in the right order (inversion, question, 'aan' structure).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [245, 248, 274, 283]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.__init__", "lines": [259]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Opnieuw", "lines": [256, 258, 273]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_maak_nwg", "lines": [239]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_zelfde", "lines": [255, 257]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::kies_bwb", "lines": [261, 281]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::kies_o", "lines": [241]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::kies_ww", "lines": [240]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [244]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [252]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::mv_groep", "lines": [254]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "b.voeg",
+     "lines": [261, 262, 263, 265, 266, 268, 269, 271, 274, 277, 279, 281, 283],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    },
+    {
+     "expr": "b.zin",
+     "lines": [284],
+     "candidates": [
+      "leeravontuur/kern/taal/werkwoorden.py::WwZin.zin",
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak", "lines": [224]}
+   ]
+  },
+  {
+   "name": "maak_samengesteld",
+   "qualname": "maak_samengesteld",
+   "kind": "function",
+   "lines": [289, 300],
+   "params": [
+    {"name": "zinsbouw", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": "random", "annotation": null},
+    {"name": "tijden", "kind": "positional", "default": "('tt', 'vt')", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een zin met twee pv's (alleen pv en o aangeduid). Probeert opnieuw als de zin te breed is voor het scherm.",
+   "explanation": "Makes a compound sentence (two pv's, only pv and o marked), retrying until valid and narrow enough.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::breedte", "lines": [298]},
+    {"target": "leeravontuur/kern/taal/zinnen.py::controleer", "lines": [298]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [295]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", "RuntimeError", "ValueError", "list", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.maak_zin", "lines": [492]},
+    {"caller": "tests/test_taal_zinsontleding.py::TestTweePersoonsvormen.test_de_machine", "lines": [375]}
+   ]
+  },
+  {
+   "name": "_deelzin",
+   "qualname": "_deelzin",
+   "kind": "function",
+   "lines": [303, 317],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "niet", "kind": "positional", "default": "()", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Eén deelzin: (onderwerp, pv, de rest (een lijdend voorwerp of niets), het werkwoord, de soort van het onderwerp). soort = het onderwerp moet van die soort zijn (een gedeeld onderwerp); niet = deze werkwoorden niet.",
+   "explanation": "One clause: subject, pv, optional object, verb and subject kind; may be forced to a subject kind (shared subject) and to avoid some verbs.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [317]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Opnieuw", "lines": [309, 316]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_zelfde", "lines": [315]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [314]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::kies_ww", "lines": [307]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [311]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [313]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".choice", ".random"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [323, 351]}
+   ]
+  },
+  {
+   "name": "_maak_samengesteld",
+   "qualname": "_maak_samengesteld",
+   "kind": "function",
+   "lines": [320, 382],
+   "params": [
+    {"name": "zinsbouw", "kind": "positional", "default": null, "annotation": null},
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds the five compound structures from one or two clauses: 'twee_samen' (shared subject), 'twee_dat' (a person says that ... with the pv at the end), 'twee_en', 'twee_terwijl' and 'twee_terwijl_voor' (clause first); avoids verbs that sound odd after 'terwijl'.",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [331, 332, 342, 344, 359, 368, 373, 377]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.__init__", "lines": [321]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Opnieuw", "lines": [327, 340, 354]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [323, 351]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::_zelfde", "lines": [339, 352, 353]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [338]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::kies_ww", "lines": [325]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [336, 337]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lv_groep", "lines": [333]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "b.grens",
+     "lines": [343, 358, 367, 378],
+     "candidates": ["leeravontuur/kern/taal/zinnenmachine.py::Bouwer.grens"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "b.los",
+     "lines": [330, 331, 333, 344, 346, 359, 362, 366, 368, 370, 373, 375, 377, 381],
+     "candidates": ["leeravontuur/kern/taal/zinnenmachine.py::Bouwer.los"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "b.voeg",
+     "lines": [328, 329, 332, 341, 342, 345, 347, 360, 361, 364, 365, 369, 371, 374, 376, 379, 380],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    },
+    {
+     "expr": "b.zin",
+     "lines": [334, 348, 382],
+     "candidates": [
+      "leeravontuur/kern/taal/werkwoorden.py::WwZin.zin",
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::maak_samengesteld", "lines": [295]}
+   ]
+  },
+  {
+   "name": "_maak_nwg",
+   "qualname": "_maak_nwg",
+   "kind": "function",
+   "lines": [385, 398],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "o pv nwg: De kat is heel moe. (koppelwerkwoord + bijvoeglijk naamwoord)",
+   "explanation": "A sentence with a linking verb and an adjective as nominal predicate ('De kat is heel moe.').",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/zinnen.py::Woord", "lines": [396]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.__init__", "lines": [394]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::groep", "lines": [395, 397]},
+    {"target": "leeravontuur/kern/taal/zinnenmachine.py::lijst", "lines": [387]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "b.voeg",
+     "lines": [395, 396, 397],
+     "candidates": [
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+      "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+      "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+     ],
+     "candidates_count": 3
+    },
+    {
+     "expr": "b.zin",
+     "lines": [398],
+     "candidates": [
+      "leeravontuur/kern/taal/werkwoorden.py::WwZin.zin",
+      "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.zin"
+     ],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [".choice"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [239]}
+   ]
+  },
+  {
+   "name": "_zelfde",
+   "qualname": "_zelfde",
+   "kind": "function",
+   "lines": [401, 402],
+   "params": [
+    {"name": "a", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "True when two word groups consist of the same words (case-insensitive); None counts as different.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_deelzin", "lines": [315]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak", "lines": [255, 257]},
+    {"caller": "leeravontuur/kern/taal/zinnenmachine.py::_maak_samengesteld", "lines": [339, 352, 353]}
+   ]
+  }
+ ]
+}

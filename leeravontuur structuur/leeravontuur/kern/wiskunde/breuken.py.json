@@ -1,0 +1,1295 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/wiskunde/breuken.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 626,
+ "source_sha256": "5cd68fc1e07f986805c335c6fd4bc5fa47f24a90311a90a3b205378a98fdc5da",
+ "purpose": "The topics of fractions: recognising and shading on the fraction bar, equivalent and simplifying, comparing, adding and subtracting, a fraction of a number (and x and :), and fraction versus decimal.",
+ "details": "Six Onderwerp subclasses sharing a base _Breuken (cheat sheet, repetition group from the key, choice of the question kind from the leerlijn, and the 'correct but not simplified' hint). Answers are exact Fractions; a typed fraction is read as GetypteBreuk so the form counts where the question demands the simplest form (data['vereenvoudigd']). Several topics attach a visual model that is shown only after checking (model_na, such as fraction bars with a common denominator from balken_gelijknamig). Optellen and BreukVan have a worked solution in klad lines (oplossing). Used by Wiskunde > Breuken en procenten. A related plan to show fractions stacked (teller above noemer) is parked in werk/breuken.md and is not in this code.",
+ "module_docstring": "Breuken: herkennen en arceren op de breukbalk, gelijkwaardig en vereenvoudigen, vergelijken, optellen en aftrekken, een breuk van een getal (en vermenigvuldigen/delen), breuk en kommagetal.",
+ "imports": [
+  {"module": "math", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["GetypteBreuk", "fmt", "fmt_breuk"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.klad",
+   "names": ["oplossing_van"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/klad.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Breukbalk", "Breukbalken", "Groepjes"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Onderwerp", "Vraag"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/kern/catalogus.py", "leeravontuur/terminal/curriculum/wiskunde.py", "tests/test_breuken.py"],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.__init__", "lines": [620, 621, 622, 623, 624, 625]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "F",
+   "line": 17,
+   "value_type": "Name",
+   "value_preview": "Fraction",
+   "explanation": "Short alias for Fraction."
+  },
+  {
+   "name": "D",
+   "line": 18,
+   "value_type": "Name",
+   "value_preview": "Decimal",
+   "explanation": "Short alias for Decimal."
+  },
+  {
+   "name": "BALK_MAX",
+   "line": 19,
+   "value_type": "Constant",
+   "value_preview": "20",
+   "explanation": "Most pieces that fit on a bar in 80 columns."
+  },
+  {
+   "name": "SPIEKBRIEF",
+   "line": 81,
+   "value_type": "List",
+   "value_preview": "[('DE BREUKBALK', 'accent'), (' 3/4: de noemer (4) zegt in hoeveel ge…",
+   "explanation": "The fractions cheat sheet."
+  },
+  {
+   "name": "HERKENNEN",
+   "line": 620,
+   "value_type": "Call",
+   "value_preview": "Herkennen()",
+   "explanation": "The one instance of the recognise topic."
+  },
+  {
+   "name": "GELIJKWAARDIG",
+   "line": 621,
+   "value_type": "Call",
+   "value_preview": "Gelijkwaardig()",
+   "explanation": "The one instance of the equivalent topic."
+  },
+  {
+   "name": "VERGELIJKEN",
+   "line": 622,
+   "value_type": "Call",
+   "value_preview": "Vergelijken()",
+   "explanation": "The one instance of the compare topic."
+  },
+  {
+   "name": "OPTELLEN",
+   "line": 623,
+   "value_type": "Call",
+   "value_preview": "Optellen()",
+   "explanation": "The one instance of the add-and-subtract topic."
+  },
+  {
+   "name": "BREUK_VAN",
+   "line": 624,
+   "value_type": "Call",
+   "value_preview": "BreukVan()",
+   "explanation": "The one instance of the fraction-of topic."
+  },
+  {
+   "name": "KOMMAGETAL",
+   "line": 625,
+   "value_type": "Call",
+   "value_preview": "Kommagetal()",
+   "explanation": "The one instance of the fraction-decimal topic."
+  },
+  {
+   "name": "ALLE",
+   "line": 626,
+   "value_type": "List",
+   "value_preview": "[HERKENNEN, GELIJKWAARDIG, VERGELIJKEN, OPTELLEN, BREUK_VAN, KOMMAGET…",
+   "explanation": "List of the six topics."
+  }
+ ],
+ "registries": [
+  {
+   "name": "ALLE",
+   "line": 626,
+   "description": "The six topic instances; instantiating them registers the skills."
+  }
+ ],
+ "classes": [
+  {
+   "name": "_Breuken",
+   "qualname": "_Breuken",
+   "lines": [105, 123],
+   "bases": ["Onderwerp"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Base class of the fraction topics: shared cheat sheet, question kind choice and the 'not simplified' check.",
+   "attributes": [
+    {"name": "vast", "line": 106, "scope": "class", "value_preview": "('soort',)"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "spiekbrief",
+     "qualname": "_Breuken.spiekbrief",
+     "kind": "method",
+     "lines": [108, 109],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the shared fractions cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "onderwerp_van_sleutel",
+     "qualname": "_Breuken.onderwerp_van_sleutel",
+     "kind": "method",
+     "lines": [111, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "sleutel", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from a stored key.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "soort",
+     "qualname": "_Breuken.soort",
+     "kind": "method",
+     "lines": [115, 116],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The question kind from repetition data or a random one from the leerlijn.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".choice"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.maak_met", "lines": [455]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [184]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Herkennen.maak_met", "lines": [138]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.maak_met", "lines": [576]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met", "lines": [331]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [264]}
+     ]
+    },
+    {
+     "name": "niet_vereenvoudigd",
+     "qualname": "_Breuken.niet_vereenvoudigd",
+     "kind": "method",
+     "lines": [118, 123],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The thinking error 'right value but not simplified' with the common divisor, or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance", "math.gcd"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.diagnose", "lines": [542]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.diagnose", "lines": [235]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.diagnose", "lines": [606]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.diagnose", "lines": [423]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Herkennen",
+   "qualname": "Herkennen",
+   "lines": [128, 169],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.herkennen: read and shade fractions on a bar.",
+   "attributes": [
+    {"name": "id", "line": 129, "scope": "class", "value_preview": "'wiskunde.breuken.herkennen'"},
+    {"name": "naam", "line": 130, "scope": "class", "value_preview": "'Breuken herkennen'"},
+    {"name": "spiek_kop", "line": 131, "scope": "class", "value_preview": "'DE BREUKBALK'"},
+    {
+     "name": "omschrijving",
+     "line": 132,
+     "scope": "class",
+     "value_preview": "'welke breuk is gearceerd? zelf arceren'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 133,
+     "scope": "class",
+     "value_preview": "{'teller_noemer_omgewisseld': 'teller en noemer omgewisseld…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Herkennen.maak_met",
+     "kind": "method",
+     "lines": [137, 148],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a read-off question (which fraction is shaded) or a shade-it question on a bar.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [143, 148]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [144, 147]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [138]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [144, 147], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".sample", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Herkennen.uitleg",
+     "kind": "method",
+     "lines": [150, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The denominator is the number of equal pieces, the numerator the shaded ones.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Herkennen.tip",
+     "kind": "method",
+     "lines": [155, 156],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Count all pieces first, then the shaded ones.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Herkennen.diagnose",
+     "kind": "method",
+     "lines": [158, 169],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises counting the unshaded pieces, swapped numerator and denominator, and shaded against unshaded.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_waarde", "lines": [159]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [163, 165, 167], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Gelijkwaardig",
+   "qualname": "Gelijkwaardig",
+   "lines": [174, 250],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.gelijkwaardig: equivalent fractions and simplifying.",
+   "attributes": [
+    {"name": "id", "line": 175, "scope": "class", "value_preview": "'wiskunde.breuken.gelijkwaardig'"},
+    {"name": "naam", "line": 176, "scope": "class", "value_preview": "'Gelijkwaardig en vereenvoudigen'"},
+    {"name": "spiek_kop", "line": 177, "scope": "class", "value_preview": "'GELIJKWAARDIG EN VEREENVOUDIGEN'"},
+    {
+     "name": "omschrijving",
+     "line": 178,
+     "scope": "class",
+     "value_preview": "'2/3 = ?/12, vereenvoudigen, met de balk'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 179,
+     "scope": "class",
+     "value_preview": "{'niet_vereenvoudigd': 'niet volledig vereenvoudigd', 'alle…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Gelijkwaardig.maak_met",
+     "kind": "method",
+     "lines": [183, 207],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a fill-in-the-missing-part question (numerator or denominator), a simplify question, or a 'show it with more pieces' bar question.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk", "lines": [206]},
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk.van", "lines": [188]},
+      {"target": "leeravontuur/kern/modellen.py::Breukbalken", "lines": [189]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [192, 194, 197, 204]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [184]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_breuk", "lines": [186]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [193, 195], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [198, 205], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", ".random", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "nakijken",
+     "qualname": "Gelijkwaardig.nakijken",
+     "kind": "method",
+     "lines": [209, 212],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "For the bar kind, the typed fraction must have the asked denominator and equal value; otherwise the normal check.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken", "lines": [212]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance", "super"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Gelijkwaardig.uitleg",
+     "kind": "method",
+     "lines": [214, 227],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Do the same to the other part (multiply or divide by the same number), or the gcd for simplifying, or the finer bar.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["math.gcd"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Gelijkwaardig.tip",
+     "kind": "method",
+     "lines": [229, 232],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "What you do to the denominator you do to the numerator; or find a number both divide by.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Gelijkwaardig.diagnose",
+     "kind": "method",
+     "lines": [234, 250],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises not simplified fully, adding instead of multiplying, and changing only one part.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.niet_vereenvoudigd", "lines": [235]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [246], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Vergelijken",
+   "qualname": "Vergelijken",
+   "lines": [255, 317],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.vergelijken: compare fractions.",
+   "attributes": [
+    {"name": "id", "line": 256, "scope": "class", "value_preview": "'wiskunde.breuken.vergelijken'"},
+    {"name": "naam", "line": 257, "scope": "class", "value_preview": "'Breuken vergelijken'"},
+    {"name": "spiek_kop", "line": 258, "scope": "class", "value_preview": "'VERGELIJKEN EN OPTELLEN'"},
+    {
+     "name": "omschrijving",
+     "line": 259,
+     "scope": "class",
+     "value_preview": "'groter, kleiner of gelijk? (<, > of =)'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 260,
+     "scope": "class",
+     "value_preview": "{'grotere_noemer_groter': 'gedacht dat een grotere noemer e…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Vergelijken.maak_met",
+     "kind": "method",
+     "lines": [263, 291],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a comparison of two fractions (same denominator, same numerator, or different) answered with <, > or =; bars are shown after checking.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Breukbalk.van", "lines": [290]},
+      {"target": "leeravontuur/kern/modellen.py::Breukbalken", "lines": [290]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [288]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [264]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_breuk", "lines": [275, 280]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_kgv", "lines": [281]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [289]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [285], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", ".random", ".sample", "max", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Vergelijken.uitleg",
+     "kind": "method",
+     "lines": [293, 303],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Compare numerators, or explain a larger denominator gives smaller pieces, or make the denominators equal.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_kgv", "lines": [300]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Vergelijken.tip",
+     "kind": "method",
+     "lines": [305, 306],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same denominator: compare numerators; otherwise make them equal first.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Vergelijken.diagnose",
+     "kind": "method",
+     "lines": [308, 317],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises thinking a larger denominator is a larger fraction and comparing only numerators.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["max", "min"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Optellen",
+   "qualname": "Optellen",
+   "lines": [322, 439],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.optellen: add and subtract fractions.",
+   "attributes": [
+    {"name": "id", "line": 323, "scope": "class", "value_preview": "'wiskunde.breuken.optellen'"},
+    {"name": "naam", "line": 324, "scope": "class", "value_preview": "'Optellen en aftrekken'"},
+    {"name": "spiek_kop", "line": 325, "scope": "class", "value_preview": "'VERGELIJKEN EN OPTELLEN'"},
+    {
+     "name": "omschrijving",
+     "line": 326,
+     "scope": "class",
+     "value_preview": "'gelijknamig, ongelijknamig, gemengde getallen'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 327,
+     "scope": "class",
+     "value_preview": "{'tellers_en_noemers': 'tellers én noemers opgeteld (1/2 + …"
+    },
+    {"name": "klad", "line": 380, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Optellen.maak_met",
+     "kind": "method",
+     "lines": [330, 375],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes an addition or subtraction of fractions: same denominator, different denominators (a multiple or an lcm), mixed numbers or negatives; the answer is simplified or not by the leerlijn.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [373]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [331]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [366, 374]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_breuk", "lines": [343, 345, 354, 355, 357, 358]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_kgv", "lines": [351]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [375]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [340, 350, 354, 355, 357, 358], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", ".random", "abs", "max", "min", "range", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "xy",
+     "qualname": "Optellen.xy",
+     "kind": "method",
+     "lines": [377, 378],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The two fractions of the question.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [378], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.diagnose", "lines": [428]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.oplossing", "lines": [383]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.tip", "lines": [414]},
+      {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.uitleg", "lines": [395]}
+     ]
+    },
+    {
+     "name": "oplossing",
+     "qualname": "Optellen.oplossing",
+     "kind": "method",
+     "lines": [382, 392],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines: rewrite on a common denominator, combine numerators, simplify.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [390, 391]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::Optellen.xy", "lines": [383]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_kb", "lines": [390, 391, 392]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_ketting", "lines": [390, 391]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["int", "math.gcd"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Optellen.uitleg",
+     "kind": "method",
+     "lines": [394, 411],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same denominator: add the numerators; else make equal first; then simplify.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::Optellen.xy", "lines": [395]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_gelijknamig_tekst", "lines": [403]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Optellen.tip",
+     "kind": "method",
+     "lines": [413, 417],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Same denominator: only the numerators; else make them equal first.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::Optellen.xy", "lines": [414]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Optellen.diagnose",
+     "kind": "method",
+     "lines": [419, 439],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises adding numerators and denominators both (2/5 for 1/2 + 1/3) and adding numerators without a common denominator.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::Optellen.xy", "lines": [428]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.niet_vereenvoudigd", "lines": [423]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_waarde", "lines": [420]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [437], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["abs", "isinstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "BreukVan",
+   "qualname": "BreukVan",
+   "lines": [444, 562],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.van: a fraction of a number, x and : with fractions.",
+   "attributes": [
+    {"name": "id", "line": 445, "scope": "class", "value_preview": "'wiskunde.breuken.van'"},
+    {"name": "naam", "line": 446, "scope": "class", "value_preview": "'Breuk van een getal'"},
+    {"name": "spiek_kop", "line": 447, "scope": "class", "value_preview": "'BREUK VAN EEN GETAL'"},
+    {
+     "name": "omschrijving",
+     "line": 448,
+     "scope": "class",
+     "value_preview": "'2/3 van 12, × en : met breuken'"
+    },
+    {
+     "name": "denkfouten",
+     "line": 449,
+     "scope": "class",
+     "value_preview": "{'alleen_gedeeld': 'alleen door de noemer gedeeld (de telle…"
+    },
+    {"name": "klad", "line": 514, "scope": "class", "value_preview": "'ja'"}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "BreukVan.maak_met",
+     "kind": "method",
+     "lines": [454, 486],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a question of five kinds: a fraction of a number (with groups shown), number x fraction, fraction x fraction, fraction : number, fraction : fraction.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Groepjes", "lines": [467]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [466, 485]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [455]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [476, 480, 483, 486]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_breuk", "lines": [469, 475, 478, 482]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [466], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [471, 475, 478, 479, 482], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".randint", "abs", "math.gcd", "max", "min", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "BreukVan.uitleg",
+     "kind": "method",
+     "lines": [488, 512],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per kind: divide by the denominator then take the numerator; multiply only the numerator; numerator x numerator and denominator x denominator; multiply the denominator; multiply by the reciprocal.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [511, 512]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [497, 505], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "oplossing",
+     "qualname": "BreukVan.oplossing",
+     "kind": "method",
+     "lines": [516, 532],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The worked solution as klad lines for each kind.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::oplossing_van", "lines": [520, 524, 526, 530, 531]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_kb", "lines": [524, 526, 527, 530, 531, 532]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_ketting", "lines": [524, 526, 530, 531]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [521], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "BreukVan.tip",
+     "kind": "method",
+     "lines": [534, 539],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A hint per kind.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "BreukVan.diagnose",
+     "kind": "method",
+     "lines": [541, 562],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises forgetting to multiply by the numerator, dividing and multiplying the wrong way round, multiplying the denominator too, and not taking the reciprocal.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.niet_vereenvoudigd", "lines": [542]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_waarde", "lines": [545]}
+     ],
+     "unresolved_calls": [
+      {"expr": "F", "lines": [553, 556], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "Kommagetal",
+   "qualname": "Kommagetal",
+   "lines": [567, 617],
+   "bases": ["_Breuken"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Topic wiskunde.breuken.kommagetal: fraction and decimal.",
+   "attributes": [
+    {"name": "id", "line": 568, "scope": "class", "value_preview": "'wiskunde.breuken.kommagetal'"},
+    {"name": "naam", "line": 569, "scope": "class", "value_preview": "'Breuk en kommagetal'"},
+    {"name": "spiek_kop", "line": 570, "scope": "class", "value_preview": "'BREUK EN KOMMAGETAL'"},
+    {"name": "omschrijving", "line": 571, "scope": "class", "value_preview": "'3/4 = 0,75 en 0,6 = 3/5'"},
+    {
+     "name": "denkfouten",
+     "line": 572,
+     "scope": "class",
+     "value_preview": "{'breuk_als_komma': 'de breuk gelezen als kommagetal (3/4 =…"
+    }
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "maak_met",
+     "qualname": "Kommagetal.maak_met",
+     "kind": "method",
+     "lines": [575, 586],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "p", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+      {"name": "data", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Makes a question turning a fraction into a decimal, or a decimal into the simplest fraction.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [585, 586]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [584, 585]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.soort", "lines": [576]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [581], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [586], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".choice", ".randint", "math.gcd"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitleg",
+     "qualname": "Kommagetal.uitleg",
+     "kind": "method",
+     "lines": [588, 600],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Make the denominator 10, 100 or 1000, read it as tenths or hundredths; or the reverse and then simplify.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [598, 599]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [590], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".as_tuple", ".normalize", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tip",
+     "qualname": "Kommagetal.tip",
+     "kind": "method",
+     "lines": [602, 603],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Think of tenths and hundredths: 0,25 = 25/100.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "diagnose",
+     "qualname": "Kommagetal.diagnose",
+     "kind": "method",
+     "lines": [605, 617],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null},
+      {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Recognises reading the fraction line as a decimal comma (3/4 as 3,4) and mixing tenths and hundredths.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_Breuken.niet_vereenvoudigd", "lines": [606]},
+      {"target": "leeravontuur/kern/wiskunde/breuken.py::_waarde", "lines": [609]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [613], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [610, 615], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "_kgv",
+   "qualname": "_kgv",
+   "kind": "function",
+   "lines": [22, 23],
+   "params": [
+    {"name": "a", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Least common multiple of two integers.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["math.gcd"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met", "lines": [351]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [281]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.uitleg", "lines": [300]}
+   ]
+  },
+  {
+   "name": "_b",
+   "qualname": "_b",
+   "kind": "function",
+   "lines": [26, 27],
+   "params": [
+    {"name": "f", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gemengd", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A Fraction as text via fmt_breuk (optionally mixed).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt_breuk", "lines": [27]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.maak_met", "lines": [476, 480, 483, 486]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.uitleg", "lines": [511, 512]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met", "lines": [366, 374]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::_gelijknamig_tekst", "lines": [67]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::balken_gelijknamig", "lines": [77]}
+   ]
+  },
+  {
+   "name": "_kb",
+   "qualname": "_kb",
+   "kind": "function",
+   "lines": [30, 33],
+   "params": [
+    {"name": "f", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een breuk zoals in het klad: 7/4 (een heel getal zonder noemer).",
+   "explanation": "A fraction as typed in the klad: '7/4', or a whole number without a denominator.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [32], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.oplossing",
+     "lines": [524, 526, 527, 530, 531, 532]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.oplossing", "lines": [390, 391, 392]}
+   ]
+  },
+  {
+   "name": "_ketting",
+   "qualname": "_ketting",
+   "kind": "function",
+   "lines": [36, 42],
+   "params": [
+    {"name": "delen", "kind": "vararg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'a = b = c', zonder twee keer hetzelfde na elkaar (3/4 = 3/4).",
+   "explanation": "Joins parts as 'a = b = c' without repeating two equal neighbours.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.oplossing", "lines": [524, 526, 530, 531]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.oplossing", "lines": [390, 391]}
+   ]
+  },
+  {
+   "name": "_waarde",
+   "qualname": "_waarde",
+   "kind": "function",
+   "lines": [45, 51],
+   "params": [
+    {"name": "getal", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Getypt antwoord → Fraction (of None).",
+   "explanation": "The numeric value (Fraction) of a typed answer (GetypteBreuk or Decimal), or None.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "F", "lines": [50], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.diagnose", "lines": [545]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Herkennen.diagnose", "lines": [159]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Kommagetal.diagnose", "lines": [609]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.diagnose", "lines": [420]}
+   ]
+  },
+  {
+   "name": "_breuk",
+   "qualname": "_breuk",
+   "kind": "function",
+   "lines": [54, 61],
+   "params": [
+    {"name": "rng", "kind": "positional", "default": null, "annotation": null},
+    {"name": "noemer_max", "kind": "positional", "default": null, "annotation": null},
+    {"name": "eenvoudig", "kind": "positional", "default": "True", "annotation": null},
+    {"name": "echt", "kind": "positional", "default": "True", "annotation": null},
+    {"name": "noemer_min", "kind": "positional", "default": "2", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een breuk t/n (0 < t < n als echt), liefst in de eenvoudigste vorm.",
+   "explanation": "A random fraction t/n (proper if requested), preferably in simplest form; falls back to 1/2.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".randint", "math.gcd", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.maak_met", "lines": [469, 475, 478, 482]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.maak_met", "lines": [186]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met",
+     "lines": [343, 345, 354, 355, 357, 358]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [275, 280]}
+   ]
+  },
+  {
+   "name": "_gelijknamig_tekst",
+   "qualname": "_gelijknamig_tekst",
+   "kind": "function",
+   "lines": [64, 68],
+   "params": [
+    {"name": "fs", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'1/2 = 3/6 en 1/3 = 2/6' (met de kleinste gemeenschappelijke noemer).",
+   "explanation": "(common denominator, text like '1/2 = 3/6 en 1/3 = 2/6') for a list of fractions, using the lcm of the denominators.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [67]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["math.lcm"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.uitleg", "lines": [403]}
+   ]
+  },
+  {
+   "name": "balken_gelijknamig",
+   "qualname": "balken_gelijknamig",
+   "kind": "function",
+   "lines": [71, 78],
+   "params": [
+    {"name": "fs", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Balken voor de breuken fs, allemaal met de gemeenschappelijke noemer (als die op een balk past).",
+   "explanation": "Fraction bars for fractions on their common denominator, or None when the denominator is above BALK_MAX or a value is outside 0 to 1.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Breukbalk.van", "lines": [76]},
+    {"target": "leeravontuur/kern/modellen.py::Breukbalken", "lines": [76]},
+    {"target": "leeravontuur/kern/wiskunde/breuken.py::_b", "lines": [77]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["any", "math.lcm"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.maak_met", "lines": [375]},
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Vergelijken.maak_met", "lines": [289]},
+    {"caller": "tests/test_breuken.py::TestSchermen.test_vergelijken", "lines": [218]}
+   ]
+  }
+ ]
+}

@@ -1,0 +1,3684 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "docs/tools/scenarios.py",
+ "kind": "python",
+ "layer": "docs",
+ "lines": 1058,
+ "source_sha256": "861004c912a6aa8da48a1a6a56e0258f37236142eb6730d868e6f81152a8ebaa",
+ "purpose": "The list of screenshots for the handbook: per image the keys the program receives and when to photograph.",
+ "details": "Each function decorated with @scenario(name, ...) receives a Draai object (from schermafdrukken.py) that already stands in the main menu (unless kind=False) and navigates with d.toets/d.wacht and photographs with d.foto(name, title). Keys are tmux key names, ('tekst', text) for typed text and ('klik', row, col) for mouse clicks. The scenario functions are all named `_` (they are only registered, never called by name), so they appear in this map by their line number: the keys are '_@<line of the def>'. Answers are computed from the question text on screen (the fixed random seed LEERAVONTUUR_ZAAD makes questions repeat). Note from CLAUDE.md: these images still show the menus of version 0.19 and are redone in the handbook project. Run via `python3 docs/tools/schermafdrukken.py [prefix]`.",
+ "module_docstring": "De schermafdrukken van de handleiding: per beeld welke toetsen het programma krijgt.",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {
+   "module": "schermafdrukken",
+   "names": ["scherm"],
+   "alias": null,
+   "line": 44,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 164,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 165,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 175,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt"],
+   "alias": null,
+   "line": 176,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 177,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "decimal",
+   "names": ["Decimal"],
+   "alias": null,
+   "line": 336,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "math", "names": [], "alias": null, "line": 445, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.wiskunde.klok",
+   "names": ["lees_woorden"],
+   "alias": null,
+   "line": 578,
+   "resolves_to": ["leeravontuur/kern/wiskunde/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["klok_tekst"],
+   "alias": null,
+   "line": 579,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "schermafdrukken",
+   "names": ["BEELDEN"],
+   "alias": null,
+   "line": 591,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.venster.klokbeeld",
+   "names": ["naar_svg", "vormen"],
+   "alias": null,
+   "line": 592,
+   "resolves_to": ["leeravontuur/venster/klokbeeld.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde.grootheden",
+   "names": ["duur_tekst", "klok_tekst", "lees_duur", "lees_klok"],
+   "alias": null,
+   "line": 795,
+   "resolves_to": ["leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {
+     "target": "docs/tools/scenarios.py::scenario",
+     "lines": [
+      63,
+      71,
+      76,
+      95,
+      111,
+      144,
+      158,
+      193,
+      204,
+      213,
+      220,
+      237,
+      246,
+      265,
+      285,
+      293,
+      302,
+      310,
+      317,
+      326,
+      334,
+      355,
+      376,
+      388,
+      395,
+      423,
+      438,
+      451,
+      460,
+      472,
+      482,
+      492,
+      508,
+      516,
+      527,
+      537,
+      549,
+      559,
+      567,
+      576,
+      588,
+      605,
+      613,
+      623,
+      633,
+      643,
+      651,
+      660,
+      670,
+      678,
+      687,
+      696,
+      704,
+      742,
+      767,
+      775,
+      793,
+      819,
+      831,
+      842,
+      858,
+      876,
+      883,
+      903,
+      916,
+      923,
+      930,
+      947,
+      956,
+      979,
+      991,
+      1003,
+      1024,
+      1029,
+      1034,
+      1039,
+      1044,
+      1049,
+      1054
+     ]
+    }
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "SCENARIOS",
+   "line": 11,
+   "value_type": "Dict",
+   "value_preview": "{}",
+   "explanation": "Registry: scenario name -> (function, options). Filled by the decorator at import time."
+  },
+  {
+   "name": "OPNIEUW",
+   "line": 58,
+   "value_type": "List",
+   "value_preview": "['Escape', '1', '2']",
+   "explanation": "Keys that stop and start free practice again at Normal level to get a new question: Escape, 1, 2."
+  }
+ ],
+ "registries": [
+  {
+   "name": "SCENARIOS",
+   "line": 11,
+   "description": "Maps a screenshot scenario name to (function, options); filled by @scenario when the module is imported and read by schermafdrukken.main, which calls each function with a Draai object."
+  }
+ ],
+ "classes": [],
+ "functions": [
+  {
+   "name": "scenario",
+   "qualname": "scenario",
+   "kind": "function",
+   "lines": [14, 18],
+   "params": [
+    {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+    {"name": "opties", "kind": "kwarg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Decorator factory: registers the decorated function in SCENARIOS under a name together with its options (argumenten for start arguments, kind=False to start without choosing a child). Returns the decorator.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "docs/tools/scenarios.py::<module>",
+     "lines": [
+      63,
+      71,
+      76,
+      95,
+      111,
+      144,
+      158,
+      193,
+      204,
+      213,
+      220,
+      237,
+      246,
+      265,
+      285,
+      293,
+      302,
+      310,
+      317,
+      326,
+      334,
+      355,
+      376,
+      388,
+      395,
+      423,
+      438,
+      451,
+      460,
+      472,
+      482,
+      492,
+      508,
+      516,
+      527,
+      537,
+      549,
+      559,
+      567,
+      576,
+      588,
+      605,
+      613,
+      623,
+      633,
+      643,
+      651,
+      660,
+      670,
+      678,
+      687,
+      696,
+      704,
+      742,
+      767,
+      775,
+      793,
+      819,
+      831,
+      842,
+      858,
+      876,
+      883,
+      903,
+      916,
+      923,
+      930,
+      947,
+      956,
+      979,
+      991,
+      1003,
+      1024,
+      1029,
+      1034,
+      1039,
+      1044,
+      1049,
+      1054
+     ]
+    }
+   ]
+  },
+  {
+   "name": "zet",
+   "qualname": "scenario.zet",
+   "kind": "nested",
+   "lines": [15, 17],
+   "params": [
+    {"name": "f", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The decorator itself: stores (function, options) in SCENARIOS and returns the function unchanged.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "wiskunde",
+   "qualname": "wiskunde",
+   "kind": "function",
+   "lines": [21, 31],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoofdmenu → Leren & oefenen → Wiskunde → domein (→ onderwerp).",
+   "explanation": "Navigates Hoofdmenu > Leren & oefenen > Wiskunde > domain (and optionally topic) by sending number keys and waiting for each menu title.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [23, 25, 27, 30], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [24, 26, 29, 31],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [146, 222, 706, 844]},
+    {"caller": "docs/tools/scenarios.py::eenheden", "lines": [134]},
+    {"caller": "docs/tools/scenarios.py::oefen", "lines": [36]}
+   ]
+  },
+  {
+   "name": "oefen",
+   "qualname": "oefen",
+   "kind": "function",
+   "lines": [34, 40],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": "1", "annotation": null},
+    {"name": "niveau", "kind": "positional", "default": "2", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "… → onderwerp → vorm (1 vrij, 2 reeks) → niveau (1 makkelijk … 4 heel moeilijk).",
+   "explanation": "Navigates to a topic and starts it: form (1 free, 2 series) and level (1 easy ... 4 very hard).",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [36]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [37, 39], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [38],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["str", "time.sleep"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "docs/tools/scenarios.py::_",
+     "lines": [
+      97,
+      113,
+      239,
+      248,
+      267,
+      287,
+      295,
+      304,
+      312,
+      319,
+      328,
+      337,
+      357,
+      378,
+      390,
+      397,
+      425,
+      440,
+      453,
+      462,
+      474,
+      484,
+      494,
+      510,
+      518,
+      529,
+      539,
+      551,
+      561,
+      569,
+      580,
+      607,
+      615,
+      625,
+      635,
+      645,
+      653,
+      662,
+      672,
+      680,
+      689,
+      698,
+      777,
+      796,
+      821,
+      833
+     ]
+    },
+    {"caller": "docs/tools/scenarios.py::thema_beeld", "lines": [1014]},
+    {"caller": "docs/tools/scenarios.py::wisselgeld_vraag", "lines": [731]}
+   ]
+  },
+  {
+   "name": "scherm_tekst",
+   "qualname": "scherm_tekst",
+   "kind": "function",
+   "lines": [43, 45],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The current screen as plain text (imports scherm from schermafdrukken).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["schermafdrukken.scherm"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "docs/tools/scenarios.py::_",
+     "lines": [102, 117, 163, 253, 270, 341, 402, 428, 443, 465, 497, 521, 543, 583, 748, 824, 836, 897]
+    },
+    {"caller": "docs/tools/scenarios.py::antwoord", "lines": [54]},
+    {"caller": "docs/tools/scenarios.py::rooster_getallen", "lines": [369]},
+    {"caller": "docs/tools/scenarios.py::tafel_antwoord", "lines": [853]},
+    {"caller": "docs/tools/scenarios.py::thema_beeld", "lines": [1017]},
+    {"caller": "docs/tools/scenarios.py::verhaal", "lines": [716]},
+    {"caller": "docs/tools/scenarios.py::vul_tabel", "lines": [178]}
+   ]
+  },
+  {
+   "name": "antwoord",
+   "qualname": "antwoord",
+   "kind": "function",
+   "lines": [48, 55],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tweede_kans", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Typ een antwoord en Enter. Was het fout, dan geeft de vaste werkwijze eerst een tweede kans: met tweede_kans=True typt het scenario hetzelfde antwoord nog eens, zodat het beeld nagekeken is (zoals vroeger).",
+   "explanation": "Types an answer and Enter; if the screen then shows 'Probeer nog eens!' (second chance) types the same answer again so the checked screen appears.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [54]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [51, 55], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "docs/tools/scenarios.py::_",
+     "lines": [
+      104,
+      107,
+      121,
+      123,
+      169,
+      242,
+      279,
+      281,
+      289,
+      306,
+      322,
+      360,
+      417,
+      447,
+      456,
+      468,
+      478,
+      486,
+      512,
+      523,
+      531,
+      545,
+      555,
+      584,
+      619,
+      627,
+      639,
+      656,
+      666,
+      700,
+      763,
+      771,
+      789,
+      871,
+      898
+     ]
+    },
+    {"caller": "docs/tools/scenarios.py::volgende", "lines": [233]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [64, 68],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('basis-start', kind=False)"],
+   "docstring": "",
+   "explanation": "Scenario 'basis-start': Starts without a child (kind=False): photographs the start screen, presses Enter to open the child choice and photographs 'Wie ben jij?'.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [65, 68],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [66], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [67],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [72, 73],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('basis-hoofdmenu')"],
+   "docstring": "",
+   "explanation": "Scenario 'basis-hoofdmenu': Photographs the main menu after the child was chosen.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [73],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [77, 92],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('basis-menus')"],
+   "docstring": "",
+   "explanation": "Scenario 'basis-menus': Walks Leren & oefenen > Wiskunde > Hoofdrekenen > first topic > free practice and photographs each menu: subject, domains, topics, form of practice and level.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [80, 83, 86, 89, 92],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [78, 81, 84, 87, 90], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [79, 82, 85, 88, 91],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [96, 108],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('basis-oefenen')"],
+   "docstring": "",
+   "explanation": "Scenario 'basis-oefenen': Free practice of the times tables: photographs a question, the tip after F1 ('?'), a correct answer (computed from the question text) and a wrong answer (1) with its explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [104, 107]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [97]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [102]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [99, 101, 105, 108],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [100, 106], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [98],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", "int", "re.search", "str"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [112, 128],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('basis-reeks')"],
+   "docstring": "",
+   "explanation": "Scenario 'basis-reeks': A series of 10 in the tables: answers questions 4 and 8 wrongly, the rest rightly, and photographs the first question, the result report and the 'fouten opnieuw' screen.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [121, 123]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [113]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [117]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [115, 126, 128],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [124, 127], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [114, 125],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search", "str"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "eenheden",
+   "qualname": "eenheden",
+   "kind": "function",
+   "lines": [133, 141],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "niveau", "kind": "positional", "default": "2", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Navigates the unit-conversion menus: form, unit kind and level.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [134]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [136, 138, 140], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [135, 137, 139],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["str", "time.sleep"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [160, 195, 206, 215]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [145, 155],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-menu')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-menu': Opens the unit-conversion menus and photographs the form choice, the unit-kind choice and the 'choose your own units' tick screen.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [146]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [148, 151, 155],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [149, 152, 154], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [147, 150, 153],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [159, 170],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-vrij')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-vrij': Free practice of unit conversion: photographs a question, then computes the answer one column too far (a typical thinking error) and photographs the explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [169]},
+    {"target": "docs/tools/scenarios.py::eenheden", "lines": [160]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [163]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [162, 170],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [161],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", ".normalize", ".scaleb", "decimal.Decimal", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "vul_tabel",
+   "qualname": "vul_tabel",
+   "kind": "function",
+   "lines": [173, 190],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leest de tabelvraag van het scherm en vult de tabel juist in: cijfers, komma en antwoord.",
+   "explanation": "Reads the table question from the screen and fills the unit table correctly: digits cell by cell, the comma after the target unit, and the answer in the box.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [178]},
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [190]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [180]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::kolom", "lines": [188]},
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [182]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [184, 186, 189, 190], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": [".group", "decimal.Decimal", "len", "max", "min", "re.search", "sorted", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [198, 208]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [194, 201],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-tabel')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-tabel': The table exercise for length: photographs the empty table, fills it in correctly with vul_tabel, photographs it, checks and photographs the verdict.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::eenheden", "lines": [195]},
+    {"target": "docs/tools/scenarios.py::vul_tabel", "lines": [198]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [197, 199, 201],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [200], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [196],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [205, 210],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-oppervlakte')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-oppervlakte': The unit table for area (two cells per unit): fills it in and photographs the checked result.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::eenheden", "lines": [206]},
+    {"target": "docs/tools/scenarios.py::vul_tabel", "lines": [208]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [210],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [209], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [207],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [214, 217],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-volume')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-volume': The unit table for volume at a harder level: photographs the empty table.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::eenheden", "lines": [215]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [217],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [216],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [221, 226],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('eenheden-spiekbrief')"],
+   "docstring": "",
+   "explanation": "Scenario 'eenheden-spiekbrief': Opens the Eenheden cheat sheet from the menu and photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [222]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [226],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [224], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [223, 225],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "volgende",
+   "qualname": "volgende",
+   "kind": "function",
+   "lines": [231, 234],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "fout", "kind": "positional", "default": "'1'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een (fout) antwoord geven en naar de volgende vraag.",
+   "explanation": "Gives a (wrong) answer and moves on to the next question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [233]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [234], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [238, 243],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('hoofdrekenen')"],
+   "docstring": "",
+   "explanation": "Scenario 'hoofdrekenen': Mental arithmetic, adding and subtracting: photographs a question and, after a wrong answer, the explanation with a strategy.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [242]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [239]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [241, 243],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [240],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [247, 262],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('hoofdrekenen-splitsen')"],
+   "docstring": "",
+   "explanation": "Scenario 'hoofdrekenen-splitsen': Splitting strategy: photographs the question with the klad open at once.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [248]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [253]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [262],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [258, 260], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [249],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [252],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [266, 282],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('werkwijze')"],
+   "docstring": "",
+   "explanation": "Scenario 'werkwijze': Shows the fixed work method: types a rule in the klad (Tab) and photographs it checked, then a wrong answer with a hint and second chance, then a second wrong answer with 'Zo kan het:'.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [279, 281]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [267]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [270]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [277, 280, 282],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [272, 274, 276, 278], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [268],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [269],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "re.search", "str"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [286, 290],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('hoofdrekenen-maal10')"],
+   "docstring": "",
+   "explanation": "Scenario 'hoofdrekenen-maal10': Multiplying and dividing by 10, 100, 1000: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [289]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [287]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [290],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [288],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [294, 297],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('hoofdrekenen-dubbel')"],
+   "docstring": "",
+   "explanation": "Scenario 'hoofdrekenen-dubbel': Doubling and halving: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [295]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [297],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [296],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [303, 307],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-plaatswaarde')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-plaatswaarde': Place value: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [306]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [304]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [307],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [305],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [311, 314],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-afronden')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-afronden': Rounding: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [312]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [314],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [313],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [318, 323],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-deelbaarheid')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-deelbaarheid': Divisibility: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [322]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [319]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [323],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [320],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [321],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [327, 331],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-lijn')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-lijn': Number line, pointing out: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [328]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [331],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [329],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [330],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [335, 352],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-lijn-zoom')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-lijn-zoom': Number line: zooms in with + and photographs the zoomed line.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [337]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [341]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [352],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [350, 351], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [338],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [340],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "decimal.Decimal", "enumerate", "int", "next", "range", "re.findall", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [356, 361],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('getallen-lijn-aflezen')"],
+   "docstring": "",
+   "explanation": "Scenario 'getallen-lijn-aflezen': Number line / thermometer, reading off at a higher level: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [360]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [357]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [361],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [358],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [359],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "rooster_getallen",
+   "qualname": "rooster_getallen",
+   "kind": "function",
+   "lines": [366, 373],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De getallen in het rooster (cijfers met een spatie ertussen), van boven naar onder.",
+   "explanation": "Reads the numbers of the column sum from rows 8-20 of the screen (without operators and spaces).",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [369]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["re.fullmatch", "re.search"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [381]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [377, 385],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('cijferen-optellen')"],
+   "docstring": "",
+   "explanation": "Scenario 'cijferen-optellen': Column addition: fills in the grid (reading the numbers with rooster_getallen), photographs it and a hint on a cell with F1.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [378]},
+    {"target": "docs/tools/scenarios.py::rooster_getallen", "lines": [381]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [380, 385],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [383, 384], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [379],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["int", "str", "sum"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [389, 392],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('cijferen-vermenigvuldigen')"],
+   "docstring": "",
+   "explanation": "Scenario 'cijferen-vermenigvuldigen': Column multiplication: photographs the grid.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [390]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [392],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [391],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [396, 418],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('cijferen-staart')"],
+   "docstring": "",
+   "explanation": "Scenario 'cijferen-staart': Long division: photographs step 1 and the division growing as steps are answered.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [417]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [397]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [402]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [399, 418],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [398],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search", "str"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [424, 435],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-arceren')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-arceren': Fraction bar: photographs the bar, shaded pieces, and the checked verdict.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [425]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [428]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [430, 433, 435],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [432, 434], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [426],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [427],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [439, 448],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-vereenvoudigen')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-vereenvoudigen': Simplifying fractions: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [447]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [440]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [443]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [448],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [441],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [442],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "math.gcd", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [452, 457],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-vergelijken')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-vergelijken': Comparing fractions: photographs the question and the checked explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [456]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [453]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [455, 457],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [454],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [461, 469],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-optellen')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-optellen': Adding fractions: photographs a question and the explanation after adding numerators and denominators (bars show why it is wrong).",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [468]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [462]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [465]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [467, 469],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [463],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [464],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".groups", "map", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [473, 479],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-van')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-van': A fraction of a number: photographs the question and the explanation with groups.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [478]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [474]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [477, 479],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [475],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [476],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [483, 487],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('breuken-kommagetal')"],
+   "docstring": "",
+   "explanation": "Scenario 'breuken-kommagetal': Fraction and decimal: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [486]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [484]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [487],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [485],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [493, 505],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('procenten-veld')"],
+   "docstring": "",
+   "explanation": "Scenario 'procenten-veld': Hundred-square: photographs the square, whole rows coloured with r and single cells with Space, and the checked result.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [494]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [497]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [498, 503, 505],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [500, 502, 504], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [495],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [496],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [509, 513],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('procenten-omzetten')"],
+   "docstring": "",
+   "explanation": "Scenario 'procenten-omzetten': Percent, fraction, decimal conversion: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [512]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [510]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [513],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [511],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [517, 524],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('procenten-van')"],
+   "docstring": "",
+   "explanation": "Scenario 'procenten-van': Percent of a number with the percentage strip: photographs the question and the explanation when the percentage was given as the answer.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [523]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [518]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [521]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [522, 524],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [519],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [520],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [528, 532],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('procenten-korting')"],
+   "docstring": "",
+   "explanation": "Scenario 'procenten-korting': Discount and VAT at a higher level: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [531]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [529]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [532],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [530],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [538, 546],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('tijd-gemengd')"],
+   "docstring": "",
+   "explanation": "Scenario 'tijd-gemengd': Minutes to hours and minutes: photographs the question and the explanation after counting with 100 instead of 60.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [545]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [539]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [543]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [542, 546],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [540],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [541],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "divmod", "int", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [550, 556],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('tijd-eindtijd')"],
+   "docstring": "",
+   "explanation": "Scenario 'tijd-eindtijd': Arrival time: photographs the question and the checked explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [555]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [551]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [554, 556],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [552],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [553],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [560, 564],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('klok-lezen')"],
+   "docstring": "",
+   "explanation": "Scenario 'klok-lezen': Reading the analogue clock: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [561]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [564],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [562],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [563],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [568, 573],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('klok-zetten')"],
+   "docstring": "",
+   "explanation": "Scenario 'klok-zetten': Setting the clock hands: photographs the clock where the hour hand turns along.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [569]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [573],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [572], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [570],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [571],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [577, 585],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('klok-woorden-fout')"],
+   "docstring": "",
+   "explanation": "Scenario 'klok-woorden-fout': Clock in words: reads 'half vier' as 'half vijf' and photographs the explanation about 'half'.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [584]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [580]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [583]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [584]},
+    {"target": "leeravontuur/kern/wiskunde/klok.py::lees_woorden", "lines": [584]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [585],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [581],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [582],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "re.search"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [589, 602],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('klokvenster')"],
+   "docstring": "Het klokvenster (tkinter) kan tmux niet fotograferen: het beeld komt uit dezelfde vormen (venster/klokbeeld.py).",
+   "explanation": "Scenario 'klokvenster': Cannot photograph the tkinter window with tmux: draws two SVG images of the clock window from klokbeeld.vormen/naar_svg (reading, and setting with the correct hands in green) into the handbook images folder.",
+   "calls": [
+    {"target": "leeravontuur/venster/klokbeeld.py::naar_svg", "lines": [600]},
+    {"target": "leeravontuur/venster/klokbeeld.py::vormen", "lines": [594, 595]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".write_text", "print"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [606, 610],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('klok-ascii', argumenten=['--a…"],
+   "docstring": "",
+   "explanation": "Scenario 'klok-ascii': Starts with --ascii and photographs the clock in characters (# hour hand, * minute hand).",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [607]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [610],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [608],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [609],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [614, 620],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('tijd-geld')"],
+   "docstring": "",
+   "explanation": "Scenario 'tijd-geld': Money: photographs a change question and its explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [619]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [615]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [618, 620],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [616],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [617],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [624, 628],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('tijd-snelheid')"],
+   "docstring": "",
+   "explanation": "Scenario 'tijd-snelheid': Speed at a higher level: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [627]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [625]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [628],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [626],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [634, 640],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-rooster')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-rooster': Perimeter on the cm² grid: photographs the grid and the checked result with the outline marked.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [639]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [635]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [638, 640],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [636],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [637],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [644, 648],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-driehoek')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-driehoek': Triangle with half cells: photographs the grid.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [645]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [648],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [646],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [647],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [652, 657],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-formules')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-formules': Formulas (circle) at a higher level: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [656]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [653]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [657],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [654],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [655],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [661, 667],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-hoek')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-hoek': What kind of angle: photographs the question and the checked explanation.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [666]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [662]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [665, 667],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [663],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [664],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [671, 675],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-schatkaart')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-schatkaart': Treasure map: photographs the map question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [672]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [675],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [673],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [674],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [679, 684],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-kruisje')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-kruisje': Placing the cross with arrows or a click: photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [680]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [684],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [683], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [681],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [682],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [688, 693],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-assen')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-assen': Coordinate system (first year of secondary school): photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [689]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [693],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [692], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [690],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [691],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [697, 701],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-schaal')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-schaal': Scale at a higher level: photographs a question.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [700]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [698]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [701],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [699],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [705, 709],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('meetkunde-spiekbrief')"],
+   "docstring": "",
+   "explanation": "Scenario 'meetkunde-spiekbrief': Opens the Meetkunde cheat sheet and photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [706]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [709],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [707], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [708],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "verhaal",
+   "qualname": "verhaal",
+   "kind": "function",
+   "lines": [714, 718],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De tekst in het kader 'Het verhaal' als één regel.",
+   "explanation": "The story text of a word problem, read from the framed lines of the screen as one line.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [716]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [780, 799]},
+    {"caller": "docs/tools/scenarios.py::wisselgeld_vraag", "lines": [734]}
+   ]
+  },
+  {
+   "name": "getal",
+   "qualname": "getal",
+   "kind": "function",
+   "lines": [721, 722],
+   "params": [
+    {"name": "t", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Parses a Dutch decimal string ('3,50') to a float.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["float"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::wisselgeld_vraag", "lines": [737]}
+   ]
+  },
+  {
+   "name": "bedrag",
+   "qualname": "bedrag",
+   "kind": "function",
+   "lines": [725, 726],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Formats a number as euros with a comma ('3,50').",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [755, 756, 760, 762, 763, 771]}
+   ]
+  },
+  {
+   "name": "wisselgeld_vraag",
+   "qualname": "wisselgeld_vraag",
+   "kind": "function",
+   "lines": [729, 739],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Vrij oefenen op Normaal tot er een wisselgeld-vraagstuk zonder overbodig gegeven staat: (a, p, b).",
+   "explanation": "Free-practices word problems until a change-giving problem without extra givens appears and returns (count, unit price, amount paid); raises RuntimeError after 300 tries.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::getal", "lines": [737]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [731]},
+    {"target": "docs/tools/scenarios.py::verhaal", "lines": [734]}
+   ],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [738], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": [".group", "RuntimeError", "int", "len", "range", "re.findall", "re.search", "time.sleep"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [744, 769]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [743, 764],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-stappen')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-stappen': Word problem in four steps: photographs the start, step 1 (givens marked, what is asked), steps 2-3 (plan and klad checked per line), three tips with F1, and the worked solution after checking. Uses wisselgeld_vraag to find a suitable problem and computes the answers.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [763]},
+    {"target": "docs/tools/scenarios.py::bedrag", "lines": [755, 756, 760, 762, 763]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [748]},
+    {"target": "docs/tools/scenarios.py::wisselgeld_vraag", "lines": [744]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [745, 752, 757, 759, 764],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.toets",
+     "lines": [746, 750, 751, 753, 755, 756, 758, 761, 762],
+     "candidates": [],
+     "candidates_count": 17
+    }
+   ],
+   "external_calls": ["len", "range"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [768, 772],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-tweede-kans')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-tweede-kans': Gives the immediate answer to a problem that is an intermediate result: photographs the hint and the request to make a klad.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [771]},
+    {"target": "docs/tools/scenarios.py::bedrag", "lines": [771]},
+    {"target": "docs/tools/scenarios.py::wisselgeld_vraag", "lines": [769]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [772],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [770], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [776, 790],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-tegels')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-tegels': Tiles problem answered with the perimeter instead of the area: photographs the hint.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [789]},
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [777]},
+    {"target": "docs/tools/scenarios.py::verhaal", "lines": [780]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [790],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [784, 788], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": [".groups", "RuntimeError", "int", "range", "re.search", "str", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [794, 816],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-tijd')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-tijd': Time problem answered as if an hour had 100 minutes: photographs the klad hint, then clock times in the klad.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [796]},
+    {"target": "docs/tools/scenarios.py::verhaal", "lines": [799]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [815]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [815]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_duur", "lines": [807]},
+    {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [802, 807]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [814, 816],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [804, 812, 813, 815], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": ["RuntimeError", "divmod", "int", "len", "range", "re.findall", "re.search", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [820, 828],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-speurneus')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-speurneus': Speurneus (find the wrong line): photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [821]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [824]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [828],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [826, 827], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": ["range", "re.search", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [832, 839],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-kan')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-kan': 'Can that be right?' estimation question: photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [833]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [836]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [839],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [838], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": ["range", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [843, 847],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('vraagstukken-spiekbrief')"],
+   "docstring": "",
+   "explanation": "Scenario 'vraagstukken-spiekbrief': Opens the Vraagstukken cheat sheet and photographs it.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::wiskunde", "lines": [844]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [847],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [845], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [846],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "tafel_antwoord",
+   "qualname": "tafel_antwoord",
+   "kind": "function",
+   "lines": [852, 855],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Solves the arithmetic question on screen (× : + −) and returns the answer as text.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [853]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".group", "int", "re.search", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [871]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [859, 873],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('snelrekenen')"],
+   "docstring": "",
+   "explanation": "Scenario 'snelrekenen': Speed arithmetic: photographs the menu, the 60 seconds / 20 sums choice, a running 20-sum round (answers computed with tafel_antwoord) and the result with the record.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [871]},
+    {"target": "docs/tools/scenarios.py::tafel_antwoord", "lines": [871]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [862, 865, 870, 873],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [860, 863, 866], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [861, 864, 867],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["range", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [877, 880],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('herhalen')"],
+   "docstring": "",
+   "explanation": "Scenario 'herhalen': Photographs the Herhalen screen.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [880],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [878], "candidates": [], "candidates_count": 17}
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [884, 900],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('avatar')"],
+   "docstring": "",
+   "explanation": "Scenario 'avatar': Avatar hub, shop, hats shelf, the buy question and a successful purchase.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::antwoord", "lines": [898]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [897]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [887, 890, 893, 896, 900],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [885, 888, 891, 894], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [886, 889],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".group", "int", "re.search", "str", "time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [904, 913],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('avatar-kast')"],
+   "docstring": "",
+   "explanation": "Scenario 'avatar-kast': The wardrobe and the saved combinations.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [910, 913],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [905, 907, 909, 911], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [906, 908],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [917, 920],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('spiekbrieven')"],
+   "docstring": "",
+   "explanation": "Scenario 'spiekbrieven': Photographs the cheat-sheet menu.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [920],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [918], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [919],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [924, 927],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('opties')"],
+   "docstring": "",
+   "explanation": "Scenario 'opties': Photographs the old options screen.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [927],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [925], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [926],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [931, 937],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('zeg-het-ons')"],
+   "docstring": "",
+   "explanation": "Scenario 'zeg-het-ons': Writes a remark through 'Zeg het ons' and photographs the form and the thank-you.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [935, 937],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [932, 934, 936], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [933],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "ouderdeel",
+   "qualname": "ouderdeel",
+   "kind": "function",
+   "lines": [940, 944],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Navigates from the start screen to the parent password prompt.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "d.toets", "lines": [941, 943], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [942, 944],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [949, 958, 981, 993, 1005]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [948, 953],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('ouder-menu', kind=False)"],
+   "docstring": "",
+   "explanation": "Scenario 'ouder-menu': Parent area: photographs the password prompt and the parent menu (uses ouderdeel()).",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::ouderdeel", "lines": [949]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [950, 953],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [951], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [952],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [957, 976],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('ouder-rapport', kind=False)"],
+   "docstring": "",
+   "explanation": "Scenario 'ouder-rapport': Parent area: period choice, a report, the per-topic report, the calendar and an export.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::ouderdeel", "lines": [958]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [965, 968, 970, 973, 976],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.toets",
+     "lines": [959, 961, 963, 966, 969, 971, 974],
+     "candidates": [],
+     "candidates_count": 17
+    },
+    {
+     "expr": "d.wacht",
+     "lines": [960, 962, 964],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [980, 988],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('ouder-kinderen', kind=False)"],
+   "docstring": "",
+   "explanation": "Scenario 'ouder-kinderen': Parent area: the settings of one child.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::ouderdeel", "lines": [981]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [988],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [982, 984, 986], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [983, 985],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [992, 1000],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('ouder-punten', kind=False)"],
+   "docstring": "",
+   "explanation": "Scenario 'ouder-punten': Parent area: the points log.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::ouderdeel", "lines": [993]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [1000],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [994, 996, 998], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [995, 997],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1004, 1010],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('ouder-opmerkingen', kind=Fals…"],
+   "docstring": "",
+   "explanation": "Scenario 'ouder-opmerkingen': Parent area: the remarks from 'Zeg het ons'.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::ouderdeel", "lines": [1005]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [1010],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [1006, 1008], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [1007],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["time.sleep"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "thema_beeld",
+   "qualname": "thema_beeld",
+   "kind": "function",
+   "lines": [1013, 1021],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null},
+    {"name": "naam", "kind": "positional", "default": null, "annotation": null},
+    {"name": "titel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Starts a fraction-bar question, shades the needed pieces and photographs the screen in the started theme, for the colour themes.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::oefen", "lines": [1014]},
+    {"target": "docs/tools/scenarios.py::scherm_tekst", "lines": [1017]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [1021],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [1019, 1020], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [1015],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "d.zoek",
+     "lines": [1016],
+     "candidates": [
+      "docs/tools/schermafdrukken.py::Draai.zoek",
+      "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+      "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+     ],
+     "candidates_count": 3
+    }
+   ],
+   "external_calls": [".group", "int", "range", "re.search"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "docs/tools/scenarios.py::_", "lines": [1026, 1031, 1036, 1041, 1046, 1051]}
+   ]
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1025, 1026],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-standaard')"],
+   "docstring": "",
+   "explanation": "Scenario 'start-standaard': Photographs the default theme through thema_beeld.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1026]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1030, 1031],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-kleurenblind', argument…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-kleurenblind': Photographs the theme started with --kleurenblind.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1031]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1035, 1036],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-blauw-geel', argumenten…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-blauw-geel': Photographs the theme started with --kleurenblind blauw-geel.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1036]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1040, 1041],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-contrast', argumenten=[…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-contrast': Photographs the theme started with --contrast.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1041]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1045, 1046],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-geen-kleur', argumenten…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-geen-kleur': Photographs the theme started with --geen-kleur.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1046]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1050, 1051],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-ascii', argumenten=['--…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-ascii': Photographs the theme started with --ascii.",
+   "calls": [
+    {"target": "docs/tools/scenarios.py::thema_beeld", "lines": [1051]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_",
+   "qualname": "_",
+   "kind": "function",
+   "lines": [1055, 1058],
+   "params": [
+    {"name": "d", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["scenario('start-ouder', argumenten=['--…"],
+   "docstring": "",
+   "explanation": "Scenario 'start-ouder': Starts with --ouder (no child) and photographs the parent password screen directly.",
+   "calls": [],
+   "unresolved_calls": [
+    {
+     "expr": "d.foto",
+     "lines": [1058],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.foto"],
+     "candidates_count": 1
+    },
+    {"expr": "d.toets", "lines": [1056], "candidates": [], "candidates_count": 17},
+    {
+     "expr": "d.wacht",
+     "lines": [1057],
+     "candidates": ["docs/tools/schermafdrukken.py::Draai.wacht"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

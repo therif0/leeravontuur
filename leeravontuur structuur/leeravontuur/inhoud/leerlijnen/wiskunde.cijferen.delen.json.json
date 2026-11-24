@@ -1,0 +1,51 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.cijferen.delen.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 38,
+ "source_sha256": "1c2e723dfea2d922b1568c8ec5bb05b85a797c53ab9cb96891ebefb5cc32308e",
+ "purpose": "Learning line for long division (years 4-m1).",
+ "details": "Digits of dividend and divisor, decimals in the quotient and whether a remainder is allowed. Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"$keys": ["cijfers", "deler_cijfers", "decimalen", "rest"], "$count": 4, "$values": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": {"cijfers": "number", "deler_cijfers": "number", "decimalen": "number", "rest": "boolean"},
+   "5": {"cijfers": "number", "deler_cijfers": "number", "decimalen": "number", "rest": "boolean"},
+   "6": {"cijfers": "number", "deler_cijfers": "number", "decimalen": "number", "rest": "boolean"},
+   "m1": {"cijfers": "number", "deler_cijfers": "number", "decimalen": "number", "rest": "boolean"}
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/cijferen.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.cijfers", "explanation": "Digits of the dividend."},
+  {"key": "parameters.deler_cijfers", "explanation": "Digits of the divisor in a long division."},
+  {
+   "key": "parameters.decimalen",
+   "explanation": "Decimals in the quotient (long division continues past the comma)."
+  },
+  {"key": "parameters.rest", "explanation": "Whether a remainder is allowed in the long division."}
+ ]
+}

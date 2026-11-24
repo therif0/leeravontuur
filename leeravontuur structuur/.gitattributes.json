@@ -1,0 +1,10 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": ".gitattributes",
+ "kind": "config",
+ "layer": "root",
+ "lines": 4,
+ "source_sha256": "4619b6733dde27d4e5d386a1bcd6120ac2e9bbdca22c2f96ff040dadc5f73a23",
+ "purpose": "Git line-ending rules for the start files.",
+ "details": "*.bat is stored with CRLF (Windows wants it), *.command and *.sh with LF (macOS and Linux fail to start a script with CRLF), whatever system they are checked out on. tests/test_starten.py checks the endings and the executable bit."
+}

@@ -1,0 +1,1315 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/scherm.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 693,
+ "source_sha256": "f99d6584e604fa2559878e30e122baf1c433cfc095e7f912731db342522844f8",
+ "purpose": "The base of every screen: drawing with roles, the title bar with breadcrumb, footer buttons, mouse and keyboard input, and the general screens (menu, tick list, reader, confirm box, text input).",
+ "details": "A Scherm wraps a curses window (or the fake one of tests) and the child's settings. put() draws text with a colour role (never a colour; ASCII fallback through tekens.py); nieuw() starts a screen with the title bar (breadcrumb, each part clickable) and a footer of clickable buttons; every clickable thing registers a click zone with the action of its key (Klikzones). toets() waits for a key or click and returns a code (letters as ord), a tuple action from a click zone, or raises TerugNaar (click on the breadcrumb) or Vergrendeld (too long idle in a protected area). A guard (bewaak) makes leaving an unfinished question or round ask 'Wil je stoppen?' first; deelscherm marks screens on top of another so Esc belongs to them. It also translates the numeric keypad (Windows PDCurses codes and ncurses names), keys from the clock window, and typed characters whose code collides with a curses key (teken_van). The F1 key is the help key (not '?', which the child types in the klad).",
+ "module_docstring": "De basis van elk scherm: tekenen met rollen, titel met broodkruimel, knoppen, muis en invoer.",
+ "imports": [
+  {"module": "contextlib", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "curses", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "functools", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "textwrap", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "time", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["tekens", "thema"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/tekens.py", "leeravontuur/terminal/thema.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.klikzones",
+   "names": ["Klikzones"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/klikzones.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/terminal/app.py",
+  "leeravontuur/terminal/balk.py",
+  "leeravontuur/terminal/beta.py",
+  "leeravontuur/terminal/kladblad.py",
+  "leeravontuur/terminal/navigatie.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "leeravontuur/terminal/rooster.py",
+  "leeravontuur/terminal/schermen/eenheden.py",
+  "leeravontuur/terminal/schermen/gemengd.py",
+  "leeravontuur/terminal/schermen/kinderen.py",
+  "leeravontuur/terminal/schermen/ouder.py",
+  "leeravontuur/terminal/schermen/snelrekenen.py",
+  "leeravontuur/terminal/schermen/winkel.py",
+  "leeravontuur/terminal/tabel.py",
+  "leeravontuur/terminal/vraagstuk.py",
+  "leeravontuur/terminal/werkwoord.py",
+  "leeravontuur/terminal/zinsdelen.py",
+  "tests/test_cijferen.py",
+  "tests/test_klok.py",
+  "tests/test_klokvenster.py",
+  "tests/test_schermen.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_vraagstukken.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["getattr", "ord"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "MIN_B",
+   "line": 14,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Smallest width (80)."
+  },
+  {
+   "name": "MIN_H",
+   "line": 14,
+   "value_type": "Tuple",
+   "value_preview": "(80, 24)",
+   "explanation": "Smallest height (24)."
+  },
+  {
+   "name": "ENTER",
+   "line": 15,
+   "value_type": "Tuple",
+   "value_preview": "(10, 13, curses.KEY_ENTER)",
+   "explanation": "Key codes that mean Enter."
+  },
+  {
+   "name": "BACKSPACE",
+   "line": 16,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_BACKSPACE, 127, 8)",
+   "explanation": "Key codes that mean Backspace."
+  },
+  {
+   "name": "ESC",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "27",
+   "explanation": "Key code of Esc."
+  },
+  {
+   "name": "NIETS",
+   "line": 18,
+   "value_type": "UnaryOp",
+   "value_preview": "-1",
+   "explanation": "Returned when a wait times out."
+  },
+  {
+   "name": "HULP",
+   "line": 19,
+   "value_type": "Attribute",
+   "value_preview": "curses.KEY_F1",
+   "explanation": "The help key, F1 (not '?')."
+  },
+  {
+   "name": "VENSTER_TOETSEN",
+   "line": 21,
+   "value_type": "Dict",
+   "value_preview": "{'Enter': 10, 'Escape': 27, 'Left': curses.KEY_LEFT, 'Right': curses.…",
+   "explanation": "Keys the clock window can send, mapped to curses codes."
+  },
+  {
+   "name": "KLAVIER_PDCURSES",
+   "line": 29,
+   "value_type": "DictComp",
+   "value_preview": "{getattr(curses, naam, code): teken for naam, code, teken in (('PADSL…",
+   "explanation": "Windows numeric-keypad codes to characters."
+  },
+  {
+   "name": "KLAVIER",
+   "line": 32,
+   "value_type": "IfExp",
+   "value_preview": "KLAVIER_PDCURSES if sys.platform == 'win32' else {}",
+   "explanation": "The keypad table in use (Windows only)."
+  },
+  {
+   "name": "KLAVIER_NAMEN",
+   "line": 33,
+   "value_type": "Dict",
+   "value_preview": "{'kpADD': ord('+'), 'kpSUB': ord('-'), 'kpMUL': ord('*'), 'kpDIV': or…",
+   "explanation": "ncurses keypad key names to characters."
+  },
+  {
+   "name": "WIEL_OP",
+   "line": 50,
+   "value_type": "Call",
+   "value_preview": "getattr(curses, 'BUTTON4_PRESSED', 65536)",
+   "explanation": "Mouse wheel up flag."
+  },
+  {
+   "name": "WIEL_NEER",
+   "line": 51,
+   "value_type": "Call",
+   "value_preview": "getattr(curses, 'BUTTON5_PRESSED', 2097152)",
+   "explanation": "Mouse wheel down flag."
+  },
+  {
+   "name": "KLIK",
+   "line": 52,
+   "value_type": "BinOp",
+   "value_preview": "curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED",
+   "explanation": "Mouse click flags."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TerugNaar",
+   "qualname": "TerugNaar",
+   "lines": [72, 77],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "Klik op de broodkruimel: ga terug naar het scherm op dit niveau (0 = hoofdmenu).",
+   "explanation": "Raised on a click on the breadcrumb: go back to the screen at this level (0 = main menu).",
+   "attributes": [
+    {"name": "niveau", "line": 77, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [279]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "TerugNaar.__init__",
+     "kind": "method",
+     "lines": [75, 77],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "niveau", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the breadcrumb level to go back to.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["super"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [279]}
+     ]
+    }
+   ]
+  },
+  {
+   "name": "Vergrendeld",
+   "qualname": "Vergrendeld",
+   "lines": [80, 81],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "Te lang niets gedaan in een beveiligd deel (bv. het ouderdeel).",
+   "explanation": "Raised after too long without a key in a protected area (the parent area).",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [312]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Bewaker",
+   "qualname": "Bewaker",
+   "lines": [85, 92],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een oefenscherm met iets dat nog niet nagekeken is (zie Scherm.bewaak).",
+   "explanation": "A guard record for a running exercise screen: whether something can be lost, the session, whether it is a round, a pause function, the clock and the depth.",
+   "attributes": [
+    {"name": "actief", "line": 87, "scope": "class", "value_preview": null},
+    {"name": "ses", "line": 88, "scope": "class", "value_preview": null},
+    {"name": "ronde", "line": 89, "scope": "class", "value_preview": null},
+    {"name": "pauze", "line": 90, "scope": "class", "value_preview": null},
+    {"name": "klok", "line": 91, "scope": "class", "value_preview": null},
+    {"name": "diepte", "line": 92, "scope": "class", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.bewaak", "lines": [241]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Scherm",
+   "qualname": "Scherm",
+   "lines": [108, 692],
+   "bases": [],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The screen object that everything in the terminal layer draws on and reads input from.",
+   "attributes": [
+    {"name": "win", "line": 110, "scope": "instance", "value_preview": null},
+    {"name": "inst", "line": 111, "scope": "instance", "value_preview": null},
+    {"name": "kleuren", "line": 112, "scope": "instance", "value_preview": null},
+    {"name": "zones", "line": 113, "scope": "instance", "value_preview": null},
+    {"name": "kruimel", "line": 116, "scope": "instance", "value_preview": null},
+    {"name": "status", "line": 117, "scope": "instance", "value_preview": null},
+    {"name": "status_kort", "line": 118, "scope": "instance", "value_preview": null},
+    {"name": "slot", "line": 119, "scope": "instance", "value_preview": null},
+    {"name": "klokvenster", "line": 120, "scope": "instance", "value_preview": null},
+    {"name": "_laatste_toets", "line": 121, "scope": "instance", "value_preview": null},
+    {"name": "_bewakers", "line": 122, "scope": "instance", "value_preview": null},
+    {"name": "_diepte", "line": 123, "scope": "instance", "value_preview": null},
+    {"name": "_in_kader", "line": 124, "scope": "instance", "value_preview": null},
+    {"name": "ascii", "line": 133, "scope": "instance", "value_preview": null},
+    {"name": "c", "line": 134, "scope": "instance", "value_preview": null},
+    {"name": "muis", "line": 135, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/terminal/app.py::App.__init__", "lines": [61]},
+    {"caller": "tests/test_cijferen.py::TestPlaatswaarden.teken", "lines": [155]},
+    {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [112]},
+    {"caller": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1032]},
+    {"caller": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [979]},
+    {"caller": "tests/test_stabiliteit.py::TestToetsen.test_teken_met_toetscode_wordt_teken", "lines": [113]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+     "lines": [408, 412]
+    }
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "Scherm.__init__",
+     "kind": "method",
+     "lines": [109, 129],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "win", "kind": "positional", "default": null, "annotation": null},
+      {"name": "inst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kleuren", "kind": "positional", "default": "True", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores the window, settings and colour flag, makes the click zones and guard list, enables keypad, and applies settings.",
+     "calls": [
+      {"target": "leeravontuur/terminal/klikzones.py::Klikzones.__init__", "lines": [113]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.pas_toe", "lines": [129]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "win.keypad",
+       "lines": [126],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.keypad"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["getattr", "time.monotonic"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/app.py::App.__init__", "lines": [61]},
+      {"caller": "tests/test_cijferen.py::TestPlaatswaarden.teken", "lines": [155]},
+      {"caller": "tests/test_klok.py::TestTekenen.test_past_en_ascii", "lines": [112]},
+      {"caller": "tests/test_schermen.py::TestMenuToetsen.menu", "lines": [1032]},
+      {"caller": "tests/test_schermen.py::TestNumeriekKlavier.toetsen", "lines": [979]},
+      {
+       "caller": "tests/test_stabiliteit.py::TestToetsen.test_teken_met_toetscode_wordt_teken",
+       "lines": [113]
+      },
+      {
+       "caller": "tests/test_vraagstukken.py::TestInvoer.test_tijdstip_als_op_een_digitaal_klokje",
+       "lines": [408, 412]
+      }
+     ]
+    },
+    {
+     "name": "pas_toe",
+     "qualname": "Scherm.pas_toe",
+     "kind": "method",
+     "lines": [131, 147],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "(Opnieuw) het thema, de ASCII-terugval en de muis instellen volgens de instellingen.",
+     "explanation": "(Re)applies the theme, the ASCII fallback and the mouse setting from the settings.",
+     "calls": [
+      {"target": "leeravontuur/terminal/tekens.py::ascii_nodig", "lines": [133]},
+      {"target": "leeravontuur/terminal/thema.py::maak", "lines": [134]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["curses.mouseinterval", "curses.mousemask", "getattr"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.__init__", "lines": [129]}
+     ]
+    },
+    {
+     "name": "maat",
+     "qualname": "Scherm.maat",
+     "kind": "method",
+     "lines": [151, 152],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The window size (height, width).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [152],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "put",
+     "qualname": "Scherm.put",
+     "kind": "method",
+     "lines": [154, 165],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "s", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": "''", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws text at a position with a role; ignores positions outside the window, converts to ASCII when needed and never writes the last cell of the last row.",
+     "calls": [
+      {"target": "leeravontuur/terminal/tekens.py::naar_ascii", "lines": [160]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.addstr",
+       "lines": [163],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.addstr"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [156],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["isinstance", "max"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.afvink", "lines": [533, 538, 542, 544, 548]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.bevestig", "lines": [631, 633, 634, 635, 636, 639]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [671, 674]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.lezer", "lines": [596, 598]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [452, 462, 474, 479, 482, 484, 486]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [185, 197, 199, 205]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [397, 398]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.tekstvak", "lines": [227, 228]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.voet", "lines": [212, 219, 221]}
+     ]
+    },
+    {
+     "name": "cursor",
+     "qualname": "Scherm.cursor",
+     "kind": "method",
+     "lines": [167, 176],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aan", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "x", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Shows or hides the cursor and moves it.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.move",
+       "lines": [174],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.move"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["curses.curs_set"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.afvink", "lines": [530]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.bevestig", "lines": [630]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [675, 678, 681]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.lezer", "lines": [582]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [446]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [394]}
+     ]
+    },
+    {
+     "name": "nieuw",
+     "qualname": "Scherm.nieuw",
+     "kind": "method",
+     "lines": [178, 207],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "knoppen", "kind": "positional", "default": "()", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Leeg scherm met titelbalk (broodkruimel, klikbaar) en een voetbalk met knoppen.",
+     "explanation": "Starts a screen: clears it, clears the click zones, draws the title bar (shortening middle breadcrumb parts when too long, each part a click zone ('kruimel', i)) and the status, then the footer.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [185, 197, 199, 205]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.voet", "lines": [207]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.klokvenster.nieuw_beeld",
+       "lines": [182],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.nieuw_beeld"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.erase",
+       "lines": [180],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.erase"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [184],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.voeg",
+       "lines": [201],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "self.zones.wis",
+       "lines": [183],
+       "candidates": ["leeravontuur/terminal/klikzones.py::Klikzones.wis"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "list", "max", "range", "sum"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.afvink", "lines": [531]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [670]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.lezer", "lines": [594]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [450]}
+     ]
+    },
+    {
+     "name": "voet",
+     "qualname": "Scherm.voet",
+     "kind": "method",
+     "lines": [209, 224],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "knoppen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "knoppen = [(toets, uitleg, actie)]; elke knop is klikbaar en doet hetzelfde als de toets.",
+     "explanation": "Draws the footer buttons [key] text; each is a click zone with the key's action; stops when out of room.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [212, 219, 221]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [211],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.voeg",
+       "lines": [223],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.bevestig", "lines": [642]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [207]}
+     ]
+    },
+    {
+     "name": "tekstvak",
+     "qualname": "Scherm.tekstvak",
+     "kind": "method",
+     "lines": [226, 230],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "y", "kind": "positional", "default": null, "annotation": null},
+      {"name": "x", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+      {"name": "breedte", "kind": "positional", "default": null, "annotation": null},
+      {"name": "rol", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actie", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Draws a text box (padded) and optionally makes it a click zone.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [227, 228]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.zones.voeg",
+       "lines": [230],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [672]}
+     ]
+    },
+    {
+     "name": "bewaak",
+     "qualname": "Scherm.bewaak",
+     "kind": "method",
+     "lines": [235, 245],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "actief", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ses", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "ronde", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "pauze", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "klok", "kind": "positional", "default": "time.monotonic", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["contextlib.contextmanager"],
+     "docstring": "Zolang een oefenscherm loopt (#33): weggaan vraagt eerst \"Wil je stoppen?\" (Nee gekozen) als actief() waar is, d.w.z. als er iets nog niet nagekeken is. Dat geldt voor een klik op de broodkruimel (ook vanuit een deelscherm, bv. de spiekbri…",
+     "explanation": "Context manager: while an exercise screen runs, leaving (breadcrumb click, or Esc in the exercise itself) asks 'Wil je stoppen?' when something is not yet checked (actief()); time in the box does not count.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Bewaker", "lines": [241]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "_wil_weg",
+     "qualname": "Scherm._wil_weg",
+     "kind": "method",
+     "lines": [247, 266],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "esc", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "True = weg (zonder vraag, of Ja in het kader), False = Nee: blijven.",
+     "explanation": "True to leave (no guard, nothing to lose, or Yes in the box); False when the child chose to stay; pauses the session timer during the box.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.bevestig", "lines": [258, 259]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "b.pauze",
+       "lines": [266],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.pauze", "leeravontuur/terminal/scherm.py::Scherm.pauze"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "b.ses.pauze",
+       "lines": [264],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.pauze", "leeravontuur/terminal/scherm.py::Scherm.pauze"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".actief", ".klok"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [277, 280]}
+     ]
+    },
+    {
+     "name": "toets",
+     "qualname": "Scherm.toets",
+     "kind": "method",
+     "lines": [268, 282],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "wacht_ms", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Wacht op een toets of klik (met wacht_ms: hoogstens zo lang, en dan NIETS).",
+     "explanation": "Waits for a key or click; a breadcrumb click or Esc may first trigger the guard (returns KEY_RESIZE to redraw when the child stays); raises TerugNaar for the breadcrumb.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [275]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm._wil_weg", "lines": [277, 280]},
+      {"target": "leeravontuur/terminal/scherm.py::TerugNaar.__init__", "lines": [279]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["isinstance"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.afvink", "lines": [549]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.bevestig", "lines": [643]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [676]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.lezer", "lines": [599]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [489]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [399]}
+     ]
+    },
+    {
+     "name": "_toets",
+     "qualname": "Scherm._toets",
+     "kind": "method",
+     "lines": [284, 341],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "wacht_ms", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The low-level wait: refreshes, lets the clock window poll messages (every 100 ms), handles timeouts (returns NIETS) and the idle lock (Vergrendeld), key translation (keypad, F2 toggles the clock window, characters), resize (also on Windows) and mouse events.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm._muis", "lines": [333]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm._van_venster", "lines": [299]},
+      {"target": "leeravontuur/terminal/scherm.py::Vergrendeld", "lines": [312]},
+      {"target": "leeravontuur/terminal/scherm.py::is_functietoets", "lines": [302, 321]},
+      {"target": "leeravontuur/terminal/scherm.py::vertaal_klavier", "lines": [314]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.get_wch",
+       "lines": [305],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.get_wch"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.refresh",
+       "lines": [285],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.refresh"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.timeout",
+       "lines": [293],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.timeout"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "venster.beeld_klaar",
+       "lines": [288],
+       "candidates": ["leeravontuur/terminal/venster.py::Klokvenster.beeld_klaar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "venster.volgende",
+       "lines": [299],
+       "candidates": [
+        "leeravontuur/terminal/nepscherm.py::NepKlokvenster.volgende",
+        "leeravontuur/terminal/venster.py::Klokvenster.volgende",
+        "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.volgende",
+        "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.volgende"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "venster.wissel",
+       "lines": [316, 338],
+       "candidates": [
+        "leeravontuur/terminal/balk.py::BalkInvoer.wissel",
+        "leeravontuur/terminal/venster.py::Klokvenster.wissel",
+        "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.wissel",
+        "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.wissel"
+       ],
+       "candidates_count": 4
+      }
+     ],
+     "external_calls": ["curses.resize_term", "hasattr", "isinstance", "len", "max", "min", "ord", "time.monotonic"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [275]}
+     ]
+    },
+    {
+     "name": "_van_venster",
+     "qualname": "Scherm._van_venster",
+     "kind": "staticmethod",
+     "lines": [344, 362],
+     "params": [
+      {"name": "b", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "Een bericht uit het klokvenster als toets: een code, een getypt teken (str), (\"wijzer\", dx, dy) of KEY_RESIZE (opnieuw tekenen, bv. toen het kind het venster sloot).",
+     "explanation": "Turns a message from the clock window into a key: a code, a typed character, ('wijzer', dx, dy) for a click on the clock, or KEY_RESIZE when the window closed.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["float", "isinstance", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [299]}
+     ]
+    },
+    {
+     "name": "_muis",
+     "qualname": "Scherm._muis",
+     "kind": "method",
+     "lines": [364, 376],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a mouse event: wheel up and down as ('scroll', -1/1), a click as the action of the zone under it, else None.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "getmouse", "lines": [367], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "self.zones.zoek",
+       "lines": [375],
+       "candidates": [
+        "docs/tools/schermafdrukken.py::Draai.zoek",
+        "leeravontuur/terminal/klikzones.py::Klikzones.zoek",
+        "leeravontuur/terminal/nepscherm.py::NepScherm.zoek"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["getattr"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [333]}
+     ]
+    },
+    {
+     "name": "bewerk",
+     "qualname": "Scherm.bewerk",
+     "kind": "staticmethod",
+     "lines": [379, 386],
+     "params": [
+      {"name": "buf", "kind": "positional", "default": null, "annotation": null},
+      {"name": "k", "kind": "positional", "default": null, "annotation": null},
+      {"name": "max_lengte", "kind": "positional", "default": "14", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["staticmethod"],
+     "docstring": "Typen in een antwoordvak. Geeft de nieuwe tekst terug.",
+     "explanation": "Typing in an answer box: Backspace deletes, allowed characters (letters, digits and a few signs) are appended up to a maximum length; returns the new text.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [383]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_stabiliteit.py::TestToetsen.test_functietoetsen_typen_niets",
+       "lines": [107, 108]
+      }
+     ]
+    },
+    {
+     "name": "te_klein",
+     "qualname": "Scherm.te_klein",
+     "kind": "method",
+     "lines": [390, 400],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "If the window is smaller than 80x24 shows a notice (and waits) and returns True.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [394]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [397, 398]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [399]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.erase",
+       "lines": [395],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.erase"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [391],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.wis",
+       "lines": [396],
+       "candidates": ["leeravontuur/terminal/klikzones.py::Klikzones.wis"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.afvink", "lines": [528]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [668]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.lezer", "lines": [580]},
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [444]}
+     ]
+    },
+    {
+     "name": "pauze",
+     "qualname": "Scherm.pauze",
+     "kind": "method",
+     "lines": [402, 410],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "ms", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Even wachten (voor een korte animatie). Doet niets in tests.",
+     "explanation": "Waits briefly for a short animation (not in tests).",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.refresh",
+       "lines": [406],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.refresh"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["curses.napms", "getattr"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "menu",
+     "qualname": "Scherm.menu",
+     "kind": "method",
+     "lines": [413, 514],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opties", "kind": "positional", "default": null, "annotation": null},
+      {"name": "info", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "onder", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "start", "kind": "positional", "default": "0", "annotation": null},
+      {"name": "extra", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "uitleg_tot", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "koppen", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "grijs", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "esc", "kind": "positional", "default": "'terug'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["deelscherm"],
+     "docstring": "Keuzemenu. opties = [(label, uitleg)]. Geeft de index terug, of None bij Esc/terug. uitleg_tot = de kolom waar de uitleg moet stoppen (bv. vóór de avatar); te lang = ingekort met '…'. koppen = {index: \"VAKKEN\"}: een kopje vóór die keuze (\"…",
+     "explanation": "A choice menu: options with explanation, optional headings (koppen) and grey options (grijs) that cannot be chosen, per-option key lists (toetsen) giving (index, key) results, digit keys, arrows, clicks and the wheel; returns the index (or (index, key)) or None for Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [446]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.menu.gekozen", "lines": [495, 506, 508, 510, 514]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.menu.stap_naar", "lines": [497, 500, 502]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [450]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [452, 462, 474, 479, 482, 484, 486]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [444]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [489]},
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [513, 514]}
+     ],
+     "unresolved_calls": [
+      {"expr": "extra", "lines": [488], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [451],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.voeg",
+       "lines": [480],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "list", "max", "min", "ord", "range", "sum"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "gekozen",
+     "qualname": "Scherm.menu.gekozen",
+     "kind": "nested",
+     "lines": [433, 434],
+     "params": [
+      {"name": "i", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toets", "kind": "positional", "default": "'Enter'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The return value for a choice: the index, or (index, key) when keys are used.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [495, 506, 508, 510, 514]}
+     ]
+    },
+    {
+     "name": "stap_naar",
+     "qualname": "Scherm.menu.stap_naar",
+     "kind": "nested",
+     "lines": [436, 441],
+     "params": [
+      {"name": "i", "kind": "positional", "default": null, "annotation": null},
+      {"name": "richting", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The next menu index in a direction, skipping grey options.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [497, 500, 502]}
+     ]
+    },
+    {
+     "name": "afvink",
+     "qualname": "Scherm.afvink",
+     "kind": "method",
+     "lines": [517, 572],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "items", "kind": "positional", "default": null, "annotation": null},
+      {"name": "aan", "kind": "positional", "default": null, "annotation": null},
+      {"name": "koppen", "kind": "positional", "default": "None", "annotation": null},
+      {"name": "ok", "kind": "positional", "default": "'starten'", "annotation": null},
+      {"name": "leeg", "kind": "positional", "default": "'Kies minstens één.'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["deelscherm"],
+     "docstring": "Een afvinklijst. items = [(id, label, uitleg)], aan = de ids die aan staan, koppen = {index: \"WISKUNDE\"}. Spatie, x of een klik = aan/uit, A = alles aan (of alles uit als alles al aan stond), Enter = ok. Geeft de aangevinkte ids (in de vol…",
+     "explanation": "A tick list: Space, x or a click toggles, A selects all (or none), Enter confirms (at least one must be on); returns the ticked ids in order, or None for Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [530]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [531]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [533, 538, 542, 544, 548]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [528]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [549]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [532],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.voeg",
+       "lines": [545],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "max", "min", "ord", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "lezer",
+     "qualname": "Scherm.lezer",
+     "kind": "method",
+     "lines": [575, 617],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "regels", "kind": "positional", "default": null, "annotation": null},
+      {"name": "knoppen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "scroll_uitleg", "kind": "positional", "default": "'scrollen'", "annotation": null},
+      {"name": "begin", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["deelscherm"],
+     "docstring": "Scrollbare tekst. regels = [(tekst, rol)]; toetsen = {toets of actie: terugwaarde}. begin = de tekst van een regel (bv. een kopje) die bovenaan moet staan bij het openen.",
+     "explanation": "A scrollable text reader (wrapping, arrows, PgUp/PgDn, wheel, Home/End) with extra keys that return values, and an optional line to open at.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [582]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [594]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [596, 598]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [580]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [599]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [583],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "list", "max", "min", "next", "ord", "textwrap.wrap"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bevestig",
+     "qualname": "Scherm.bevestig",
+     "kind": "method",
+     "lines": [620, 655],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "uitleg", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "ja", "kind": "positional", "default": "'Ja, stoppen'", "annotation": null},
+      {"name": "nee", "kind": "positional", "default": "'Nee, verder'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["deelscherm"],
+     "docstring": "Een kader midden over het scherm met twee knoppen: [ja] links, [nee] rechts en al gekozen (#33). ← → (of Tab) kiest, Enter of spatie bevestigt, Esc = nee; een klik op een knop kiest die. True = ja.",
+     "explanation": "A confirm box in the middle with [yes] and [no] buttons, 'no' preselected; arrows/Tab choose, Enter or space confirms, Esc is no, a click chooses; True for yes.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [630]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [631, 633, 634, 635, 636, 639]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [643]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.voet", "lines": [642]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.win.getmaxyx",
+       "lines": [626],
+       "candidates": ["leeravontuur/terminal/nepscherm.py::NepScherm.getmaxyx"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.zones.voeg",
+       "lines": [640],
+       "candidates": [
+        "leeravontuur/kern/taal/zinnenmachine.py::Bouwer.voeg",
+        "leeravontuur/terminal/invoer.py::_Meetvlak.voeg",
+        "leeravontuur/terminal/klikzones.py::Klikzones.voeg"
+       ],
+       "candidates_count": 3
+      },
+      {
+       "expr": "self.zones.wis",
+       "lines": [629],
+       "candidates": ["leeravontuur/terminal/klikzones.py::Klikzones.wis"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["enumerate", "isinstance", "len", "max", "ord", "range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/terminal/scherm.py::Scherm._wil_weg", "lines": [258, 259]}
+     ]
+    },
+    {
+     "name": "invoer",
+     "qualname": "Scherm.invoer",
+     "kind": "method",
+     "lines": [658, 692],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "kruimel", "kind": "positional", "default": null, "annotation": null},
+      {"name": "vraag", "kind": "positional", "default": null, "annotation": null},
+      {"name": "start", "kind": "positional", "default": "''", "annotation": null},
+      {"name": "max_lengte", "kind": "positional", "default": "20", "annotation": null},
+      {"name": "verborgen", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "uitleg", "kind": "positional", "default": "()", "annotation": null},
+      {"name": "cijfers", "kind": "positional", "default": "False", "annotation": null},
+      {"name": "vrij", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["deelscherm"],
+     "docstring": "Eén regel tekst laten typen (bv. een naam of wachtwoord). Geeft de tekst of None bij Esc.",
+     "explanation": "Asks for one line of text (name, password, PIN, remark): hidden dots, digits only, or free characters; returns the text or None for Esc.",
+     "calls": [
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.cursor", "lines": [675, 678, 681]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.nieuw", "lines": [670]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.put", "lines": [671, 674]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.te_klein", "lines": [668]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.tekstvak", "lines": [672]},
+      {"target": "leeravontuur/terminal/scherm.py::Scherm.toets", "lines": [676]},
+      {"target": "leeravontuur/terminal/scherm.py::teken_van", "lines": [683]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "vertaal_klavier",
+   "qualname": "vertaal_klavier",
+   "kind": "function",
+   "lines": [37, 48],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een toets van het numeriek klavier als het gewone teken (of Enter); elke andere toets ongewijzigd.",
+   "explanation": "A numeric-keypad key as its plain character (or Enter); any other key unchanged.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["curses.keyname", "isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [314]}
+   ]
+  },
+  {
+   "name": "is_functietoets",
+   "qualname": "is_functietoets",
+   "kind": "function",
+   "lines": [55, 57],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een curses-toetscode (pijltje, F1, KEY_RESIZE …), geen getypt teken.",
+   "explanation": "Whether a code is a curses function key (arrow, F1, resize ...) rather than a typed character.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm._toets", "lines": [302, 321]},
+    {"caller": "leeravontuur/terminal/scherm.py::teken_van", "lines": [67]}
+   ]
+  },
+  {
+   "name": "teken_van",
+   "qualname": "teken_van",
+   "kind": "function",
+   "lines": [60, 69],
+   "params": [
+    {"name": "k", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het getypte teken bij een toets, of None (functietoets, Enter, klik …).",
+   "explanation": "The typed character of a key, or None (function key, Enter, click ...); characters in the curses key range arrive as ('teken', ch) so they are never confused with an arrow.",
+   "calls": [
+    {"target": "leeravontuur/terminal/scherm.py::is_functietoets", "lines": [67]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["chr", "isinstance", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [484, 504]},
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.bewerk", "lines": [383]},
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.invoer", "lines": [683]},
+    {"caller": "leeravontuur/terminal/scherm.py::Scherm.menu", "lines": [513, 514]},
+    {"caller": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel", "lines": [103, 104]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.toets", "lines": [751]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.toets", "lines": [656]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.toets", "lines": [298]},
+    {"caller": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.toets", "lines": [192, 211]},
+    {"caller": "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.toets", "lines": [253]},
+    {"caller": "tests/test_schermen.py::TestNumeriekKlavier.test_linux_op_naam", "lines": [1018]},
+    {"caller": "tests/test_schermen.py::TestNumeriekKlavier.test_tekens_en_enter", "lines": [985]},
+    {"caller": "tests/test_stabiliteit.py::TestToetsen.test_functietoetsen_typen_niets", "lines": [109, 110]}
+   ]
+  },
+  {
+   "name": "deelscherm",
+   "qualname": "deelscherm",
+   "kind": "function",
+   "lines": [95, 105],
+   "params": [
+    {"name": "f", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een scherm bovenop een ander (menu, lezer, invoer, kader): zijn Esc is van hemzelf, niet van de bewaker van het oefenscherm eronder (bv. Esc in de spiekbrief vanuit een vraag = terug naar de vraag).",
+   "explanation": "Decorator for a screen on top of another (menu, reader, input, box): increments the depth while it runs so its Esc belongs to it, not to the guard of the exercise below.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["functools.wraps"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "binnen",
+   "qualname": "deelscherm.binnen",
+   "kind": "nested",
+   "lines": [99, 104],
+   "params": [
+    {"name": "self", "kind": "positional", "default": null, "annotation": null},
+    {"name": "args", "kind": "vararg", "default": null, "annotation": null},
+    {"name": "kwargs", "kind": "kwarg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": ["functools.wraps(f)"],
+   "docstring": "",
+   "explanation": "The wrapper that counts the depth around the call.",
+   "calls": [],
+   "unresolved_calls": [
+    {"expr": "f", "lines": [102], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

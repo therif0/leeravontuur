@@ -1,0 +1,1007 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/klad.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 604,
+ "source_sha256": "21aa09c73acc646b0ab5d2bd879e68d71e0727a3421656098545baa9915d8ae9",
+ "purpose": "The scratch pad (klad): reads calculation lines the way the child types them, checks every '=' exactly, and compares the pad with a worked solution and known wrong paths.",
+ "details": "A line like '0,75 x 3,20 = 2,40', '750 g = 0,75 kg', '25 % van 80 = 20', '25 : 4 = 6 rest 1', '2 u 15 min = 135 min' or one with a label ('kersen: ...') is tokenised (_tokens), evaluated by a small recursive-descent reader (_Lezer: expr, term, factor, with units, percentages, clock times and durations) using exact Fractions, and every '=' becomes a Schakel saying whether it is right; 'netjes' redisplays the line with the proper signs. Mistakes get a hint that never reveals the answer (rekenfout_tekst). The second half works on solutions: stap/oplossing_van/fout_pad build a worked solution and wrong paths from plain klad lines, and analyseer judges a child's pad against them (good step, other valid route, calculation error, or a known thinking error), including the 'where does this number come from?' rule (herkomstregel) used in word problems. Everything is exact; nothing is rounded except where the child rounded on purpose.",
+ "module_docstring": "Het kladblad: rekenregels lezen en nakijken zoals het kind ze typt.",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 12, "resolves_to": [], "internal": false},
+  {
+   "module": "dataclasses",
+   "names": ["dataclass", "field"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 14, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Rekenstap"],
+   "alias": null,
+   "line": 491,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Oplossing"],
+   "alias": null,
+   "line": 501,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/wiskunde/breuken.py",
+  "leeravontuur/kern/wiskunde/grootheden.py",
+  "leeravontuur/kern/wiskunde/hoofdrekenen.py",
+  "leeravontuur/kern/wiskunde/klok.py",
+  "leeravontuur/kern/wiskunde/meetkunde.py",
+  "leeravontuur/kern/wiskunde/procenten.py",
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/kladblad.py",
+  "leeravontuur/terminal/oefenaar.py",
+  "tests/test_klad.py",
+  "tests/test_vraagstukken.py",
+  "tests/test_werkwijze.py"
+ ],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction", "frozenset"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class KladRegel>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["dataclasses.field"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PLUS",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "('+', '−', '×', ':', 'van')",
+   "explanation": "Plus operator sign."
+  },
+  {
+   "name": "MIN",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "('+', '−', '×', ':', 'van')",
+   "explanation": "Minus operator sign (U+2212)."
+  },
+  {
+   "name": "MAAL",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "('+', '−', '×', ':', 'van')",
+   "explanation": "Times operator sign."
+  },
+  {
+   "name": "DEEL",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "('+', '−', '×', ':', 'van')",
+   "explanation": "Divide operator sign."
+  },
+  {
+   "name": "VAN",
+   "line": 20,
+   "value_type": "Tuple",
+   "value_preview": "('+', '−', '×', ':', 'van')",
+   "explanation": "The word 'van' (percent or fraction of)."
+  },
+  {
+   "name": "OPS",
+   "line": 21,
+   "value_type": "Dict",
+   "value_preview": "{'+': PLUS, '-': MIN, '−': MIN, '–': MIN, 'x': MAAL, 'X': MAAL, '×': …",
+   "explanation": "Accepted typed characters mapped to operators (x, X, *, middle dot for times; : / for divide; - and en dash for minus)."
+  },
+  {
+   "name": "TIJD",
+   "line": 25,
+   "value_type": "Dict",
+   "value_preview": "{'s': 1, 'sec': 1, 'seconden': 1, 'min': 60, 'minuten': 60, 'minuut':…",
+   "explanation": "Time units to seconds."
+  },
+  {
+   "name": "GELD",
+   "line": 27,
+   "value_type": "Dict",
+   "value_preview": "{'€': 100, 'euro': 100, 'eur': 100, 'cent': 1, 'c': 1}",
+   "explanation": "Money units to cents."
+  },
+  {
+   "name": "SNELHEID",
+   "line": 28,
+   "value_type": "Dict",
+   "value_preview": "{'km/u': 1, 'km/h': 1, 'm/s': Fraction(18, 5)}",
+   "explanation": "Speed units relative to km/u."
+  },
+  {
+   "name": "KLEINER",
+   "line": 29,
+   "value_type": "Dict",
+   "value_preview": "{'u': 'min', 'uur': 'min', 'min': 's', '€': 'cent', 'euro': 'cent', '…",
+   "explanation": "Which smaller unit an implied unit means (2 u 30 means 2 u 30 min)."
+  },
+  {
+   "name": "HERKOMST",
+   "line": 525,
+   "value_type": "Constant",
+   "value_preview": "'Elk getal in je bewerking komt uit het vraagstuk of uit een regel er…",
+   "explanation": "Text shown when a number comes from nowhere."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "Grootheid",
+   "qualname": "Grootheid",
+   "lines": [48, 54],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Een getal met (misschien) een eenheid. `basis` = de waarde in de kleinste eenheid (om om te zetten).",
+   "explanation": "A number with an optional unit, its kind, its value in the smallest unit (for conversions) and an optional remainder.",
+   "attributes": [
+    {"name": "getal", "line": 50, "scope": "class", "value_preview": null},
+    {"name": "eenheid", "line": 51, "scope": "class", "value_preview": "''"},
+    {"name": "soort", "line": 52, "scope": "class", "value_preview": "None"},
+    {"name": "basis", "line": 53, "scope": "class", "value_preview": "None"},
+    {"name": "rest", "line": 54, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::_grootheid", "lines": [273, 276, 278]},
+    {"caller": "leeravontuur/kern/klad.py::_grootheid_", "lines": [290, 311, 318]},
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [416, 446]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "Schakel",
+   "qualname": "Schakel",
+   "lines": [58, 69],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "Eén `=` in een regel: links = rechts.",
+   "explanation": "One '=' of a line: the operations and operands on the left, what the child wrote on the right, the true left value, whether it is right, and flags for conversion, rounding and chaining.",
+   "attributes": [
+    {"name": "ops", "line": 60, "scope": "class", "value_preview": null},
+    {"name": "operanden", "line": 61, "scope": "class", "value_preview": null},
+    {"name": "gegeven", "line": 62, "scope": "class", "value_preview": null},
+    {"name": "echt", "line": 63, "scope": "class", "value_preview": null},
+    {"name": "juist", "line": 64, "scope": "class", "value_preview": null},
+    {"name": "soort", "line": 65, "scope": "class", "value_preview": "'reken'"},
+    {"name": "afgerond", "line": 66, "scope": "class", "value_preview": "False"},
+    {"name": "ketting", "line": 67, "scope": "class", "value_preview": "False"},
+    {"name": "links_tekst", "line": 68, "scope": "class", "value_preview": "''"},
+    {"name": "links", "line": 69, "scope": "class", "value_preview": "None"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [423, 433, 447]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "KladRegel",
+   "qualname": "KladRegel",
+   "lines": [73, 92],
+   "bases": [],
+   "decorators": ["dataclass"],
+   "docstring": "",
+   "explanation": "One checked scratch-pad line: text, neat text, label, its links (Schakels), a message, whether it was readable and whether it was a question to oneself.",
+   "attributes": [
+    {"name": "tekst", "line": 74, "scope": "class", "value_preview": null},
+    {"name": "netjes", "line": 75, "scope": "class", "value_preview": "''"},
+    {"name": "label", "line": 76, "scope": "class", "value_preview": "''"},
+    {"name": "schakels", "line": 77, "scope": "class", "value_preview": "field(default_factory=list)"},
+    {"name": "melding", "line": 78, "scope": "class", "value_preview": "''"},
+    {"name": "leesbaar", "line": 79, "scope": "class", "value_preview": "True"},
+    {"name": "vraag", "line": 80, "scope": "class", "value_preview": "False"}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [362]}
+   ],
+   "methods": [
+    {
+     "name": "juist",
+     "qualname": "KladRegel.juist",
+     "kind": "property",
+     "lines": [83, 87],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "True/False, of None als er niets na te kijken is (geen =).",
+     "explanation": "True or False for a readable line with an '=', None when there is nothing to check.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["all"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "uitkomst",
+     "qualname": "KladRegel.uitkomst",
+     "kind": "property",
+     "lines": [90, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["property"],
+     "docstring": "Het laatste getal dat het kind schreef (de uitkomst van de regel).",
+     "explanation": "The last number the child wrote (the line's result), or None.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "_Fout",
+   "qualname": "_Fout",
+   "lines": [163, 164],
+   "bases": ["Exception"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Internal error raised when a line cannot be read.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [245]},
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [212, 225, 229]},
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [406]}
+   ],
+   "methods": []
+  },
+  {
+   "name": "_Lezer",
+   "qualname": "_Lezer",
+   "lines": [167, 254],
+   "bases": [],
+   "decorators": [],
+   "docstring": "Rekent één deel (tussen twee =) uit. Eenheden tellen bij + en − niet mee, behalve bij omzetten.",
+   "explanation": "A small recursive-descent parser that evaluates one side of an '=' exactly.",
+   "attributes": [
+    {"name": "t", "line": 171, "scope": "instance", "value_preview": null},
+    {"name": "i", "line": 172, "scope": "instance", "value_preview": null},
+    {"name": "tijd", "line": 174, "scope": "instance", "value_preview": null},
+    {"name": "klok", "line": 175, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [403]}
+   ],
+   "methods": [
+    {
+     "name": "__init__",
+     "qualname": "_Lezer.__init__",
+     "kind": "method",
+     "lines": [170, 175],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tokens", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tijd", "kind": "positional", "default": "False", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts reading one part between two equals signs; remembers whether a clock time is in the line (durations in minutes).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [403]}
+     ]
+    },
+    {
+     "name": "kijk",
+     "qualname": "_Lezer.kijk",
+     "kind": "method",
+     "lines": [177, 178],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The current token without consuming it ((None, None, None) at the end).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [242, 246]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.expr", "lines": [187]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [204, 216, 231, 233]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.neem", "lines": [181]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.term", "lines": [196]}
+     ]
+    },
+    {
+     "name": "neem",
+     "qualname": "_Lezer.neem",
+     "kind": "method",
+     "lines": [180, 183],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Returns the current token and moves on.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::_Lezer.kijk", "lines": [181]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [243, 248]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.expr", "lines": [188]},
+      {
+       "caller": "leeravontuur/kern/klad.py::_Lezer.factor",
+       "lines": [206, 209, 211, 215, 218, 226, 232, 234]
+      },
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.term", "lines": [197]}
+     ]
+    },
+    {
+     "name": "expr",
+     "qualname": "_Lezer.expr",
+     "kind": "method",
+     "lines": [185, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads + and - (lowest precedence) and records the operators.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::_Lezer.kijk", "lines": [187]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.neem", "lines": [188]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.term", "lines": [186, 190]},
+      {"target": "leeravontuur/kern/klad.py::_reken", "lines": [191]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [210]}
+     ]
+    },
+    {
+     "name": "term",
+     "qualname": "_Lezer.term",
+     "kind": "method",
+     "lines": [194, 201],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads x, : and 'van' (higher precedence).",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [195, 199]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.kijk", "lines": [196]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.neem", "lines": [197]},
+      {"target": "leeravontuur/kern/klad.py::_reken", "lines": [200]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.expr", "lines": [186, 190]}
+     ]
+    },
+    {
+     "name": "factor",
+     "qualname": "_Lezer.factor",
+     "kind": "method",
+     "lines": [203, 236],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reads a number (skipping unit and word tokens, handling a leading euro sign, percent, a unary minus, parentheses and clock times); raises _Fout when something else stands there.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::_Fout", "lines": [212, 225, 229]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [223]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.expr", "lines": [210]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [207]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.kijk", "lines": [204, 216, 231, 233]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.neem", "lines": [206, 209, 211, 215, 218, 226, 232, 234]},
+      {"target": "leeravontuur/kern/klad.py::_getal", "lines": [227]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["fractions.Fraction"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [207]},
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.term", "lines": [195, 199]}
+     ]
+    },
+    {
+     "name": "duur",
+     "qualname": "_Lezer.duur",
+     "kind": "method",
+     "lines": [239, 254],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een tijdsduur in minuten: 20, 20 min, 1 u, 1 u 20 min, 1 u 20.",
+     "explanation": "Reads a duration in minutes: 20, 20 min, 1 u, 1 u 20 min, 1 u 20.",
+     "calls": [
+      {"target": "leeravontuur/kern/klad.py::_Fout", "lines": [245]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.kijk", "lines": [242, 246]},
+      {"target": "leeravontuur/kern/klad.py::_Lezer.neem", "lines": [243, 248]},
+      {"target": "leeravontuur/kern/klad.py::_getal", "lines": [243]},
+      {"target": "leeravontuur/kern/klad.py::soort_van", "lines": [249]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["fractions.Fraction"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [223]}
+     ]
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "soort_van",
+   "qualname": "soort_van",
+   "kind": "function",
+   "lines": [32, 44],
+   "params": [
+    {"name": "eenheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "(soort, factor) voor een eenheid, of (None, None) als het programma ze niet kan omzetten.",
+   "explanation": "(kind, factor) of a unit: time, money, speed or a measure from the units table; (None, None) when the program cannot convert it.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [249]},
+    {"caller": "leeravontuur/kern/klad.py::_grootheid_", "lines": [310, 313]},
+    {"caller": "leeravontuur/kern/klad.py::_tokens", "lines": [133, 143]}
+   ]
+  },
+  {
+   "name": "_tokens",
+   "qualname": "_tokens",
+   "kind": "function",
+   "lines": [97, 152],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Lijst van (soort, waarde, tekst): getal, op, (, ), =, ≈, %, eenheid, woord, rest.",
+   "explanation": "Splits a line into tokens (number, operator, parentheses, =, %, unit, word, 'rest', clock time such as 9.45 u or 9:45, fractions like 3/4 as one number, spaced thousands); returns None when it meets a character it cannot read. Uses isdecimal so a lone superscript is not mistaken for a digit.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::soort_van", "lines": [133, 143]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [".group", "int", "len", "re.match"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [373]}
+   ]
+  },
+  {
+   "name": "_getal",
+   "qualname": "_getal",
+   "kind": "function",
+   "lines": [155, 160],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A number token as a Fraction ('3/4' as a fraction, otherwise via lees_getal), or None.",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [159]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction", "int"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.duur", "lines": [243]},
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.factor", "lines": [227]},
+    {"caller": "leeravontuur/kern/klad.py::_grootheid_", "lines": [289, 295]}
+   ]
+  },
+  {
+   "name": "_reken",
+   "qualname": "_reken",
+   "kind": "function",
+   "lines": [257, 266],
+   "params": [
+    {"name": "op", "kind": "positional", "default": null, "annotation": null},
+    {"name": "a", "kind": "positional", "default": null, "annotation": null},
+    {"name": "b", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Applies one operation exactly (division by zero or a missing operand gives None).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.expr", "lines": [191]},
+    {"caller": "leeravontuur/kern/klad.py::_Lezer.term", "lines": [200]},
+    {"caller": "leeravontuur/kern/klad.py::rekenfout_tekst", "lines": [481]}
+   ]
+  },
+  {
+   "name": "_grootheid",
+   "qualname": "_grootheid",
+   "kind": "function",
+   "lines": [269, 279],
+   "params": [
+    {"name": "tokens", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tijd", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een deel dat alleen een getal (met eenheden) is: 750 g, € 3,20, 2 u 15 min, 6 rest 1. Anders None. Met tijd (er staat een tijdstip in de regel) is een tijdsduur in minuten, en een tijdstip ook.",
+   "explanation": "Reads a part of a line that is only a quantity (750 g, EUR 3,20, 2 u 15 min, a clock time, '6 rest 1'); with a clock time in the line, durations and bare numbers count as minutes.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::Grootheid", "lines": [273, 276, 278]},
+    {"target": "leeravontuur/kern/klad.py::_grootheid_", "lines": [274]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [405, 407]}
+   ]
+  },
+  {
+   "name": "_grootheid_",
+   "qualname": "_grootheid_",
+   "kind": "function",
+   "lines": [282, 318],
+   "params": [
+    {"name": "tokens", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "The core of reading a quantity: handles '6 rest 1', several number-unit pairs (2 u 15 min), implied smaller units (2 u 30 = 2 u 30 min) and a leading euro sign; returns None when mixed kinds.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::Grootheid", "lines": [290, 311, 318]},
+    {"target": "leeravontuur/kern/klad.py::_getal", "lines": [289, 295]},
+    {"target": "leeravontuur/kern/klad.py::soort_van", "lines": [310, 313]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["any", "bool", "len", "sum", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_grootheid", "lines": [274]}
+   ]
+  },
+  {
+   "name": "_decimalen",
+   "qualname": "_decimalen",
+   "kind": "function",
+   "lines": [321, 325],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Number of decimals the child wrote in a number text (0 for thousands dots).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".group", "len", "re.fullmatch", "re.search"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::_afronding_ok", "lines": [332]},
+    {"caller": "leeravontuur/kern/klad.py::_netjes", "lines": [341]}
+   ]
+  },
+  {
+   "name": "_afronding_ok",
+   "qualname": "_afronding_ok",
+   "kind": "function",
+   "lines": [328, 334],
+   "params": [
+    {"name": "echt", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gegeven_tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "gegeven", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Is `gegeven` de afronding van `echt` op het aantal cijfers na de komma dat het kind schreef?",
+   "explanation": "True when the given number is the true value rounded to the number of decimals the child wrote (and not equal to it).",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::_decimalen", "lines": [332]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["abs", "fractions.Fraction"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [441]}
+   ]
+  },
+  {
+   "name": "_netjes",
+   "qualname": "_netjes",
+   "kind": "function",
+   "lines": [337, 357],
+   "params": [
+    {"name": "tokens", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Re-spells the tokens neatly: decimal comma, proper operator signs, spacing, superscript units, '3/4 van 24' without spaces.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::_decimalen", "lines": [341]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "len", "re.sub"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [391, 417]}
+   ]
+  },
+  {
+   "name": "lees_regel",
+   "qualname": "lees_regel",
+   "kind": "function",
+   "lines": [360, 456],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Leest en kijkt één kladregel na → KladRegel.",
+   "explanation": "Reads and checks one scratch-pad line into a KladRegel: ignores lines that are questions to oneself, pulls off a label, tokenises, splits at '=', evaluates each side, and builds one Schakel per '=' (conversions, remainders, rounding and 'chains' like 3 x 4 = 12 + 3 are recognised); sets a hint message for the first mistake.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::Grootheid", "lines": [416, 446]},
+    {"target": "leeravontuur/kern/klad.py::KladRegel", "lines": [362]},
+    {"target": "leeravontuur/kern/klad.py::Schakel", "lines": [423, 433, 447]},
+    {"target": "leeravontuur/kern/klad.py::_Fout", "lines": [406]},
+    {"target": "leeravontuur/kern/klad.py::_Lezer.__init__", "lines": [403]},
+    {"target": "leeravontuur/kern/klad.py::_afronding_ok", "lines": [441]},
+    {"target": "leeravontuur/kern/klad.py::_grootheid", "lines": [405, 407]},
+    {"target": "leeravontuur/kern/klad.py::_netjes", "lines": [391, 417]},
+    {"target": "leeravontuur/kern/klad.py::_tokens", "lines": [373]},
+    {"target": "leeravontuur/kern/klad.py::rekenfout_tekst", "lines": [453]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "lz.expr",
+     "lines": [404],
+     "candidates": ["leeravontuur/kern/klad.py::_Lezer.expr"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [".end", ".group", "all", "any", "len", "next", "re.match", "re.search", "zip"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::analyseer", "lines": [563]},
+    {"caller": "leeravontuur/kern/klad.py::fout_pad", "lines": [508]},
+    {"caller": "leeravontuur/kern/klad.py::netjes", "lines": [516]},
+    {"caller": "leeravontuur/kern/klad.py::stap", "lines": [492]},
+    {"caller": "leeravontuur/terminal/kladblad.py::Kladblad.toets", "lines": [62]},
+    {"caller": "tests/test_klad.py::TestLezen.fout", "lines": [36]},
+    {"caller": "tests/test_klad.py::TestLezen.juist", "lines": [31]},
+    {"caller": "tests/test_klad.py::TestLezen.test_onvolledig_of_onleesbaar", "lines": [127, 130, 132, 134]},
+    {"caller": "tests/test_klad.py::TestLezen.test_uitkomst_en_operanden", "lines": [137, 140]},
+    {"caller": "tests/test_klad.py::TestNooitEenCrash.test_kwadraat_los_achter_een_getal", "lines": [15, 16]},
+    {"caller": "tests/test_klad.py::TestNooitEenCrash.test_willekeurige_regels", "lines": [26]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestSpeurneus.test_rekenfout_klopt_echt_niet",
+     "lines": [453, 456]
+    },
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_oplossing_klopt_en_eindigt_op_het_antwoord",
+     "lines": [51, 53]
+    },
+    {
+     "caller": "tests/test_werkwijze.py::TestWerkwijze.test_splitsen_vraagt_eerst_een_splitsing",
+     "lines": [78, 79]
+    }
+   ]
+  },
+  {
+   "name": "rekenfout_tekst",
+   "qualname": "rekenfout_tekst",
+   "kind": "function",
+   "lines": [459, 483],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat er mis is met een schakel, zonder de juiste uitkomst te verklappen.",
+   "explanation": "The hint for a wrong link without giving the result: division by zero, a misplaced decimal comma, units that cannot be converted, a wrong remainder, a wrong operation ('you wrote + but calculated x'), else 'check it again'.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::_reken", "lines": [481]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::lees_regel", "lines": [453]}
+   ]
+  },
+  {
+   "name": "stap",
+   "qualname": "stap",
+   "kind": "function",
+   "lines": [488, 495],
+   "params": [
+    {"name": "reken", "kind": "positional", "default": null, "annotation": null},
+    {"name": "hint", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "waarom", "kind": "positional", "default": "''", "annotation": null},
+    {"name": "naam", "kind": "positional", "default": "''", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een stap van een oplossing, geschreven zoals in het klad: stap(\"91 : 7 = 70 : 7 + 21 : 7 = 10 + 3 = 13\"). De uitkomst is het laatste getal. (Dat de regel klopt, bewaakt tests/test_werkwijze.py.)",
+   "explanation": "Builds one solution step (a Rekenstap) from a line written as in the klad; the result is the last number, the operation comes from the line's signature.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::handtekening", "lines": [494]},
+    {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [492]},
+    {"target": "leeravontuur/kern/klad.py::netjes", "lines": [495]},
+    {"target": "leeravontuur/kern/modellen.py::Rekenstap", "lines": [495]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["fractions.Fraction"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::oplossing_van", "lines": [502]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [510]}
+   ]
+  },
+  {
+   "name": "oplossing_van",
+   "qualname": "oplossing_van",
+   "kind": "function",
+   "lines": [498, 502],
+   "params": [
+    {"name": "regels", "kind": "vararg", "default": null, "annotation": null},
+    {"name": "paden", "kind": "keyword-only", "default": "()", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een oplossing (kern.modellen.Oplossing) uit klad-regels, één stap per regel: oplossing_van(\"24 : 4 = 6\", \"3 × 6 = 18\"). Lege regels tellen niet.",
+   "explanation": "A whole Oplossing from klad lines, one step per non-empty line, plus optional wrong paths.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::stap", "lines": [502]},
+    {"target": "leeravontuur/kern/modellen.py::Oplossing", "lines": [502]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["list"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "leeravontuur/kern/wiskunde/breuken.py::BreukVan.oplossing",
+     "lines": [520, 524, 526, 530, 531]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/breuken.py::Optellen.oplossing", "lines": [390, 391]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Geld.oplossing", "lines": [299, 301, 303, 305]},
+    {"caller": "leeravontuur/kern/wiskunde/grootheden.py::Snelheid.oplossing", "lines": [389, 393, 395, 396]},
+    {
+     "caller": "leeravontuur/kern/wiskunde/grootheden.py::Tijd.oplossing",
+     "lines": [177, 179, 182, 187, 190, 192, 194]
+    },
+    {
+     "caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::DubbelHelft.oplossing",
+     "lines": [368, 369, 376, 378]
+    },
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.oplossing", "lines": [153, 160]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Tafels.oplossing", "lines": [44]},
+    {"caller": "leeravontuur/kern/wiskunde/klok.py::Klok.oplossing", "lines": [204, 209, 211, 214, 216]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Formules.oplossing", "lines": [234]},
+    {"caller": "leeravontuur/kern/wiskunde/meetkunde.py::Schaal.oplossing", "lines": [500, 502, 503]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::Korting.oplossing", "lines": [348, 352]},
+    {"caller": "leeravontuur/kern/wiskunde/procenten.py::ProcentVan.oplossing", "lines": [256, 257]}
+   ]
+  },
+  {
+   "name": "fout_pad",
+   "qualname": "fout_pad",
+   "kind": "function",
+   "lines": [505, 511],
+   "params": [
+    {"name": "code", "kind": "positional", "default": null, "annotation": null},
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null},
+    {"name": "regels", "kind": "vararg", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een bekend fout pad, geschreven als klad-regels die op zich kloppen: fout_pad(\"deel_vergeten\", \"…\", \"70 : 7 + 21 = 31\"). Een kind dat zo rekent, krijgt in het klad de tekst te zien.",
+   "explanation": "A known wrong path written as klad lines that are valid themselves: returns (code, text, result, values, signatures) so a child who calculates that way is shown the text.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::handtekening", "lines": [509]},
+    {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [508]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::PlusMin.oplossing", "lines": [151]},
+    {"caller": "leeravontuur/kern/wiskunde/hoofdrekenen.py::Splitsen.oplossing", "lines": [494, 501, 508]}
+   ]
+  },
+  {
+   "name": "netjes",
+   "qualname": "netjes",
+   "kind": "function",
+   "lines": [514, 517],
+   "params": [
+    {"name": "tekst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een klad-regel zoals het programma ze toont (× : −).",
+   "explanation": "A klad line as the program shows it (x : -), or the original text when unreadable.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [516]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::stap", "lines": [495]}
+   ]
+  },
+  {
+   "name": "handtekening",
+   "qualname": "handtekening",
+   "kind": "function",
+   "lines": [519, 522],
+   "params": [
+    {"name": "s", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wat een schakel uitrekent, om met een fout pad te vergelijken: (bewerking, operanden, uitkomst).",
+   "explanation": "What a link calculates, to compare with a wrong path: (operation or None, sorted operands, result).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "sorted"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::analyseer", "lines": [584]},
+    {"caller": "leeravontuur/kern/klad.py::fout_pad", "lines": [509]},
+    {"caller": "leeravontuur/kern/klad.py::stap", "lines": [494]}
+   ]
+  },
+  {
+   "name": "_tekst",
+   "qualname": "_tekst",
+   "kind": "function",
+   "lines": [528, 530],
+   "params": [
+    {"name": "x", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een Fraction zoals het kind ze typt: 20, 2,5.",
+   "explanation": "A Fraction as the child would type it (20, 2,5).",
+   "calls": [
+    {"target": "leeravontuur/kern/getal.py::fmt", "lines": [530]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::analyseer", "lines": [578]}
+   ]
+  },
+  {
+   "name": "_vreemd",
+   "qualname": "_vreemd",
+   "kind": "function",
+   "lines": [533, 544],
+   "params": [
+    {"name": "operanden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "bekend", "kind": "positional", "default": null, "annotation": null},
+    {"name": "uitkomst", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Het eerste getal dat nergens vandaan komt, of None. Splitsen mag: 2000 en 320 samen zijn 2320 (maar niet samen de uitkomst van de regel zelf: 16 + 11 = 27 met twee verzonnen getallen is geen splitsen).",
+   "explanation": "The first number in an operation that comes from nowhere (not given, not a step result, not above), or None; splitting is allowed (numbers that together make a known number), but not when they sum to the line's own result.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["bin", "enumerate", "len", "min", "range", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/klad.py::analyseer", "lines": [574]}
+   ]
+  },
+  {
+   "name": "analyseer",
+   "qualname": "analyseer",
+   "kind": "function",
+   "lines": [547, 604],
+   "params": [
+    {"name": "stappen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "paden", "kind": "positional", "default": null, "annotation": null},
+    {"name": "regels", "kind": "positional", "default": null, "annotation": null},
+    {"name": "overbodig", "kind": "positional", "default": "frozenset()", "annotation": null},
+    {"name": "rekenfout", "kind": "positional", "default": "'rekenfout'", "annotation": null},
+    {"name": "bekend", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Kijkt het klad na tegenover de stappen van de oplossing en de bekende foute paden.",
+   "explanation": "Judges the pad against the solution steps and wrong paths: per line 'goed' (matches a step), 'ok' (a correct line that is no step: another valid route), 'reken' (calculation error), 'denk' (matches a wrong path, or breaks the origin rule 'vs_herkomst') or None; also returns the first problem (line, code, text), which steps are covered and whether the final result is in the pad.",
+   "calls": [
+    {"target": "leeravontuur/kern/klad.py::_tekst", "lines": [578]},
+    {"target": "leeravontuur/kern/klad.py::_vreemd", "lines": [574]},
+    {"target": "leeravontuur/kern/klad.py::handtekening", "lines": [584]},
+    {"target": "leeravontuur/kern/klad.py::lees_regel", "lines": [563]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["any", "enumerate", "fractions.Fraction", "isinstance", "len", "next", "set"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::analyseer_klad", "lines": [1009]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._stel_vraag", "lines": [525]},
+    {"caller": "leeravontuur/terminal/oefenaar.py::Oefenaar._tip", "lines": [590]}
+   ]
+  }
+ ]
+}

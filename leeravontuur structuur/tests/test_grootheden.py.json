@@ -1,0 +1,562 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_grootheden.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 163,
+ "source_sha256": "8a4b95e5ba237f440ac997a135f2e2a342367ac8201da69e473776d351e2a3e9",
+ "purpose": "Tests time, money and speed (grootheden): reading durations and clock times, generators, diagnosis and screens.",
+ "details": "Covers kern/wiskunde/grootheden (T.lees_duur, T.lees_klok, T.klok_cijfers, T.duur_tekst, T.ALLE topics) and the typing screens including the digital clock (#21).",
+ "module_docstring": "",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["grootheden"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/grootheden.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "D", "line": 18, "value_type": "Name", "value_preview": "Decimal", "explanation": ""},
+  {"name": "STOP", "line": 126, "value_type": "BinOp", "value_preview": "[ESC] * 7", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestLezen",
+   "qualname": "TestLezen",
+   "lines": [21, 54],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Reading tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_duur",
+     "qualname": "TestLezen.test_duur",
+     "kind": "method",
+     "lines": [22, 27],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Durations in many spellings ('2 u 15 min', '2u15', '45 min') read to minutes.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_duur", "lines": [25, 27]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klok",
+     "qualname": "TestLezen.test_klok",
+     "kind": "method",
+     "lines": [29, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clock times in many spellings ('11.15 u', '11:15', '11u15', '8') read to minutes.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [32, 34]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_klok_cijfers",
+     "qualname": "TestLezen.test_klok_cijfers",
+     "kind": "method",
+     "lines": [36, 47],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#21: wat het digitale klokje toont terwijl het kind typt ('_' = nog leeg, ' ' = geen cijfer).",
+     "explanation": "The digits the digital clock shows while the child types ('_' empty, ' ' none).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_cijfers", "lines": [42, 44, 46]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [47]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_teksten",
+     "qualname": "TestLezen.test_teksten",
+     "kind": "method",
+     "lines": [49, 54],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Minutes are written as '1 u 35 min', '2 u', '45 min'.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::duur_tekst", "lines": [50, 51, 52]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::klok_tekst", "lines": [53]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [54], "candidates": [], "candidates_count": 0},
+      {"expr": "T.GELD.lees", "lines": [54], "candidates": [], "candidates_count": 10}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [57, 82],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generators.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerjaren",
+     "qualname": "TestGeneratoren.test_alle_leerjaren",
+     "kind": "method",
+     "lines": [58, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic generates valid questions in each year it is offered in.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [62],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.diagnose", "lines": [71], "candidates": [], "candidates_count": 37},
+      {"expr": "o.lees_vraag", "lines": [70], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [65],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [70],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [67], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [69], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [68], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertIsNone", ".assertIsNotNone", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niveaus",
+     "qualname": "TestGeneratoren.test_niveaus",
+     "kind": "method",
+     "lines": [73, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Which topics are offered from which year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "T.SNELHEID.aangeboden",
+       "lines": [75, 76],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "T.SNELHEID.maak",
+       "lines": [78],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "T.TIJD.aangeboden",
+       "lines": [74],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertNotEqual", ".assertTrue", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_past",
+     "qualname": "TestGeneratoren.test_spiekbrief_past",
+     "kind": "method",
+     "lines": [80, 82],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cheat-sheet lines fit in 78 characters.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [85, 112],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Diagnosis.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_tijd",
+     "qualname": "TestDiagnose.test_tijd",
+     "kind": "method",
+     "lines": [86, 100],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Counted with 100' and similar time errors are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [87, 89, 91, 95, 99]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_duur", "lines": [90]},
+      {"target": "leeravontuur/kern/wiskunde/grootheden.py::lees_klok", "lines": [100]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [87, 88, 89, 91, 92, 93, 95, 96, 99], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "T.TIJD.diagnose",
+       "lines": [88, 90, 92, 93, 96, 100],
+       "candidates": [],
+       "candidates_count": 37
+      },
+      {"expr": "T.TIJD.uitleg", "lines": [97], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geld_en_snelheid",
+     "qualname": "TestDiagnose.test_geld_en_snelheid",
+     "kind": "method",
+     "lines": [102, 112],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Money and speed errors are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [103, 105, 107, 111]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "D",
+       "lines": [103, 104, 105, 106, 107, 108, 109, 111, 112],
+       "candidates": [],
+       "candidates_count": 0
+      },
+      {"expr": "T.GELD.diagnose", "lines": [104, 106], "candidates": [], "candidates_count": 37},
+      {"expr": "T.SNELHEID.diagnose", "lines": [108, 109, 112], "candidates": [], "candidates_count": 37},
+      {"expr": "T.SNELHEID.uitleg", "lines": [110], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [129, 159],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screens.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_uren_en_minuten_typen",
+     "qualname": "TestSchermen.test_uren_en_minuten_typen",
+     "kind": "method",
+     "lines": [130, 138],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typing hours and minutes: wrong format messages, then the right answer.",
+     "calls": [
+      {"target": "tests/test_grootheden.py::gemengd", "lines": [132]},
+      {"target": "tests/test_grootheden.py::naar", "lines": [133]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [135],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [133],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_digitaal_klokje",
+     "qualname": "TestSchermen.test_digitaal_klokje",
+     "kind": "method",
+     "lines": [140, 155],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#21: een tijdstip typ je op een digitaal klokje: wat je typt, staat er meteen in grote cijfers; een letter komt er niet in; 1610 (zonder punt) is ook goed.",
+     "explanation": "The digital clock shows typed digits at once, ignores letters, and accepts 1610 without a dot.",
+     "calls": [
+      {"target": "tests/test_grootheden.py::naar", "lines": [146, 154]}
+     ],
+     "unresolved_calls": [
+      {"expr": "T.TIJD.maak_met", "lines": [143], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "T.TIJD.parameters",
+       "lines": [143],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.parameters"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.antwoorden",
+       "lines": [155],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [146, 154],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertIn",
+      ".assertNotIn",
+      ".assertTrue",
+      ".opslag",
+      "divmod",
+      "int",
+      "next",
+      "random.Random",
+      "reversed",
+      "unittest.mock.patch.object"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestSchermen.test_spiekbrief",
+     "kind": "method",
+     "lines": [157, 159],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet shows 'Een uur heeft 60 minuten'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [158],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar_spiekbrief"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "gemengd",
+   "qualname": "gemengd",
+   "kind": "function",
+   "lines": [115, 118],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a fixed '135 min = ? u ? min' question.",
+   "calls": [
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [116]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [116], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_grootheden.py::TestSchermen.test_uren_en_minuten_typen", "lines": [132]}
+   ]
+  },
+  {
+   "name": "naar",
+   "qualname": "naar",
+   "kind": "function",
+   "lines": [121, 123],
+   "params": [
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wiskunde › domein › het onderwerp met dit nummer in T.ALLE › V (vrij oefenen) › Normaal.",
+   "explanation": "Key sequence to free practice of the n-th topic at Normal level.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.naar"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_grootheden.py::TestSchermen.test_digitaal_klokje", "lines": [146, 154]},
+    {"caller": "tests/test_grootheden.py::TestSchermen.test_uren_en_minuten_typen", "lines": [133]}
+   ]
+  }
+ ]
+}

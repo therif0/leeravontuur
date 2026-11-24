@@ -1,0 +1,817 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_menu_architecture.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 311,
+ "source_sha256": "e650098e515a5278b7010bd6a8d16a0fab720ec4c235be75697b0fb65eed42c2",
+ "purpose": "Guards the fixed menu structure: the curriculum (terminal/curriculum) is the only source of the menus.",
+ "details": "Its docstring says: never weaken or skip these tests to make a change pass; ask the father first. TestRegistry checks ids, modes, cheat sheets, stored ids, maximum ten per menu, unique keys and labels; TestModiStarten starts every mode and cheat sheet for real; TestNavigatie walks the menus (main menu order, three choices per topic, going back, old exercise resume, cheat-sheet menu, clickable footer, breadcrumb clicks, no names in menu modules).",
+ "module_docstring": "Bewaakt de vaste menustructuur: het leerplan (terminal/curriculum) is de enige bron van de menu's. Deze tests nooit afzwakken of overslaan om een wijziging te laten slagen; vraag het eerst aan de vader.",
+ "imports": [
+  {"module": "ast", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "re", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 9, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 10, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["vaardigheden"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/vaardigheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["curriculum"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/curriculum/__init__.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.app",
+   "names": ["App"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["leeravontuur/terminal/app.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["NepScherm", "ToetsenOp"],
+   "alias": null,
+   "line": 17,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 79,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {"module": "curses", "names": [], "alias": null, "line": 213, "resolves_to": [], "internal": false},
+  {"module": "json", "names": [], "alias": null, "line": 223, "resolves_to": [], "internal": false},
+  {"module": "curses", "names": [], "alias": null, "line": 285, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [".resolve", "pathlib.Path", "unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "PAKKET",
+   "line": 19,
+   "value_type": "BinOp",
+   "value_preview": "Path(__file__).resolve().parent.parent / 'leeravontuur'",
+   "explanation": ""
+  },
+  {"name": "OK", "line": 20, "value_type": "Constant", "value_preview": "'\\n'", "explanation": ""},
+  {
+   "name": "HOOFDMENU",
+   "line": 22,
+   "value_type": "List",
+   "value_preview": "['▶ Verder', 'Herhalen', *[v.label for v in CU.VAKKEN], *[label for l…",
+   "explanation": ""
+  },
+  {
+   "name": "MENUMODULES",
+   "line": 24,
+   "value_type": "List",
+   "value_preview": "['terminal/app.py', 'terminal/navigatie.py', 'terminal/scherm.py']",
+   "explanation": ""
+  },
+  {
+   "name": "BEWAARD",
+   "line": 27,
+   "value_type": "Set",
+   "value_preview": "{'taal.zinsontleding', 'taal.werkwoordspelling.tt', 'taal.werkwoordsp…",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestRegistry",
+   "qualname": "TestRegistry",
+   "lines": [49, 127],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Registry rules.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_ids_uniek_en_goed_gevormd",
+     "qualname": "TestRegistry.test_ids_uniek_en_goed_gevormd",
+     "kind": "method",
+     "lines": [50, 59],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Topic ids are unique and well formed.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [51]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertRegex", ".assertTrue", ".subTest", "len", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_onderwerp_heeft_modi",
+     "qualname": "TestRegistry.test_elk_onderwerp_heeft_modi",
+     "kind": "method",
+     "lines": [61, 67],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic has at least one mode.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [62]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", ".subTest", "callable"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrieven",
+     "qualname": "TestRegistry.test_spiekbrieven",
+     "kind": "method",
+     "lines": [69, 74],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cheat-sheet definitions are valid.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [70]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".subTest", "callable"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zelfde_titel_zelfde_spiekbrief",
+     "qualname": "TestRegistry.test_zelfde_titel_zelfde_spiekbrief",
+     "kind": "method",
+     "lines": [76, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Spiekbrieven › domein toont elke titel één keer: onderwerpen met dezelfde titel tonen dus dezelfde spiekbrief (anders zou er een wegvallen of een spiekbrief van een ander domein verschijnen).",
+     "explanation": "Topics with the same cheat-sheet title show the same cheat sheet.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [81]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "catalogus.ONDERWERPEN[args[0]].spiekbrief",
+       "lines": [84],
+       "candidates": [],
+       "candidates_count": 22
+      }
+     ],
+     "external_calls": [".assertEqual", ".subTest", "getattr", "len", "repr", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niets_bewaard_zonder_onderwerp",
+     "qualname": "TestRegistry.test_niets_bewaard_zonder_onderwerp",
+     "kind": "method",
+     "lines": [90, 92],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The set of stored ids equals the BEWAARD list (no id loses its menu entry).",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [91]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elke_vaardigheid_staat_in_het_menu",
+     "qualname": "TestRegistry.test_elke_vaardigheid_staat_in_het_menu",
+     "kind": "method",
+     "lines": [94, 97],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een nieuw onderwerp in de kern moet ook in het leerplan (anders kan het kind er niet bij).",
+     "explanation": "Every registered skill appears in the curriculum.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [96]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_hoogstens_tien_per_menu",
+     "qualname": "TestRegistry.test_hoogstens_tien_per_menu",
+     "kind": "method",
+     "lines": [99, 105],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Met de cijfertoetsen 1–9 en 0 kies je hoogstens 10 keuzes.",
+     "explanation": "No menu has more than ten items (digit keys 1-9 and 0).",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertLessEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_altijd_iets_te_starten",
+     "qualname": "TestRegistry.test_altijd_iets_te_starten",
+     "kind": "method",
+     "lines": [107, 111],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Ook als de ouder de timer verbergt (geen 60 seconden) heeft elk onderwerp nog een modus voor Enter.",
+     "explanation": "Every topic has a mode that does not need the timer.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [109]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".subTest", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_toetsen_botsen_niet",
+     "qualname": "TestRegistry.test_toetsen_botsen_niet",
+     "kind": "method",
+     "lines": [113, 121],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "De lettertoetsen zijn verschillende kleine letters en botsen niet met de menutoetsen (j k q, cijfers).",
+     "explanation": "Letter keys are unique and do not clash with menu keys.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertRegex", ".subTest", "len", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_labels_uniek_per_menu",
+     "qualname": "TestRegistry.test_labels_uniek_per_menu",
+     "kind": "method",
+     "lines": [123, 127],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Labels are unique per menu.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestModiStarten",
+   "qualname": "TestModiStarten",
+   "lines": [130, 176],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Elke modus en spiekbrief opent echt het bestaande scherm (zonder fout).",
+   "explanation": "Every mode starts.",
+   "attributes": [
+    {"name": "tmp", "line": 134, "scope": "instance", "value_preview": null},
+    {"name": "oud", "line": 135, "scope": "instance", "value_preview": null},
+    {"name": "opslag", "line": 137, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 138, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestModiStarten.setUp",
+     "kind": "method",
+     "lines": [133, 138],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Temporary data and storage with a child.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::Instellingen", "lines": [138]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [137]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.nieuw_kind",
+       "lines": [138],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["os.environ.get", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "TestModiStarten.tearDown",
+     "kind": "method",
+     "lines": [140, 146],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Closes storage and resets the environment.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.sluit",
+       "lines": [141],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".cleanup", "os.environ.pop"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "start",
+     "qualname": "TestModiStarten.start",
+     "kind": "method",
+     "lines": [148, 157],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "f", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Starts the app on the fake screen with keys.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [150]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [149]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.activeer",
+       "lines": [152],
+       "candidates": ["leeravontuur/terminal/app.py::App.activeer"],
+       "candidates_count": 1
+      },
+      {"expr": "f", "lines": [154], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_menu_architecture.py::TestModiStarten.test_elke_modus", "lines": [163]},
+      {"caller": "tests/test_menu_architecture.py::TestModiStarten.test_elke_spiekbrief", "lines": [175]}
+     ]
+    },
+    {
+     "name": "test_elke_modus",
+     "qualname": "TestModiStarten.test_elke_modus",
+     "kind": "method",
+     "lines": [159, 169],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every mode of every topic opens its screen without error.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [160]},
+      {"target": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [163]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elke_spiekbrief",
+     "qualname": "TestModiStarten.test_elke_spiekbrief",
+     "kind": "method",
+     "lines": [171, 176],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every cheat sheet opens.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [172]},
+      {"target": "tests/test_menu_architecture.py::TestModiStarten.start", "lines": [175]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertGreater", ".subTest", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestNavigatie",
+   "qualname": "TestNavigatie",
+   "lines": [179, 307],
+   "bases": ["TestModiStarten"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Navigation.",
+   "attributes": [
+    {"name": "scherm", "line": 183, "scope": "instance", "value_preview": null},
+    {"name": "app", "line": 191, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "speel",
+     "qualname": "TestNavigatie.speel",
+     "kind": "method",
+     "lines": [180, 192],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "voorrang", "kind": "positional", "default": "None", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Runs the app with keys for the last child and returns the screens.",
+     "calls": [
+      {"target": "leeravontuur/terminal/app.py::App.__init__", "lines": [184]},
+      {"target": "leeravontuur/terminal/nepscherm.py::NepScherm.__init__", "lines": [182]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.start",
+       "lines": [188],
+       "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.opslag.zet_algemeen",
+       "lines": [181],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["unittest.mock.patch.dict"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_broodkruimel_uit_elke_soort_oefening",
+       "lines": [296]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_elk_onderwerp_in_drie_keuzes",
+       "lines": [206]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_gedeelde_spiekbrief_een_keer",
+       "lines": [259]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_hoofdmenu_vaste_volgorde",
+       "lines": [195]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_spiekbrieven_kort",
+       "lines": [236, 239, 242, 245, 248, 253]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_terug_op_hetzelfde_onderwerp",
+       "lines": [216]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_verder_met_een_oefening_van_versie_019",
+       "lines": [227]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_voetregel_in_eenvoudige_tekens",
+       "lines": [276]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_voetregel_klikbaar_in_het_echte_menu",
+       "lines": [270]
+      }
+     ]
+    },
+    {
+     "name": "test_hoofdmenu_vaste_volgorde",
+     "qualname": "TestNavigatie.test_hoofdmenu_vaste_volgorde",
+     "kind": "method",
+     "lines": [194, 197],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The main menu has the fixed order of HOOFDMENU.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [195]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".group", "next", "re.match"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elk_onderwerp_in_drie_keuzes",
+     "qualname": "TestNavigatie.test_elk_onderwerp_in_drie_keuzes",
+     "kind": "method",
+     "lines": [199, 209],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Hoofdmenu → Vak → Domein → Onderwerp: drie keuzes (met cijfers), dan start de oefening (Enter).",
+     "explanation": "Every topic is reachable in three digit choices, then Enter starts.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [206]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", ".subTest", "any", "enumerate", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_terug_op_hetzelfde_onderwerp",
+     "qualname": "TestNavigatie.test_terug_op_hetzelfde_onderwerp",
+     "kind": "method",
+     "lines": [211, 219],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Na een spiekbrief (of oefening) staat dezelfde keuze nog gemarkeerd: de voetregel is die van dat onderwerp.",
+     "explanation": "After a cheat sheet or exercise the same topic is still highlighted.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::domeinen", "lines": [214]},
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [216]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertNotIn", "enumerate", "next", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verder_met_een_oefening_van_versie_019",
+     "qualname": "TestNavigatie.test_verder_met_een_oefening_van_versie_019",
+     "kind": "method",
+     "lines": [221, 230],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een vorige oefening zoals 0.19.0 ze bewaarde (met het oude domein 'Procenten') start via het leerplan.",
+     "explanation": "A last exercise stored by version 0.19 resumes via the curriculum.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [227]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.opslag.zet_algemeen",
+       "lines": [224],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIn", ".assertTrue", "any", "json.dumps", "re.search"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrieven_kort",
+     "qualname": "TestNavigatie.test_spiekbrieven_kort",
+     "kind": "method",
+     "lines": [232, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#20: een domein met één spiekbrief opent die meteen, bij meer staat in de uitleg welke er zijn. Sinds Taal (0.25) vraagt Leerstof eerst \"Welk vak?\"; sinds Werkwoordspelling (0.26) heeft Taal twee domeinen.",
+     "explanation": "A domain with one cheat sheet opens it at once; more explain which exist.",
+     "calls": [
+      {
+       "target": "tests/test_menu_architecture.py::TestNavigatie.speel",
+       "lines": [236, 239, 242, 245, 248, 253]
+      }
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "enumerate", "next", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_gedeelde_spiekbrief_een_keer",
+     "qualname": "TestNavigatie.test_gedeelde_spiekbrief_een_keer",
+     "kind": "method",
+     "lines": [257, 262],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A shared cheat sheet is listed once.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [259]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn", "enumerate", "next", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "naar_hoofdrekenen",
+     "qualname": "TestNavigatie.naar_hoofdrekenen",
+     "kind": "method",
+     "lines": [264, 266],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key sequence to the Hoofdrekenen topic menu.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["enumerate", "next", "str"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_voetregel_in_eenvoudige_tekens",
+       "lines": [276]
+      },
+      {
+       "caller": "tests/test_menu_architecture.py::TestNavigatie.test_voetregel_klikbaar_in_het_echte_menu",
+       "lines": [270]
+      }
+     ]
+    },
+    {
+     "name": "test_voetregel_klikbaar_in_het_echte_menu",
+     "qualname": "TestNavigatie.test_voetregel_klikbaar_in_het_echte_menu",
+     "kind": "method",
+     "lines": [268, 272],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een klik op \"[V] vrij\" in de voetregel doet hetzelfde als de toets V.",
+     "explanation": "A click on '[V] vrij' in the footer does the same as pressing V.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.naar_hoofdrekenen", "lines": [270]},
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [270]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_voetregel_in_eenvoudige_tekens",
+     "qualname": "TestNavigatie.test_voetregel_in_eenvoudige_tekens",
+     "kind": "method",
+     "lines": [274, 280],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Met --ascii alleen gewone tekens, ook in de labels (×) en de voetregel van het onderwerpenmenu.",
+     "explanation": "With --ascii the footer and labels use plain characters.",
+     "calls": [
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.naar_hoofdrekenen", "lines": [276]},
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [276]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_broodkruimel_uit_elke_soort_oefening",
+     "qualname": "TestNavigatie.test_broodkruimel_uit_elke_soort_oefening",
+     "kind": "method",
+     "lines": [282, 298],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Een klik op de broodkruimel midden in een oefening (gewone reeks, maten, snelrekenen) vraagt eerst \"Wil je stoppen?\" (#33); Ja (← Enter) gaat naar dat niveau.",
+     "explanation": "A breadcrumb click in any kind of exercise first asks 'Wil je stoppen?' (#33).",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::domein_van", "lines": [289]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::zoek", "lines": [288]},
+      {"target": "tests/test_menu_architecture.py::TestNavigatie.speel", "lines": [296]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", ".subTest", "any", "enumerate", "str"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geen_namen_in_de_menumodules",
+     "qualname": "TestNavigatie.test_geen_namen_in_de_menumodules",
+     "kind": "method",
+     "lines": [300, 307],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "Namen van vakken, domeinen en onderwerpen staan alleen in het leerplan (terminal/curriculum).",
+     "explanation": "Names of subjects, domains and topics occur only in the curriculum, not in menu modules.",
+     "calls": [
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::domeinen", "lines": [302]},
+      {"target": "leeravontuur/terminal/curriculum/__init__.py::onderwerpen", "lines": [302]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".read_text", ".subTest", "ast.parse", "ast.walk", "isinstance", "set"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

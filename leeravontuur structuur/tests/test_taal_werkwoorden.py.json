@@ -1,0 +1,1899 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_taal_werkwoorden.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 671,
+ "source_sha256": "59e602d924543993fd1943a65291b1f979d7eefcf98d04e86329141786f4d66a",
+ "purpose": "Tests Werkwoordspelling (Taal T3): the verb list against the rules, the sentence with a gap, the thinking steps, thinking errors, strong verbs and past participle, 'put in the past', and the screen.",
+ "details": "The verb list (kern/taal/werkwoorden, W) is checked against the spelling rules ('t kofschip) so a typo in the data turns red. The screen tests use a fixed sentence (vaste_zin patches W.maak_zin) and play terminal/werkwoord.WerkwoordInvoer through the real app on the fake screen; the topics are TT (present), VT (past, weak), STERK (strong), VD (past participle) and NAAR (put into the past).",
+ "module_docstring": "Taal T3 (0.26): Werkwoordspelling. De werkwoordenlijst tegenover de regels, de zin met het gat, het denkschema in stappen, de denkfouten, en het scherm (stappen, Tab, tweede kans, de spiekbrief).",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 7, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerlijnen"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerlijnen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.reeks",
+   "names": ["Hulp"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/reeks.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.taal",
+   "names": ["werkwoorden"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/taal/__init__.py", "leeravontuur/kern/taal/werkwoorden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal",
+   "names": ["werkwoord"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/__init__.py", "leeravontuur/terminal/werkwoord.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.nepscherm",
+   "names": ["HangtFout"],
+   "alias": null,
+   "line": 14,
+   "resolves_to": ["leeravontuur/terminal/nepscherm.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "F1", "OK", "Basis", "naar"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "F1", "OK", "Basis", "naar"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "tests.test_stabiliteit",
+   "names": ["TestAapjes"],
+   "alias": null,
+   "line": 652,
+   "resolves_to": ["tests/test_stabiliteit.py"],
+   "internal": true
+  },
+  {
+   "module": "test_stabiliteit",
+   "names": ["TestAapjes"],
+   "alias": null,
+   "line": 654,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::WwZin", "lines": [455, 456, 457, 458, 459]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["unittest.main"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {"name": "TAB", "line": 20, "value_type": "Constant", "value_preview": "'\\t'", "explanation": ""},
+  {
+   "name": "TT",
+   "line": 21,
+   "value_type": "Tuple",
+   "value_preview": "(W.TEGENWOORDIGE_TIJD, W.VERLEDEN_TIJD_ZWAK)",
+   "explanation": ""
+  },
+  {
+   "name": "VT",
+   "line": 21,
+   "value_type": "Tuple",
+   "value_preview": "(W.TEGENWOORDIGE_TIJD, W.VERLEDEN_TIJD_ZWAK)",
+   "explanation": ""
+  },
+  {
+   "name": "STERK",
+   "line": 22,
+   "value_type": "Tuple",
+   "value_preview": "(W.VERLEDEN_TIJD_STERK, W.VOLTOOID_DEELWOORD, W.ZET_IN_DE_VERLEDEN_TI…",
+   "explanation": ""
+  },
+  {
+   "name": "VD",
+   "line": 22,
+   "value_type": "Tuple",
+   "value_preview": "(W.VERLEDEN_TIJD_STERK, W.VOLTOOID_DEELWOORD, W.ZET_IN_DE_VERLEDEN_TI…",
+   "explanation": ""
+  },
+  {
+   "name": "NAAR",
+   "line": 22,
+   "value_type": "Tuple",
+   "value_preview": "(W.VERLEDEN_TIJD_STERK, W.VOLTOOID_DEELWOORD, W.ZET_IN_DE_VERLEDEN_TI…",
+   "explanation": ""
+  },
+  {
+   "name": "ONDERWERPEN",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "(TT, VT, STERK, VD, NAAR)",
+   "explanation": ""
+  },
+  {
+   "name": "JAREN",
+   "line": 24,
+   "value_type": "Tuple",
+   "value_preview": "('4', '5', '6', 'm1')",
+   "explanation": ""
+  },
+  {
+   "name": "VOORVOEGSELS",
+   "line": 25,
+   "value_type": "Tuple",
+   "value_preview": "('be', 'ge', 'ver', 'ont', 'her')",
+   "explanation": ""
+  },
+  {
+   "name": "FIETS",
+   "line": 455,
+   "value_type": "Call",
+   "value_preview": "W.WwZin('Gisteren', 'Noor in het park.', 'fietsen', 'vt', 'hij', 'Noo…",
+   "explanation": ""
+  },
+  {
+   "name": "WORD",
+   "line": 456,
+   "value_type": "Call",
+   "value_preview": "W.WwZin('', 'jij snel moe?', 'worden', 'tt', 'jij_inv', 'jij', 'word'…",
+   "explanation": ""
+  },
+  {
+   "name": "LIEP",
+   "line": 457,
+   "value_type": "Call",
+   "value_preview": "W.WwZin('Gisteren', 'Noor in het park.', 'lopen', 'vt', 'hij', 'Noor'…",
+   "explanation": ""
+  },
+  {
+   "name": "NU",
+   "line": 458,
+   "value_type": "Call",
+   "value_preview": "W.WwZin('Daarna', 'Noor in het park.', 'fietsen', 'vt', 'hij', 'Noor'…",
+   "explanation": ""
+  },
+  {
+   "name": "GEFIETST",
+   "line": 459,
+   "value_type": "Call",
+   "value_preview": "W.WwZin('Noor heeft gisteren in het park', '.', 'fietsen', 'vd', 'hij…",
+   "explanation": ""
+  },
+  {
+   "name": "FIETS_JUIST",
+   "line": 460,
+   "value_type": "List",
+   "value_preview": "['1', *'fiets', OK, 'j', *'fietste', OK]",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestDeLijst",
+   "qualname": "TestDeLijst",
+   "lines": [38, 98],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Elke vorm staat uitgeschreven; wat een regel volgt, rekent de test na (een tikfout in de lijst wordt rood).",
+   "explanation": "Verb list tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_velden",
+     "qualname": "TestDeLijst.test_de_velden",
+     "kind": "method",
+     "lines": [41, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every verb has all fields, at least 110 verbs, no duplicates.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [42]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertGreaterEqual", ".assertIn", ".assertTrue", "len", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_tegenwoordige_tijd_volgt_de_regel",
+     "qualname": "TestDeLijst.test_de_tegenwoordige_tijd_volgt_de_regel",
+     "kind": "method",
+     "lines": [64, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Only gaan, staan, slaan, zijn, hebben differ from the present-tense rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [65, 67]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_tt", "lines": [65]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_elke_zwakke_vorm_volgt_t_kofschip",
+     "qualname": "TestDeLijst.test_elke_zwakke_vorm_volgt_t_kofschip",
+     "kind": "method",
+     "lines": [73, 80],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every weak past form follows 't kofschip.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [74, 78]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vd", "lines": [80]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vt", "lines": [77]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreaterEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_sterk_werkwoord_volgt_de_regel_niet",
+     "qualname": "TestDeLijst.test_een_sterk_werkwoord_volgt_de_regel_niet",
+     "kind": "method",
+     "lines": [82, 86],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Strong verbs differ from the weak rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [83]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vt", "lines": [85]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertNotEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_regels",
+     "qualname": "TestDeLijst.test_de_regels",
+     "kind": "method",
+     "lines": [88, 98],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The stem-letter rule and 't kofschip decision for example verbs.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::in_kofschip", "lines": [92]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::letter", "lines": [92]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vd", "lines": [97]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::regel_vt", "lines": [95, 96]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [93]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [93, 95, 96, 97]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDeZin",
+   "qualname": "TestDeZin",
+   "lines": [101, 135],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Sentence tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_vorm_past_bij_de_persoon",
+     "qualname": "TestDeZin.test_de_vorm_past_bij_de_persoon",
+     "kind": "method",
+     "lines": [102, 112],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The right form per person (ik word, jij wordt, jij_inv word ...).",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [106, 110, 111, 112]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_drie_patronen",
+     "qualname": "TestDeZin.test_de_drie_patronen",
+     "kind": "method",
+     "lines": [114, 121],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The three sentence patterns: normal, inversion and 'dat' clauses.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [121]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [121]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [115, 116, 117, 120]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "vraag.vol",
+       "lines": [119],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertIsNone", ".assertRegex", ".assertTrue", "random.Random"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_het_onderwerp_staat_niet_ook_achteraan",
+     "qualname": "TestDeZin.test_het_onderwerp_staat_niet_ook_achteraan",
+     "kind": "method",
+     "lines": [123, 128],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The subject does not appear twice.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [127]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [127]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.vol",
+       "lines": [128],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_nakijken",
+     "qualname": "TestDeZin.test_nakijken",
+     "kind": "method",
+     "lines": [130, 135],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Answers are checked leniently on case/spaces and allowed variants (rij for rijd).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken", "lines": [132, 133, 134, 135]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [131, 134]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", "all"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestStappenEnDenkfouten",
+   "qualname": "TestStappenEnDenkfouten",
+   "lines": [138, 215],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Steps and errors.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_het_denkschema",
+     "qualname": "TestStappenEnDenkfouten.test_het_denkschema",
+     "kind": "method",
+     "lines": [139, 159],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The steps: wie, stam, regel, vorm for the right cases.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [141, 146, 151, 155, 159]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [140, 145, 154, 159]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_stappen_nakijken",
+     "qualname": "TestStappenEnDenkfouten.test_de_stappen_nakijken",
+     "kind": "method",
+     "lines": [161, 173],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Each step accepts the right answer only.",
+     "calls": [
+      {
+       "target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap",
+       "lines": [165, 167, 169, 170, 172, 173]
+      },
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken_stap", "lines": [163, 164]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [162, 167, 169, 170, 172, 173]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [162, 165, 166, 168, 171]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_denkfouten_in_de_vorm",
+     "qualname": "TestStappenEnDenkfouten.test_de_denkfouten_in_de_vorm",
+     "kind": "method",
+     "lines": [175, 207],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Typical wrong forms map to the right thinking-error codes.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [201, 206, 207]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [200, 206, 207]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", ".assertIsNotNone", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_uitleg",
+     "qualname": "TestStappenEnDenkfouten.test_de_uitleg",
+     "kind": "method",
+     "lines": [209, 215],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The explanation names the stem and the rule.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [210, 214, 215]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [210, 214, 215]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestElkOnderwerpInElkLeerjaar",
+   "qualname": "TestElkOnderwerpInElkLeerjaar",
+   "lines": [218, 285],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Every topic every year.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_vragen",
+     "qualname": "TestElkOnderwerpInElkLeerjaar.test_de_vragen",
+     "kind": "method",
+     "lines": [219, 255],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic makes valid questions in every year and its cheat sheet has the headings it points at.",
+     "calls": [
+      {"target": "leeravontuur/kern/leerlijnen.py::parameters", "lines": [223]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [239]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::vorm_van", "lines": [229]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kandidaten",
+       "lines": [224, 231],
+       "candidates": [
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kandidaten",
+        "leeravontuur/kern/taal/werkwoorden.py::TegenwoordigeTijd.kandidaten",
+        "leeravontuur/kern/taal/werkwoorden.py::VoltooidDeelwoord.kandidaten",
+        "leeravontuur/kern/taal/werkwoorden.py::ZetInDeVerledenTijd.kandidaten"
+       ],
+       "candidates_count": 4
+      },
+      {
+       "expr": "o.kop_op_spiekbrief",
+       "lines": [247],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.kop_op_spiekbrief",
+        "leeravontuur/kern/taal/zinsontleding.py::Zinsontleding.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.kop_op_spiekbrief",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.kop_op_spiekbrief"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.lees_vraag", "lines": [230], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [226],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [230],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [236], "candidates": [], "candidates_count": 25},
+      {"expr": "o.spiekbrief", "lines": [221], "candidates": [], "candidates_count": 22},
+      {"expr": "o.uitleg", "lines": [255], "candidates": [], "candidates_count": 39},
+      {
+       "expr": "z.vol",
+       "lines": [237],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertGreaterEqual",
+      ".assertIn",
+      ".assertLessEqual",
+      ".assertTrue",
+      "all",
+      "enumerate",
+      "hasattr",
+      "len",
+      "random.Random",
+      "range"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_leerlijn",
+     "qualname": "TestElkOnderwerpInElkLeerjaar.test_de_leerlijn",
+     "kind": "method",
+     "lines": [257, 269],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The easy level uses simple persons and patterns.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [262, 266, 268]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "TT.maak",
+       "lines": [258, 260, 265],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "VT.maak",
+       "lines": [266, 267],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "any", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_herhalen_geeft_hetzelfde_groepje",
+     "qualname": "TestElkOnderwerpInElkLeerjaar.test_herhalen_geeft_hetzelfde_groepje",
+     "kind": "method",
+     "lines": [271, 279],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeat data keeps the person/pattern group.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [279]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "TT.maak",
+       "lines": [278],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.herhaal_data",
+       "lines": [276],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak",
+       "lines": [274],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak_herhaling",
+       "lines": [276],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_spiekbrieven_passen",
+     "qualname": "TestElkOnderwerpInElkLeerjaar.test_de_spiekbrieven_passen",
+     "kind": "method",
+     "lines": [281, 285],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cheat sheets exist and fit.",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "o.spiekbrief", "lines": [283, 284], "candidates": [], "candidates_count": 22}
+     ],
+     "external_calls": [".assertLessEqual", ".assertTrue", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSterkEnVoltooidDeelwoord",
+   "qualname": "TestSterkEnVoltooidDeelwoord",
+   "lines": [288, 387],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "0.26.1: de verleden tijd van sterke werkwoorden, het voltooid deelwoord, en verhuist of verhuisd.",
+   "explanation": "Strong verbs and participle.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_de_zin_met_het_voltooid_deelwoord",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_de_zin_met_het_voltooid_deelwoord",
+     "kind": "method",
+     "lines": [291, 302],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The participle sentence has a gap at the end after 'heeft'.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [298]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [292, 295, 296, 297]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "z.vol",
+       "lines": [294],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", ".assertRegex"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_stappen",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_de_stappen",
+     "kind": "method",
+     "lines": [304, 314],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Steps for strong verbs and the participle.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::kort", "lines": [310]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::rijtje", "lines": [311]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [305, 306, 307, 310, 312]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [311]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [305, 306, 307, 310, 312]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_denkfouten",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_de_denkfouten",
+     "kind": "method",
+     "lines": [316, 343],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Strong verbs given weak endings are diagnosed.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [338, 343]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [337, 343]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", ".assertIsNotNone", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_uitleg",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_de_uitleg",
+     "kind": "method",
+     "lines": [345, 350],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The explanation lists the three forms (lopen - liep - gelopen).",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [346, 347, 348, 349, 350]},
+      {"target": "tests/test_taal_werkwoorden.py::zin", "lines": [346, 347, 348, 349, 350]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertIn", ".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_leerlijn",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_de_leerlijn",
+     "kind": "method",
+     "lines": [352, 363],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The easy level has only weak participles.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "STERK.maak",
+       "lines": [362, 363],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "VD.maak",
+       "lines": [353, 355, 359],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "any", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_sterk_werkwoord_komt_terug_in_een_andere_zin",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_een_sterk_werkwoord_komt_terug_in_een_andere_zin",
+     "kind": "method",
+     "lines": [365, 372],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Repeat keeps the verb but changes the sentence.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stamsoort", "lines": [372]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VD.maak",
+       "lines": [371],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.herhaal_data",
+       "lines": [369],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak",
+       "lines": [367],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.maak_herhaling",
+       "lines": [369],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verhuist_of_verhuisd_op_heel_moeilijk",
+     "qualname": "TestSterkEnVoltooidDeelwoord.test_verhuist_of_verhuisd_op_heel_moeilijk",
+     "kind": "method",
+     "lines": [374, 387],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Homophones like verhuist/verhuisd appear only on the hardest level.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::homofoon", "lines": [375, 379]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::lijst", "lines": [375]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "TT.herhaal_data",
+       "lines": [386, 387],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "TT.maak",
+       "lines": [378, 384],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "TT.maak_herhaling",
+       "lines": [386, 387],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "len", "next", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestZetInDeVerledenTijd",
+   "qualname": "TestZetInDeVerledenTijd",
+   "lines": [390, 452],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "0.26.2: een zin in de tegenwoordige tijd; de pv zoeken en in de verleden tijd zetten.",
+   "explanation": "Put in the past.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "omzet",
+     "qualname": "TestZetInDeVerledenTijd.omzet",
+     "kind": "method",
+     "lines": [393, 395],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "inf", "kind": "positional", "default": null, "annotation": null},
+      {"name": "persoon", "kind": "positional", "default": null, "annotation": null},
+      {"name": "patroon", "kind": "positional", "default": "'gewoon'", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Builds a 'put in the past' sentence for a verb and person.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [395]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [395]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": ["next", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": [
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_denkfouten_en_de_uitleg",
+       "lines": [428, 431, 432, 437]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_stappen",
+       "lines": [413, 421, 425]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.test_de_zin",
+       "lines": [398, 406, 408]
+      }
+     ]
+    },
+    {
+     "name": "test_de_zin",
+     "qualname": "TestZetInDeVerledenTijd.test_de_zin",
+     "kind": "method",
+     "lines": [397, 410],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The present-tense source sentence and the past answer.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.omzet", "lines": [398, 406, 408]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "vraag.vol",
+       "lines": [410],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "z.vol",
+       "lines": [403],
+       "candidates": ["leeravontuur/kern/taal/werkwoorden.py::WwZin.vol"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertRegex", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_stappen",
+     "qualname": "TestZetInDeVerledenTijd.test_de_stappen",
+     "kind": "method",
+     "lines": [412, 425],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Steps: find the verb (word pick), weak/strong, then the form.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_stap", "lines": [418, 419]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::kort", "lines": [420]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::nakijken_stap", "lines": [417]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::stappen", "lines": [414, 422, 423, 424, 425]},
+      {"target": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.omzet", "lines": [413, 421, 425]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_denkfouten_en_de_uitleg",
+     "qualname": "TestZetInDeVerledenTijd.test_de_denkfouten_en_de_uitleg",
+     "kind": "method",
+     "lines": [427, 437],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A still-present form is diagnosed 'ws_tijd'; the explanation.",
+     "calls": [
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::diagnose_vorm", "lines": [429, 430, 431, 432]},
+      {"target": "leeravontuur/kern/taal/werkwoorden.py::uitleg", "lines": [433, 437]},
+      {
+       "target": "tests/test_taal_werkwoorden.py::TestZetInDeVerledenTijd.omzet",
+       "lines": [428, 431, 432, 437]
+      }
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_leerlijn",
+     "qualname": "TestZetInDeVerledenTijd.test_de_leerlijn",
+     "kind": "method",
+     "lines": [439, 452],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The easy level has weak verbs and the plain pattern.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "NAAR.herhaal_data",
+       "lines": [450],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.herhaal_data",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.herhaal_data"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "NAAR.maak",
+       "lines": [440, 442, 446, 448, 451],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "NAAR.maak_herhaling",
+       "lines": [450],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak_herhaling",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak_herhaling"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", "all", "random.Random", "range", "sum"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestHetScherm",
+   "qualname": "TestHetScherm",
+   "lines": [468, 626],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "speel_zin",
+     "qualname": "TestHetScherm.speel_zin",
+     "kind": "method",
+     "lines": [469, 473],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "z", "kind": "positional", "default": null, "annotation": null},
+      {"name": "toetsen", "kind": "positional", "default": null, "annotation": null},
+      {"name": "niveau", "kind": "positional", "default": "OK", "annotation": null},
+      {"name": "opties", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Plays keys on a fixed sentence with the right topic.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::vaste_zin", "lines": [472]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [473],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": ["test_schermen.naar"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_alles_meteen_juist", "lines": [479]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_cijfers_en_tekens_typ_je_niet",
+       "lines": [619]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_de_keuze_met_pijlen_enter_en_de_muis",
+       "lines": [526]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_een_stap_fout_dan_tweede_kans_en_dan_de_uitleg",
+       "lines": [517]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_een_sterk_werkwoord", "lines": [568]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_f1_tips_en_dan_de_spiekbrief_bij_de_stap",
+       "lines": [538]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_fout_in_de_vorm_dan_tweede_kans",
+       "lines": [497]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_het_voltooid_deelwoord", "lines": [578]},
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_moeilijk_typt_meteen", "lines": [552]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_tab_meteen_typen_en_terug",
+       "lines": [530, 533]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_tegenwoordige_tijd_jij_achter_het_werkwoord",
+       "lines": [559]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_twee_keer_fout_dan_het_antwoord",
+       "lines": [506]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_zet_in_de_verleden_tijd", "lines": [587]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_zet_in_de_verleden_tijd_met_de_muis_en_tab",
+       "lines": [604, 606]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_zonder_kleur_en_eenvoudige_tekens",
+       "lines": [624]
+      }
+     ]
+    },
+    {
+     "name": "antwoord",
+     "qualname": "TestHetScherm.antwoord",
+     "kind": "method",
+     "lines": [475, 476],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "app", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": "VT", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The latest stored answer of a topic.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "app.opslag.recente_antwoorden",
+       "lines": [476],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_alles_meteen_juist", "lines": [487]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_een_stap_fout_dan_tweede_kans_en_dan_de_uitleg",
+       "lines": [521]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_een_sterk_werkwoord", "lines": [575]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_fout_in_de_vorm_dan_tweede_kans",
+       "lines": [500]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_het_voltooid_deelwoord", "lines": [583]},
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_tegenwoordige_tijd_jij_achter_het_werkwoord",
+       "lines": [565]
+      },
+      {
+       "caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_twee_keer_fout_dan_het_antwoord",
+       "lines": [510]
+      },
+      {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.test_zet_in_de_verleden_tijd", "lines": [598]}
+     ]
+    },
+    {
+     "name": "test_alles_meteen_juist",
+     "qualname": "TestHetScherm.test_alles_meteen_juist",
+     "kind": "method",
+     "lines": [478, 493],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "All steps right at once; the step titles and the sentence with the gap show.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [487]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [479]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", ".ergens", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_fout_in_de_vorm_dan_tweede_kans",
+     "qualname": "TestHetScherm.test_fout_in_de_vorm_dan_tweede_kans",
+     "kind": "method",
+     "lines": [495, 503],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong form gives a hint and a second try.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [500]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [497]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "app.opslag.herhaalbak",
+       "lines": [503],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", ".ergens", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_twee_keer_fout_dan_het_antwoord",
+     "qualname": "TestHetScherm.test_twee_keer_fout_dan_het_antwoord",
+     "kind": "method",
+     "lines": [505, 512],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Two wrong forms show the answer.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [510]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [506]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_stap_fout_dan_tweede_kans_en_dan_de_uitleg",
+     "qualname": "TestHetScherm.test_een_stap_fout_dan_tweede_kans_en_dan_de_uitleg",
+     "kind": "method",
+     "lines": [514, 521],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong step: second chance, then the explanation.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [521]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [517]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_keuze_met_pijlen_enter_en_de_muis",
+     "qualname": "TestHetScherm.test_de_keuze_met_pijlen_enter_en_de_muis",
+     "kind": "method",
+     "lines": [523, 527],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Choice steps work with arrows, Enter and a click.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [526]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tab_meteen_typen_en_terug",
+     "qualname": "TestHetScherm.test_tab_meteen_typen_en_terug",
+     "kind": "method",
+     "lines": [529, 535],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Tab goes to typing the form at once and back.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [530, 533]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens", "any", "enumerate", "max"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_f1_tips_en_dan_de_spiekbrief_bij_de_stap",
+     "qualname": "TestHetScherm.test_f1_tips_en_dan_de_spiekbrief_bij_de_stap",
+     "kind": "method",
+     "lines": [537, 544],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "F1 tips, then the cheat sheet at the step; Esc returns.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [538]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertTrue", ".ergens", "next"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_s_in_het_menu_opent_de_spiekbrief",
+     "qualname": "TestHetScherm.test_s_in_het_menu_opent_de_spiekbrief",
+     "kind": "method",
+     "lines": [546, 549],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "S in the topic menu opens the cheat sheet.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [548],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_moeilijk_typt_meteen",
+     "qualname": "TestHetScherm.test_moeilijk_typt_meteen",
+     "kind": "method",
+     "lines": [551, 556],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "On the hard level the form is typed at once.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [552]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tegenwoordige_tijd_jij_achter_het_werkwoord",
+     "qualname": "TestHetScherm.test_tegenwoordige_tijd_jij_achter_het_werkwoord",
+     "kind": "method",
+     "lines": [558, 565],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Jij' after the verb (inversion): the verb has no -t.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [565]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [559]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_een_sterk_werkwoord",
+     "qualname": "TestHetScherm.test_een_sterk_werkwoord",
+     "kind": "method",
+     "lines": [567, 575],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A strong verb: the weak form is corrected to the strong one.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [575]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [568]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_het_voltooid_deelwoord",
+     "qualname": "TestHetScherm.test_het_voltooid_deelwoord",
+     "kind": "method",
+     "lines": [577, 583],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The participle sentence is played.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [583]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [578]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zet_in_de_verleden_tijd",
+     "qualname": "TestHetScherm.test_zet_in_de_verleden_tijd",
+     "kind": "method",
+     "lines": [585, 600],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The 'put in the past' flow: find the verb, soort, form.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.antwoord", "lines": [598]},
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [587]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertTrue", ".ergens", "bool"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zet_in_de_verleden_tijd_met_de_muis_en_tab",
+     "qualname": "TestHetScherm.test_zet_in_de_verleden_tijd_met_de_muis_en_tab",
+     "kind": "method",
+     "lines": [602, 609],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The same with a click on the word and Tab.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [604, 606]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertFalse", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_de_spiekbrief_met_de_rijtjes",
+     "qualname": "TestHetScherm.test_de_spiekbrief_met_de_rijtjes",
+     "kind": "method",
+     "lines": [611, 616],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet shows the strong-verb lists.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [614],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_cijfers_en_tekens_typ_je_niet",
+     "qualname": "TestHetScherm.test_cijfers_en_tekens_typ_je_niet",
+     "kind": "method",
+     "lines": [618, 621],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Digits and symbols are not typed in the word box.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [619]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_zonder_kleur_en_eenvoudige_tekens",
+     "qualname": "TestHetScherm.test_zonder_kleur_en_eenvoudige_tekens",
+     "kind": "method",
+     "lines": [623, 626],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "No colour and ASCII still shows the result.",
+     "calls": [
+      {"target": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [624]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", ".ergens", "all", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestZonderHulp",
+   "qualname": "TestZonderHulp",
+   "lines": [629, 643],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "Hulp.EXAMEN (later): de Oefenaar zet tweede_kans uit; dan is één fout meteen het einde van de vraag.",
+   "explanation": "No-help test.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_een_fout_is_fout",
+     "qualname": "TestZonderHulp.test_een_fout_is_fout",
+     "kind": "method",
+     "lines": [632, 643],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Without a second chance (exam) one mistake ends the question.",
+     "calls": [
+      {"target": "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.__init__", "lines": [635]},
+      {"target": "tests/test_taal_werkwoorden.py::vaste_zin", "lines": [633]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "VT.maak",
+       "lines": [634],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {"expr": "obj.toets", "lines": [637, 641, 642], "candidates": [], "candidates_count": 17},
+      {
+       "expr": "obj.wissel",
+       "lines": [639],
+       "candidates": [
+        "leeravontuur/terminal/balk.py::BalkInvoer.wissel",
+        "leeravontuur/terminal/venster.py::Klokvenster.wissel",
+        "leeravontuur/terminal/werkwoord.py::WerkwoordInvoer.wissel",
+        "leeravontuur/terminal/zinsdelen.py::ZinsdelenInvoer.wissel"
+       ],
+       "candidates_count": 4
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone", "ord"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestGerichteAap",
+   "qualname": "TestGerichteAap",
+   "lines": [646, 667],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "Willekeurig drukken in de werkwoordmachine op elk niveau: geen fout en niets mag blijven hangen. Ook in de lange aapjestest (LEERAVONTUUR_AAP_RONDES).",
+   "explanation": "Monkey test.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_aapjes_in_de_werkwoordmachine",
+     "qualname": "TestGerichteAap.test_aapjes_in_de_werkwoordmachine",
+     "kind": "method",
+     "lines": [650, 667],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A monkey test of random keys on every level.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [662],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertTrue",
+      ".ergens",
+      ".fail",
+      "AssertionError",
+      "int",
+      "len",
+      "os.environ.get",
+      "random.Random",
+      "range",
+      "test_schermen.naar",
+      "test_stabiliteit.TestAapjes.gebeurtenissen",
+      "type",
+      "unittest.mock.patch.dict"
+     ],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "zin",
+   "qualname": "zin",
+   "kind": "function",
+   "lines": [28, 35],
+   "params": [
+    {"name": "inf", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "persoon", "kind": "positional", "default": null, "annotation": null},
+    {"name": "patroon", "kind": "positional", "default": "'gewoon'", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een zin voor dit werkwoord met deze persoon (en dit patroon).",
+   "explanation": "A sentence for a verb, form, person and pattern (searches 50 draws with a fixed seed).",
+   "calls": [
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::maak_zin", "lines": [32]},
+    {"target": "leeravontuur/kern/taal/werkwoorden.py::ww", "lines": [32]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["AssertionError", "random.Random", "range"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_de_drie_patronen",
+     "lines": [115, 116, 117, 120]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_de_vorm_past_bij_de_persoon",
+     "lines": [106, 110, 111, 112]
+    },
+    {"caller": "tests/test_taal_werkwoorden.py::TestDeZin.test_nakijken", "lines": [131, 134]},
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_denkfouten_in_de_vorm",
+     "lines": [200, 206, 207]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_stappen_nakijken",
+     "lines": [162, 165, 166, 168, 171]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_de_uitleg",
+     "lines": [210, 214, 215]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestStappenEnDenkfouten.test_het_denkschema",
+     "lines": [140, 145, 154, 159]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_denkfouten",
+     "lines": [337, 343]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_stappen",
+     "lines": [305, 306, 307, 310, 312]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_uitleg",
+     "lines": [346, 347, 348, 349, 350]
+    },
+    {
+     "caller": "tests/test_taal_werkwoorden.py::TestSterkEnVoltooidDeelwoord.test_de_zin_met_het_voltooid_deelwoord",
+     "lines": [292, 295, 296, 297]
+    }
+   ]
+  },
+  {
+   "name": "vaste_zin",
+   "qualname": "vaste_zin",
+   "kind": "function",
+   "lines": [463, 465],
+   "params": [
+    {"name": "z", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Elke vraag is deze zin (zodat de test weet welke toetsen juist zijn).",
+   "explanation": "Context manager that makes every question this sentence.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["unittest.mock.patch.object"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_taal_werkwoorden.py::TestHetScherm.speel_zin", "lines": [472]},
+    {"caller": "tests/test_taal_werkwoorden.py::TestZonderHulp.test_een_fout_is_fout", "lines": [633]}
+   ]
+  }
+ ]
+}

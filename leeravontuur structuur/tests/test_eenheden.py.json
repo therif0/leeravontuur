@@ -1,0 +1,489 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_eenheden.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 159,
+ "source_sha256": "a5293310cec748983cd7ceb205b151208b276d40a10d496b8793dbb976eb0379",
+ "purpose": "Tests unit conversion: arithmetic, the unit table, diagnosis, question generation and the extra categories.",
+ "details": "Covers kern/wiskunde/eenheden (E.Omzetting, E.verwachte_cijfers, E.controleer_tabel, E.aflezen, E.diagnose, E.maak_vraag, E.eenheden_voor, E.spiekbrief) for length, mass, volume, area and capacity.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "unittest", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 4,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["fmt", "lees_getal"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/eenheden.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestRekenen",
+   "qualname": "TestRekenen",
+   "lines": [13, 29],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Arithmetic.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_omzettingen",
+     "qualname": "TestRekenen.test_omzettingen",
+     "kind": "method",
+     "lines": [14, 20],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A list of conversions gives the right answers with Decimal exactness.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [20]},
+      {"target": "tests/test_eenheden.py::omz", "lines": [20]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_lees_getal",
+     "qualname": "TestRekenen.test_lees_getal",
+     "kind": "method",
+     "lines": [22, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "lees_getal reads comma, dot and thousands notations exactly.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_getal", "lines": [23, 24, 25, 26, 27, 29]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestTabel",
+   "qualname": "TestTabel",
+   "lines": [32, 49],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Table logic.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_verwachte_cijfers",
+     "qualname": "TestTabel.test_verwachte_cijfers",
+     "kind": "method",
+     "lines": [33, 36],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Digits per table column for several conversions.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [34, 35, 36]},
+      {"target": "tests/test_eenheden.py::omz", "lines": [34, 35, 36]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_controleer_tabel",
+     "qualname": "TestTabel.test_controleer_tabel",
+     "kind": "method",
+     "lines": [38, 42],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A filled table is judged per cell; extra leading zeros are tolerated.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::controleer_tabel", "lines": [40, 41, 42]},
+      {"target": "tests/test_eenheden.py::omz", "lines": [39]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIs", ".assertTrue", "all"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_aflezen",
+     "qualname": "TestTabel.test_aflezen",
+     "kind": "method",
+     "lines": [44, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Reading the answer off the table with the comma at a column.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::aflezen", "lines": [45, 46, 47, 48, 49]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [52, 61],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Thinking errors.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_denkfouten",
+     "qualname": "TestDiagnose.test_denkfouten",
+     "kind": "method",
+     "lines": [53, 61],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Thinking errors such as 'not converted' are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [55, 56, 57, 58, 59, 60, 61]},
+      {"target": "tests/test_eenheden.py::omz", "lines": [54]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestVragenMaken",
+   "qualname": "TestVragenMaken",
+   "lines": [64, 98],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Question generation.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_per_leerjaar",
+     "qualname": "TestVragenMaken.test_per_leerjaar",
+     "kind": "method",
+     "lines": [65, 79],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Generated conversions respect the units and steps of each year, also for the table form.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [71]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [77]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [78]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [79]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotEqual", ".assertTrue", "decimal.Decimal", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_grenzen_4de_leerjaar",
+     "qualname": "TestVragenMaken.test_grenzen_4de_leerjaar",
+     "kind": "method",
+     "lines": [81, 86],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "In the 4th year the unit step is at most 3.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [83]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".to_integral_value", "abs", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_niet_twee_keer_na_elkaar",
+     "qualname": "TestVragenMaken.test_niet_twee_keer_na_elkaar",
+     "kind": "method",
+     "lines": [88, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The same question never repeats immediately.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [91]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertNotEqual", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestVragenMaken.test_spiekbrief",
+     "kind": "method",
+     "lines": [96, 98],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet has an example.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief", "lines": [97]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertTrue", "any"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestMeerEenheden",
+   "qualname": "TestMeerEenheden",
+   "lines": [105, 155],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "More categories.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_omzettingen",
+     "qualname": "TestMeerEenheden.test_omzettingen",
+     "kind": "method",
+     "lines": [106, 114],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Conversions for capacity, area (incl. ha, a) and volume.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::fmt", "lines": [114]},
+      {"target": "tests/test_eenheden.py::omz_in", "lines": [114]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".subTest"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_tabel_met_meer_vakjes",
+     "qualname": "TestMeerEenheden.test_tabel_met_meer_vakjes",
+     "kind": "method",
+     "lines": [116, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Tables with more cells per unit (area, volume) fit and give the right digits.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheid_bij", "lines": [124]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::kolom", "lines": [124]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [118]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_tekst", "lines": [120, 125]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::verwachte_cijfers", "lines": [119]},
+      {"target": "tests/test_eenheden.py::omz_in", "lines": [117]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertTrue", "all", "any", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_diagnose_een_vakje_per_eenheid",
+     "qualname": "TestMeerEenheden.test_diagnose_een_vakje_per_eenheid",
+     "kind": "method",
+     "lines": [127, 131],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Using one cell per unit for area is diagnosed ('een_vakje_per_eenheid').",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::diagnose", "lines": [129, 131]},
+      {"target": "tests/test_eenheden.py::omz_in", "lines": [128, 130]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertNotEqual", "decimal.Decimal"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_soorten_per_leerjaar",
+     "qualname": "TestMeerEenheden.test_soorten_per_leerjaar",
+     "kind": "method",
+     "lines": [133, 148],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Which units are offered per year (e.g. m² not in the 4th year).",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::eenheden_voor", "lines": [134, 135, 136, 137, 139]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::maak_vraag", "lines": [142]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::past_in_tabel", "lines": [146]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::regel_uitleg", "lines": [147]},
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::tabel_uitleg", "lines": [148]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", ".assertNotIn", ".assertTrue", "decimal.Decimal", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief_past",
+     "qualname": "TestMeerEenheden.test_spiekbrief_past",
+     "kind": "method",
+     "lines": [150, 155],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Cheat-sheet lines fit in 78 characters.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/eenheden.py::spiekbrief", "lines": [151, 153]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertIn", ".assertLessEqual", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "omz",
+   "qualname": "omz",
+   "kind": "function",
+   "lines": [9, 10],
+   "params": [
+    {"name": "getal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "van", "kind": "positional", "default": null, "annotation": null},
+    {"name": "naar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a conversion from unit names and a number (category derived).",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [10]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_eenheden.py::TestDiagnose.test_denkfouten", "lines": [54]},
+    {"caller": "tests/test_eenheden.py::TestRekenen.test_omzettingen", "lines": [20]},
+    {"caller": "tests/test_eenheden.py::TestTabel.test_controleer_tabel", "lines": [39]},
+    {"caller": "tests/test_eenheden.py::TestTabel.test_verwachte_cijfers", "lines": [34, 35, 36]}
+   ]
+  },
+  {
+   "name": "omz_in",
+   "qualname": "omz_in",
+   "kind": "function",
+   "lines": [101, 102],
+   "params": [
+    {"name": "cat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "getal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "van", "kind": "positional", "default": null, "annotation": null},
+    {"name": "naar", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a conversion in an explicit category.",
+   "calls": [
+    {"target": "leeravontuur/kern/wiskunde/eenheden.py::Omzetting", "lines": [102]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["decimal.Decimal"],
+   "dynamic": [],
+   "called_by": [
+    {
+     "caller": "tests/test_eenheden.py::TestMeerEenheden.test_diagnose_een_vakje_per_eenheid",
+     "lines": [128, 130]
+    },
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_omzettingen", "lines": [114]},
+    {"caller": "tests/test_eenheden.py::TestMeerEenheden.test_tabel_met_meer_vakjes", "lines": [117]}
+   ]
+  }
+ ]
+}

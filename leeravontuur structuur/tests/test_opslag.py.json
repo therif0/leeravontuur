@@ -1,0 +1,749 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_opslag.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 171,
+ "source_sha256": "3761e9fbe514d7ced63b1e697d17f45223d9eb64599dcae0d79c08aad2b0b3a7",
+ "purpose": "Tests storage (kern/opslag.py): schema migrations, children and settings, append-only answers, sessions and opening/fallback.",
+ "details": "Most tests use an in-memory Opslag; TestOpenen uses a temporary LEERAVONTUUR_DATA folder to check importing the phase-1 JSON settings, falling back to memory when the folder is read-only, and moving a corrupt file aside.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "json", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "os", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "sqlite3", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "sys", "names": [], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {"module": "tempfile", "names": [], "alias": null, "line": 5, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "datetime",
+   "names": ["datetime", "timedelta", "timezone"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "pathlib", "names": ["Path"], "alias": null, "line": 8, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["instellingen", "klok"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/instellingen.py", "leeravontuur/kern/klok.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.instellingen",
+   "names": ["Instellingen"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/instellingen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["MIGRATIES", "Opslag"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.sessie",
+   "names": ["Sessie"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/kern/sessie.py"],
+   "internal": true
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 105, "resolves_to": [], "internal": false}
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {
+   "scope": "module",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["datetime.timedelta", "datetime.timezone", "unittest.main"],
+   "dynamic": []
+  },
+  {
+   "scope": "<class TestOpenen>",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["unittest.skipIf"],
+   "dynamic": []
+  }
+ ],
+ "constants": [
+  {
+   "name": "CET",
+   "line": 15,
+   "value_type": "Call",
+   "value_preview": "timezone(timedelta(hours=1))",
+   "explanation": ""
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestSchema",
+   "qualname": "TestSchema",
+   "lines": [18, 29],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Schema tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_migraties",
+     "qualname": "TestSchema.test_migraties",
+     "kind": "method",
+     "lines": [19, 29],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A new database gets the current schema version and can be reopened.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [22, 26]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [24],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.sluit",
+       "lines": [25],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o2.kinderen",
+       "lines": [28],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o2.sluit",
+       "lines": [29],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "len", "pathlib.Path", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKinderen",
+   "qualname": "TestKinderen",
+   "lines": [32, 54],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Children tests.",
+   "attributes": [
+    {"name": "o", "line": 34, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestKinderen.setUp",
+     "kind": "method",
+     "lines": [33, 34],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "In-memory storage.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [34]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_nieuw_kind_en_instellingen",
+     "qualname": "TestKinderen.test_nieuw_kind_en_instellingen",
+     "kind": "method",
+     "lines": [36, 48],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creating children gives distinct ids; settings round-trip.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_instellingen",
+       "lines": [44],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_instellingen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.instellingen_van",
+       "lines": [41, 45, 48],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.kind",
+       "lines": [47],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kind",
+        "leeravontuur/terminal/schermen/winkel.py::AvatarSchermen.kind"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.kinderen",
+       "lines": [40],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [37, 38],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertNotEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_algemeen",
+     "qualname": "TestKinderen.test_algemeen",
+     "kind": "method",
+     "lines": [50, 54],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The key/value 'algemeen' store sets and overwrites values.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.algemeen",
+       "lines": [51, 54],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.zet_algemeen",
+       "lines": [52, 53],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.zet_algemeen"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIsNone"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestAntwoorden",
+   "qualname": "TestAntwoorden",
+   "lines": [57, 112],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Answers and sessions.",
+   "attributes": [
+    {"name": "o", "line": 59, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 60, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestAntwoorden.setUp",
+     "kind": "method",
+     "lines": [58, 60],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Storage with a child.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [59]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [60],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "TestAntwoorden.tearDown",
+     "kind": "method",
+     "lines": [62, 63],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Resets the clock.",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [63]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "bewaar",
+     "qualname": "TestAntwoorden.bewaar",
+     "kind": "method",
+     "lines": [65, 68],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "juist", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores one answer in a new session.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [67],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [66],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_opslag.py::TestAntwoorden.test_alleen_toevoegen", "lines": [81]},
+      {"caller": "tests/test_opslag.py::TestAntwoorden.test_telling_per_dag", "lines": [72, 74, 75]}
+     ]
+    },
+    {
+     "name": "test_telling_per_dag",
+     "qualname": "TestAntwoorden.test_telling_per_dag",
+     "kind": "method",
+     "lines": [70, 78],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Today's count uses the local day (changes at midnight, not at UTC).",
+     "calls": [
+      {"target": "leeravontuur/kern/klok.py::zet", "lines": [71, 73]},
+      {"target": "tests/test_opslag.py::TestAntwoorden.bewaar", "lines": [72, 74, 75]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.telling",
+       "lines": [76, 77, 78],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.telling"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", "datetime.datetime"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_alleen_toevoegen",
+     "qualname": "TestAntwoorden.test_alleen_toevoegen",
+     "kind": "method",
+     "lines": [80, 83],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "UPDATE on answers is refused by the database (append only).",
+     "calls": [
+      {"target": "tests/test_opslag.py::TestAntwoorden.bewaar", "lines": [81]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertRaises", ".execute"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_onbekend_kind_geweigerd",
+     "qualname": "TestAntwoorden.test_onbekend_kind_geweigerd",
+     "kind": "method",
+     "lines": [85, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "An answer for an unknown child violates the foreign key.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [88],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [86],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertRaises"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_sessie",
+     "qualname": "TestAntwoorden.test_sessie",
+     "kind": "method",
+     "lines": [90, 101],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A Sessie stores answers, tracks time and closes with a summary row.",
+     "calls": [
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [91]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.antwoorden",
+       "lines": [96],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.o.sessies",
+       "lines": [101],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sessies"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [93, 95],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [92, 94],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertGreaterEqual", ".assertIsNotNone", "json.loads", "len"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_sessie_pauze_telt_niet",
+     "qualname": "TestAntwoorden.test_sessie_pauze_telt_niet",
+     "kind": "method",
+     "lines": [103, 112],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "#33: de tijd in het kader \"Wil je stoppen?\" telt niet mee voor de vraag.",
+     "explanation": "Time in the 'Wil je stoppen?' dialog is not counted for the question (#33).",
+     "calls": [
+      {"target": "leeravontuur/kern/sessie.py::Sessie.__init__", "lines": [108]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.antwoorden",
+       "lines": [112],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.antwoord",
+       "lines": [111],
+       "candidates": [
+        "leeravontuur/kern/sessie.py::Sessie.antwoord",
+        "leeravontuur/kern/wiskunde/eenheden.py::Omzetting.antwoord"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.pauze",
+       "lines": [110],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.pauze", "leeravontuur/terminal/scherm.py::Scherm.pauze"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "ses.vraag_getoond",
+       "lines": [109],
+       "candidates": ["leeravontuur/kern/sessie.py::Sessie.vraag_getoond"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", "iter", "next", "unittest.mock.patch"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestOpenen",
+   "qualname": "TestOpenen",
+   "lines": [115, 167],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opening and fallback.",
+   "attributes": [
+    {"name": "tmp", "line": 117, "scope": "instance", "value_preview": null},
+    {"name": "oud", "line": 118, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestOpenen.setUp",
+     "kind": "method",
+     "lines": [116, 119],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Temporary data folder.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["os.environ.get", "tempfile.TemporaryDirectory"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "tearDown",
+     "qualname": "TestOpenen.tearDown",
+     "kind": "method",
+     "lines": [121, 126],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Resets the environment.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": [".cleanup", "os.environ.pop"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_overzetten_uit_fase_1",
+     "qualname": "TestOpenen.test_overzetten_uit_fase_1",
+     "kind": "method",
+     "lines": [128, 143],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Old phase-1 settings JSON is imported into the database.",
+     "calls": [
+      {"target": "leeravontuur/kern/instellingen.py::pad", "lines": [129]},
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [132, 141]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.algemeen",
+       "lines": [137],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.algemeen"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.instellingen_van",
+       "lines": [135],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.instellingen_van"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [133],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.sluit",
+       "lines": [140],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o2.kinderen",
+       "lines": [142],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o2.sluit",
+       "lines": [143],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertFalse",
+      ".assertTrue",
+      ".exists",
+      ".with_name",
+      ".write_text",
+      "json.dumps",
+      "len"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_terugval_naar_geheugen",
+     "qualname": "TestOpenen.test_terugval_naar_geheugen",
+     "kind": "method",
+     "lines": [146, 158],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": ["unittest.skipIf(sys.platform == 'win32'…"],
+     "docstring": "",
+     "explanation": "With an unwritable folder storage falls back to memory with a message (skipped as root).",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [153]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [156],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nieuw_kind",
+       "lines": [155],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [
+      ".assertEqual",
+      ".assertIsNotNone",
+      ".chmod",
+      ".mkdir",
+      ".skipTest",
+      "hasattr",
+      "os.geteuid",
+      "pathlib.Path"
+     ],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_onbruikbaar_bestand_gaat_opzij",
+     "qualname": "TestOpenen.test_onbruikbaar_bestand_gaat_opzij",
+     "kind": "method",
+     "lines": [160, 167],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A file that is not a database is moved aside and a new one is made.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.open", "lines": [163]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.sluit",
+       "lines": [167],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.sluit", "leeravontuur/kern/sessie.py::Sessie.sluit"],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".glob", ".write_text", "len", "list", "pathlib.Path", "str"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}

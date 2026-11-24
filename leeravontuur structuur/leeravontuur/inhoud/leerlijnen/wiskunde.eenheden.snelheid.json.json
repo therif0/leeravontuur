@@ -1,0 +1,52 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/leerlijnen/wiskunde.eenheden.snelheid.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 46,
+ "source_sha256": "94ebee7544322d31aefccc75a7d536e6fa394c1154192b25860dc0b5b3b249b5",
+ "purpose": "Learning line for distance, time and speed (from year 6).",
+ "details": "Only years 6 and m1 have content; earlier years are null (not offered). Loaded by kern/leerlijnen.py (laad/parameters) which the topic's generator calls with the child's school year; checked by tests/test_leerlijnen.py and turned into the handbook tables by docs/tools/handleiding.py.",
+ "keys": ["vaardigheid", "omschrijving", "doelen", "parameters", "leerlijn"],
+ "shape": {
+  "vaardigheid": "string",
+  "omschrijving": "string",
+  "doelen": {"$list": 0},
+  "parameters": {"soorten": "string", "tijden": "string"},
+  "leerlijn": {
+   "3": "null",
+   "4": "null",
+   "5": "null",
+   "6": {
+    "soorten": {"$list": 3, "$items": "string"},
+    "tijden": {"$list": 5, "$items": "number"}
+   },
+   "m1": {
+    "soorten": {"$list": 4, "$items": "string"},
+    "tijden": {"$list": 8, "$items": "number"}
+   }
+  }
+ },
+ "read_by": ["leeravontuur/kern/leerlijnen.py", "leeravontuur/kern/wiskunde/grootheden.py"],
+ "field_notes": [
+  {
+   "key": "vaardigheid",
+   "explanation": "The stored skill id this learning line belongs to; the same as the file name. Stored ids are never renamed."
+  },
+  {
+   "key": "omschrijving",
+   "explanation": "A short Dutch description of the skill (shown in the handbook and reports)."
+  },
+  {"key": "doelen", "explanation": "Goals of the skill (a list; empty for most skills)."},
+  {
+   "key": "parameters",
+   "explanation": "The parameters of this skill and their type name (lijst, int, bool, tekst, getal); a value of the leerlijn must match."
+  },
+  {
+   "key": "leerlijn",
+   "explanation": "Per school year (3, 4, 5, 6, m1, m2) the parameter values; a missing or null year means the skill is not offered then (the level cannot be chosen)."
+  },
+  {"key": "parameters.soorten", "explanation": "The kinds: afstand, tijd, snelheid, omzetten (km/u ↔ m/s)."},
+  {"key": "parameters.tijden", "explanation": "The travel times in minutes that may be used."}
+ ]
+}

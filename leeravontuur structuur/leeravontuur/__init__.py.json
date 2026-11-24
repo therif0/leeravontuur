@@ -1,0 +1,60 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/__init__.py",
+ "kind": "python",
+ "layer": "package",
+ "lines": 7,
+ "source_sha256": "6e21ab1e330a25a9b7f35c80a7a670f5657768ea902512dde6de7bb77557f6f9",
+ "purpose": "The program's identity: name, version, maker, motto and licence.",
+ "details": "Constants only. VERSIE is the version shown in the title screen, the error log and the feedback file, and is raised for each release (currently 0.28.0).",
+ "module_docstring": "Leeravontuur: een gratis leerprogramma van Solve It Now. Iedereen moet kunnen leren.",
+ "imports": [],
+ "imported_by": [
+  "leeravontuur/__main__.py",
+  "leeravontuur/kern/feedback.py",
+  "leeravontuur/kern/foutlog.py",
+  "leeravontuur/terminal/app.py",
+  "tests/test_starten.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "NAAM",
+   "line": 3,
+   "value_type": "Constant",
+   "value_preview": "'Leeravontuur'",
+   "explanation": "Program name."
+  },
+  {
+   "name": "VERSIE",
+   "line": 4,
+   "value_type": "Constant",
+   "value_preview": "'0.28.0'",
+   "explanation": "Version number."
+  },
+  {
+   "name": "MAKER",
+   "line": 5,
+   "value_type": "Constant",
+   "value_preview": "'Solve It Now'",
+   "explanation": "Maker (Solve It Now)."
+  },
+  {
+   "name": "MOTTO",
+   "line": 6,
+   "value_type": "Constant",
+   "value_preview": "'Iedereen moet kunnen leren'",
+   "explanation": "Motto."
+  },
+  {
+   "name": "LICENTIE",
+   "line": 7,
+   "value_type": "Constant",
+   "value_preview": "'CC BY-NC-SA 4.0'",
+   "explanation": "Licence."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": []
+}

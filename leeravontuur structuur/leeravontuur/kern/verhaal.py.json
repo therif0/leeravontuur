@@ -1,0 +1,256 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/verhaal.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 151,
+ "source_sha256": "18abd02717ad06265fcc172e2673bee9e049343d605915f82eb4289e5060b04c",
+ "purpose": "Fills sentence templates into pieces of text with markable data and keywords, for word problems.",
+ "details": "A template mixes plain text with {name} slots, {a thing} (a datum with its noun, correct singular/plural), {thing.enk}, {de:thing}, {elk:thing}, {een:thing} (number and article forms), {?} for the answer box and *...* for key words that light up with the first tip. vul() turns a template and a context dict into a list of Stuk objects (kern/modellen); woorden() and regels() then cut those into words and lines of a given width so the screen can wrap them without losing which words are data. Words are stored in the JSON worlds as 'singular|plural|article'.",
+ "module_docstring": "Sjablonen invullen tot zinnen met aanduidbare gegevens en sleutelwoorden (voor vraagstukken).",
+ "imports": [
+  {"module": "re", "names": [], "alias": null, "line": 13, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Gegeven", "Stuk"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": [
+  "leeravontuur/kern/wiskunde/vraagstukken.py",
+  "leeravontuur/terminal/vraagstuk.py",
+  "tests/test_stabiliteit.py",
+  "tests/test_vraagstukken.py"
+ ],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "VAK",
+   "line": 17,
+   "value_type": "Constant",
+   "value_preview": "'{?}'",
+   "explanation": "Placeholder text for the answer box inside an answer sentence."
+  }
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "SjabloonFout",
+   "qualname": "SjabloonFout",
+   "lines": [40, 41],
+   "bases": ["KeyError"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "KeyError raised when a template names something the context does not contain.",
+   "attributes": [],
+   "instantiated_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::vul", "lines": [79]}
+   ],
+   "methods": []
+  }
+ ],
+ "functions": [
+  {
+   "name": "woord",
+   "qualname": "woord",
+   "kind": "function",
+   "lines": [20, 23],
+   "params": [
+    {"name": "spec", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'broodje|broodjes|het' → {'enk': 'broodje', 'mv': 'broodjes', 'lw': 'het'}.",
+   "explanation": "Parses 'broodje|broodjes|het' into a dict with singular, plural and article (plural defaults to the singular, article to 'de').",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::TweeSoorten.bouw", "lines": [411]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::_woorden", "lines": [207]},
+    {"caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_meervoud_en_hoofdletters", "lines": [86]}
+   ]
+  },
+  {
+   "name": "_vorm",
+   "qualname": "_vorm",
+   "kind": "function",
+   "lines": [26, 37],
+   "params": [
+    {"name": "w", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "One form of a word: singular, plural, article plus singular, 'elk/elke' plus singular, or 'een' plus singular; KeyError for an unknown form.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["KeyError"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::vul", "lines": [68, 71]}
+   ]
+  },
+  {
+   "name": "vul",
+   "qualname": "vul",
+   "kind": "function",
+   "lines": [44, 80],
+   "params": [
+    {"name": "sjabloon", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ctx", "kind": "positional", "default": null, "annotation": null},
+    {"name": "hoofd", "kind": "positional", "default": "True", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Sjabloon → lijst van Stukken (met hoofd: de eerste letter van de zin wordt een hoofdletter).",
+   "explanation": "Fills a template with the context into Stuk pieces (marking data and key words); raises SjabloonFout naming the missing slot; optionally capitalises the first letter.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Stuk", "lines": [54, 58, 64, 65, 68, 71, 75, 77]},
+    {"target": "leeravontuur/kern/verhaal.py::SjabloonFout", "lines": [79]},
+    {"target": "leeravontuur/kern/verhaal.py::_vorm", "lines": [68, 71]},
+    {"target": "leeravontuur/kern/verhaal.py::hoofdletter", "lines": [80]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["isinstance", "re.split", "str"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [108]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [964, 987]},
+    {"caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_meervoud_en_hoofdletters", "lines": [93]}
+   ]
+  },
+  {
+   "name": "hoofdletter",
+   "qualname": "hoofdletter",
+   "kind": "function",
+   "lines": [83, 99],
+   "params": [
+    {"name": "stukken", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De eerste letter een hoofdletter ('s morgens → 's Morgens).",
+   "explanation": "Capitalises the first letter of the first real piece (handling \"'s \" openings), skipping the answer box and numbers.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Stuk", "lines": [97]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "len"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::vul", "lines": [80]}
+   ]
+  },
+  {
+   "name": "tekst",
+   "qualname": "tekst",
+   "kind": "function",
+   "lines": [102, 103],
+   "params": [
+    {"name": "stukken", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Joins pieces into plain text.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::vul_tekst", "lines": [108]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [987, 995]}
+   ]
+  },
+  {
+   "name": "vul_tekst",
+   "qualname": "vul_tekst",
+   "kind": "function",
+   "lines": [106, 108],
+   "params": [
+    {"name": "sjabloon", "kind": "positional", "default": null, "annotation": null},
+    {"name": "ctx", "kind": "positional", "default": null, "annotation": null},
+    {"name": "hoofd", "kind": "positional", "default": "False", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een sjabloon als gewone tekst (sleutelwoorden zonder sterretjes).",
+   "explanation": "A template filled in as plain text (key-word stars removed).",
+   "calls": [
+    {"target": "leeravontuur/kern/verhaal.py::tekst", "lines": [108]},
+    {"target": "leeravontuur/kern/verhaal.py::vul", "lines": [108]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.geg", "lines": [137]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.kan", "lines": [188]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.stap", "lines": [152, 156]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::Bouw.t", "lines": [191]},
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [973, 978]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_meervoud_en_hoofdletters",
+     "lines": [89, 91, 92]
+    }
+   ]
+  },
+  {
+   "name": "woorden",
+   "qualname": "woorden",
+   "kind": "function",
+   "lines": [111, 136],
+   "params": [
+    {"name": "zinnen", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zinnen (lijsten van Stukken) → woorden: elk woord is een lijst van (tekst, gegeven, sleutel).",
+   "explanation": "Cuts sentences (lists of Stuk) into words; a datum stays one word (like '€ 3,20') and punctuation sticks to the word before it; each word is a list of (text, datum id, key word flag).",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["enumerate", "re.split"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/verhaal.py::regels", "lines": [142]}
+   ]
+  },
+  {
+   "name": "regels",
+   "qualname": "regels",
+   "kind": "function",
+   "lines": [139, 151],
+   "params": [
+    {"name": "zinnen", "kind": "positional", "default": null, "annotation": null},
+    {"name": "breedte", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Zinnen in regels van hoogstens `breedte` tekens. Elke regel = een lijst van woorden (zie woorden()).",
+   "explanation": "Wraps those words into lines of at most the given width; each line is a list of words.",
+   "calls": [
+    {"target": "leeravontuur/kern/verhaal.py::woorden", "lines": [142]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/wiskunde/vraagstukken.py::stel_samen", "lines": [965, 968]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::KeuzeInvoer.__init__", "lines": [707]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::SpeurInvoer.__init__", "lines": [598]},
+    {"caller": "leeravontuur/terminal/vraagstuk.py::VraagstukInvoer.__init__", "lines": [52]},
+    {"caller": "tests/test_stabiliteit.py::TestGeneratoren.test_elk_onderwerp_elk_leerjaar", "lines": [67]},
+    {
+     "caller": "tests/test_vraagstukken.py::TestVerhaalmachine.test_elke_structuur_in_elk_leerjaar",
+     "lines": [40]
+    }
+   ]
+  }
+ ]
+}

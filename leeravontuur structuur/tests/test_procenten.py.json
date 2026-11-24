@@ -1,0 +1,579 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_procenten.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 161,
+ "source_sha256": "59459e8f1a7e09001ad918da52be77802dcaa8441e9cdba68350def221e1fb03",
+ "purpose": "Tests the Procenten topics: generators for every year, diagnosis and the screens (hundred-square, percent strip, cheat sheet).",
+ "details": "Covers terminal/kern topics in kern/wiskunde/procenten (P.VELD, P.PROCENT_VAN, P.KORTING, ...), including patched questions for deterministic screen tests.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "decimal", "names": ["Decimal"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "fractions",
+   "names": ["Fraction"],
+   "alias": null,
+   "line": 5,
+   "resolves_to": [],
+   "internal": false
+  },
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 6, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["leerjaren"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/leerjaren.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.getal",
+   "names": ["lees_breuk"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/getal.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.modellen",
+   "names": ["Honderdveld", "Procentstrook"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/kern/modellen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.onderwerp",
+   "names": ["Vraag"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/kern/onderwerp.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.wiskunde",
+   "names": ["procenten"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/kern/wiskunde/__init__.py", "leeravontuur/kern/wiskunde/procenten.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 15,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 16,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "naar_spiekbrief"],
+   "alias": null,
+   "line": 18,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "test_schermen",
+   "names": ["naar"],
+   "alias": null,
+   "line": 19,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [
+  {"name": "D", "line": 21, "value_type": "Name", "value_preview": "Decimal", "explanation": ""},
+  {"name": "F", "line": 22, "value_type": "Name", "value_preview": "Fraction", "explanation": ""},
+  {
+   "name": "RECHTS",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_RIGHT, curses.KEY_DOWN)",
+   "explanation": ""
+  },
+  {
+   "name": "NEER",
+   "line": 23,
+   "value_type": "Tuple",
+   "value_preview": "(curses.KEY_RIGHT, curses.KEY_DOWN)",
+   "explanation": ""
+  },
+  {"name": "STOP", "line": 121, "value_type": "BinOp", "value_preview": "[ESC] * 7", "explanation": ""}
+ ],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestGeneratoren",
+   "qualname": "TestGeneratoren",
+   "lines": [26, 75],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Generators.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alle_leerjaren",
+     "qualname": "TestGeneratoren.test_alle_leerjaren",
+     "kind": "method",
+     "lines": [27, 41],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Every topic generates valid questions in every year it is offered in, with the answer type checks of `controleer`.",
+     "calls": [
+      {"target": "tests/test_procenten.py::TestGeneratoren.controleer", "lines": [41]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.aangeboden",
+       "lines": [31],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {"expr": "o.lees_vraag", "lines": [40], "candidates": [], "candidates_count": 11},
+      {
+       "expr": "o.maak",
+       "lines": [34],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.maak",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.maak"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.nakijken",
+       "lines": [40],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "o.onderwerp_van_sleutel", "lines": [36], "candidates": [], "candidates_count": 25},
+      {"expr": "o.tip", "lines": [38], "candidates": [], "candidates_count": 36},
+      {"expr": "o.uitleg", "lines": [37], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertIsNotNone", ".assertTrue", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "controleer",
+     "qualname": "TestGeneratoren.controleer",
+     "kind": "method",
+     "lines": [43, 65],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "o", "kind": "positional", "default": null, "annotation": null},
+      {"name": "v", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Per question kind, checks the data is consistent with the answer (percentages, totals, units).",
+     "calls": [],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [53, 56, 61, 63, 65], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [51, 54], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual", ".to_integral_value", "abs", "len"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_procenten.py::TestGeneratoren.test_alle_leerjaren", "lines": [41]}
+     ]
+    },
+    {
+     "name": "test_niveaus",
+     "qualname": "TestGeneratoren.test_niveaus",
+     "kind": "method",
+     "lines": [67, 71],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Which topics are offered from which year.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "P.KORTING.aangeboden",
+       "lines": [70, 71],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "P.VELD.aangeboden",
+       "lines": [68, 69],
+       "candidates": ["leeravontuur/kern/onderwerp.py::Onderwerp.aangeboden"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertFalse", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_geld",
+     "qualname": "TestGeneratoren.test_geld",
+     "kind": "method",
+     "lines": [73, 75],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Money formatting with comma and no cents for whole amounts.",
+     "calls": [
+      {"target": "leeravontuur/kern/wiskunde/procenten.py::geld", "lines": [74, 75]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [74, 75], "candidates": [], "candidates_count": 0}
+     ],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestDiagnose",
+   "qualname": "TestDiagnose",
+   "lines": [78, 107],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Diagnosis.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_procent_van",
+     "qualname": "TestDiagnose.test_procent_van",
+     "kind": "method",
+     "lines": [79, 84],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Percentage given as answer' and 'divided by the percent' are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [80]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [80, 81, 82, 83], "candidates": [], "candidates_count": 0},
+      {"expr": "P.PROCENT_VAN.diagnose", "lines": [81, 82, 83], "candidates": [], "candidates_count": 37},
+      {"expr": "P.PROCENT_VAN.uitleg", "lines": [84], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_korting_en_btw",
+     "qualname": "TestDiagnose.test_korting_en_btw",
+     "kind": "method",
+     "lines": [86, 94],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "'Only the discount' and 'discount added' errors are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [87, 90, 93]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [87, 88, 89, 90, 91, 93, 94], "candidates": [], "candidates_count": 0},
+      {"expr": "P.KORTING.diagnose", "lines": [88, 89, 91, 94], "candidates": [], "candidates_count": 37},
+      {"expr": "P.KORTING.uitleg", "lines": [92], "candidates": [], "candidates_count": 39}
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_veld_en_omzetten",
+     "qualname": "TestDiagnose.test_veld_en_omzetten",
+     "kind": "method",
+     "lines": [96, 107],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Counting white squares and giving a decimal instead of a percentage are recognised.",
+     "calls": [
+      {"target": "leeravontuur/kern/getal.py::lees_breuk", "lines": [106, 107]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [97, 102, 104]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [97, 98, 99, 101, 102, 103], "candidates": [], "candidates_count": 0},
+      {"expr": "F", "lines": [104], "candidates": [], "candidates_count": 0},
+      {"expr": "P.KORTING.lees", "lines": [101], "candidates": [], "candidates_count": 10},
+      {"expr": "P.OMZETTEN.diagnose", "lines": [103, 107], "candidates": [], "candidates_count": 37},
+      {
+       "expr": "P.OMZETTEN.nakijken",
+       "lines": [106],
+       "candidates": [
+        "leeravontuur/kern/onderwerp.py::Onderwerp.nakijken",
+        "leeravontuur/kern/taal/werkwoorden.py::Werkwoordspelling.nakijken",
+        "leeravontuur/kern/wiskunde/breuken.py::Gelijkwaardig.nakijken",
+        "leeravontuur/kern/wiskunde/eenheden.py::Maten.nakijken",
+        "leeravontuur/kern/wiskunde/klok.py::Klok.nakijken"
+       ],
+       "candidates_count": 5
+      },
+      {"expr": "P.VELD.diagnose", "lines": [98, 99], "candidates": [], "candidates_count": 37},
+      {"expr": "P.VELD.lees", "lines": [100], "candidates": [], "candidates_count": 10}
+     ],
+     "external_calls": [".assertEqual", ".assertFalse"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestSchermen",
+   "qualname": "TestSchermen",
+   "lines": [124, 157],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Screens.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_honderdveld_kleuren",
+     "qualname": "TestSchermen.test_honderdveld_kleuren",
+     "kind": "method",
+     "lines": [125, 134],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Colouring the hundred-square with r, arrows, Space and a click is checked.",
+     "calls": [
+      {"target": "tests/test_procenten.py::kleur_vraag", "lines": [129]},
+      {"target": "tests/test_procenten.py::naar", "lines": [130]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [131],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [130],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_rij_met_klik_en_weer_leeg",
+     "qualname": "TestSchermen.test_rij_met_klik_en_weer_leeg",
+     "kind": "method",
+     "lines": [136, 141],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Clicking a row arrow colours the row; clicking again empties it.",
+     "calls": [
+      {"target": "tests/test_procenten.py::kleur_vraag", "lines": [139]},
+      {"target": "tests/test_procenten.py::naar", "lines": [140]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.antwoorden",
+       "lines": [141],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [140],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_procent_van_met_strook",
+     "qualname": "TestSchermen.test_procent_van_met_strook",
+     "kind": "method",
+     "lines": [143, 153],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The percent-of question shows the percentage strip.",
+     "calls": [
+      {"target": "leeravontuur/kern/modellen.py::Procentstrook", "lines": [147]},
+      {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [145]},
+      {"target": "tests/test_procenten.py::naar", "lines": [149]}
+     ],
+     "unresolved_calls": [
+      {"expr": "D", "lines": [145, 147], "candidates": [], "candidates_count": 0},
+      {
+       "expr": "o.antwoorden",
+       "lines": [150],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.antwoorden",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.antwoorden"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "self.speel",
+       "lines": [149],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", ".opslag", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_spiekbrief",
+     "qualname": "TestSchermen.test_spiekbrief",
+     "kind": "method",
+     "lines": [155, 157],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The cheat sheet shows 'PROCENT = PER HONDERD'.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.speel",
+       "lines": [156],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertTrue", ".ergens", "test_schermen.naar_spiekbrief"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": [
+  {
+   "name": "kleur_vraag",
+   "qualname": "kleur_vraag",
+   "kind": "function",
+   "lines": [110, 113],
+   "params": [],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Builds a fixed 'colour 35 %' question for the hundred-square.",
+   "calls": [
+    {"target": "leeravontuur/kern/modellen.py::Honderdveld", "lines": [112]},
+    {"target": "leeravontuur/kern/onderwerp.py::Vraag", "lines": [111]}
+   ],
+   "unresolved_calls": [
+    {"expr": "D", "lines": [111], "candidates": [], "candidates_count": 0}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_procenten.py::TestSchermen.test_honderdveld_kleuren", "lines": [129]},
+    {"caller": "tests/test_procenten.py::TestSchermen.test_rij_met_klik_en_weer_leeg", "lines": [139]}
+   ]
+  },
+  {
+   "name": "naar",
+   "qualname": "naar",
+   "kind": "function",
+   "lines": [116, 118],
+   "params": [
+    {"name": "onderwerp", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Wiskunde › domein › het onderwerp met dit nummer in P.ALLE › V (vrij oefenen) › Normaal.",
+   "explanation": "Key sequence to free practice of the n-th topic at Normal level.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["test_schermen.naar"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_procenten.py::TestSchermen.test_honderdveld_kleuren", "lines": [130]},
+    {"caller": "tests/test_procenten.py::TestSchermen.test_procent_van_met_strook", "lines": [149]},
+    {"caller": "tests/test_procenten.py::TestSchermen.test_rij_met_klik_en_weer_leeg", "lines": [140]}
+   ]
+  }
+ ]
+}

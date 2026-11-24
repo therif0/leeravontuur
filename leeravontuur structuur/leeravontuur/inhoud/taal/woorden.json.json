@@ -1,0 +1,153 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/inhoud/taal/woorden.json",
+ "kind": "json",
+ "layer": "inhoud",
+ "lines": 202,
+ "source_sha256": "fe3d2fa29967a34fee855930657f5b70a8d03c9d27bcef3534716f2793020b19",
+ "purpose": "The word list of the sentence machine: subjects, indirect objects, adjectives, things, verbs of each kind and adverbials.",
+ "details": "Loaded by kern/taal/zinnenmachine.py (PAD). Word groups are written 'de/lidw juf/zn' (word kind after a slash). 'onderwerpen' are grouped by what verbs they fit (mens, dier, hond) with number (getal) and text; 'dingen' are groups of things (geschenk, post, eten, gebak, ...) with article, plural and fitting adjectives; verb lists give present (tt) and past (vt) forms, the participle (vd) and the auxiliary (hulp), and per verb which subjects (o) and objects (lv) fit, the preposition for an indirect object (mv, mv_nodig) and whether it can be used without a direct object (zonder_lv). A test checks the list against the rules.",
+ "keys": [
+  "uitleg",
+  "onderwerpen",
+  "meewerkend",
+  "personen_lv",
+  "bn",
+  "dingen",
+  "werkwoorden",
+  "hulpwerkwoorden",
+  "koppelwerkwoorden",
+  "zegwerkwoorden",
+  "naamwoordelijk",
+  "bepalingen"
+ ],
+ "shape": {
+  "uitleg": "string",
+  "onderwerpen": {
+   "mens": {
+    "$list": 21,
+    "$items": {"getal": "string", "tekst": "string"}
+   },
+   "dier": {
+    "$list": 4,
+    "$items": {"getal": "string", "tekst": "string"}
+   },
+   "hond": {
+    "$list": 2,
+    "$items": {"getal": "string", "tekst": "string"}
+   }
+  },
+  "meewerkend": {"$list": 9, "$items": "string"},
+  "personen_lv": {"$list": 7, "$items": "string"},
+  "bn": {
+   "$keys": ["groot", "nieuw", "dik", "mooi", "rood", "blauw", "moeilijk", "zacht", "…"],
+   "$count": 25,
+   "$values": "string"
+  },
+  "dingen": {
+   "geschenk": {"$list": 6, "$items": "mixed"},
+   "post": {"$list": 3, "$items": "mixed"},
+   "schrijfbaar": {"$list": 2, "$items": "mixed"},
+   "toonbaar": {
+    "$list": 3,
+    "$items": {
+     "bn": {"$items": "string", "$list": 1},
+     "lidw": "string",
+     "mv": "string",
+     "zn": "string"
+    }
+   },
+   "verhaal": {"$list": 3, "$items": "mixed"},
+   "eten": {"$list": 5, "$items": "mixed"},
+   "gebak": {"$list": 3, "$items": "mixed"},
+   "koopbaar": {"$list": 5, "$items": "mixed"},
+   "leesbaar": {"$list": 4, "$items": "mixed"},
+   "zoekbaar": {
+    "$list": 4,
+    "$items": {
+     "bn": {"$items": "string", "$list": 1},
+     "lidw": "string",
+     "mv": "string",
+     "zn": "string"
+    }
+   },
+   "wasbaar": {
+    "$list": 3,
+    "$items": {
+     "bn": {"$items": "string", "$list": 1},
+     "lidw": "string",
+     "mv": "string",
+     "zn": "string"
+    }
+   },
+   "tekenbaar": {
+    "$list": 4,
+    "$items": {
+     "bn": {"$items": "string", "$list": 1},
+     "lidw": "string",
+     "mv": "string",
+     "zn": "string"
+    }
+   },
+   "bouwsel": {
+    "$list": 3,
+    "$items": {
+     "bn": {"$items": "string", "$list": 1},
+     "lidw": "string",
+     "mv": "string",
+     "zn": "string"
+    }
+   }
+  },
+  "werkwoorden": {"$list": 27, "$items": "mixed"},
+  "hulpwerkwoorden": {
+   "hebben": {
+    "tt": {"$list": 2, "$items": "string"},
+    "vt": {"$list": 2, "$items": "string"}
+   },
+   "zijn": {
+    "tt": {"$list": 2, "$items": "string"},
+    "vt": {"$list": 2, "$items": "string"}
+   }
+  },
+  "koppelwerkwoorden": {
+   "$list": 3,
+   "$items": {
+    "inf": "string",
+    "tt": {"$items": "string", "$list": 2},
+    "vt": {"$items": "string", "$list": 2}
+   }
+  },
+  "zegwerkwoorden": {
+   "$list": 6,
+   "$items": {
+    "inf": "string",
+    "tt": {"$items": "string", "$list": 2},
+    "vt": {"$items": "string", "$list": 2}
+   }
+  },
+  "naamwoordelijk": {"$list": 8, "$items": "string"},
+  "bepalingen": {"$list": 10, "$items": "mixed"}
+ },
+ "read_by": ["leeravontuur/kern/taal/werkwoorden.py", "leeravontuur/kern/taal/zinnenmachine.py"],
+ "field_notes": [
+  {"key": "uitleg", "explanation": "The explanation of the format (Dutch)."},
+  {"key": "onderwerpen", "explanation": "Subjects by kind: mens, dier, hond; each with number and text."},
+  {"key": "meewerkend", "explanation": "Indirect objects (groups that start with an article or pronoun)."},
+  {"key": "personen_lv", "explanation": "Persons that can be a direct object."},
+  {"key": "bn", "explanation": "Adjective base form -> form before a noun (groot -> grote)."},
+  {"key": "dingen", "explanation": "Groups of things by theme with article, plural and fitting adjectives."},
+  {
+   "key": "werkwoorden",
+   "explanation": "Verbs (27) with present/past forms, participle, auxiliary and which subjects (o), objects (lv) and preposition (mv) fit."
+  },
+  {"key": "hulpwerkwoorden", "explanation": "The auxiliaries hebben and zijn with present and past forms."},
+  {"key": "koppelwerkwoorden", "explanation": "Linking verbs (zijn, ...) with their forms."},
+  {"key": "zegwerkwoorden", "explanation": "Verbs of saying (zeggen, ...) with their forms."},
+  {"key": "naamwoordelijk", "explanation": "Adjectives used in a predicate (moe/bn, ...)."},
+  {
+   "key": "bepalingen",
+   "explanation": "Adverbials with their word kind, the tense they fit (tijd) and where they stand (plek)."
+  }
+ ]
+}

@@ -1,0 +1,337 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/terminal/curriculum/modi.py",
+ "kind": "python",
+ "layer": "terminal",
+ "lines": 63,
+ "source_sha256": "d9e25ecde2788f9d7c4d23b7ede058166d6c5fd072f73a3c8dabf3cff6772ca2",
+ "purpose": "The starters of the practice modes: each is a function f(app, breadcrumb) that opens an existing screen.",
+ "details": "They do what the old menus did after a form was chosen: ask for the level where relevant, remember the exercise for 'Verder' (continue), and start it. Registered in the curriculum as functools.partial objects so the menu can call them. The practice-screen class comes from terminal/beta (the new panel layout for Cijferen when LEERAVONTUUR_BETA=1).",
+ "module_docstring": "Starters voor de modi: elk een functie f(app, kruimel) die een bestaand oefenscherm opent.",
+ "imports": [
+  {
+   "module": "functools",
+   "names": ["partial"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": [],
+   "internal": false
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["catalogus"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/catalogus.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["snelrekenen"],
+   "alias": null,
+   "line": 9,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/snelrekenen.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.beta",
+   "names": ["oefenaar_klasse"],
+   "alias": null,
+   "line": 10,
+   "resolves_to": ["leeravontuur/terminal/beta.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.oefenaar",
+   "names": ["Oefenaar"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["leeravontuur/terminal/oefenaar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen",
+   "names": ["eenheden"],
+   "alias": null,
+   "line": 12,
+   "resolves_to": ["leeravontuur/terminal/schermen/__init__.py", "leeravontuur/terminal/schermen/eenheden.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.terminal.schermen.snelrekenen",
+   "names": ["Snelrekenen"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": ["leeravontuur/terminal/schermen/snelrekenen.py"],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/curriculum/taal.py", "leeravontuur/terminal/curriculum/wiskunde.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "_VORM_NAAM",
+   "line": 15,
+   "value_type": "Dict",
+   "value_preview": "{'vrij': 'Vrij oefenen', 'reeks': 'Reeks van 10'}",
+   "explanation": "Display names of the forms of an ordinary exercise."
+  },
+  {
+   "name": "_EENHEDEN_VORM",
+   "line": 16,
+   "value_type": "Dict",
+   "value_preview": "{'vrij': 'Vrij oefenen', 'reeks': 'Reeks van 10', 'tabel': 'Tabel-oef…",
+   "explanation": "Display names of the forms of unit conversion."
+  },
+  {
+   "name": "spiek_eenheden",
+   "line": 63,
+   "value_type": "Name",
+   "value_preview": "_spiek_eenheden",
+   "explanation": "The units cheat-sheet starter (the function itself)."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "_oefenaar",
+   "qualname": "_oefenaar",
+   "kind": "function",
+   "lines": [19, 27],
+   "params": [
+    {"name": "vid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null},
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opens the ordinary practice screen for a topic: asks the level, remembers the exercise for Verder and starts the series or free practice.",
+   "calls": [
+    {"target": "leeravontuur/terminal/beta.py::oefenaar_klasse", "lines": [21]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "app.onthoud_oefening",
+     "lines": [25],
+     "candidates": ["leeravontuur/terminal/app.py::App.onthoud_oefening"],
+     "candidates_count": 1
+    },
+    {"expr": "oefenaar_klasse(domein)", "lines": [21], "candidates": [], "candidates_count": 0},
+    {
+     "expr": "scherm.kies_niveau",
+     "lines": [22],
+     "candidates": [
+      "leeravontuur/terminal/oefenaar.py::Oefenaar.kies_niveau",
+      "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.kies_niveau"
+     ],
+     "candidates_count": 2
+    },
+    {
+     "expr": "scherm.start",
+     "lines": [27],
+     "candidates": ["leeravontuur/terminal/app.py::App.start", "leeravontuur/terminal/oefenaar.py::Oefenaar.start"],
+     "candidates_count": 2
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_eenheden",
+   "qualname": "_eenheden",
+   "kind": "function",
+   "lines": [30, 31],
+   "params": [
+    {"name": "maat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opens the unit-conversion practice (series, free or table) for the chosen unit kinds.",
+   "calls": [
+    {"target": "leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.__init__", "lines": [31]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "EH.MatenOefenaar(app, kr).oefen",
+     "lines": [31],
+     "candidates": ["leeravontuur/terminal/schermen/eenheden.py::MatenOefenaar.oefen"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_snel",
+   "qualname": "_snel",
+   "kind": "function",
+   "lines": [34, 35],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null},
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Starts a speed-practice round of a kind and mode.",
+   "calls": [
+    {"target": "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.__init__", "lines": [35]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "Snelrekenen(app).ronde",
+     "lines": [35],
+     "candidates": ["leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.ronde"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_spiek_oefenaar",
+   "qualname": "_spiek_oefenaar",
+   "kind": "function",
+   "lines": [38, 40],
+   "params": [
+    {"name": "vid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opens a topic's cheat sheet from the menu.",
+   "calls": [
+    {"target": "leeravontuur/terminal/oefenaar.py::Oefenaar.__init__", "lines": [40]}
+   ],
+   "unresolved_calls": [
+    {"expr": "Oefenaar(app, kr, [o], '').spiekbrief", "lines": [40], "candidates": [], "candidates_count": 22}
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_spiek_eenheden",
+   "qualname": "_spiek_eenheden",
+   "kind": "function",
+   "lines": [43, 44],
+   "params": [
+    {"name": "app", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kr", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Opens the units cheat sheet.",
+   "calls": [
+    {"target": "leeravontuur/terminal/schermen/eenheden.py::spiekbrief", "lines": [44]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "oefenaar",
+   "qualname": "oefenaar",
+   "kind": "function",
+   "lines": [47, 48],
+   "params": [
+    {"name": "vid", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null},
+    {"name": "domein", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A starter for a topic and form (series or free) in a domain, as a partial.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["functools.partial"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::oefenaar", "lines": [17]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [20]}
+   ]
+  },
+  {
+   "name": "eenheden",
+   "qualname": "eenheden",
+   "kind": "function",
+   "lines": [51, 52],
+   "params": [
+    {"name": "maat", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vorm", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A starter for unit conversion in a form, as a partial.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["functools.partial"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::maat", "lines": [35]}
+   ]
+  },
+  {
+   "name": "snel",
+   "qualname": "snel",
+   "kind": "function",
+   "lines": [55, 56],
+   "params": [
+    {"name": "soort", "kind": "positional", "default": null, "annotation": null},
+    {"name": "modus", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A starter for a speed-practice kind and mode, as a partial.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["functools.partial"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::<module>", "lines": [69]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [23]}
+   ]
+  },
+  {
+   "name": "spiek_oefenaar",
+   "qualname": "spiek_oefenaar",
+   "kind": "function",
+   "lines": [59, 60],
+   "params": [
+    {"name": "vid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "A cheat-sheet starter for a topic, as a partial.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["functools.partial"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/curriculum/taal.py::oefenaar", "lines": [18]},
+    {"caller": "leeravontuur/terminal/curriculum/wiskunde.py::oefenaar", "lines": [25]}
+   ]
+  }
+ ]
+}

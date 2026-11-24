@@ -1,0 +1,238 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "leeravontuur/kern/overzicht.py",
+ "kind": "python",
+ "layer": "kern",
+ "lines": 77,
+ "source_sha256": "a87d1900790e87171dab952ce093ed9a259c41edaf838b656e4bef6ede8c5caf",
+ "purpose": "Builds the small status lines shown around an exercise (series bar, today's score, repeat bin, per-topic card) as lists of (text, role).",
+ "details": "Following golden rules 1 and 2, the core decides what is shown and the screen only draws it: each line is a list of (text, role) pieces with roles such as good, wrong, accent and dim. These feed the Reeks and Vandaag panels of the newer screen layout and the topic card in menus.",
+ "module_docstring": "Wat de vakken rond een oefening tonen (Reeks, Vandaag, Herhaalbak, fris houden, laatst geoefend), als regels met rollen (gouden regels 1 en 2: de kern rekent, het scherm tekent alleen). Zonder curses.",
+ "imports": [
+  {
+   "module": "leeravontuur.kern",
+   "names": ["herhaling", "klok", "reeks"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": [
+    "leeravontuur/kern/__init__.py",
+    "leeravontuur/kern/herhaling.py",
+    "leeravontuur/kern/klok.py",
+    "leeravontuur/kern/reeks.py"
+   ],
+   "internal": true
+  }
+ ],
+ "imported_by": ["leeravontuur/terminal/beta.py", "tests/test_vakken.py"],
+ "module_calls": [],
+ "constants": [
+  {
+   "name": "JUIST",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(('✔', 'goed'), ('✘', 'fout'), ('◉', 'accent'), ('○', 'dim'))",
+   "explanation": "Tick symbol with the 'good' role."
+  },
+  {
+   "name": "FOUT",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(('✔', 'goed'), ('✘', 'fout'), ('◉', 'accent'), ('○', 'dim'))",
+   "explanation": "Cross symbol with the 'wrong' role."
+  },
+  {
+   "name": "NU",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(('✔', 'goed'), ('✘', 'fout'), ('◉', 'accent'), ('○', 'dim'))",
+   "explanation": "Circle for the current question."
+  },
+  {
+   "name": "LATER",
+   "line": 9,
+   "value_type": "Tuple",
+   "value_preview": "(('✔', 'goed'), ('✘', 'fout'), ('◉', 'accent'), ('○', 'dim'))",
+   "explanation": "Empty circle for upcoming questions."
+  }
+ ],
+ "registries": [],
+ "classes": [],
+ "functions": [
+  {
+   "name": "tekst",
+   "qualname": "tekst",
+   "kind": "function",
+   "lines": [12, 13],
+   "params": [
+    {"name": "regel", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Joins a line's pieces into plain text.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "tests/test_vakken.py::TestOverzicht.test_reeks_regel", "lines": [195, 198, 199]}
+   ]
+  },
+  {
+   "name": "bolletjes",
+   "qualname": "bolletjes",
+   "kind": "function",
+   "lines": [16, 25],
+   "params": [
+    {"name": "goed", "kind": "positional", "default": null, "annotation": null},
+    {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+    {"name": "totaal", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Een teken per vraag van de reeks: ✔ ✘ voor de beantwoorde (goed = lijst van True/False, ook de vraag die net nagekeken is), ◉ de vraag van nu, ○ wat nog komt.",
+   "explanation": "One piece per question of the series: a tick or cross for answered ones, a filled circle for the current question, an empty circle for those to come.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": ["len", "range"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/overzicht.py::reeks_regel", "lines": [34]},
+    {"caller": "tests/test_vakken.py::TestOverzicht.test_elk_teken_met_een_symbool", "lines": [203]}
+   ]
+  },
+  {
+   "name": "reeks_regel",
+   "qualname": "reeks_regel",
+   "kind": "function",
+   "lines": [28, 40],
+   "params": [
+    {"name": "goed", "kind": "positional", "default": null, "annotation": null},
+    {"name": "nr", "kind": "positional", "default": null, "annotation": null},
+    {"name": "totaal", "kind": "positional", "default": null, "annotation": null},
+    {"name": "punten", "kind": "positional", "default": "None", "annotation": null},
+    {"name": "op_rij", "kind": "positional", "default": "0", "annotation": null},
+    {"name": "vrij", "kind": "positional", "default": "None", "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "De regel Reeks: de bolletjes en \"vraag 3 van 10 · juist 1 van 2 · punten +5 · 3 op rij\". vrij = (juist, gedaan) bij vrij oefenen (geen bolletjes); punten = None als de reeks geen punten geeft (een examen).",
+   "explanation": "The Reeks line: the circles and 'vraag 3 van 10 · juist 1 van 2 · punten +5 · 3 op rij'; in free practice just the correct count; the points part is omitted when the series gives no points (an exam).",
+   "calls": [
+    {"target": "leeravontuur/kern/overzicht.py::bolletjes", "lines": [34]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len", "sum"],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/terminal/beta.py::BetaOefenaar.teken_reeks", "lines": [238]},
+    {"caller": "tests/test_vakken.py::TestOverzicht.test_reeks_regel", "lines": [194, 198, 199]}
+   ]
+  },
+  {
+   "name": "vandaag_regel",
+   "qualname": "vandaag_regel",
+   "kind": "function",
+   "lines": [43, 46],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "'14 van 17 juist' vandaag, of [] als er vandaag nog niets geoefend werd.",
+   "explanation": "'14 van 17 juist' for today, or an empty line when nothing was practised today.",
+   "calls": [
+    {"target": "leeravontuur/kern/klok.py::dag", "lines": [45]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.telling",
+     "lines": [45],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.telling"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "herhaalbak_regel",
+   "qualname": "herhaalbak_regel",
+   "kind": "function",
+   "lines": [49, 52],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Hoeveel herhaalvragen er vandaag aan de beurt zijn.",
+   "explanation": "How many repeat questions are due today, in accent colour when there are some.",
+   "calls": [
+    {"target": "leeravontuur/kern/herhaling.py::aan_de_beurt", "lines": [51]}
+   ],
+   "unresolved_calls": [],
+   "external_calls": ["len"],
+   "dynamic": [],
+   "called_by": []
+  },
+  {
+   "name": "_dagen",
+   "qualname": "_dagen",
+   "kind": "function",
+   "lines": [55, 56],
+   "params": [
+    {"name": "n", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "",
+   "explanation": "'vandaag', 'gisteren' or 'n dagen geleden'.",
+   "calls": [],
+   "unresolved_calls": [],
+   "external_calls": [],
+   "dynamic": [],
+   "called_by": [
+    {"caller": "leeravontuur/kern/overzicht.py::onderwerp_regels", "lines": [68]}
+   ]
+  },
+  {
+   "name": "onderwerp_regels",
+   "qualname": "onderwerp_regels",
+   "kind": "function",
+   "lines": [59, 77],
+   "params": [
+    {"name": "opslag", "kind": "positional", "default": null, "annotation": null},
+    {"name": "kind_id", "kind": "positional", "default": null, "annotation": null},
+    {"name": "vaardigheid", "kind": "positional", "default": null, "annotation": null}
+   ],
+   "returns": null,
+   "decorators": [],
+   "docstring": "Over één onderwerp (het kaartje bij een menu): laatst geoefend, juist van de laatste antwoorden, fris houden en de herhaalbak. Een lijst (label, waarde, rol); [] als het nog nooit geoefend werd.",
+   "explanation": "Rows (label, value, role) for one topic card: last practised, correct of the last 10 answers, the 'fris houden' state or days left, and the number of repeat-bin questions; empty when never practised.",
+   "calls": [
+    {"target": "leeravontuur/kern/overzicht.py::_dagen", "lines": [68]},
+    {"target": "leeravontuur/kern/reeks.py::stand", "lines": [62]}
+   ],
+   "unresolved_calls": [
+    {
+     "expr": "opslag.herhaalbak",
+     "lines": [74],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.herhaalbak"],
+     "candidates_count": 1
+    },
+    {
+     "expr": "opslag.recente_antwoorden",
+     "lines": [66],
+     "candidates": ["leeravontuur/kern/opslag.py::Opslag.recente_antwoorden"],
+     "candidates_count": 1
+    }
+   ],
+   "external_calls": ["bool", "len", "max", "sum"],
+   "dynamic": [],
+   "called_by": []
+  }
+ ]
+}

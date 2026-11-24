@@ -1,0 +1,623 @@
+{
+ "schema": "leeravontuur-structuur/1",
+ "path": "tests/test_winkel.py",
+ "kind": "test",
+ "layer": "tests",
+ "lines": 146,
+ "source_sha256": "b74a1c685a12c3fb661cde3550afcae48cb366f8350b122d8b8250a54ee4a3ad",
+ "purpose": "Tests the shop: catalogue, the buying challenge, buying with penalties and the shop screens.",
+ "details": "TestCatalogus and TestChallenge test kern/winkel data and question generation; TestKopen tests purchase outcomes against storage (instant, package on its way, package after practice time, shipping costs); TestWinkelSchermen plays the shop screens with a patched challenge.",
+ "module_docstring": "",
+ "imports": [
+  {"module": "curses", "names": [], "alias": null, "line": 1, "resolves_to": [], "internal": false},
+  {"module": "random", "names": [], "alias": null, "line": 2, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": [], "alias": null, "line": 3, "resolves_to": [], "internal": false},
+  {"module": "unittest", "names": ["mock"], "alias": null, "line": 4, "resolves_to": [], "internal": false},
+  {
+   "module": "leeravontuur.kern",
+   "names": ["avatar"],
+   "alias": null,
+   "line": 6,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/avatar.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern",
+   "names": ["winkel"],
+   "alias": null,
+   "line": 7,
+   "resolves_to": ["leeravontuur/kern/__init__.py", "leeravontuur/kern/winkel.py"],
+   "internal": true
+  },
+  {
+   "module": "leeravontuur.kern.opslag",
+   "names": ["Opslag"],
+   "alias": null,
+   "line": 8,
+   "resolves_to": ["leeravontuur/kern/opslag.py"],
+   "internal": true
+  },
+  {
+   "module": "tests.test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm"],
+   "alias": null,
+   "line": 11,
+   "resolves_to": ["tests/test_schermen.py"],
+   "internal": true
+  },
+  {
+   "module": "test_schermen",
+   "names": ["ESC", "OK", "Basis", "hm"],
+   "alias": null,
+   "line": 13,
+   "resolves_to": [],
+   "internal": false
+  }
+ ],
+ "imported_by": [],
+ "module_calls": [
+  {"scope": "module", "calls": [], "unresolved_calls": [], "external_calls": ["unittest.main"], "dynamic": []}
+ ],
+ "constants": [],
+ "registries": [],
+ "classes": [
+  {
+   "name": "TestCatalogus",
+   "qualname": "TestCatalogus",
+   "lines": [16, 23],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Catalogue tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_alles_bestaat",
+     "qualname": "TestCatalogus.test_alles_bestaat",
+     "kind": "method",
+     "lines": [17, 23],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The catalogue has at least 25 priced items and every item exists as an avatar part.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::opties", "lines": [21]},
+      {"target": "leeravontuur/kern/winkel.py::catalogus", "lines": [18, 23]},
+      {"target": "leeravontuur/kern/winkel.py::zoek", "lines": [22]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertGreaterEqual", ".assertIn", ".assertTrue", "all", "len"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestChallenge",
+   "qualname": "TestChallenge",
+   "lines": [26, 49],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Challenge question tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "test_aftrekken_in_het_4de",
+     "qualname": "TestChallenge.test_aftrekken_in_het_4de",
+     "kind": "method",
+     "lines": [27, 32],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "In the 4th year the challenge is a plain subtraction.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::challenge", "lines": [30]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertIn", "random.Random", "range"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_korting_vanaf_het_5de",
+     "qualname": "TestChallenge.test_korting_vanaf_het_5de",
+     "kind": "method",
+     "lines": [34, 45],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "From the 5th year discount questions also occur.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::challenge", "lines": [38]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertLessEqual", ".assertTrue", "any", "random.Random", "range", "set"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_sparen",
+     "qualname": "TestChallenge.test_sparen",
+     "kind": "method",
+     "lines": [47, 49],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "The saving question computes how many points are still needed.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::spaar_vraag", "lines": [48]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestKopen",
+   "qualname": "TestKopen",
+   "lines": [52, 93],
+   "bases": ["unittest.TestCase"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Purchase logic tests.",
+   "attributes": [
+    {"name": "o", "line": 54, "scope": "instance", "value_preview": null},
+    {"name": "kind", "line": 55, "scope": "instance", "value_preview": null},
+    {"name": "kroon", "line": 57, "scope": "instance", "value_preview": null}
+   ],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "setUp",
+     "qualname": "TestKopen.setUp",
+     "kind": "method",
+     "lines": [53, 57],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creates storage, a child with 500 points and an item.",
+     "calls": [
+      {"target": "leeravontuur/kern/opslag.py::Opslag.__init__", "lines": [54]},
+      {"target": "leeravontuur/kern/winkel.py::zoek", "lines": [57]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.nieuw_kind",
+       "lines": [55],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.nieuw_kind"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.punten_bij",
+       "lines": [56],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "juist_antwoorden",
+     "qualname": "TestKopen.juist_antwoorden",
+     "kind": "method",
+     "lines": [59, 62],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "n", "kind": "positional", "default": null, "annotation": null},
+      {"name": "tijd_ms", "kind": "positional", "default": "0", "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Stores n correct answers of a given duration to simulate practice.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.bewaar_antwoord",
+       "lines": [62],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.bewaar_antwoord"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.start_sessie",
+       "lines": [60],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.start_sessie"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": ["range"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_winkel.py::TestKopen.test_pakje_na_oefentijd", "lines": [85, 87]},
+      {"caller": "tests/test_winkel.py::TestKopen.test_pakje_onderweg", "lines": [77, 79]}
+     ]
+    },
+    {
+     "name": "test_juist_meteen_in_de_kast",
+     "qualname": "TestKopen.test_juist_meteen_in_de_kast",
+     "kind": "method",
+     "lines": [64, 70],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A correct purchase costs the points and the item is in the wardrobe at once.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [69]},
+      {"target": "leeravontuur/kern/winkel.py::draag", "lines": [68, 70]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [67]},
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [65]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.avatar",
+       "lines": [69],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.o.punten_saldo",
+       "lines": [66],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn", ".assertIsNone", ".assertTrue"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_pakje_onderweg",
+     "qualname": "TestKopen.test_pakje_onderweg",
+     "kind": "method",
+     "lines": [72, 81],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong purchase with the 'pakje' penalty delays delivery until enough correct answers.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::draag", "lines": [76]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [75, 81]},
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [73]},
+      {"target": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [78, 80]},
+      {"target": "tests/test_winkel.py::TestKopen.juist_antwoorden", "lines": [77, 79]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual", ".assertFalse", ".assertIn", ".assertNotIn"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_pakje_na_oefentijd",
+     "qualname": "TestKopen.test_pakje_na_oefentijd",
+     "kind": "method",
+     "lines": [83, 88],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With the 'tijd' penalty the package arrives after enough practice minutes.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [84]},
+      {"target": "leeravontuur/kern/winkel.py::lever_pakjes", "lines": [86, 88]},
+      {"target": "tests/test_winkel.py::TestKopen.juist_antwoorden", "lines": [85, 87]}
+     ],
+     "unresolved_calls": [],
+     "external_calls": [".assertEqual"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_verzendkosten",
+     "qualname": "TestKopen.test_verzendkosten",
+     "kind": "method",
+     "lines": [90, 93],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "With the 'kosten' penalty the item arrives at once but costs extra shipping points.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [93]},
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [91]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "self.o.punten_saldo",
+       "lines": [92],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertIn"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  },
+  {
+   "name": "TestWinkelSchermen",
+   "qualname": "TestWinkelSchermen",
+   "lines": [96, 142],
+   "bases": ["Basis"],
+   "decorators": [],
+   "docstring": "",
+   "explanation": "Shop screen tests.",
+   "attributes": [],
+   "instantiated_by": [],
+   "methods": [
+    {
+     "name": "met_punten",
+     "qualname": "TestWinkelSchermen.met_punten",
+     "kind": "method",
+     "lines": [97, 100],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null},
+      {"name": "punten", "kind": "positional", "default": null, "annotation": null},
+      {"name": "opties", "kind": "kwarg", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Creates storage with a child and a number of points.",
+     "calls": [],
+     "unresolved_calls": [
+      {
+       "expr": "o.kinderen",
+       "lines": [99],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.punten_bij",
+       "lines": [99],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_bij"],
+       "candidates_count": 1
+      }
+     ],
+     "external_calls": [".opslag"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_ben_je_zeker_en_pakje", "lines": [116]},
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kast_en_combinatie", "lines": [135]},
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kopen_met_juiste_som", "lines": [107]},
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_te_weinig_punten", "lines": [128]}
+     ]
+    },
+    {
+     "name": "naar_kleuren",
+     "qualname": "TestWinkelSchermen.naar_kleuren",
+     "kind": "method",
+     "lines": [102, 104],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Key sequence to the colours shelf of the shop.",
+     "calls": [],
+     "unresolved_calls": [],
+     "external_calls": ["test_schermen.hm"],
+     "dynamic": [],
+     "called_by": [
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_ben_je_zeker_en_pakje", "lines": [119]},
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_kopen_met_juiste_som", "lines": [110]},
+      {"caller": "tests/test_winkel.py::TestWinkelSchermen.test_te_weinig_punten", "lines": [129]}
+     ]
+    },
+    {
+     "name": "test_kopen_met_juiste_som",
+     "qualname": "TestWinkelSchermen.test_kopen_met_juiste_som",
+     "kind": "method",
+     "lines": [106, 113],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Buying with the right answer puts the item in the wardrobe and offers to wear it.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [112]},
+      {"target": "leeravontuur/kern/winkel.py::Challenge", "lines": [108]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.met_punten", "lines": [107]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.naar_kleuren", "lines": [110]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.avatar",
+       "lines": [112],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.punten_saldo",
+       "lines": [111],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [110],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_ben_je_zeker_en_pakje",
+     "qualname": "TestWinkelSchermen.test_ben_je_zeker_en_pakje",
+     "kind": "method",
+     "lines": [115, 125],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "A wrong answer asks 'are you sure'; a second wrong answer gives the package lesson.",
+     "calls": [
+      {"target": "leeravontuur/kern/winkel.py::Challenge", "lines": [117]},
+      {"target": "leeravontuur/kern/winkel.py::in_kast", "lines": [123]},
+      {"target": "leeravontuur/kern/winkel.py::onderweg", "lines": [124]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.met_punten", "lines": [116]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.naar_kleuren", "lines": [119]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.punten_saldo",
+       "lines": [125],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [119],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertNotIn", ".assertTrue", ".ergens", "len", "unittest.mock.patch.object"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_te_weinig_punten",
+     "qualname": "TestWinkelSchermen.test_te_weinig_punten",
+     "kind": "method",
+     "lines": [127, 132],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Too few points shows 'Dat is nog te duur' with a saving question.",
+     "calls": [
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.met_punten", "lines": [128]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.naar_kleuren", "lines": [129]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.punten_saldo",
+       "lines": [132],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.punten_saldo"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [129],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", ".assertTrue", ".ergens"],
+     "dynamic": [],
+     "called_by": []
+    },
+    {
+     "name": "test_kast_en_combinatie",
+     "qualname": "TestWinkelSchermen.test_kast_en_combinatie",
+     "kind": "method",
+     "lines": [134, 142],
+     "params": [
+      {"name": "self", "kind": "positional", "default": null, "annotation": null}
+     ],
+     "returns": null,
+     "decorators": [],
+     "docstring": "",
+     "explanation": "Wardrobe: wearing items and saving/loading an outfit.",
+     "calls": [
+      {"target": "leeravontuur/kern/avatar.py::geldig", "lines": [141]},
+      {"target": "leeravontuur/kern/winkel.py::koop", "lines": [137]},
+      {"target": "leeravontuur/kern/winkel.py::zoek", "lines": [137]},
+      {"target": "tests/test_winkel.py::TestWinkelSchermen.met_punten", "lines": [135]}
+     ],
+     "unresolved_calls": [
+      {
+       "expr": "o.avatar",
+       "lines": [141],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.avatar"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "o.kinderen",
+       "lines": [136],
+       "candidates": [
+        "leeravontuur/kern/opslag.py::Opslag.kinderen",
+        "leeravontuur/terminal/schermen/ouder.py::Ouderdeel.kinderen"
+       ],
+       "candidates_count": 2
+      },
+      {
+       "expr": "o.outfits",
+       "lines": [142],
+       "candidates": ["leeravontuur/kern/opslag.py::Opslag.outfits"],
+       "candidates_count": 1
+      },
+      {
+       "expr": "self.speel",
+       "lines": [139],
+       "candidates": [
+        "leeravontuur/terminal/oefenaar.py::Oefenaar.speel",
+        "leeravontuur/terminal/schermen/snelrekenen.py::Snelrekenen.speel"
+       ],
+       "candidates_count": 2
+      }
+     ],
+     "external_calls": [".assertEqual", "test_schermen.hm"],
+     "dynamic": [],
+     "called_by": []
+    }
+   ]
+  }
+ ],
+ "functions": []
+}
